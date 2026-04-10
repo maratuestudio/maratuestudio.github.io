@@ -135,7 +135,7 @@
     /* ── SERVIÇOS ── */
     .servicos { padding: 120px 40px; border-top: 1px solid rgba(240,236,228,0.08); }
     .servicos-title { font-family: 'Clother', sans-serif; font-weight: 700; font-size: clamp(2.2rem, 4.5vw, 4.5rem); line-height: 1; color: var(--areia); margin-bottom: 80px; }
-    .servicos-title .destaque { font-family: 'Clother', sans-serif; font-weight: 700; color: var(--azul-atalaia); display: block; }
+    .servicos-title .destaque { font-family: 'Jack', sans-serif; font-weight: 400; color: var(--laranja); display: block; }
     .servicos-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
     .servico-card {
       padding: 0; background: rgba(240,236,228,0.02);
@@ -181,25 +181,33 @@
     .feira-banner-content { position: relative; z-index: 1; }
     .feira-banner-tag { font-family: 'Space Mono', monospace; font-size: 0.6rem; color: rgba(13,13,11,0.45); letter-spacing: 0.22em; text-transform: uppercase; margin-bottom: 14px; display: flex; align-items: center; gap: 10px; }
     .feira-banner-tag::before { content: ''; display: block; width: 28px; height: 1px; background: rgba(13,13,11,0.3); }
-    .feira-banner-title { font-family: 'Jack', sans-serif; font-size: clamp(2.4rem, 6vw, 6rem); color: var(--preto); line-height: 0.88; margin-bottom: 16px; }
+    .feira-banner-title { font-family: 'Clother', sans-serif; font-weight: 900; font-size: clamp(2.4rem, 6vw, 6rem); color: var(--preto); line-height: 0.88; margin-bottom: 16px; text-transform: uppercase; }
     .feira-banner-desc { font-size: 1rem; color: rgba(13,13,11,0.55); line-height: 1.7; max-width: 460px; }
     .feira-banner-cta { position: relative; z-index: 1; flex-shrink: 0; }
     .feira-btn {
-      display: flex; flex-direction: column; align-items: flex-end; gap: 6px;
+      display: flex; align-items: center; gap: 18px;
       text-decoration: none; background: var(--preto); color: var(--areia);
-      padding: 24px 32px; font-family: 'Clother', sans-serif; font-weight: 900;
-      font-size: 1rem; letter-spacing: 0.08em; text-transform: uppercase;
-      transition: background 0.2s; border-radius: 0 16px 0 0;
+      padding: 20px 28px; font-family: 'Clother', sans-serif; font-weight: 900;
+      font-size: 1rem; letter-spacing: 0.06em; text-transform: uppercase;
+      transition: all 0.25s; border-radius: 999px;
+      border: 2px solid var(--preto);
     }
-    .feira-btn:hover { background: var(--azul-sergipe); }
-    .feira-btn-arrow { font-size: 1.4rem; line-height: 1; }
-    .feira-btn-label { font-size: 0.6rem; font-family: 'Space Mono', monospace; font-weight: 400; opacity: 0.45; letter-spacing: 0.15em; }
+    .feira-btn:hover { background: transparent; color: var(--preto); }
+    .feira-btn-arrow {
+      width: 38px; height: 38px; border-radius: 50%;
+      background: var(--laranja); color: var(--preto);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; flex-shrink: 0; transition: all 0.25s;
+    }
+    .feira-btn:hover .feira-btn-arrow { background: var(--preto); color: var(--areia); }
+    .feira-btn-text { display: flex; flex-direction: column; gap: 2px; }
+    .feira-btn-label { font-size: 0.55rem; font-family: 'Space Mono', monospace; font-weight: 400; opacity: 0.5; letter-spacing: 0.15em; }
 
     /* ── CONTATO ── */
     .contato { padding: 120px 40px; border-top: 1px solid rgba(240,236,228,0.08); }
     .contato-header { margin-bottom: 64px; display: flex; justify-content: space-between; align-items: flex-end; gap: 40px; flex-wrap: wrap; }
     .contato-title { font-family: 'Clother', sans-serif; font-weight: 700; font-size: clamp(2.2rem, 4.5vw, 4.5rem); line-height: 1; color: var(--areia); }
-    .contato-title .destaque { font-family: 'Clother', sans-serif; font-weight: 900; color: var(--laranja); display: block; }
+    .contato-title .destaque { font-family: 'Jack', sans-serif; font-weight: 400; color: var(--laranja); }
     .contato-desc { font-size: 1rem; line-height: 1.7; color: rgba(240,236,228,0.55); max-width: 320px; }
     .contato-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
     .contato-link {
@@ -365,14 +373,16 @@
   <section class="feira-banner">
     <div class="feira-banner-content">
       <p class="feira-banner-tag">Aberta agora — Aracaju, SE</p>
-      <h2 class="feira-banner-title">FEIRA<br>MARATU</h2>
-      <p class="feira-banner-desc">10 pôsteres exclusivos, adesivos, chaveiros e mais. Enviamos pro Brasil inteiro.</p>
+      <h2 class="feira-banner-title">Feira<br>MARATU</h2>
+      <p class="feira-banner-desc">10 posteres exclusivos, adesivos, chaveiros e mais. Enviamos pro Brasil inteiro.</p>
     </div>
     <div class="feira-banner-cta">
       <a href="loja.html" class="feira-btn">
         <span class="feira-btn-arrow">↗</span>
-        <span>Entrar na Feira</span>
-        <span class="feira-btn-label">12 produtos disponíveis</span>
+        <span class="feira-btn-text">
+          <span>Entrar na Feira</span>
+          <span class="feira-btn-label">12 produtos disponiveis</span>
+        </span>
       </a>
     </div>
   </section>
@@ -418,7 +428,7 @@
   <!-- 003 SERVIÇOS -->
   <section class="servicos" id="servicos">
     <p class="section-number">003 — O QUE FAZEMOS</p>
-    <h2 class="servicos-title">Nossos<br><span class="destaque">Serviços</span></h2>
+    <h2 class="servicos-title">O que<br><span class="destaque">FAZEMOS</span></h2>
     <div class="servicos-grid">
       <div class="servico-card">
         <img src="img-3d.png" alt="Impressão 3D" class="servico-img">
@@ -447,34 +457,12 @@
     </div>
   </section>
 
-  <!-- 004 COLEÇÕES -->
-  <section class="embreve" id="colecoes">
-    <div class="embreve-header">
-      <p class="section-number">004 — VEM AÍ</p>
-      <h2 class="embreve-title">Nossas<br><span class="destaque">COLEÇÕES</span></h2>
-    </div>
-    <div class="embreve-grid">
-      <a href="loja.html" class="colecao-card" style="text-decoration:none;display:block;cursor:pointer;">
-        <p class="colecao-tag">Coleção 01</p>
-        <h3 class="colecao-nome">ORIGENS</h3>
-        <p class="colecao-desc">Uma coleção que celebra Aracaju. Luminárias e itens de decoração inspirados nos pontos turísticos da cidade, camisas ilustradas, adesivos e pôsteres com a identidade de quem nasceu aqui.</p>
-        <span class="colecao-badge">Ver na loja ↗</span>
-      </a>
-      <a href="loja.html" class="colecao-card" style="text-decoration:none;display:block;cursor:pointer;">
-        <p class="colecao-tag">Coleção 02</p>
-        <h3 class="colecao-nome">MANGUEHAUS</h3>
-        <p class="colecao-desc">Onde Bauhaus encontra o mangue sergipano. Objetos que cruzam precisão técnica com identidade regional. Formas geométricas, filamento, arte e raiz — tudo junto, do jeito que a MARATU faz.</p>
-        <span class="colecao-badge">Ver na loja ↗</span>
-      </a>
-    </div>
-  </section>
-
   <!-- 005 CONTATO -->
   <section class="contato" id="contato">
     <div class="contato-header">
       <div>
         <p class="section-number">005 — CONTATO</p>
-        <h2 class="contato-title">Fala<br>com a<br><span class="destaque">GENTE</span></h2>
+        <h2 class="contato-title">Fala com a <span class="destaque">MARATU</span></h2>
       </div>
       <p class="contato-desc">Em breve mais novidades no site para vocês. Entre em contato com a gente!</p>
     </div>

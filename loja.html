@@ -84,10 +84,10 @@
     }
     .hero-tag::before { content: ''; display: block; width: 36px; height: 1px; background: rgba(240,236,228,0.3); }
     .hero-title {
-      font-family: 'Jack', sans-serif; font-size: clamp(3.5rem, 9vw, 9rem);
+      font-family: 'Clother', sans-serif; font-weight: 900; font-size: clamp(3.5rem, 9vw, 9rem);
       color: var(--areia); line-height: 0.88; display: block; margin-bottom: 20px;
+      text-transform: uppercase;
     }
-    .hero-title em { font-style: normal; color: var(--preto); opacity: 0.6; font-size: 0.45em; vertical-align: middle; }
     .hero-desc { font-size: 1rem; color: rgba(240,236,228,0.55); max-width: 480px; line-height: 1.7; }
 
     /* FILTROS */
@@ -206,6 +206,63 @@
       color: rgba(37,211,102,0.8); border-radius: 0 6px 0 0; line-height: 1.5;
     }
 
+    /* LIGHTBOX */
+    .lightbox {
+      display: none; position: fixed; inset: 0; z-index: 9999;
+      background: rgba(13,13,11,0.95); align-items: center; justify-content: center;
+      padding: 24px;
+    }
+    .lightbox.open { display: flex; }
+    .lightbox-img {
+      max-height: 90vh; max-width: 90vw; object-fit: contain;
+      border-radius: 0 16px 0 0;
+    }
+    .lightbox-close {
+      position: absolute; top: 20px; right: 24px;
+      background: none; border: 1px solid rgba(240,236,228,0.2); color: var(--areia);
+      font-family: 'Space Mono', monospace; font-size: 0.7rem; letter-spacing: 0.12em;
+      padding: 8px 14px; cursor: pointer; border-radius: 999px; transition: all 0.2s;
+    }
+    .lightbox-close:hover { background: rgba(240,236,228,0.1); }
+    .lightbox-nome {
+      position: absolute; bottom: 28px; left: 50%; transform: translateX(-50%);
+      font-family: 'Clother', sans-serif; font-weight: 900; font-size: 0.85rem;
+      color: rgba(240,236,228,0.5); letter-spacing: 0.15em; text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .produto-img { cursor: zoom-in; }
+
+    /* COLECOES NA LOJA */
+    .loja-colecoes {
+      padding: 56px 40px 0; display: grid; grid-template-columns: 1fr 1fr; gap: 2px;
+    }
+    .loja-colecao-card {
+      padding: 36px 36px 56px; border: 1px solid rgba(240,236,228,0.06);
+      background: rgba(240,236,228,0.02); position: relative; overflow: hidden;
+      text-decoration: none; display: block; transition: border-color 0.3s;
+    }
+    .loja-colecao-card:hover { border-color: rgba(200,80,26,0.3); }
+    .loja-colecao-tag {
+      font-family: 'Space Mono', monospace; font-size: 0.58rem; color: var(--laranja);
+      letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 18px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .loja-colecao-tag::before { content: ''; display: block; width: 20px; height: 1px; background: var(--laranja); }
+    .loja-colecao-nome {
+      font-family: 'Clother', sans-serif; font-weight: 900;
+      font-size: clamp(1.8rem, 3vw, 3.2rem); color: var(--areia);
+      text-transform: uppercase; line-height: 1; margin-bottom: 16px;
+    }
+    .loja-colecao-desc { font-size: 0.9rem; line-height: 1.75; color: rgba(240,236,228,0.45); }
+    .loja-colecao-badge {
+      position: absolute; bottom: 24px; right: 28px;
+      font-family: 'Space Mono', monospace; font-size: 0.52rem; color: var(--laranja);
+      letter-spacing: 0.18em; text-transform: uppercase;
+      border: 1px solid rgba(200,80,26,0.3); padding: 5px 10px;
+      transition: all 0.3s;
+    }
+    .loja-colecao-card:hover .loja-colecao-badge { background: var(--laranja); color: var(--preto); }
+
     /* FOOTER */
     footer { padding: 32px 40px; border-top: 1px solid rgba(240,236,228,0.06); display: flex; justify-content: space-between; align-items: center; }
     .footer-logo img { height: 36px; width: 36px; border-radius: 50%; mix-blend-mode: screen; }
@@ -226,6 +283,7 @@
       .filtro-btn { padding: 14px 16px; font-size: 0.55rem; }
       .categoria { padding: 48px 20px; }
       .produtos-grid { grid-template-columns: repeat(2, 1fr); }
+      .loja-colecoes { grid-template-columns: 1fr; padding: 40px 20px 0; }
       .wa-banner { margin: 0 20px 48px; flex-direction: column; gap: 12px; }
       footer { flex-direction: column; gap: 14px; align-items: flex-start; padding: 28px 20px; }
       .footer-info { text-align: left; }
@@ -253,10 +311,26 @@
     <div class="hero-fade"></div>
     <div class="hero-content">
       <p class="hero-tag">MARATU — Aracaju, SE</p>
-      <span class="hero-title">FEIRA<em>MARATU</em></span>
-      <p class="hero-desc">Pôsteres, adesivos e peças exclusivas feitas em Aracaju. Do arquivo ao objeto, assinado pela MARATU.</p>
+      <span class="hero-title">Feira MARATU</span>
+      <p class="hero-desc">Posteres, adesivos e pecas exclusivas feitas em Aracaju. Do arquivo ao objeto, assinado pela MARATU.</p>
     </div>
   </section>
+
+  <!-- COLECOES EM DESTAQUE -->
+  <div class="loja-colecoes">
+    <a href="#cat-posteres" class="loja-colecao-card">
+      <p class="loja-colecao-tag">Colecao 01</p>
+      <h3 class="loja-colecao-nome">Origens</h3>
+      <p class="loja-colecao-desc">Uma colecao que celebra Aracaju. Posteres, adesivos e pecas com a identidade de quem nasceu aqui.</p>
+      <span class="loja-colecao-badge">Ver produtos</span>
+    </a>
+    <a href="#cat-posteres" class="loja-colecao-card">
+      <p class="loja-colecao-tag">Colecao 02</p>
+      <h3 class="loja-colecao-nome">Mangue Haus</h3>
+      <p class="loja-colecao-desc">Onde Bauhaus encontra o mangue sergipano. Formas geometricas, filamento, arte e raiz juntos.</p>
+      <span class="loja-colecao-badge">Ver produtos</span>
+    </a>
+  </div>
 
   <div class="filtros">
     <button class="filtro-btn active" onclick="filtrar(this,'todos')">Todos <span class="filtro-count">12</span></button>
@@ -337,35 +411,60 @@
     </div>
   </footer>
 
+  <!-- LIGHTBOX -->
+  <div class="lightbox" id="lightbox" onclick="fecharLightbox(event)">
+    <button class="lightbox-close" onclick="fecharLightbox()">✕ fechar</button>
+    <img class="lightbox-img" id="lightbox-img" src="" alt="">
+    <span class="lightbox-nome" id="lightbox-nome"></span>
+  </div>
+
   <script>
     var PRECOS = { 'A4': 50, 'A3': 80, 'A2': 120, 'A1': 180 };
 
     var POSTERES = [
-      { id: 'destrua',   nome: 'Destrua o Império!', img: 'poster-destrua.png',   desc: 'Arte autoral · Edição limitada' },
-      { id: 'linguagem', nome: 'Linguagem',           img: 'poster-linguagem.png', desc: 'Arte autoral · Edição limitada' },
-      { id: 'camadas',   nome: 'Camadas',             img: 'poster-camadas.png',   desc: 'Arte autoral · Edição limitada' },
-      { id: 'origens',   nome: 'Origens',             img: 'poster-origens.png',   desc: 'Arte autoral · Edição limitada' },
-      { id: 'areias',    nome: 'Areias',              img: 'poster-areias.png',    desc: 'Arte autoral · Edição limitada' },
-      { id: 'matapua',   nome: 'Matapuã',             img: 'poster-matapua.png',   desc: 'Arte autoral · Edição limitada' },
-      { id: 'luzes',     nome: 'Luzes',               img: 'poster-luzes.png',     desc: 'Arte autoral · Edição limitada' },
-      { id: 'ritmo',     nome: 'Ritmo',               img: 'poster-ritmo.png',     desc: 'Arte autoral · Edição limitada' },
-      { id: 'pordosol',  nome: 'Pôr do Sol',          img: 'poster-pordosol.png',  desc: 'Arte autoral · Edição limitada' },
-      { id: 'atalaia',   nome: 'Sol de Atalaia',      img: 'poster-atalaia.png',   desc: 'Arte autoral · Edição limitada' },
+      { id: 'destrua',   nome: 'Destrua o Imperio!', img: 'poster-destrua.png'   },
+      { id: 'linguagem', nome: 'Linguagem',           img: 'poster-linguagem.png' },
+      { id: 'camadas',   nome: 'Camadas',             img: 'poster-camadas.png'   },
+      { id: 'origens',   nome: 'Origens',             img: 'poster-origens.png'   },
+      { id: 'areias',    nome: 'Areias',              img: 'poster-areias.png'    },
+      { id: 'matapua',   nome: 'Matapua',             img: 'poster-matapua.png'   },
+      { id: 'luzes',     nome: 'Luzes',               img: 'poster-luzes.png'     },
+      { id: 'ritmo',     nome: 'Ritmo',               img: 'poster-ritmo.png'     },
+      { id: 'pordosol',  nome: 'Por do Sol',          img: 'poster-pordosol.png'  },
+      { id: 'atalaia',   nome: 'Sol de Atalaia',      img: 'poster-atalaia.png'   },
     ];
+
+    function abrirLightbox(img, nome) {
+      document.getElementById('lightbox-img').src = img;
+      document.getElementById('lightbox-nome').textContent = nome;
+      document.getElementById('lightbox').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function fecharLightbox(e) {
+      if (!e || e.target === document.getElementById('lightbox') || e.currentTarget.classList.contains('lightbox-close')) {
+        document.getElementById('lightbox').classList.remove('open');
+        document.body.style.overflow = '';
+      }
+    }
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') fecharLightbox();
+    });
 
     function buildPosteres() {
       var grid = document.getElementById('grid-posteres');
       POSTERES.forEach(function(p) {
-        var tamanhoAtual = 'A4';
         var card = document.createElement('div');
         card.className = 'produto-card';
         card.innerHTML =
-          '<div class="produto-img"><span class="produto-badge badge-novo">Novo</span>' +
+          '<div class="produto-img" onclick="abrirLightbox(\'' + p.img + '\',\'' + p.nome + '\')">' +
+          '<span class="produto-badge badge-novo">Novo</span>' +
           '<img src="' + p.img + '" alt="' + p.nome + '" loading="lazy"></div>' +
           '<div class="produto-body">' +
-          '<p class="produto-cat">Pôster</p>' +
+          '<p class="produto-cat">Poster</p>' +
           '<p class="produto-nome">' + p.nome + '</p>' +
-          '<p class="produto-desc">' + p.desc + '</p>' +
+          '<p class="produto-desc">Arte autoral · Edicao limitada</p>' +
           '</div>' +
           '<div class="tamanho-selector" id="tam-' + p.id + '">' +
           ['A4','A3','A2','A1'].map(function(t) {
@@ -384,8 +483,7 @@
     function selecionarTam(btn) {
       var pid = btn.dataset.poster;
       var tam = btn.dataset.tam;
-      var selector = document.getElementById('tam-' + pid);
-      selector.querySelectorAll('.tam-btn').forEach(function(b) { b.classList.remove('selected'); });
+      document.getElementById('tam-' + pid).querySelectorAll('.tam-btn').forEach(function(b) { b.classList.remove('selected'); });
       btn.classList.add('selected');
       document.getElementById('val-' + pid).textContent = PRECOS[tam];
       atualizarLink(pid, tam);
@@ -394,7 +492,7 @@
     function atualizarLink(pid, tam) {
       var poster = POSTERES.find(function(p) { return p.id === pid; });
       var preco = PRECOS[tam];
-      var msg = encodeURIComponent('Olá! Tenho interesse no produto: ' + poster.nome + ' — ' + tam + ' — R$ ' + preco);
+      var msg = encodeURIComponent('Ola! Tenho interesse no produto: ' + poster.nome + ' — ' + tam + ' — R$ ' + preco);
       var btn = document.getElementById('btn-' + pid);
       if (btn) btn.href = 'https://wa.me/5579981512978?text=' + msg;
     }

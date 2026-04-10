@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Feira MARATU — Pôsteres, Adesivos e mais</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    @font-face { font-family: 'Jack'; src: url('TRYJackAlpha-Regular.ttf') format('truetype'); font-weight: 400; }
+    @font-face { font-family: 'Clother'; src: url('TRYClother-Regular.ttf') format('truetype'); font-weight: 400; }
+    @font-face { font-family: 'Clother'; src: url('TRYClother-Bold.ttf') format('truetype'); font-weight: 700; }
+    @font-face { font-family: 'Clother'; src: url('TRYClother-Black.ttf') format('truetype'); font-weight: 900; }
+
+    :root {
+      --laranja: #C8501A;
+      --azul-sergipe: #0E3272;
+      --azul-atalaia: #2E6FC4;
+      --areia: #F0ECE4;
+      --preto: #0D0D0B;
+      --dourado: #D4960A;
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--preto); color: var(--areia); font-family: 'Clother', sans-serif; overflow-x: hidden; }
+
+    body::before {
+      content: ''; position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 1000; opacity: 0.4;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: max(env(safe-area-inset-top), 20px) 40px 20px;
+    }
+    nav::before {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(to bottom, rgba(13,13,11,0.97) 0%, transparent 100%);
+      pointer-events: none;
+    }
+    .nav-left { display: flex; align-items: center; gap: 20px; position: relative; }
+    .nav-logo { text-decoration: none; }
+    .nav-logo img { height: 40px; width: 40px; border-radius: 50%; mix-blend-mode: screen; }
+    .nav-sep { width: 1px; height: 20px; background: rgba(240,236,228,0.15); }
+    .nav-breadcrumb { font-family: 'Space Mono', monospace; font-size: 0.6rem; color: rgba(240,236,228,0.35); letter-spacing: 0.15em; text-transform: uppercase; }
+    .nav-breadcrumb span { color: var(--laranja); }
+    .nav-back {
+      position: relative; font-family: 'Space Mono', monospace; font-size: 0.6rem;
+      letter-spacing: 0.15em; text-transform: uppercase; color: rgba(240,236,228,0.5);
+      text-decoration: none; border: 1px solid rgba(240,236,228,0.12); padding: 8px 16px;
+      transition: all 0.2s ease; border-radius: 0 8px 0 0;
+    }
+    .nav-back:hover { color: var(--areia); border-color: rgba(240,236,228,0.3); }
+
+    /* HERO */
+    .hero {
+      min-height: 52vh; display: flex; flex-direction: column; justify-content: flex-end;
+      padding: 100px 40px 56px; position: relative; overflow: hidden;
+    }
+    .hero-bg-color { position: absolute; inset: 0; background: var(--laranja); }
+    .hero-bg-img {
+      position: absolute; inset: 0;
+      background: url('mangue.jpg') center center / cover no-repeat; opacity: 0.12;
+    }
+    .hero-grid {
+      position: absolute; inset: 0;
+      background-image: linear-gradient(rgba(240,236,228,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(240,236,228,0.04) 1px, transparent 1px);
+      background-size: 52px 52px;
+    }
+    .hero-fade {
+      position: absolute; bottom: 0; left: 0; right: 0; height: 50%;
+      background: linear-gradient(to bottom, transparent, var(--preto));
+    }
+    .hero-content { position: relative; z-index: 2; }
+    .hero-tag {
+      font-family: 'Space Mono', monospace; font-size: 0.62rem;
+      color: rgba(240,236,228,0.45); letter-spacing: 0.22em; text-transform: uppercase;
+      margin-bottom: 18px; display: flex; align-items: center; gap: 12px;
+    }
+    .hero-tag::before { content: ''; display: block; width: 36px; height: 1px; background: rgba(240,236,228,0.3); }
+    .hero-title {
+      font-family: 'Jack', sans-serif; font-size: clamp(3.5rem, 9vw, 9rem);
+      color: var(--areia); line-height: 0.88; display: block; margin-bottom: 20px;
+    }
+    .hero-title em { font-style: normal; color: var(--preto); opacity: 0.6; font-size: 0.45em; vertical-align: middle; }
+    .hero-desc { font-size: 1rem; color: rgba(240,236,228,0.55); max-width: 480px; line-height: 1.7; }
+
+    /* FILTROS */
+    .filtros {
+      display: flex; align-items: stretch;
+      border-top: 1px solid rgba(240,236,228,0.08); border-bottom: 1px solid rgba(240,236,228,0.08);
+      overflow-x: auto; -webkit-overflow-scrolling: touch;
+    }
+    .filtro-btn {
+      font-family: 'Space Mono', monospace; font-size: 0.6rem; letter-spacing: 0.18em;
+      text-transform: uppercase; color: rgba(240,236,228,0.3);
+      background: none; border: none; border-right: 1px solid rgba(240,236,228,0.06);
+      padding: 18px 28px; cursor: pointer; white-space: nowrap;
+      transition: all 0.2s; display: flex; align-items: center; gap: 8px;
+    }
+    .filtro-btn:last-child { border-right: none; }
+    .filtro-btn.active { color: var(--preto); background: var(--laranja); }
+    .filtro-btn:hover:not(.active) { color: var(--areia); background: rgba(240,236,228,0.04); }
+    .filtro-count { font-size: 0.5rem; background: rgba(240,236,228,0.1); color: rgba(240,236,228,0.4); padding: 2px 6px; border-radius: 0 4px 0 0; }
+    .filtro-btn.active .filtro-count { background: rgba(13,13,11,0.2); color: var(--preto); }
+
+    /* CATEGORIA */
+    .categoria { padding: 64px 40px; border-bottom: 1px solid rgba(240,236,228,0.06); }
+    .categoria:last-of-type { border-bottom: none; }
+    .cat-header {
+      display: flex; align-items: flex-end; justify-content: space-between;
+      margin-bottom: 36px; padding-bottom: 24px; border-bottom: 1px solid rgba(240,236,228,0.08);
+    }
+    .cat-num { font-family: 'Space Mono', monospace; font-size: 0.6rem; color: rgba(240,236,228,0.2); letter-spacing: 0.2em; margin-bottom: 8px; }
+    .cat-nome { font-family: 'Clother', sans-serif; font-weight: 900; font-size: clamp(2rem, 4vw, 3.6rem); text-transform: uppercase; line-height: 0.9; }
+    .cat-nome.laranja { color: var(--laranja); }
+    .cat-nome.azul { color: var(--azul-atalaia); }
+    .cat-total { font-family: 'Space Mono', monospace; font-size: 0.58rem; color: rgba(240,236,228,0.2); letter-spacing: 0.15em; text-transform: uppercase; }
+
+    /* GRID PÔSTERES — 4 colunas para aproveitar mais */
+    .produtos-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; }
+    .produtos-grid.col3 { grid-template-columns: repeat(3, 1fr); }
+
+    /* CARD PÔSTER */
+    .produto-card { background: rgba(240,236,228,0.025); border: 1px solid rgba(240,236,228,0.07); overflow: hidden; display: flex; flex-direction: column; transition: border-color 0.3s; }
+    .produto-card:hover { border-color: rgba(200,80,26,0.3); }
+
+    .produto-img {
+      position: relative; overflow: hidden;
+      border-bottom: 1px solid rgba(240,236,228,0.06);
+      border-radius: 0 14px 0 0;
+      aspect-ratio: 3/4;
+      background: #1a1a18;
+    }
+    .produto-img img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s ease; }
+    .produto-card:hover .produto-img img { transform: scale(1.03); }
+    .produto-img.cor-laranja { background: var(--laranja); }
+    .produto-img.cor-azul { background: var(--azul-sergipe); }
+    .produto-img.cor-atalaia { background: var(--azul-atalaia); }
+    .produto-img.cor-dourado { background: var(--dourado); }
+
+    .produto-badge {
+      position: absolute; top: 12px; left: 12px; z-index: 2;
+      font-family: 'Space Mono', monospace; font-size: 0.5rem;
+      letter-spacing: 0.16em; text-transform: uppercase; padding: 4px 8px;
+      font-weight: 700; border-radius: 0 6px 0 0;
+    }
+    .badge-novo { background: var(--dourado); color: var(--preto); }
+    .badge-breve { background: rgba(240,236,228,0.08); color: rgba(240,236,228,0.3); border: 1px solid rgba(240,236,228,0.1); }
+
+    .produto-body { padding: 16px 18px 0; flex: 1; }
+    .produto-cat { font-family: 'Space Mono', monospace; font-size: 0.5rem; color: var(--laranja); letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 6px; }
+    .produto-nome { font-family: 'Clother', sans-serif; font-weight: 900; font-size: 1rem; color: var(--areia); text-transform: uppercase; margin-bottom: 4px; line-height: 1.1; }
+    .produto-desc { font-size: 0.78rem; color: rgba(240,236,228,0.35); line-height: 1.5; }
+
+    /* SELETOR DE TAMANHO */
+    .tamanho-selector { padding: 14px 18px; display: flex; gap: 6px; flex-wrap: wrap; }
+    .tam-btn {
+      font-family: 'Space Mono', monospace; font-size: 0.5rem; letter-spacing: 0.12em;
+      text-transform: uppercase; background: rgba(240,236,228,0.04);
+      border: 1px solid rgba(240,236,228,0.1); color: rgba(240,236,228,0.4);
+      padding: 5px 9px; cursor: pointer; transition: all 0.15s; border-radius: 0 5px 0 0;
+    }
+    .tam-btn:hover { border-color: rgba(200,80,26,0.4); color: var(--areia); }
+    .tam-btn.selected { background: rgba(200,80,26,0.15); border-color: var(--laranja); color: var(--laranja); }
+
+    .produto-footer { display: flex; align-items: stretch; border-top: 1px solid rgba(240,236,228,0.06); }
+    .produto-preco { padding: 12px 16px; font-family: 'Clother', sans-serif; font-weight: 900; font-size: 1.3rem; color: var(--areia); flex: 1; display: flex; align-items: center; }
+    .produto-preco .cifrao { font-size: 0.65rem; font-weight: 400; color: rgba(240,236,228,0.35); margin-right: 3px; vertical-align: super; }
+    .produto-preco.indisponivel { font-size: 1rem; color: rgba(240,236,228,0.2); letter-spacing: 0.1em; }
+
+    .btn-encomendar {
+      background: var(--laranja); border: none; border-left: 1px solid rgba(240,236,228,0.06);
+      color: var(--preto); font-family: 'Clother', sans-serif; font-weight: 900;
+      font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 12px 14px; cursor: pointer; transition: all 0.2s;
+      text-decoration: none; display: flex; align-items: center; gap: 5px;
+      border-radius: 0 12px 0 0; white-space: nowrap;
+    }
+    .btn-encomendar:hover { background: var(--areia); }
+    .btn-indisponivel {
+      background: rgba(240,236,228,0.03); color: rgba(240,236,228,0.18);
+      font-family: 'Space Mono', monospace; font-size: 0.5rem; letter-spacing: 0.12em;
+      text-transform: uppercase; padding: 12px 12px; border-left: 1px solid rgba(240,236,228,0.05);
+      cursor: default; border-radius: 0 12px 0 0; display: flex; align-items: center;
+    }
+
+    /* WA BANNER */
+    .wa-banner {
+      margin: 0 40px 64px; padding: 24px 28px;
+      background: var(--azul-sergipe); border: 1px solid rgba(46,111,196,0.3);
+      border-radius: 0 14px 0 0; display: flex; align-items: flex-start; gap: 18px;
+    }
+    .wa-dot { width: 10px; height: 10px; border-radius: 50%; background: #25D366; margin-top: 4px; flex-shrink: 0; }
+    .wa-title { font-family: 'Clother', sans-serif; font-weight: 700; font-size: 1rem; color: var(--areia); margin-bottom: 6px; }
+    .wa-desc { font-size: 0.85rem; color: rgba(240,236,228,0.55); line-height: 1.6; margin-bottom: 10px; }
+    .wa-msg-preview {
+      display: inline-block; padding: 7px 12px;
+      background: rgba(37,211,102,0.08); border: 1px solid rgba(37,211,102,0.18);
+      font-family: 'Space Mono', monospace; font-size: 0.6rem;
+      color: rgba(37,211,102,0.8); border-radius: 0 6px 0 0; line-height: 1.5;
+    }
+
+    /* FOOTER */
+    footer { padding: 32px 40px; border-top: 1px solid rgba(240,236,228,0.06); display: flex; justify-content: space-between; align-items: center; }
+    .footer-logo img { height: 36px; width: 36px; border-radius: 50%; mix-blend-mode: screen; }
+    .footer-info { font-family: 'Space Mono', monospace; font-size: 0.55rem; color: rgba(240,236,228,0.2); letter-spacing: 0.1em; text-align: right; line-height: 1.9; }
+
+    .categoria.oculta { display: none; }
+
+    @keyframes fadeUp { from { opacity:0; transform:translateY(30px); } to { opacity:1; transform:translateY(0); } }
+    .hero-content { animation: fadeUp 0.6s ease 0.1s both; }
+
+    @media (max-width: 900px) {
+      .produtos-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 768px) {
+      nav { padding: max(env(safe-area-inset-top), 14px) 20px 14px; }
+      .nav-sep, .nav-breadcrumb { display: none; }
+      .hero { padding: 80px 20px 48px; min-height: 44vh; }
+      .filtro-btn { padding: 14px 16px; font-size: 0.55rem; }
+      .categoria { padding: 48px 20px; }
+      .produtos-grid { grid-template-columns: repeat(2, 1fr); }
+      .wa-banner { margin: 0 20px 48px; flex-direction: column; gap: 12px; }
+      footer { flex-direction: column; gap: 14px; align-items: flex-start; padding: 28px 20px; }
+      .footer-info { text-align: left; }
+    }
+    @media (max-width: 480px) {
+      .produtos-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-left">
+      <a href="index.html" class="nav-logo"><img src="logo-redondo.png" alt="MARATU Estúdio"></a>
+      <div class="nav-sep"></div>
+      <span class="nav-breadcrumb">MARATU / <span>Feira</span></span>
+    </div>
+    <a href="index.html" class="nav-back">← Voltar ao site</a>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-bg-color"></div>
+    <div class="hero-bg-img"></div>
+    <div class="hero-grid"></div>
+    <div class="hero-fade"></div>
+    <div class="hero-content">
+      <p class="hero-tag">MARATU — Aracaju, SE</p>
+      <span class="hero-title">FEIRA<em>MARATU</em></span>
+      <p class="hero-desc">Pôsteres, adesivos e peças exclusivas feitas em Aracaju. Do arquivo ao objeto, assinado pela MARATU.</p>
+    </div>
+  </section>
+
+  <div class="filtros">
+    <button class="filtro-btn active" onclick="filtrar(this,'todos')">Todos <span class="filtro-count">12</span></button>
+    <button class="filtro-btn" onclick="filtrar(this,'posteres')">Pôsteres <span class="filtro-count">10</span></button>
+    <button class="filtro-btn" onclick="filtrar(this,'use-maratu')">USE MARATU <span class="filtro-count">2</span></button>
+  </div>
+
+  <!-- PÔSTERES -->
+  <section class="categoria" id="cat-posteres" data-categoria="posteres">
+    <div class="cat-header">
+      <div>
+        <p class="cat-num">01 ——</p>
+        <h2 class="cat-nome laranja">Pôsteres</h2>
+      </div>
+      <span class="cat-total">10 designs · A4 / A3 / A2 / A1</span>
+    </div>
+    <div class="produtos-grid" id="grid-posteres"></div>
+  </section>
+
+  <!-- USE MARATU -->
+  <section class="categoria" id="cat-use-maratu" data-categoria="use-maratu">
+    <div class="cat-header">
+      <div>
+        <p class="cat-num">02 ——</p>
+        <h2 class="cat-nome azul">USE MARATU</h2>
+      </div>
+      <span class="cat-total">2 produtos</span>
+    </div>
+    <div class="produtos-grid col3">
+
+      <div class="produto-card">
+        <div class="produto-img cor-dourado">
+          <span class="produto-badge badge-novo">Novo</span>
+        </div>
+        <div class="produto-body">
+          <p class="produto-cat">Adesivo</p>
+          <p class="produto-nome">Pack Sergipano</p>
+          <p class="produto-desc">6 unidades · Vinil · À prova d'água</p>
+        </div>
+        <div class="produto-footer">
+          <p class="produto-preco"><span class="cifrao">R$</span>18</p>
+          <a href="https://wa.me/5579981512978?text=Olá!%20Tenho%20interesse%20no%20produto%3A%20Pack%20Adesivos%20Sergipano%20—%20R%24%2018" target="_blank" rel="noopener" class="btn-encomendar">Encomendar ↗</a>
+        </div>
+      </div>
+
+      <div class="produto-card">
+        <div class="produto-img cor-atalaia">
+          <span class="produto-badge badge-novo">Novo</span>
+        </div>
+        <div class="produto-body">
+          <p class="produto-cat">Chaveiro</p>
+          <p class="produto-nome">Chaveiro Aratu 3D</p>
+          <p class="produto-desc">PLA · Impressão 3D · 6 cm</p>
+        </div>
+        <div class="produto-footer">
+          <p class="produto-preco"><span class="cifrao">R$</span>22</p>
+          <a href="https://wa.me/5579981512978?text=Olá!%20Tenho%20interesse%20no%20produto%3A%20Chaveiro%20Aratu%203D%20—%20R%24%2022" target="_blank" rel="noopener" class="btn-encomendar">Encomendar ↗</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="wa-banner">
+    <div class="wa-dot"></div>
+    <div>
+      <p class="wa-title">Como funciona a encomenda</p>
+      <p class="wa-desc">Clique em "Encomendar" e você vai direto pro WhatsApp com a mensagem já preenchida. A gente confirma disponibilidade, prazo e frete.</p>
+      <span class="wa-msg-preview">Olá! Tenho interesse no produto: Destrua o Império! — A3 — R$ 80</span>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-logo"><img src="logo-redondo.png" alt="MARATU Estúdio"></div>
+    <div class="footer-info">
+      <p>Impressão 3D · Design · Arte</p>
+      <p>Aracaju, SE — Brasil · EST. 2026</p>
+    </div>
+  </footer>
+
+  <script>
+    var PRECOS = { 'A4': 50, 'A3': 80, 'A2': 120, 'A1': 180 };
+
+    var POSTERES = [
+      { id: 'destrua',   nome: 'Destrua o Império!', img: 'poster-destrua.png',   desc: 'Arte autoral · Edição limitada' },
+      { id: 'linguagem', nome: 'Linguagem',           img: 'poster-linguagem.png', desc: 'Arte autoral · Edição limitada' },
+      { id: 'camadas',   nome: 'Camadas',             img: 'poster-camadas.png',   desc: 'Arte autoral · Edição limitada' },
+      { id: 'origens',   nome: 'Origens',             img: 'poster-origens.png',   desc: 'Arte autoral · Edição limitada' },
+      { id: 'areias',    nome: 'Areias',              img: 'poster-areias.png',    desc: 'Arte autoral · Edição limitada' },
+      { id: 'matapua',   nome: 'Matapuã',             img: 'poster-matapua.png',   desc: 'Arte autoral · Edição limitada' },
+      { id: 'luzes',     nome: 'Luzes',               img: 'poster-luzes.png',     desc: 'Arte autoral · Edição limitada' },
+      { id: 'ritmo',     nome: 'Ritmo',               img: 'poster-ritmo.png',     desc: 'Arte autoral · Edição limitada' },
+      { id: 'pordosol',  nome: 'Pôr do Sol',          img: 'poster-pordosol.png',  desc: 'Arte autoral · Edição limitada' },
+      { id: 'atalaia',   nome: 'Sol de Atalaia',      img: 'poster-atalaia.png',   desc: 'Arte autoral · Edição limitada' },
+    ];
+
+    function buildPosteres() {
+      var grid = document.getElementById('grid-posteres');
+      POSTERES.forEach(function(p) {
+        var tamanhoAtual = 'A4';
+        var card = document.createElement('div');
+        card.className = 'produto-card';
+        card.innerHTML =
+          '<div class="produto-img"><span class="produto-badge badge-novo">Novo</span>' +
+          '<img src="' + p.img + '" alt="' + p.nome + '" loading="lazy"></div>' +
+          '<div class="produto-body">' +
+          '<p class="produto-cat">Pôster</p>' +
+          '<p class="produto-nome">' + p.nome + '</p>' +
+          '<p class="produto-desc">' + p.desc + '</p>' +
+          '</div>' +
+          '<div class="tamanho-selector" id="tam-' + p.id + '">' +
+          ['A4','A3','A2','A1'].map(function(t) {
+            return '<button class="tam-btn' + (t==='A4'?' selected':'') + '" data-tam="' + t + '" data-poster="' + p.id + '" onclick="selecionarTam(this)">' + t + '</button>';
+          }).join('') +
+          '</div>' +
+          '<div class="produto-footer">' +
+          '<p class="produto-preco" id="preco-' + p.id + '"><span class="cifrao">R$</span><span id="val-' + p.id + '">50</span></p>' +
+          '<a href="#" id="btn-' + p.id + '" class="btn-encomendar" target="_blank" rel="noopener">Encomendar ↗</a>' +
+          '</div>';
+        grid.appendChild(card);
+        atualizarLink(p.id, 'A4');
+      });
+    }
+
+    function selecionarTam(btn) {
+      var pid = btn.dataset.poster;
+      var tam = btn.dataset.tam;
+      var selector = document.getElementById('tam-' + pid);
+      selector.querySelectorAll('.tam-btn').forEach(function(b) { b.classList.remove('selected'); });
+      btn.classList.add('selected');
+      document.getElementById('val-' + pid).textContent = PRECOS[tam];
+      atualizarLink(pid, tam);
+    }
+
+    function atualizarLink(pid, tam) {
+      var poster = POSTERES.find(function(p) { return p.id === pid; });
+      var preco = PRECOS[tam];
+      var msg = encodeURIComponent('Olá! Tenho interesse no produto: ' + poster.nome + ' — ' + tam + ' — R$ ' + preco);
+      var btn = document.getElementById('btn-' + pid);
+      if (btn) btn.href = 'https://wa.me/5579981512978?text=' + msg;
+    }
+
+    function filtrar(btn, cat) {
+      document.querySelectorAll('.filtro-btn').forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      document.querySelectorAll('.categoria').forEach(function(c) {
+        c.classList.toggle('oculta', cat !== 'todos' && c.dataset.categoria !== cat);
+      });
+    }
+
+    buildPosteres();
+  </script>
+
+</body>
+</html>

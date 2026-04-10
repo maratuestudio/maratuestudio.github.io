@@ -84,9 +84,18 @@
     }
     .hero-tag::before { content: ''; display: block; width: 36px; height: 1px; background: rgba(240,236,228,0.3); }
     .hero-title {
-      font-family: 'Clother', sans-serif; font-weight: 900; font-size: clamp(3.5rem, 9vw, 9rem);
-      color: var(--areia); line-height: 0.88; display: block; margin-bottom: 20px;
-      text-transform: uppercase;
+      display: block; margin-bottom: 20px; line-height: 0.85;
+    }
+    .hero-title .titulo-feira {
+      font-family: 'Clother', sans-serif; font-weight: 400;
+      font-size: clamp(1rem, 2.5vw, 1.8rem);
+      color: rgba(240,236,228,0.55); display: block;
+      letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 4px;
+    }
+    .hero-title .titulo-maratu {
+      font-family: 'Jack', sans-serif;
+      font-size: clamp(4rem, 10vw, 10rem);
+      color: var(--areia); display: block; line-height: 0.88;
     }
     .hero-desc { font-size: 1rem; color: rgba(240,236,228,0.55); max-width: 480px; line-height: 1.7; }
 
@@ -135,10 +144,22 @@
       border-bottom: 1px solid rgba(240,236,228,0.06);
       border-radius: 0 14px 0 0;
       aspect-ratio: 3/4;
-      background: #1a1a18;
+      background: #1a1a18; cursor: zoom-in;
     }
-    .produto-img img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s ease; }
-    .produto-card:hover .produto-img img { transform: scale(1.03); }
+    .produto-img .img-poster {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      object-fit: cover; display: block;
+      transition: opacity 0.5s ease;
+      opacity: 1;
+    }
+    .produto-img .img-mockup {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      object-fit: cover; display: block;
+      transition: opacity 0.5s ease;
+      opacity: 0;
+    }
+    .produto-img:hover .img-poster { opacity: 0; }
+    .produto-img:hover .img-mockup { opacity: 1; }
     .produto-img.cor-laranja { background: var(--laranja); }
     .produto-img.cor-azul { background: var(--azul-sergipe); }
     .produto-img.cor-atalaia { background: var(--azul-atalaia); }
@@ -214,7 +235,7 @@
     }
     .lightbox.open { display: flex; }
     .lightbox-img {
-      max-height: 90vh; max-width: 90vw; object-fit: contain;
+      max-height: 88vh; max-width: 88vw; object-fit: contain;
       border-radius: 0 16px 0 0;
     }
     .lightbox-close {
@@ -225,12 +246,10 @@
     }
     .lightbox-close:hover { background: rgba(240,236,228,0.1); }
     .lightbox-nome {
-      position: absolute; bottom: 28px; left: 50%; transform: translateX(-50%);
+      position: absolute; top: 20px; left: 24px;
       font-family: 'Clother', sans-serif; font-weight: 900; font-size: 0.85rem;
       color: rgba(240,236,228,0.5); letter-spacing: 0.15em; text-transform: uppercase;
-      white-space: nowrap;
     }
-    .produto-img { cursor: zoom-in; }
 
     /* COLECOES NA LOJA */
     .loja-colecoes {
@@ -311,7 +330,10 @@
     <div class="hero-fade"></div>
     <div class="hero-content">
       <p class="hero-tag">MARATU — Aracaju, SE</p>
-      <span class="hero-title">Feira MARATU</span>
+      <span class="hero-title">
+        <span class="titulo-feira">feira</span>
+        <span class="titulo-maratu">MARATU</span>
+      </span>
       <p class="hero-desc">Posteres, adesivos e pecas exclusivas feitas em Aracaju. Do arquivo ao objeto, assinado pela MARATU.</p>
     </div>
   </section>
@@ -364,15 +386,16 @@
       <div class="produto-card">
         <div class="produto-img cor-dourado">
           <span class="produto-badge badge-novo">Novo</span>
+          <img class="img-poster" src="poster-linguagem.png" alt="Adesivos Origens" loading="lazy" style="object-fit:contain;padding:12px;">
         </div>
         <div class="produto-body">
-          <p class="produto-cat">Adesivo</p>
-          <p class="produto-nome">Pack Sergipano</p>
-          <p class="produto-desc">6 unidades · Vinil · À prova d'água</p>
+          <p class="produto-cat">Adesivos</p>
+          <p class="produto-nome">Colecao Origens - 1 Edicao</p>
+          <p class="produto-desc">12 adesivos · Vinil · Impressao premium</p>
         </div>
         <div class="produto-footer">
           <p class="produto-preco"><span class="cifrao">R$</span>18</p>
-          <a href="https://wa.me/5579981512978?text=Olá!%20Tenho%20interesse%20no%20produto%3A%20Pack%20Adesivos%20Sergipano%20—%20R%24%2018" target="_blank" rel="noopener" class="btn-encomendar">Encomendar ↗</a>
+          <a href="https://wa.me/5579981512978?text=Ola!%20Tenho%20interesse%20no%20produto%3A%20Colecao%20de%20Adesivos%20Origens%201%20Edicao%20—%20R%24%2018" target="_blank" rel="noopener" class="btn-encomendar">Encomendar ↗</a>
         </div>
       </div>
 
@@ -414,24 +437,24 @@
   <!-- LIGHTBOX -->
   <div class="lightbox" id="lightbox" onclick="fecharLightbox(event)">
     <button class="lightbox-close" onclick="fecharLightbox()">✕ fechar</button>
-    <img class="lightbox-img" id="lightbox-img" src="" alt="">
     <span class="lightbox-nome" id="lightbox-nome"></span>
+    <img class="lightbox-img" id="lightbox-img" src="" alt="">
   </div>
 
   <script>
     var PRECOS = { 'A4': 50, 'A3': 80, 'A2': 120, 'A1': 180 };
 
     var POSTERES = [
-      { id: 'destrua',   nome: 'Destrua o Imperio!', img: 'poster-destrua.png'   },
-      { id: 'linguagem', nome: 'Linguagem',           img: 'poster-linguagem.png' },
-      { id: 'camadas',   nome: 'Camadas',             img: 'poster-camadas.png'   },
-      { id: 'origens',   nome: 'Origens',             img: 'poster-origens.png'   },
-      { id: 'areias',    nome: 'Areias',              img: 'poster-areias.png'    },
-      { id: 'matapua',   nome: 'Matapua',             img: 'poster-matapua.png'   },
-      { id: 'luzes',     nome: 'Luzes',               img: 'poster-luzes.png'     },
-      { id: 'ritmo',     nome: 'Ritmo',               img: 'poster-ritmo.png'     },
-      { id: 'pordosol',  nome: 'Por do Sol',          img: 'poster-pordosol.png'  },
-      { id: 'atalaia',   nome: 'Sol de Atalaia',      img: 'poster-atalaia.png'   },
+      { id: 'destrua',   nome: 'Destrua o Imperio!', img: 'poster-destrua.png',   mockup: 'mockup-destrua.png'   },
+      { id: 'linguagem', nome: 'Linguagem',           img: 'poster-linguagem.png', mockup: 'mockup-linguagem.png' },
+      { id: 'camadas',   nome: 'Camadas',             img: 'poster-camadas.png',   mockup: 'mockup-camadas.png'   },
+      { id: 'origens',   nome: 'Origens',             img: 'poster-origens.png',   mockup: 'mockup-origens.png'   },
+      { id: 'areias',    nome: 'Areias',              img: 'poster-areias.png',    mockup: 'mockup-areias.png'    },
+      { id: 'matapua',   nome: 'Matapua',             img: 'poster-matapua.png',   mockup: 'mockup-matapua.png'   },
+      { id: 'luzes',     nome: 'Luzes',               img: 'poster-luzes.png',     mockup: 'mockup-luzes.png'     },
+      { id: 'ritmo',     nome: 'Ritmo',               img: 'poster-ritmo.png',     mockup: 'mockup-ritmo.png'     },
+      { id: 'pordosol',  nome: 'Por do Sol',          img: 'poster-pordosol.png',  mockup: 'mockup-pordosol.png'  },
+      { id: 'atalaia',   nome: 'Sol de Atalaia',      img: 'poster-atalaia.png',   mockup: 'mockup-atalaia.png'   },
     ];
 
     function abrirLightbox(img, nome) {
@@ -460,7 +483,9 @@
         card.innerHTML =
           '<div class="produto-img" onclick="abrirLightbox(\'' + p.img + '\',\'' + p.nome + '\')">' +
           '<span class="produto-badge badge-novo">Novo</span>' +
-          '<img src="' + p.img + '" alt="' + p.nome + '" loading="lazy"></div>' +
+          '<img class="img-poster" src="' + p.img + '" alt="' + p.nome + '" loading="lazy">' +
+          '<img class="img-mockup" src="' + p.mockup + '" alt="' + p.nome + ' mockup" loading="lazy">' +
+          '</div>' +
           '<div class="produto-body">' +
           '<p class="produto-cat">Poster</p>' +
           '<p class="produto-nome">' + p.nome + '</p>' +

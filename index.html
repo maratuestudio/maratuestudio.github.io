@@ -181,7 +181,9 @@
     .feira-banner-content { position: relative; z-index: 1; }
     .feira-banner-tag { font-family: 'Space Mono', monospace; font-size: 0.6rem; color: rgba(13,13,11,0.45); letter-spacing: 0.22em; text-transform: uppercase; margin-bottom: 14px; display: flex; align-items: center; gap: 10px; }
     .feira-banner-tag::before { content: ''; display: block; width: 28px; height: 1px; background: rgba(13,13,11,0.3); }
-    .feira-banner-title { font-family: 'Clother', sans-serif; font-weight: 900; font-size: clamp(2.4rem, 6vw, 6rem); color: var(--preto); line-height: 0.88; margin-bottom: 16px; text-transform: uppercase; }
+    .feira-banner-title { line-height: 0.85; margin-bottom: 16px; }
+    .feira-banner-title .titulo-feira { font-family: 'Clother', sans-serif; font-weight: 400; font-size: clamp(0.9rem, 1.8vw, 1.4rem); color: rgba(13,13,11,0.45); display: block; letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 2px; }
+    .feira-banner-title .titulo-maratu { font-family: 'Jack', sans-serif; font-size: clamp(2.8rem, 6vw, 6.5rem); color: var(--preto); display: block; line-height: 0.88; }
     .feira-banner-desc { font-size: 1rem; color: rgba(13,13,11,0.55); line-height: 1.7; max-width: 460px; }
     .feira-banner-cta { position: relative; z-index: 1; flex-shrink: 0; }
     .feira-btn {
@@ -373,7 +375,10 @@
   <section class="feira-banner">
     <div class="feira-banner-content">
       <p class="feira-banner-tag">Aberta agora — Aracaju, SE</p>
-      <h2 class="feira-banner-title">Feira<br>MARATU</h2>
+      <h2 class="feira-banner-title">
+        <span class="titulo-feira">feira</span>
+        <span class="titulo-maratu">MARATU</span>
+      </h2>
       <p class="feira-banner-desc">10 posteres exclusivos, adesivos, chaveiros e mais. Enviamos pro Brasil inteiro.</p>
     </div>
     <div class="feira-banner-cta">

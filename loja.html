@@ -78,9 +78,14 @@
 
     /* HERO */
     .hero {
-      min-height: 44vh; display: flex; flex-direction: column; justify-content: flex-end;
-      padding: 90px 24px 48px; position: relative; overflow: hidden;
-      background: var(--laranja);
+      min-height: 52vh; display: flex; flex-direction: column; justify-content: flex-end;
+      padding: 90px 24px 52px; position: relative; overflow: hidden;
+    }
+    .hero-bg-color { position: absolute; inset: 0; background: var(--laranja); }
+    .hero-bg-img {
+      position: absolute; inset: 0;
+      background: url('foto-aracaju-centro.jpg') center center / cover no-repeat;
+      opacity: 0.15; mix-blend-mode: multiply;
     }
     .hero-grid {
       position: absolute; inset: 0;
@@ -95,10 +100,16 @@
     }
     .hero-tag::before { content: ''; display: block; width: 28px; height: 1px; background: rgba(13,13,11,0.3); }
     .hero-title { display: block; margin-bottom: 16px; line-height: 0.85; }
-    .hero-title .titulo-loja {
+    .hero-title .titulo-feira {
+      font-family: 'Clother', sans-serif; font-weight: 900;
+      font-size: clamp(1.1rem, 2.5vw, 1.8rem);
+      color: rgba(13,13,11,0.6); display: block;
+      letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 0;
+    }
+    .hero-title .titulo-maratu {
       font-family: 'Jack', sans-serif;
-      font-size: clamp(5rem, 13vw, 13rem);
-      color: var(--preto); display: block; line-height: 0.88; letter-spacing: 0;
+      font-size: clamp(4.5rem, 11vw, 11rem);
+      color: var(--preto); display: block; line-height: 0.85; letter-spacing: 0;
     }
     .hero-desc { font-size: 0.9rem; color: rgba(13,13,11,0.55); max-width: 420px; line-height: 1.6; }
 
@@ -396,11 +407,14 @@
   </nav>
 
   <section class="hero">
+    <div class="hero-bg-color"></div>
+    <div class="hero-bg-img"></div>
     <div class="hero-grid"></div>
     <div class="hero-content">
       <p class="hero-tag">MARATU — Aracaju, SE</p>
       <span class="hero-title">
-        <span class="titulo-loja">LOJA</span>
+        <span class="titulo-feira">Loja</span>
+        <span class="titulo-maratu">MARATU</span>
       </span>
       <p class="hero-desc">Posteres, adesivos e peças exclusivas feitas em Aracaju. Do arquivo ao objeto, assinado pela MARATU.</p>
     </div>

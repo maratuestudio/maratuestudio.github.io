@@ -219,13 +219,13 @@
     /* ═══════════════════════════════════
        POLÍTICA
     ═══════════════════════════════════ */
-    .politica { padding: 48px 48px; border-top: 1px solid rgba(240,236,228,0.08); }
-    .politica-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-top: 28px; }
-    .pol-item { padding: 18px 20px 22px; border: 1px solid rgba(240,236,228,0.06); background: rgba(240,236,228,0.02); }
-    .pol-icon { font-size: 1rem; margin-bottom: 8px; display: block; }
-    .pol-titulo { font-family: 'Clother', sans-serif; font-weight: 900; font-size: 0.85rem; color: var(--areia); text-transform: uppercase; margin-bottom: 6px; }
-    .pol-texto { font-size: 0.75rem; line-height: 1.6; color: rgba(240,236,228,0.4); }
-    .pol-texto strong { color: rgba(240,236,228,0.6); font-weight: 700; }
+    .politica { padding: 80px 48px; border-top: 1px solid rgba(240,236,228,0.08); }
+    .politica-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-top: 48px; }
+    .pol-item { padding: 28px 28px 32px; border: 1px solid rgba(240,236,228,0.06); background: rgba(240,236,228,0.02); }
+    .pol-icon { font-size: 1.4rem; margin-bottom: 14px; display: block; }
+    .pol-titulo { font-family: 'Clother', sans-serif; font-weight: 900; font-size: 1rem; color: var(--areia); text-transform: uppercase; margin-bottom: 10px; }
+    .pol-texto { font-size: 0.85rem; line-height: 1.7; color: rgba(240,236,228,0.45); }
+    .pol-texto strong { color: rgba(240,236,228,0.7); font-weight: 700; }
 
     /* ═══════════════════════════════════
        FOOTER
@@ -335,10 +335,10 @@
     </div>
   </div>
 
-  <!-- ④ ORIGEM — split foto estatuas | azul -->
+  <!-- ④ ORIGEM — split foto | azul -->
   <div class="split foto-esquerda">
     <div class="split-foto">
-      <img src="bg-estatuas.jpg" alt="Estatuas de Aracaju">
+      <img src="mangue.jpg" alt="Mangue de Sergipe">
     </div>
     <div class="split-texto bg-azul" id="origem">
       <p class="lbl">002 — ORIGEM</p>
@@ -348,8 +348,10 @@
     </div>
   </div>
 
-  <!-- ⑤ O QUE FAZEMOS — laranja sólido -->
+  <!-- ⑤ O QUE FAZEMOS — laranja + foto de fundo -->
   <div class="solido" style="background:var(--laranja);">
+    <div class="solido-bg" style="background-image: url('bg-estatuas.jpg');"></div>
+    <div class="solido-overlay" style="background: rgba(200,80,26,0.85);"></div>
     <div class="solido-content">
       <p class="lbl" style="color:rgba(13,13,11,0.45);">O que fazemos</p>
       <p class="fazemos-titulo">Impressão 3D, Design e <span>ARTE</span></p>
@@ -435,14 +437,15 @@
       </div>
     </div>
     <div class="split-foto">
-      <img src="mangue.jpg" alt="Mangue de Sergipe">
+      <img src="bg-estatuas.jpg" alt="Aracaju">
     </div>
   </div>
 
   <!-- POLÍTICA -->
   <section class="politica" id="politica">
-    <p class="lbl" style="color:var(--laranja);margin-bottom:8px;">006 — POLITICA</p>
-    <span style="font-family:'Clother',sans-serif;font-weight:700;font-size:clamp(1.2rem,2.5vw,2rem);color:var(--areia);">Troca e <span style="color:var(--laranja);">Devolucao</span></span>
+    <p class="lbl" style="color:var(--laranja);">006 — POLITICA</p>
+    <span class="t1" style="color:var(--areia);display:block;margin-bottom:4px;">Troca e</span>
+    <span class="t2" style="color:var(--laranja);display:block;margin-bottom:0;">Devolucao</span>
     <div class="politica-grid">
       <div class="pol-item">
         <span class="pol-icon">↩</span>

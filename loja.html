@@ -4,6 +4,25 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Feira MARATU — Posteres, Adesivos e mais</title>
+  <meta name="description" content="Pôsteres autorais, adesivos e peças exclusivas da MARATU Estúdio. Arte com identidade sergipana, feita em Aracaju.">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="apple-touch-icon" href="favicon.png">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://maratu.com.br/loja.html">
+  <meta property="og:title" content="Feira MARATU — Posteres, Adesivos e mais">
+  <meta property="og:description" content="Pôsteres autorais, adesivos e peças exclusivas da MARATU Estúdio. Arte com identidade sergipana, feita em Aracaju.">
+  <meta property="og:image" content="https://maratu.com.br/og-image.png">
+  <meta property="og:locale" content="pt_BR">
+
+  <!-- Twitter/X Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Feira MARATU — Posteres, Adesivos e mais">
+  <meta name="twitter:description" content="Pôsteres autorais, adesivos e peças exclusivas da MARATU Estúdio.">
+  <meta name="twitter:image" content="https://maratu.com.br/og-image.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
@@ -244,6 +263,11 @@
       text-decoration: line-through; align-self: center; letter-spacing: 0;
     }
     .produto-preco.indisponivel { font-size: 0.9rem; color: rgba(240,236,228,0.2); letter-spacing: 0.08em; }
+    .produto-dim {
+      font-family: 'Space Mono', monospace; font-size: 0.48rem;
+      color: rgba(240,236,228,0.22); letter-spacing: 0.08em;
+      align-self: center; white-space: nowrap; padding: 0 6px;
+    }
 
     .btn-encomendar {
       background: var(--laranja); border: none; border-left: 1px solid rgba(240,236,228,0.06);
@@ -447,6 +471,7 @@
       <p class="wa-title">Como funciona a encomenda</p>
       <p class="wa-desc">Clique em "Encomendar" e voce vai direto pro WhatsApp com a mensagem ja preenchida. A gente confirma disponibilidade, prazo e frete.</p>
       <span class="wa-msg-preview">Ola! Tenho interesse: Por do Sol - A3 - R$ 80</span>
+      <p style="font-size:0.7rem;color:rgba(240,236,228,0.3);margin-top:10px;">Duvidas sobre troca ou devolucao? <a href="index.html#politica" style="color:rgba(240,236,228,0.5);text-decoration:underline;">Veja nossa politica</a>.</p>
     </div>
   </div>
 
@@ -467,6 +492,7 @@
 
   <script>
     var PRECOS_BASE = { 'A4': 50, 'A3': 80, 'A2': 120, 'A1': 180 };
+    var DIMS = { 'A4': '21 × 29,7 cm', 'A3': '29,7 × 42 cm', 'A2': '42 × 59,4 cm', 'A1': '59,4 × 84,1 cm' };
 
     function calcPreco(base, desconto) {
       return desconto ? Math.round(base * 0.8) : base;
@@ -536,6 +562,7 @@
           '<span class="cifrao">R$</span><span id="val-' + p.id + '">' + precoInicial + '</span>' +
           '<span id="orig-' + p.id + '">' + precoOriginalHtml + '</span>' +
           '</p>' +
+          '<span class="produto-dim" id="dim-' + p.id + '">' + DIMS['A4'] + '</span>' +
           '<a href="#" id="btn-' + p.id + '" class="btn-encomendar" target="_blank" rel="noopener">Encomendar ↗</a>' +
           '</div>';
         grid.appendChild(card);
@@ -551,6 +578,8 @@
       btn.classList.add('selected');
       var preco = calcPreco(PRECOS_BASE[tam], poster.desconto);
       document.getElementById('val-' + pid).textContent = preco;
+      var dimEl = document.getElementById('dim-' + pid);
+      if (dimEl) dimEl.textContent = DIMS[tam];
       var origEl = document.getElementById('orig-' + pid);
       if (origEl) {
         origEl.innerHTML = poster.desconto

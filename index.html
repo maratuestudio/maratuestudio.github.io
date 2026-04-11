@@ -4,6 +4,25 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MARATU Estúdio — Impressão 3D · Design · Arte</title>
+  <meta name="description" content="Estúdio criativo de Aracaju especializado em impressão 3D, design e arte. Pôsteres, adesivos e peças exclusivas com identidade sergipana.">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="apple-touch-icon" href="favicon.png">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://maratu.com.br/">
+  <meta property="og:title" content="MARATU Estúdio — Impressão 3D · Design · Arte">
+  <meta property="og:description" content="Estúdio criativo de Aracaju especializado em impressão 3D, design e arte. Pôsteres, adesivos e peças exclusivas com identidade sergipana.">
+  <meta property="og:image" content="https://maratu.com.br/og-image.png">
+  <meta property="og:locale" content="pt_BR">
+
+  <!-- Twitter/X Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="MARATU Estúdio — Impressão 3D · Design · Arte">
+  <meta name="twitter:description" content="Estúdio criativo de Aracaju especializado em impressão 3D, design e arte.">
+  <meta name="twitter:image" content="https://maratu.com.br/og-image.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
@@ -307,6 +326,15 @@
       padding: 8px 0; display: none;
     }
 
+    /* ── POLÍTICA ── */
+    .politica { padding: 80px 40px; border-top: 1px solid rgba(240,236,228,0.08); }
+    .politica-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-top: 48px; }
+    .politica-item { padding: 28px 28px 32px; border: 1px solid rgba(240,236,228,0.06); background: rgba(240,236,228,0.02); }
+    .politica-icon { font-size: 1.4rem; margin-bottom: 14px; display: block; }
+    .politica-titulo { font-family: 'Clother', sans-serif; font-weight: 900; font-size: 1rem; color: var(--areia); text-transform: uppercase; margin-bottom: 10px; }
+    .politica-texto { font-size: 0.85rem; line-height: 1.7; color: rgba(240,236,228,0.45); }
+    .politica-texto strong { color: rgba(240,236,228,0.7); font-weight: 700; }
+
     /* ── FOOTER ── */
     footer { padding: 40px; border-top: 1px solid rgba(240,236,228,0.08); display: flex; justify-content: space-between; align-items: center; }
     .footer-logo img { height: 40px; width: 40px; border-radius: 50%; mix-blend-mode: screen; }
@@ -344,6 +372,8 @@
       .nl-card-btn { width: 100%; padding: 14px 20px; }
       .contato-link { padding: 22px 20px; min-height: 76px; }
       .link-label { font-size: 1.05rem; }
+      .politica { padding: 60px 24px; }
+      .politica-grid { grid-template-columns: 1fr; }
       footer { flex-direction: column; gap: 16px; align-items: flex-start; padding: 32px 24px; }
       .footer-info { text-align: left; }
     }
@@ -525,6 +555,29 @@
           <button type="submit" class="nl-card-btn">Assinar ↗</button>
         </form>
         <p class="nl-card-success" id="nl-contato-success">Inscrito! Bem-vindo à MARATU.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- POLÍTICA DE TROCA E DEVOLUÇÃO -->
+  <section class="politica" id="politica">
+    <p class="section-number">006 — POLÍTICA</p>
+    <h2 class="sobre-title">Troca e<br><span class="destaque">Devolução</span></h2>
+    <div class="politica-grid">
+      <div class="politica-item">
+        <span class="politica-icon">↩</span>
+        <p class="politica-titulo">Produto com defeito</p>
+        <p class="politica-texto">Se o produto chegou com defeito de fabricação ou foi danificado no transporte, entre em contato pelo WhatsApp em até <strong>7 dias corridos</strong> após o recebimento. Vamos resolver com troca ou reembolso integral, sem custo pra você.</p>
+      </div>
+      <div class="politica-item">
+        <span class="politica-icon">↔</span>
+        <p class="politica-titulo">Troca de tamanho ou modelo</p>
+        <p class="politica-texto">Pedidos de pôsteres são produzidos sob encomenda, então <strong>não aceitamos troca por arrependimento</strong> de tamanho ou modelo. Escolha com atenção antes de encomendar. Em caso de dúvida, fale com a gente antes de pedir.</p>
+      </div>
+      <div class="politica-item">
+        <span class="politica-icon">◎</span>
+        <p class="politica-titulo">Como entrar em contato</p>
+        <p class="politica-texto">Toda solicitação de troca ou devolução deve ser feita pelo <strong>WhatsApp</strong>, com foto do produto e número do pedido. Respondemos em até 48 horas úteis. Nosso objetivo é que você fique satisfeito com cada peça.</p>
       </div>
     </div>
   </section>

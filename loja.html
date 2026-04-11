@@ -84,7 +84,7 @@
     .hero-bg-color { position: absolute; inset: 0; background: var(--laranja); }
     .hero-bg-img {
       position: absolute; inset: 0;
-      background: url('foto-aracaju.jpg') center center / cover no-repeat; opacity: 0.14;
+      background: url('foto-aracaju.jpg') center center / cover no-repeat; opacity: 0;
     }
     .hero-grid {
       position: absolute; inset: 0;
@@ -107,12 +107,12 @@
       font-family: 'Clother', sans-serif; font-weight: 700;
       font-size: clamp(0.9rem, 2vw, 1.4rem);
       color: rgba(240,236,228,0.55); display: block;
-      letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 2px;
+      letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 2px;
     }
     .hero-title .titulo-maratu {
       font-family: 'Jack', sans-serif;
-      font-size: clamp(3.5rem, 9vw, 9rem);
-      color: var(--areia); display: block; line-height: 0.88;
+      font-size: clamp(4.5rem, 11vw, 11rem);
+      color: var(--areia); display: block; line-height: 0.88; letter-spacing: 0;
     }
     .hero-desc { font-size: 0.9rem; color: rgba(240,236,228,0.55); max-width: 420px; line-height: 1.6; }
 
@@ -241,15 +241,14 @@
     /* SELETOR TAMANHO */
     .tamanho-selector { padding: 10px 14px 12px; display: flex; gap: 5px; flex-wrap: wrap; }
     .tam-btn {
-      font-family: 'Space Mono', monospace; font-size: 0.48rem; letter-spacing: 0.1em;
+      font-family: 'Space Mono', monospace; font-size: 0.42rem; letter-spacing: 0.06em;
       text-transform: uppercase; background: rgba(240,236,228,0.04);
       border: 1px solid rgba(240,236,228,0.1); color: rgba(240,236,228,0.4);
-      padding: 6px 10px; cursor: pointer; transition: all 0.15s; border-radius: 0 5px 0 0;
-      min-height: 44px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
-      -webkit-tap-highlight-color: transparent;
+      padding: 4px 6px; cursor: pointer; transition: all 0.15s; border-radius: 0 5px 0 0;
+      min-height: 28px; display: flex; align-items: center; justify-content: center;
+      -webkit-tap-highlight-color: transparent; flex: 1;
     }
-    .tam-btn .tam-nome { font-size: 0.52rem; font-weight: 700; line-height: 1; }
-    .tam-btn .tam-dim { font-size: 0.38rem; opacity: 0.5; line-height: 1; letter-spacing: 0.05em; }
+    .tam-btn .tam-nome { font-size: 0.46rem; font-weight: 700; line-height: 1; }
     .tam-btn:hover { border-color: rgba(200,80,26,0.4); color: var(--areia); }
     .tam-btn.selected { background: rgba(200,80,26,0.15); border-color: var(--laranja); color: var(--laranja); }
 
@@ -410,8 +409,8 @@
     <div class="hero-content">
       <p class="hero-tag">MARATU — Aracaju, SE</p>
       <span class="hero-title">
-        <span class="titulo-feira">feira</span>
-        <span class="titulo-maratu">MARATU</span>
+        <span class="titulo-feira">Feira</span>
+        <span class="titulo-maratu">LOJA</span>
       </span>
       <p class="hero-desc">Posteres, adesivos e pecas exclusivas feitas em Aracaju. Do arquivo ao objeto, assinado pela MARATU.</p>
     </div>
@@ -438,6 +437,8 @@
       <button class="filtro-btn active" onclick="filtrar(this,'todos')">Todos <span class="filtro-count">12</span></button>
       <button class="filtro-btn" onclick="filtrar(this,'posteres')">Posteres <span class="filtro-count">10</span></button>
       <button class="filtro-btn" onclick="filtrar(this,'use-maratu')">USE MARATU <span class="filtro-count">2</span></button>
+      <button class="filtro-btn" onclick="filtrarColecao(this,'Origens')">Origens <span class="filtro-count">5</span></button>
+      <button class="filtro-btn" onclick="filtrarColecao(this,'MangueHaus')">MangueHaus <span class="filtro-count">6</span></button>
     </div>
   </div>
 
@@ -622,6 +623,7 @@
       POSTERES.forEach(function(p) {
         var card = document.createElement('div');
         card.className = 'produto-card' + (p.destaque ? ' destaque' : '');
+        card.dataset.colecao = p.colecao;
         var badgeDesconto = p.desconto ? '<span class="badge-desconto">-20%</span>' : '';
         var precoInicial = calcPreco(PRECOS_BASE['A4'], p.desconto);
         var precoOriginalHtml = p.desconto
@@ -692,6 +694,21 @@
       btn.classList.add('active');
       document.querySelectorAll('.categoria').forEach(function(c) {
         c.classList.toggle('oculta', cat !== 'todos' && c.dataset.categoria !== cat);
+      });
+      // show all cards dentro das categorias visiveis
+      document.querySelectorAll('.produto-card').forEach(function(c) { c.style.display = ''; });
+    }
+
+    function filtrarColecao(btn, colecao) {
+      document.querySelectorAll('.filtro-btn').forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      // mostrar categoria posteres, esconder use-maratu
+      document.querySelectorAll('.categoria').forEach(function(c) {
+        c.classList.toggle('oculta', c.dataset.categoria === 'use-maratu');
+      });
+      // filtrar cards por colecao
+      document.querySelectorAll('#grid-posteres .produto-card').forEach(function(c) {
+        c.style.display = c.dataset.colecao === colecao ? '' : 'none';
       });
     }
 

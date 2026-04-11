@@ -175,17 +175,22 @@
     .solido-content { position: relative; z-index: 2; }
 
     /* ═══════════════════════════════════
-       ⑤ O QUE FAZEMOS — laranja + cards
+       ⑤ O QUE FAZEMOS — laranja + cards lado a lado
     ═══════════════════════════════════ */
     .fazemos-titulo { font-family: 'Clother', sans-serif; font-weight: 700; font-size: clamp(1rem, 2vw, 1.4rem); color: var(--preto); margin-bottom: 24px; }
     .fazemos-titulo span { font-family: 'Jack', sans-serif; color: var(--preto); }
-    .cards-col { display: flex; flex-direction: column; gap: 2px; }
-    .card-item { background: rgba(13,13,11,0.18); padding: 20px 24px; display: flex; align-items: center; gap: 20px; border: 1px solid rgba(13,13,11,0.15); border-radius: 0 10px 0 0; transition: background 0.2s; }
+    .cards-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+    .card-item { background: rgba(13,13,11,0.18); padding: 20px 20px 24px; display: flex; flex-direction: column; gap: 14px; border: 1px solid rgba(13,13,11,0.15); border-radius: 0 10px 0 0; transition: background 0.2s; }
     .card-item:hover { background: rgba(13,13,11,0.28); }
-    .card-img { width: 72px; height: 72px; object-fit: cover; flex-shrink: 0; border-radius: 0 6px 0 0; }
-    .card-num { font-family: 'Space Mono', monospace; font-size: 0.48rem; color: rgba(13,13,11,0.5); letter-spacing: 0.2em; margin-bottom: 5px; }
+    .card-img { width: 100%; height: 140px; object-fit: cover; border-radius: 0 6px 0 0; display: block; }
+    .card-num { font-family: 'Space Mono', monospace; font-size: 0.48rem; color: rgba(13,13,11,0.5); letter-spacing: 0.2em; margin-bottom: 4px; }
     .card-nome { font-family: 'Clother', sans-serif; font-weight: 900; font-size: 1rem; color: var(--preto); text-transform: uppercase; margin-bottom: 3px; }
     .card-desc-txt { font-size: 0.78rem; color: rgba(13,13,11,0.65); line-height: 1.5; }
+
+    /* Slideshow feira */
+    .slideshow { position: relative; overflow: hidden; width: 100%; height: 100%; }
+    .slideshow-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.8s ease; }
+    .slideshow-img.ativo { opacity: 1; }
 
     /* ═══════════════════════════════════
        ⑥ CONTATO — split preto | foto
@@ -267,8 +272,9 @@
       .split-texto { padding: 44px 28px; }
       .hero { padding: 80px 24px 52px; }
       .solido { padding: 56px 24px; }
-      .politica { padding: 60px 24px; }
+      .politica { padding: 40px 24px; }
       .politica-grid { grid-template-columns: 1fr; }
+      .cards-row { grid-template-columns: 1fr; }
       footer { flex-direction: column; gap: 16px; align-items: flex-start; padding: 28px 24px; }
       .footer-info { text-align: left; }
       nav { padding: max(env(safe-area-inset-top), 14px) 20px 14px; }
@@ -304,9 +310,7 @@
     </div>
   </section>
 
-  <div class="div-laranja"></div>
-
-  <!-- ② FEIRA — split laranja | foto -->
+  <!-- ② FEIRA — split laranja | slideshow produtos -->
   <div class="split foto-direita">
     <div class="split-texto bg-laranja">
       <p class="lbl">Nossa loja — aberta agora</p>
@@ -319,7 +323,14 @@
       </a>
     </div>
     <div class="split-foto">
-      <img src="foto-atalaia.jpg" alt="Praia de Atalaia, Aracaju">
+      <div class="slideshow" id="feira-slideshow">
+        <img class="slideshow-img ativo" src="poster-pordosol.png" alt="Por do Sol">
+        <img class="slideshow-img" src="poster-atalaia.png" alt="Sol de Atalaia">
+        <img class="slideshow-img" src="poster-origens.png" alt="Origens">
+        <img class="slideshow-img" src="poster-destrua.png" alt="Destrua o Imperio">
+        <img class="slideshow-img" src="poster-linguagem.png" alt="Linguagem">
+        <img class="slideshow-img" src="adesivos-origens.png" alt="Adesivos Origens">
+      </div>
     </div>
   </div>
 
@@ -348,12 +359,12 @@
     </div>
   </div>
 
-  <!-- ⑤ O QUE FAZEMOS — laranja sólido -->
+  <!-- ⑤ O QUE FAZEMOS — laranja sólido, cards lado a lado -->
   <div class="solido" style="background:var(--laranja);">
     <div class="solido-content">
       <p class="lbl" style="color:rgba(13,13,11,0.45);">O que fazemos</p>
       <p class="fazemos-titulo">Impressão 3D, Design e <span>ARTE</span></p>
-      <div class="cards-col">
+      <div class="cards-row">
         <div class="card-item">
           <img src="img-3d.png" class="card-img" alt="Impressão 3D">
           <div>
@@ -442,7 +453,7 @@
   <!-- POLÍTICA -->
   <section class="politica" id="politica">
     <p class="lbl" style="color:var(--laranja);margin-bottom:8px;">006 — POLITICA</p>
-    <span style="font-family:'Clother',sans-serif;font-weight:700;font-size:clamp(1.2rem,2.5vw,2rem);color:var(--areia);">Troca e <span style="color:var(--laranja);">Devolucao</span></span>
+    <span style="font-family:'Clother',sans-serif;font-weight:700;font-size:clamp(1.2rem,2.5vw,2rem);color:var(--areia);">Troca e <span style="color:var(--laranja);">Devolução</span></span>
     <div class="politica-grid">
       <div class="pol-item">
         <span class="pol-icon">↩</span>
@@ -536,6 +547,14 @@
           }).catch(function() { sectionForm.submit(); });
         });
       }
+      // SLIDESHOW FEIRA
+      var slides = document.querySelectorAll('#feira-slideshow .slideshow-img');
+      var atual = 0;
+      setInterval(function() {
+        slides[atual].classList.remove('ativo');
+        atual = (atual + 1) % slides.length;
+        slides[atual].classList.add('ativo');
+      }, 2000);
     })();
   </script>
 

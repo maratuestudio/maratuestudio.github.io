@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Feira MARATU — Pôsteres, Adesivos e mais</title>
+  <title>Feira MARATU — Posteres, Adesivos e mais</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
@@ -36,36 +36,36 @@
     nav {
       position: fixed; top: 0; left: 0; right: 0; z-index: 100;
       display: flex; justify-content: space-between; align-items: center;
-      padding: max(env(safe-area-inset-top), 20px) 40px 20px;
+      padding: max(env(safe-area-inset-top), 16px) 24px 16px;
     }
     nav::before {
       content: ''; position: absolute; inset: 0;
       background: linear-gradient(to bottom, rgba(13,13,11,0.97) 0%, transparent 100%);
       pointer-events: none;
     }
-    .nav-left { display: flex; align-items: center; gap: 20px; position: relative; }
+    .nav-left { display: flex; align-items: center; gap: 16px; position: relative; }
     .nav-logo { text-decoration: none; }
-    .nav-logo img { height: 40px; width: 40px; border-radius: 50%; mix-blend-mode: screen; }
-    .nav-sep { width: 1px; height: 20px; background: rgba(240,236,228,0.15); }
-    .nav-breadcrumb { font-family: 'Space Mono', monospace; font-size: 0.6rem; color: rgba(240,236,228,0.35); letter-spacing: 0.15em; text-transform: uppercase; }
+    .nav-logo img { height: 36px; width: 36px; border-radius: 50%; mix-blend-mode: screen; }
+    .nav-sep { width: 1px; height: 18px; background: rgba(240,236,228,0.15); }
+    .nav-breadcrumb { font-family: 'Space Mono', monospace; font-size: 0.55rem; color: rgba(240,236,228,0.35); letter-spacing: 0.12em; text-transform: uppercase; }
     .nav-breadcrumb span { color: var(--laranja); }
     .nav-back {
-      position: relative; font-family: 'Space Mono', monospace; font-size: 0.6rem;
-      letter-spacing: 0.15em; text-transform: uppercase; color: rgba(240,236,228,0.5);
-      text-decoration: none; border: 1px solid rgba(240,236,228,0.12); padding: 8px 16px;
-      transition: all 0.2s ease; border-radius: 0 8px 0 0;
+      position: relative; font-family: 'Space Mono', monospace; font-size: 0.55rem;
+      letter-spacing: 0.1em; text-transform: uppercase; color: rgba(240,236,228,0.5);
+      text-decoration: none; border: 1px solid rgba(240,236,228,0.12); padding: 7px 14px;
+      transition: all 0.2s ease; border-radius: 0 8px 0 0; white-space: nowrap;
     }
     .nav-back:hover { color: var(--areia); border-color: rgba(240,236,228,0.3); }
 
     /* HERO */
     .hero {
-      min-height: 52vh; display: flex; flex-direction: column; justify-content: flex-end;
-      padding: 100px 40px 56px; position: relative; overflow: hidden;
+      min-height: 50vh; display: flex; flex-direction: column; justify-content: flex-end;
+      padding: 90px 24px 48px; position: relative; overflow: hidden;
     }
     .hero-bg-color { position: absolute; inset: 0; background: var(--laranja); }
     .hero-bg-img {
       position: absolute; inset: 0;
-      background: url('mangue.jpg') center center / cover no-repeat; opacity: 0.12;
+      background: url('foto-aracaju.jpg') center center / cover no-repeat; opacity: 0.14;
     }
     .hero-grid {
       position: absolute; inset: 0;
@@ -78,26 +78,55 @@
     }
     .hero-content { position: relative; z-index: 2; }
     .hero-tag {
-      font-family: 'Space Mono', monospace; font-size: 0.62rem;
-      color: rgba(240,236,228,0.45); letter-spacing: 0.22em; text-transform: uppercase;
-      margin-bottom: 18px; display: flex; align-items: center; gap: 12px;
+      font-family: 'Space Mono', monospace; font-size: 0.58rem;
+      color: rgba(240,236,228,0.45); letter-spacing: 0.18em; text-transform: uppercase;
+      margin-bottom: 12px; display: flex; align-items: center; gap: 10px;
     }
-    .hero-tag::before { content: ''; display: block; width: 36px; height: 1px; background: rgba(240,236,228,0.3); }
-    .hero-title {
-      display: block; margin-bottom: 20px; line-height: 0.85;
-    }
+    .hero-tag::before { content: ''; display: block; width: 28px; height: 1px; background: rgba(240,236,228,0.3); }
+    .hero-title { display: block; margin-bottom: 16px; line-height: 0.85; }
     .hero-title .titulo-feira {
-      font-family: 'Clother', sans-serif; font-weight: 400;
-      font-size: clamp(1rem, 2.5vw, 1.8rem);
+      font-family: 'Clother', sans-serif; font-weight: 700;
+      font-size: clamp(0.9rem, 2vw, 1.4rem);
       color: rgba(240,236,228,0.55); display: block;
-      letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 4px;
+      letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 2px;
     }
     .hero-title .titulo-maratu {
       font-family: 'Jack', sans-serif;
-      font-size: clamp(4rem, 10vw, 10rem);
+      font-size: clamp(3.5rem, 9vw, 9rem);
       color: var(--areia); display: block; line-height: 0.88;
     }
-    .hero-desc { font-size: 1rem; color: rgba(240,236,228,0.55); max-width: 480px; line-height: 1.7; }
+    .hero-desc { font-size: 0.9rem; color: rgba(240,236,228,0.55); max-width: 420px; line-height: 1.6; }
+
+    /* COLECOES */
+    .loja-colecoes { padding: 48px 24px 0; display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
+    .loja-colecao-card {
+      padding: 28px 28px 52px; border: 1px solid rgba(240,236,228,0.06);
+      background: rgba(240,236,228,0.02); position: relative; overflow: hidden;
+      text-decoration: none; display: block; transition: border-color 0.3s;
+    }
+    .loja-colecao-card:hover { border-color: rgba(200,80,26,0.3); }
+    .loja-colecao-tag {
+      font-family: 'Space Mono', monospace; font-size: 0.55rem; color: var(--laranja);
+      letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 14px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .loja-colecao-tag::before { content: ''; display: block; width: 16px; height: 1px; background: var(--laranja); }
+    .loja-colecao-nome {
+      font-family: 'Clother', sans-serif; font-weight: 900;
+      font-size: clamp(1.4rem, 2.5vw, 2.6rem); color: var(--areia);
+      text-transform: uppercase; line-height: 1; margin-bottom: 12px;
+    }
+    .loja-colecao-desc { font-size: 0.82rem; line-height: 1.7; color: rgba(240,236,228,0.4); }
+    .loja-colecao-badge {
+      position: absolute; bottom: 20px; right: 22px;
+      font-family: 'Space Mono', monospace; font-size: 0.5rem; color: var(--laranja);
+      letter-spacing: 0.15em; text-transform: uppercase;
+      border: 1px solid rgba(200,80,26,0.3); padding: 4px 8px; transition: all 0.3s;
+    }
+    .loja-colecao-card:hover .loja-colecao-badge { background: var(--laranja); color: var(--preto); }
+
+    /* ESPACO entre colecoes e filtros */
+    .filtros-wrapper { margin-top: 40px; }
 
     /* FILTROS */
     .filtros {
@@ -106,209 +135,181 @@
       overflow-x: auto; -webkit-overflow-scrolling: touch;
     }
     .filtro-btn {
-      font-family: 'Space Mono', monospace; font-size: 0.6rem; letter-spacing: 0.18em;
+      font-family: 'Space Mono', monospace; font-size: 0.58rem; letter-spacing: 0.14em;
       text-transform: uppercase; color: rgba(240,236,228,0.3);
       background: none; border: none; border-right: 1px solid rgba(240,236,228,0.06);
-      padding: 18px 28px; cursor: pointer; white-space: nowrap;
-      transition: all 0.2s; display: flex; align-items: center; gap: 8px;
+      padding: 16px 22px; cursor: pointer; white-space: nowrap;
+      transition: all 0.2s; display: flex; align-items: center; gap: 7px;
+      -webkit-tap-highlight-color: transparent;
     }
     .filtro-btn:last-child { border-right: none; }
     .filtro-btn.active { color: var(--preto); background: var(--laranja); }
     .filtro-btn:hover:not(.active) { color: var(--areia); background: rgba(240,236,228,0.04); }
-    .filtro-count { font-size: 0.5rem; background: rgba(240,236,228,0.1); color: rgba(240,236,228,0.4); padding: 2px 6px; border-radius: 0 4px 0 0; }
+    .filtro-count { font-size: 0.48rem; background: rgba(240,236,228,0.1); color: rgba(240,236,228,0.4); padding: 2px 5px; border-radius: 0 4px 0 0; }
     .filtro-btn.active .filtro-count { background: rgba(13,13,11,0.2); color: var(--preto); }
 
     /* CATEGORIA */
-    .categoria { padding: 64px 40px; border-bottom: 1px solid rgba(240,236,228,0.06); }
+    .categoria { padding: 48px 24px; border-bottom: 1px solid rgba(240,236,228,0.06); }
     .categoria:last-of-type { border-bottom: none; }
     .cat-header {
       display: flex; align-items: flex-end; justify-content: space-between;
-      margin-bottom: 36px; padding-bottom: 24px; border-bottom: 1px solid rgba(240,236,228,0.08);
+      margin-bottom: 28px; padding-bottom: 20px; border-bottom: 1px solid rgba(240,236,228,0.08);
+      flex-wrap: wrap; gap: 8px;
     }
-    .cat-num { font-family: 'Space Mono', monospace; font-size: 0.6rem; color: rgba(240,236,228,0.2); letter-spacing: 0.2em; margin-bottom: 8px; }
-    .cat-nome { font-family: 'Clother', sans-serif; font-weight: 900; font-size: clamp(2rem, 4vw, 3.6rem); text-transform: uppercase; line-height: 0.9; }
+    .cat-num { font-family: 'Space Mono', monospace; font-size: 0.55rem; color: rgba(240,236,228,0.2); letter-spacing: 0.18em; margin-bottom: 6px; }
+    .cat-nome { font-family: 'Clother', sans-serif; font-weight: 900; font-size: clamp(1.8rem, 4vw, 3.2rem); text-transform: uppercase; line-height: 0.9; }
     .cat-nome.laranja { color: var(--laranja); }
     .cat-nome.azul { color: var(--azul-atalaia); }
-    .cat-total { font-family: 'Space Mono', monospace; font-size: 0.58rem; color: rgba(240,236,228,0.2); letter-spacing: 0.15em; text-transform: uppercase; }
+    .cat-total { font-family: 'Space Mono', monospace; font-size: 0.55rem; color: rgba(240,236,228,0.2); letter-spacing: 0.12em; text-transform: uppercase; }
 
-    /* GRID PÔSTERES — 4 colunas para aproveitar mais */
-    .produtos-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; }
-    .produtos-grid.col3 { grid-template-columns: repeat(3, 1fr); }
+    /* GRID — 2 col mobile, 3 tablet, 4 desktop */
+    .produtos-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2px; }
+    .produtos-grid.col3 { grid-template-columns: repeat(2, 1fr); }
 
-    /* CARD PÔSTER */
+    /* BADGE COLECAO */
+    .badge-colecao {
+      position: absolute; top: 12px; right: 12px; z-index: 3;
+      font-family: 'Space Mono', monospace; font-size: 0.42rem;
+      letter-spacing: 0.12em; text-transform: uppercase; padding: 3px 6px;
+      font-weight: 700; border-radius: 0 5px 0 0;
+      background: var(--azul-atalaia); color: #fff;
+    }
+    .badge-colecao.mangue { background: var(--azul-sergipe); }
+
+    /* CARD */
     .produto-card { background: rgba(240,236,228,0.025); border: 1px solid rgba(240,236,228,0.07); overflow: hidden; display: flex; flex-direction: column; transition: border-color 0.3s; }
-    .produto-card:hover { border-color: rgba(200,80,26,0.3); }
+    .produto-card:hover { border-color: rgba(200,80,26,0.25); }
+    .produto-card.destaque { border-color: rgba(200,80,26,0.2); }
 
     .produto-img {
       position: relative; overflow: hidden;
       border-bottom: 1px solid rgba(240,236,228,0.06);
       border-radius: 0 14px 0 0;
-      aspect-ratio: 3/4;
-      background: #1a1a18; cursor: zoom-in;
+      aspect-ratio: 3/4; background: #1a1a18; cursor: zoom-in;
     }
     .produto-img .img-poster {
       position: absolute; inset: 0; width: 100%; height: 100%;
-      object-fit: cover; display: block;
-      transition: opacity 0.5s ease;
-      opacity: 1;
+      object-fit: cover; display: block; transition: opacity 0.5s ease; opacity: 1;
     }
     .produto-img .img-mockup {
       position: absolute; inset: 0; width: 100%; height: 100%;
-      object-fit: cover; display: block;
-      transition: opacity 0.5s ease;
-      opacity: 0;
+      object-fit: cover; display: block; transition: opacity 0.5s ease; opacity: 0;
     }
     .produto-img:hover .img-poster { opacity: 0; }
     .produto-img:hover .img-mockup { opacity: 1; }
-    .produto-img.cor-laranja { background: var(--laranja); }
-    .produto-img.cor-azul { background: var(--azul-sergipe); }
-    .produto-img.cor-atalaia { background: var(--azul-atalaia); }
-    .produto-img.cor-dourado { background: var(--dourado); }
 
     .produto-badge {
       position: absolute; top: 12px; left: 12px; z-index: 2;
-      font-family: 'Space Mono', monospace; font-size: 0.5rem;
-      letter-spacing: 0.16em; text-transform: uppercase; padding: 4px 8px;
-      font-weight: 700; border-radius: 0 6px 0 0;
+      font-family: 'Space Mono', monospace; font-size: 0.45rem;
+      letter-spacing: 0.14em; text-transform: uppercase; padding: 3px 7px;
+      font-weight: 700; border-radius: 0 5px 0 0;
     }
     .badge-novo { background: var(--dourado); color: var(--preto); }
-    .badge-breve { background: rgba(240,236,228,0.08); color: rgba(240,236,228,0.3); border: 1px solid rgba(240,236,228,0.1); }
 
-    .produto-body { padding: 16px 18px 0; flex: 1; }
-    .produto-cat { font-family: 'Space Mono', monospace; font-size: 0.5rem; color: var(--laranja); letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 6px; }
-    .produto-nome { font-family: 'Clother', sans-serif; font-weight: 900; font-size: 1rem; color: var(--areia); text-transform: uppercase; margin-bottom: 4px; line-height: 1.1; }
-    .produto-desc { font-size: 0.78rem; color: rgba(240,236,228,0.35); line-height: 1.5; }
+    .produto-body { padding: 14px 14px 0; flex: 1; }
+    .produto-cat { font-family: 'Space Mono', monospace; font-size: 0.48rem; color: var(--laranja); letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 5px; }
+    .produto-nome { font-family: 'Clother', sans-serif; font-weight: 900; font-size: 0.95rem; color: var(--areia); text-transform: uppercase; margin-bottom: 3px; line-height: 1.1; }
+    .produto-desc { font-size: 0.72rem; color: rgba(240,236,228,0.32); line-height: 1.5; }
 
-    /* SELETOR DE TAMANHO */
-    .tamanho-selector { padding: 14px 18px; display: flex; gap: 6px; flex-wrap: wrap; }
+    /* SELETOR TAMANHO */
+    .tamanho-selector { padding: 10px 14px; display: flex; gap: 5px; flex-wrap: wrap; }
     .tam-btn {
-      font-family: 'Space Mono', monospace; font-size: 0.5rem; letter-spacing: 0.12em;
+      font-family: 'Space Mono', monospace; font-size: 0.48rem; letter-spacing: 0.1em;
       text-transform: uppercase; background: rgba(240,236,228,0.04);
       border: 1px solid rgba(240,236,228,0.1); color: rgba(240,236,228,0.4);
-      padding: 5px 9px; cursor: pointer; transition: all 0.15s; border-radius: 0 5px 0 0;
+      padding: 6px 10px; cursor: pointer; transition: all 0.15s; border-radius: 0 5px 0 0;
+      min-height: 34px; display: flex; align-items: center; justify-content: center;
+      -webkit-tap-highlight-color: transparent;
     }
     .tam-btn:hover { border-color: rgba(200,80,26,0.4); color: var(--areia); }
     .tam-btn.selected { background: rgba(200,80,26,0.15); border-color: var(--laranja); color: var(--laranja); }
 
     .produto-footer { display: flex; align-items: stretch; border-top: 1px solid rgba(240,236,228,0.06); }
-    .produto-preco { padding: 12px 16px; font-family: 'Clother', sans-serif; font-weight: 900; font-size: 1.3rem; color: var(--areia); flex: 1; display: flex; align-items: center; }
-    .produto-preco .cifrao { font-size: 0.65rem; font-weight: 400; color: rgba(240,236,228,0.35); margin-right: 3px; vertical-align: super; }
-    .produto-preco.indisponivel { font-size: 1rem; color: rgba(240,236,228,0.2); letter-spacing: 0.1em; }
+    .produto-preco { padding: 12px 14px; font-family: 'Clother', sans-serif; font-weight: 900; font-size: 1.2rem; color: var(--areia); flex: 1; display: flex; align-items: center; }
+    .produto-preco .cifrao { font-size: 0.6rem; font-weight: 400; color: rgba(240,236,228,0.35); margin-right: 2px; vertical-align: super; }
+    .produto-preco.indisponivel { font-size: 0.9rem; color: rgba(240,236,228,0.2); letter-spacing: 0.08em; }
 
     .btn-encomendar {
       background: var(--laranja); border: none; border-left: 1px solid rgba(240,236,228,0.06);
       color: var(--preto); font-family: 'Clother', sans-serif; font-weight: 900;
-      font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase;
-      padding: 12px 14px; cursor: pointer; transition: all 0.2s;
-      text-decoration: none; display: flex; align-items: center; gap: 5px;
+      font-size: 0.65rem; letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 12px 12px; cursor: pointer; transition: all 0.2s;
+      text-decoration: none; display: flex; align-items: center; gap: 4px;
       border-radius: 0 12px 0 0; white-space: nowrap;
+      min-height: 48px; justify-content: center;
+      -webkit-tap-highlight-color: transparent;
     }
-    .btn-encomendar:hover { background: var(--areia); }
+    .btn-encomendar:hover, .btn-encomendar:active { background: var(--areia); }
     .btn-indisponivel {
       background: rgba(240,236,228,0.03); color: rgba(240,236,228,0.18);
-      font-family: 'Space Mono', monospace; font-size: 0.5rem; letter-spacing: 0.12em;
-      text-transform: uppercase; padding: 12px 12px; border-left: 1px solid rgba(240,236,228,0.05);
-      cursor: default; border-radius: 0 12px 0 0; display: flex; align-items: center;
+      font-family: 'Space Mono', monospace; font-size: 0.48rem; letter-spacing: 0.1em;
+      text-transform: uppercase; padding: 12px 10px; border-left: 1px solid rgba(240,236,228,0.05);
+      cursor: default; border-radius: 0 12px 0 0; display: flex; align-items: center; min-height: 48px;
     }
 
     /* WA BANNER */
     .wa-banner {
-      margin: 0 40px 64px; padding: 24px 28px;
+      margin: 0 24px 48px; padding: 20px 22px;
       background: var(--azul-sergipe); border: 1px solid rgba(46,111,196,0.3);
-      border-radius: 0 14px 0 0; display: flex; align-items: flex-start; gap: 18px;
+      border-radius: 0 14px 0 0; display: flex; align-items: flex-start; gap: 14px;
     }
-    .wa-dot { width: 10px; height: 10px; border-radius: 50%; background: #25D366; margin-top: 4px; flex-shrink: 0; }
-    .wa-title { font-family: 'Clother', sans-serif; font-weight: 700; font-size: 1rem; color: var(--areia); margin-bottom: 6px; }
-    .wa-desc { font-size: 0.85rem; color: rgba(240,236,228,0.55); line-height: 1.6; margin-bottom: 10px; }
+    .wa-dot { width: 8px; height: 8px; border-radius: 50%; background: #25D366; margin-top: 5px; flex-shrink: 0; }
+    .wa-title { font-family: 'Clother', sans-serif; font-weight: 700; font-size: 0.95rem; color: var(--areia); margin-bottom: 5px; }
+    .wa-desc { font-size: 0.8rem; color: rgba(240,236,228,0.55); line-height: 1.6; margin-bottom: 8px; }
     .wa-msg-preview {
-      display: inline-block; padding: 7px 12px;
+      display: inline-block; padding: 5px 10px;
       background: rgba(37,211,102,0.08); border: 1px solid rgba(37,211,102,0.18);
-      font-family: 'Space Mono', monospace; font-size: 0.6rem;
-      color: rgba(37,211,102,0.8); border-radius: 0 6px 0 0; line-height: 1.5;
+      font-family: 'Space Mono', monospace; font-size: 0.55rem;
+      color: rgba(37,211,102,0.8); border-radius: 0 5px 0 0; line-height: 1.5;
     }
 
     /* LIGHTBOX */
     .lightbox {
       display: none; position: fixed; inset: 0; z-index: 9999;
-      background: rgba(13,13,11,0.95); align-items: center; justify-content: center;
-      padding: 24px;
+      background: rgba(13,13,11,0.96); align-items: center; justify-content: center;
+      padding: 16px;
     }
     .lightbox.open { display: flex; }
-    .lightbox-img {
-      max-height: 88vh; max-width: 88vw; object-fit: contain;
-      border-radius: 0 16px 0 0;
-    }
+    .lightbox-img { max-height: 88vh; max-width: 92vw; object-fit: contain; border-radius: 0 14px 0 0; }
     .lightbox-close {
-      position: absolute; top: 20px; right: 24px;
+      position: absolute; top: 16px; right: 16px;
       background: none; border: 1px solid rgba(240,236,228,0.2); color: var(--areia);
-      font-family: 'Space Mono', monospace; font-size: 0.7rem; letter-spacing: 0.12em;
+      font-family: 'Space Mono', monospace; font-size: 0.65rem; letter-spacing: 0.1em;
       padding: 8px 14px; cursor: pointer; border-radius: 999px; transition: all 0.2s;
+      min-height: 40px;
     }
-    .lightbox-close:hover { background: rgba(240,236,228,0.1); }
+    .lightbox-close:hover, .lightbox-close:active { background: rgba(240,236,228,0.1); }
     .lightbox-nome {
-      position: absolute; top: 20px; left: 24px;
-      font-family: 'Clother', sans-serif; font-weight: 900; font-size: 0.85rem;
-      color: rgba(240,236,228,0.5); letter-spacing: 0.15em; text-transform: uppercase;
+      position: absolute; top: 18px; left: 18px;
+      font-family: 'Clother', sans-serif; font-weight: 900; font-size: 0.8rem;
+      color: rgba(240,236,228,0.5); letter-spacing: 0.12em; text-transform: uppercase;
     }
-
-    /* COLECOES NA LOJA */
-    .loja-colecoes {
-      padding: 56px 40px 0; display: grid; grid-template-columns: 1fr 1fr; gap: 2px;
-    }
-    .loja-colecao-card {
-      padding: 36px 36px 56px; border: 1px solid rgba(240,236,228,0.06);
-      background: rgba(240,236,228,0.02); position: relative; overflow: hidden;
-      text-decoration: none; display: block; transition: border-color 0.3s;
-    }
-    .loja-colecao-card:hover { border-color: rgba(200,80,26,0.3); }
-    .loja-colecao-tag {
-      font-family: 'Space Mono', monospace; font-size: 0.58rem; color: var(--laranja);
-      letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 18px;
-      display: flex; align-items: center; gap: 10px;
-    }
-    .loja-colecao-tag::before { content: ''; display: block; width: 20px; height: 1px; background: var(--laranja); }
-    .loja-colecao-nome {
-      font-family: 'Clother', sans-serif; font-weight: 900;
-      font-size: clamp(1.8rem, 3vw, 3.2rem); color: var(--areia);
-      text-transform: uppercase; line-height: 1; margin-bottom: 16px;
-    }
-    .loja-colecao-desc { font-size: 0.9rem; line-height: 1.75; color: rgba(240,236,228,0.45); }
-    .loja-colecao-badge {
-      position: absolute; bottom: 24px; right: 28px;
-      font-family: 'Space Mono', monospace; font-size: 0.52rem; color: var(--laranja);
-      letter-spacing: 0.18em; text-transform: uppercase;
-      border: 1px solid rgba(200,80,26,0.3); padding: 5px 10px;
-      transition: all 0.3s;
-    }
-    .loja-colecao-card:hover .loja-colecao-badge { background: var(--laranja); color: var(--preto); }
 
     /* FOOTER */
-    footer { padding: 32px 40px; border-top: 1px solid rgba(240,236,228,0.06); display: flex; justify-content: space-between; align-items: center; }
-    .footer-logo img { height: 36px; width: 36px; border-radius: 50%; mix-blend-mode: screen; }
-    .footer-info { font-family: 'Space Mono', monospace; font-size: 0.55rem; color: rgba(240,236,228,0.2); letter-spacing: 0.1em; text-align: right; line-height: 1.9; }
+    footer { padding: 28px 24px; border-top: 1px solid rgba(240,236,228,0.06); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+    .footer-logo img { height: 32px; width: 32px; border-radius: 50%; mix-blend-mode: screen; }
+    .footer-info { font-family: 'Space Mono', monospace; font-size: 0.5rem; color: rgba(240,236,228,0.2); letter-spacing: 0.1em; text-align: right; line-height: 1.9; }
 
     .categoria.oculta { display: none; }
-
     @keyframes fadeUp { from { opacity:0; transform:translateY(30px); } to { opacity:1; transform:translateY(0); } }
     .hero-content { animation: fadeUp 0.6s ease 0.1s both; }
 
-    @media (max-width: 900px) {
+    /* TABLET */
+    @media (min-width: 600px) {
+      .hero { padding: 100px 40px 56px; }
+      .loja-colecoes { padding: 56px 40px 0; }
+      .categoria { padding: 56px 40px; }
+      .wa-banner { margin: 0 40px 56px; }
+      footer { padding: 32px 40px; }
       .produtos-grid { grid-template-columns: repeat(3, 1fr); }
+      .produtos-grid.col3 { grid-template-columns: repeat(3, 1fr); }
+      .produto-nome { font-size: 1rem; }
     }
-    @media (max-width: 768px) {
-      nav { padding: max(env(safe-area-inset-top), 14px) 20px 14px; }
-      .nav-sep, .nav-breadcrumb { display: none; }
-      .hero { padding: 80px 20px 48px; min-height: 44vh; }
-      .filtro-btn { padding: 14px 16px; font-size: 0.55rem; }
-      .categoria { padding: 48px 20px; }
-      .produtos-grid { grid-template-columns: repeat(2, 1fr); }
-      .loja-colecoes { grid-template-columns: 1fr; padding: 40px 20px 0; }
-      .wa-banner { margin: 0 20px 48px; flex-direction: column; gap: 12px; }
-      footer { flex-direction: column; gap: 14px; align-items: flex-start; padding: 28px 20px; }
-      .footer-info { text-align: left; }
-    }
-    @media (max-width: 480px) {
-      .produtos-grid { grid-template-columns: 1fr 1fr; }
+
+    /* DESKTOP */
+    @media (min-width: 960px) {
+      .produtos-grid { grid-template-columns: repeat(4, 1fr); }
+      .produtos-grid.col3 { grid-template-columns: repeat(3, 1fr); }
     }
   </style>
 </head>
@@ -316,11 +317,11 @@
 
   <nav>
     <div class="nav-left">
-      <a href="index.html" class="nav-logo"><img src="logo-redondo.png" alt="MARATU Estúdio"></a>
+      <a href="index.html" class="nav-logo"><img src="logo-redondo.png" alt="MARATU Estudio"></a>
       <div class="nav-sep"></div>
       <span class="nav-breadcrumb">MARATU / <span>Feira</span></span>
     </div>
-    <a href="index.html" class="nav-back">← Voltar ao site</a>
+    <a href="index.html" class="nav-back">← Voltar</a>
   </nav>
 
   <section class="hero">
@@ -354,18 +355,20 @@
     </a>
   </div>
 
-  <div class="filtros">
-    <button class="filtro-btn active" onclick="filtrar(this,'todos')">Todos <span class="filtro-count">12</span></button>
-    <button class="filtro-btn" onclick="filtrar(this,'posteres')">Pôsteres <span class="filtro-count">10</span></button>
-    <button class="filtro-btn" onclick="filtrar(this,'use-maratu')">USE MARATU <span class="filtro-count">2</span></button>
+  <div class="filtros-wrapper">
+    <div class="filtros">
+      <button class="filtro-btn active" onclick="filtrar(this,'todos')">Todos <span class="filtro-count">12</span></button>
+      <button class="filtro-btn" onclick="filtrar(this,'posteres')">Posteres <span class="filtro-count">10</span></button>
+      <button class="filtro-btn" onclick="filtrar(this,'use-maratu')">USE MARATU <span class="filtro-count">2</span></button>
+    </div>
   </div>
 
-  <!-- PÔSTERES -->
+  <!-- POSTERES -->
   <section class="categoria" id="cat-posteres" data-categoria="posteres">
     <div class="cat-header">
       <div>
         <p class="cat-num">01 ——</p>
-        <h2 class="cat-nome laranja">Pôsteres</h2>
+        <h2 class="cat-nome laranja">Posteres</h2>
       </div>
       <span class="cat-total">10 designs · A4 / A3 / A2 / A1</span>
     </div>
@@ -384,9 +387,9 @@
     <div class="produtos-grid col3">
 
       <div class="produto-card">
-        <div class="produto-img cor-dourado">
+        <div class="produto-img" onclick="abrirLightbox('adesivos-origens.png','Colecao de Adesivos Origens')">
           <span class="produto-badge badge-novo">Novo</span>
-          <img class="img-poster" src="poster-linguagem.png" alt="Adesivos Origens" loading="lazy" style="object-fit:contain;padding:12px;">
+          <img class="img-poster" src="adesivos-origens.png" alt="Colecao de Adesivos Origens" loading="lazy" style="object-fit:contain;padding:8px;">
         </div>
         <div class="produto-body">
           <p class="produto-cat">Adesivos</p>
@@ -395,22 +398,22 @@
         </div>
         <div class="produto-footer">
           <p class="produto-preco"><span class="cifrao">R$</span>18</p>
-          <a href="https://wa.me/5579981512978?text=Ola!%20Tenho%20interesse%20no%20produto%3A%20Colecao%20de%20Adesivos%20Origens%201%20Edicao%20—%20R%24%2018" target="_blank" rel="noopener" class="btn-encomendar">Encomendar ↗</a>
+          <a href="https://wa.me/5579981512978?text=Ola!%20Tenho%20interesse%20no%20produto%3A%20Colecao%20de%20Adesivos%20Origens%201%20Edicao%20-%20R%24%2018" target="_blank" rel="noopener" class="btn-encomendar">Encomendar ↗</a>
         </div>
       </div>
 
       <div class="produto-card">
-        <div class="produto-img cor-atalaia">
+        <div class="produto-img cor-atalaia" style="cursor:default;">
           <span class="produto-badge badge-novo">Novo</span>
         </div>
         <div class="produto-body">
           <p class="produto-cat">Chaveiro</p>
           <p class="produto-nome">Chaveiro Aratu 3D</p>
-          <p class="produto-desc">PLA · Impressão 3D · 6 cm</p>
+          <p class="produto-desc">PLA · Impressao 3D · 6 cm</p>
         </div>
         <div class="produto-footer">
           <p class="produto-preco"><span class="cifrao">R$</span>22</p>
-          <a href="https://wa.me/5579981512978?text=Olá!%20Tenho%20interesse%20no%20produto%3A%20Chaveiro%20Aratu%203D%20—%20R%24%2022" target="_blank" rel="noopener" class="btn-encomendar">Encomendar ↗</a>
+          <a href="https://wa.me/5579981512978?text=Ola!%20Tenho%20interesse%20no%20produto%3A%20Chaveiro%20Aratu%203D%20-%20R%24%2022" target="_blank" rel="noopener" class="btn-encomendar">Encomendar ↗</a>
         </div>
       </div>
 
@@ -421,22 +424,22 @@
     <div class="wa-dot"></div>
     <div>
       <p class="wa-title">Como funciona a encomenda</p>
-      <p class="wa-desc">Clique em "Encomendar" e você vai direto pro WhatsApp com a mensagem já preenchida. A gente confirma disponibilidade, prazo e frete.</p>
-      <span class="wa-msg-preview">Olá! Tenho interesse no produto: Destrua o Império! — A3 — R$ 80</span>
+      <p class="wa-desc">Clique em "Encomendar" e voce vai direto pro WhatsApp com a mensagem ja preenchida. A gente confirma disponibilidade, prazo e frete.</p>
+      <span class="wa-msg-preview">Ola! Tenho interesse: Por do Sol - A3 - R$ 80</span>
     </div>
   </div>
 
   <footer>
-    <div class="footer-logo"><img src="logo-redondo.png" alt="MARATU Estúdio"></div>
+    <div class="footer-logo"><img src="logo-redondo.png" alt="MARATU Estudio"></div>
     <div class="footer-info">
-      <p>Impressão 3D · Design · Arte</p>
+      <p>Impressao 3D · Design · Arte</p>
       <p>Aracaju, SE — Brasil · EST. 2026</p>
     </div>
   </footer>
 
   <!-- LIGHTBOX -->
   <div class="lightbox" id="lightbox" onclick="fecharLightbox(event)">
-    <button class="lightbox-close" onclick="fecharLightbox()">✕ fechar</button>
+    <button class="lightbox-close" onclick="fecharLightbox()">fechar ✕</button>
     <span class="lightbox-nome" id="lightbox-nome"></span>
     <img class="lightbox-img" id="lightbox-img" src="" alt="">
   </div>
@@ -444,17 +447,18 @@
   <script>
     var PRECOS = { 'A4': 50, 'A3': 80, 'A2': 120, 'A1': 180 };
 
+    // Ordem: destaque (Por do Sol + Sol de Atalaia) na frente
     var POSTERES = [
-      { id: 'destrua',   nome: 'Destrua o Imperio!', img: 'poster-destrua.png',   mockup: 'mockup-destrua.png'   },
-      { id: 'linguagem', nome: 'Linguagem',           img: 'poster-linguagem.png', mockup: 'mockup-linguagem.png' },
-      { id: 'camadas',   nome: 'Camadas',             img: 'poster-camadas.png',   mockup: 'mockup-camadas.png'   },
-      { id: 'origens',   nome: 'Origens',             img: 'poster-origens.png',   mockup: 'mockup-origens.png'   },
-      { id: 'areias',    nome: 'Areias',              img: 'poster-areias.png',    mockup: 'mockup-areias.png'    },
-      { id: 'matapua',   nome: 'Matapua',             img: 'poster-matapua.png',   mockup: 'mockup-matapua.png'   },
-      { id: 'luzes',     nome: 'Luzes',               img: 'poster-luzes.png',     mockup: 'mockup-luzes.png'     },
-      { id: 'ritmo',     nome: 'Ritmo',               img: 'poster-ritmo.png',     mockup: 'mockup-ritmo.png'     },
-      { id: 'pordosol',  nome: 'Por do Sol',          img: 'poster-pordosol.png',  mockup: 'mockup-pordosol.png'  },
-      { id: 'atalaia',   nome: 'Sol de Atalaia',      img: 'poster-atalaia.png',   mockup: 'mockup-atalaia.png'   },
+      { id: 'pordosol',  nome: 'Por do Sol',          img: 'poster-pordosol.png',  mockup: 'mockup-pordosol.png',  colecao: 'Mangue Haus', col: 'mangue', destaque: true },
+      { id: 'atalaia',   nome: 'Sol de Atalaia',      img: 'poster-atalaia.png',   mockup: 'mockup-atalaia.png',   colecao: 'Origens',    col: 'origens', destaque: true },
+      { id: 'destrua',   nome: 'Destrua o Imperio!',  img: 'poster-destrua.png',   mockup: 'mockup-destrua.png',   colecao: 'Origens',    col: 'origens' },
+      { id: 'origens',   nome: 'Origens',             img: 'poster-origens.png',   mockup: 'mockup-origens.png',   colecao: 'Origens',    col: 'origens' },
+      { id: 'matapua',   nome: 'Matapua',             img: 'poster-matapua.png',   mockup: 'mockup-matapua.png',   colecao: 'Origens',    col: 'origens' },
+      { id: 'linguagem', nome: 'Linguagem',           img: 'poster-linguagem.png', mockup: 'mockup-linguagem.png', colecao: 'Mangue Haus', col: 'mangue' },
+      { id: 'camadas',   nome: 'Camadas',             img: 'poster-camadas.png',   mockup: 'mockup-camadas.png',   colecao: 'Mangue Haus', col: 'mangue' },
+      { id: 'areias',    nome: 'Areias',              img: 'poster-areias.png',    mockup: 'mockup-areias.png',    colecao: 'Mangue Haus', col: 'mangue' },
+      { id: 'luzes',     nome: 'Luzes',               img: 'poster-luzes.png',     mockup: 'mockup-luzes.png',     colecao: 'Mangue Haus', col: 'mangue' },
+      { id: 'ritmo',     nome: 'Ritmo',               img: 'poster-ritmo.png',     mockup: 'mockup-ritmo.png',     colecao: 'Mangue Haus', col: 'mangue' },
     ];
 
     function abrirLightbox(img, nome) {
@@ -465,24 +469,24 @@
     }
 
     function fecharLightbox(e) {
-      if (!e || e.target === document.getElementById('lightbox') || e.currentTarget.classList.contains('lightbox-close')) {
+      if (!e || e.target === document.getElementById('lightbox') || (e.currentTarget && e.currentTarget.classList.contains('lightbox-close'))) {
         document.getElementById('lightbox').classList.remove('open');
         document.body.style.overflow = '';
       }
     }
 
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape') fecharLightbox();
-    });
+    document.addEventListener('keydown', function(e) { if (e.key === 'Escape') fecharLightbox(); });
 
     function buildPosteres() {
       var grid = document.getElementById('grid-posteres');
       POSTERES.forEach(function(p) {
         var card = document.createElement('div');
-        card.className = 'produto-card';
+        card.className = 'produto-card' + (p.destaque ? ' destaque' : '');
+        var badgeColecao = '<span class="badge-colecao' + (p.col === 'mangue' ? ' mangue' : '') + '">' + p.colecao + '</span>';
         card.innerHTML =
           '<div class="produto-img" onclick="abrirLightbox(\'' + p.img + '\',\'' + p.nome + '\')">' +
           '<span class="produto-badge badge-novo">Novo</span>' +
+          badgeColecao +
           '<img class="img-poster" src="' + p.img + '" alt="' + p.nome + '" loading="lazy">' +
           '<img class="img-mockup" src="' + p.mockup + '" alt="' + p.nome + ' mockup" loading="lazy">' +
           '</div>' +
@@ -517,7 +521,7 @@
     function atualizarLink(pid, tam) {
       var poster = POSTERES.find(function(p) { return p.id === pid; });
       var preco = PRECOS[tam];
-      var msg = encodeURIComponent('Ola! Tenho interesse no produto: ' + poster.nome + ' — ' + tam + ' — R$ ' + preco);
+      var msg = encodeURIComponent('Ola! Tenho interesse no produto: ' + poster.nome + ' - ' + tam + ' - R$ ' + preco);
       var btn = document.getElementById('btn-' + pid);
       if (btn) btn.href = 'https://wa.me/5579981512978?text=' + msg;
     }

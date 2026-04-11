@@ -175,35 +175,34 @@
     }
     .feira-banner::before {
       content: ''; position: absolute; inset: 0;
-      background: url('mangue.jpg') center center / cover no-repeat;
-      opacity: 0.08;
+      background: url('foto-atalaia.jpg') center center / cover no-repeat;
+      opacity: 0.1;
     }
     .feira-banner-content { position: relative; z-index: 1; }
     .feira-banner-tag { font-family: 'Space Mono', monospace; font-size: 0.6rem; color: rgba(13,13,11,0.45); letter-spacing: 0.22em; text-transform: uppercase; margin-bottom: 14px; display: flex; align-items: center; gap: 10px; }
     .feira-banner-tag::before { content: ''; display: block; width: 28px; height: 1px; background: rgba(13,13,11,0.3); }
     .feira-banner-title { line-height: 0.85; margin-bottom: 16px; }
-    .feira-banner-title .titulo-feira { font-family: 'Clother', sans-serif; font-weight: 400; font-size: clamp(0.9rem, 1.8vw, 1.4rem); color: rgba(13,13,11,0.45); display: block; letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 2px; }
-    .feira-banner-title .titulo-maratu { font-family: 'Jack', sans-serif; font-size: clamp(2.8rem, 6vw, 6.5rem); color: var(--preto); display: block; line-height: 0.88; }
+    .feira-banner-title .titulo-feira { font-family: 'Clother', sans-serif; font-weight: 900; font-size: clamp(1rem, 2vw, 1.6rem); color: rgba(13,13,11,0.6); display: block; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 2px; }
+    .feira-banner-title .titulo-maratu { font-family: 'Jack', sans-serif; font-size: clamp(3.5rem, 8vw, 9rem); color: var(--preto); display: block; line-height: 0.88; }
     .feira-banner-desc { font-size: 1rem; color: rgba(13,13,11,0.55); line-height: 1.7; max-width: 460px; }
     .feira-banner-cta { position: relative; z-index: 1; flex-shrink: 0; }
     .feira-btn {
-      display: flex; align-items: center; gap: 18px;
+      display: flex; align-items: center; gap: 22px;
       text-decoration: none; background: var(--preto); color: var(--areia);
-      padding: 20px 28px; font-family: 'Clother', sans-serif; font-weight: 900;
-      font-size: 1rem; letter-spacing: 0.06em; text-transform: uppercase;
-      transition: all 0.25s; border-radius: 999px;
-      border: 2px solid var(--preto);
+      padding: 28px 42px; font-family: 'Clother', sans-serif; font-weight: 900;
+      font-size: 1.3rem; letter-spacing: 0.04em; text-transform: uppercase;
+      transition: all 0.25s; border-radius: 999px; border: 2px solid var(--preto);
     }
     .feira-btn:hover { background: transparent; color: var(--preto); }
     .feira-btn-arrow {
-      width: 38px; height: 38px; border-radius: 50%;
+      width: 52px; height: 52px; border-radius: 50%;
       background: var(--laranja); color: var(--preto);
       display: flex; align-items: center; justify-content: center;
-      font-size: 1rem; flex-shrink: 0; transition: all 0.25s;
+      font-size: 1.3rem; flex-shrink: 0; transition: all 0.25s;
     }
     .feira-btn:hover .feira-btn-arrow { background: var(--preto); color: var(--areia); }
-    .feira-btn-text { display: flex; flex-direction: column; gap: 2px; }
-    .feira-btn-label { font-size: 0.55rem; font-family: 'Space Mono', monospace; font-weight: 400; opacity: 0.5; letter-spacing: 0.15em; }
+    .feira-btn-text { display: flex; flex-direction: column; gap: 3px; }
+    .feira-btn-label { font-size: 0.58rem; font-family: 'Space Mono', monospace; font-weight: 400; opacity: 0.5; letter-spacing: 0.15em; }
 
     /* ── CONTATO ── */
     .contato { padding: 120px 40px; border-top: 1px solid rgba(240,236,228,0.08); }
@@ -333,8 +332,9 @@
       .colecao-card { padding: 36px 28px 72px; }
       .colecao-desc { font-size: 0.9rem; }
       .colecao-badge { bottom: 24px; right: 24px; }
-      .feira-banner { grid-template-columns: 1fr; padding: 48px 24px; gap: 28px; }
-      .feira-btn { align-items: flex-start; }
+      .feira-banner { grid-template-columns: 1fr; padding: 40px 24px; gap: 28px; }
+      .feira-btn { align-items: flex-start; padding: 20px 28px; font-size: 1.05rem; }
+      .feira-btn-arrow { width: 44px; height: 44px; }
       .contato-header { flex-direction: column; align-items: flex-start; gap: 20px; margin-bottom: 40px; }
       .contato-desc { max-width: 100%; }
       .contato-grid { grid-template-columns: 1fr; }

@@ -6,24 +6,26 @@
   <title>MARATU Estúdio — Impressão 3D · Design · Arte</title>
   <meta name="description" content="Estúdio criativo de Aracaju especializado em impressão 3D, design e arte. Pôsteres, adesivos e peças exclusivas com identidade sergipana.">
 
+  <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png">
   <link rel="apple-touch-icon" href="favicon.png">
 
+  <!-- Open Graph -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://maratu.com.br/">
   <meta property="og:title" content="MARATU Estúdio — Impressão 3D · Design · Arte">
   <meta property="og:description" content="Estúdio criativo de Aracaju especializado em impressão 3D, design e arte. Pôsteres, adesivos e peças exclusivas com identidade sergipana.">
   <meta property="og:image" content="https://maratu.com.br/og-image.png">
   <meta property="og:locale" content="pt_BR">
+
+  <!-- Twitter/X Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="MARATU Estúdio — Impressão 3D · Design · Arte">
   <meta name="twitter:description" content="Estúdio criativo de Aracaju especializado em impressão 3D, design e arte.">
   <meta name="twitter:image" content="https://maratu.com.br/og-image.png">
-
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
   <style>
     @font-face { font-family: 'Jack'; src: url('TRYJackAlpha-Regular.ttf') format('truetype'); font-weight: 400; }
     @font-face { font-family: 'Clother'; src: url('TRYClother-Regular.ttf') format('truetype'); font-weight: 400; }
@@ -33,8 +35,8 @@
 
     :root {
       --laranja: #C8501A;
-      --azul: #0E3272;
-      --azul-claro: #2E6FC4;
+      --azul-sergipe: #0E3272;
+      --azul-atalaia: #2E6FC4;
       --areia: #F0ECE4;
       --preto: #0D0D0B;
       --dourado: #D4960A;
@@ -47,7 +49,7 @@
     body::before {
       content: ''; position: fixed; inset: 0;
       background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-      pointer-events: none; z-index: 1000; opacity: 0.35;
+      pointer-events: none; z-index: 1000; opacity: 0.4;
     }
 
     /* ── NAV ── */
@@ -61,400 +63,500 @@
       background: linear-gradient(to bottom, rgba(13,13,11,0.95) 0%, transparent 100%);
       pointer-events: none;
     }
-    .nav-logo { position: relative; text-decoration: none; }
-    .nav-logo img { height: 40px; width: 40px; border-radius: 50%; mix-blend-mode: screen; }
-    .nav-tagline { position: relative; font-family: 'Space Mono', monospace; font-size: 0.58rem; color: rgba(240,236,228,0.3); letter-spacing: 0.15em; text-transform: uppercase; }
-    .nav-loja { position: relative; font-family: 'Clother', sans-serif; font-weight: 900; font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--preto); background: var(--laranja); padding: 8px 18px; text-decoration: none; border-radius: 999px; transition: background 0.2s; }
-    .nav-loja:hover { background: var(--areia); }
+    .nav-logo { text-decoration: none; position: relative; }
+    .nav-logo img { height: 44px; width: 44px; border-radius: 50%; mix-blend-mode: screen; }
+    .nav-tagline { font-family: 'Space Mono', monospace; font-size: 0.65rem; color: rgba(240,236,228,0.4); letter-spacing: 0.1em; position: relative; }
 
-    /* ── LABEL ── */
-    .lbl {
-      font-family: 'Space Mono', monospace; font-size: 0.58rem;
-      letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 16px;
-      display: flex; align-items: center; gap: 10px;
-    }
-    .lbl::before { content: ''; display: block; width: 24px; height: 1px; background: currentColor; }
-
-    /* ── DIVISOR ── */
-    .div-laranja { height: 3px; background: var(--laranja); }
-
-    /* ═══════════════════════════════════
-       ① HERO — foto full
-    ═══════════════════════════════════ */
+    /* ── HERO ── */
     .hero {
-      min-height: 100vh; display: flex; flex-direction: column;
-      justify-content: flex-end; padding: 80px 48px 64px;
-      position: relative; overflow: hidden;
+      min-height: 100vh; min-height: 100dvh;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      padding: 60px 40px 80px; position: relative; overflow: hidden;
     }
     .hero-bg {
       position: absolute; inset: 0;
       background:
-        linear-gradient(to bottom, rgba(13,13,11,0.2) 0%, rgba(13,13,11,0.97) 65%),
-        url('hero-bg.png') center/cover no-repeat;
+        linear-gradient(to bottom, rgba(13,13,11,0.5) 0%, rgba(13,13,11,0.72) 55%, rgba(13,13,11,0.98) 100%),
+        url('hero-bg.png') center center / cover no-repeat;
     }
-    .hero-grid {
+    .hero-grid-lines {
       position: absolute; inset: 0;
-      background-image: linear-gradient(rgba(240,236,228,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(240,236,228,0.03) 1px, transparent 1px);
-      background-size: 52px 52px;
+      background-image:
+        linear-gradient(rgba(240,236,228,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(240,236,228,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
     }
     .hero-content { position: relative; z-index: 2; }
-    .hero .lbl { color: var(--laranja); }
-    .hero-w1 { font-family: 'Jack', sans-serif; font-size: clamp(4rem, 11vw, 10rem); color: var(--laranja); line-height: 0.88; display: block; }
-    .hero-w2 { font-family: 'Clother', sans-serif; font-weight: 700; font-size: clamp(1rem, 2.5vw, 2rem); color: var(--areia); letter-spacing: 0.08em; text-transform: uppercase; display: block; margin-top: 6px; margin-bottom: 24px; }
-    .hero-desc { font-size: 1rem; color: rgba(240,236,228,0.6); line-height: 1.75; max-width: 520px; }
-    .hero-scroll { font-family: 'Space Mono', monospace; font-size: 0.5rem; color: rgba(240,236,228,0.2); letter-spacing: 0.15em; text-transform: uppercase; margin-top: 40px; display: block; }
-
-    /* ═══════════════════════════════════
-       ② FEIRA — split laranja | foto
-    ═══════════════════════════════════ */
-    .split { display: grid; grid-template-columns: 1fr 1fr; min-height: 540px; }
-    .split-texto { padding: 64px 56px; display: flex; flex-direction: column; justify-content: center; }
-    .split-foto { position: relative; overflow: hidden; }
-    .split-foto img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
-
-    /* laranja */
-    .bg-laranja { background: var(--laranja); }
-    .bg-laranja .lbl { color: rgba(13,13,11,0.4); }
-    .bg-laranja .t1 { color: rgba(13,13,11,0.55); }
-    .bg-laranja .t2 { color: var(--preto); }
-    .bg-laranja .tdesc { color: rgba(13,13,11,0.6); font-weight: 700; }
-
-    /* areia */
-    .bg-areia { background: var(--areia); }
-    .bg-areia .lbl { color: var(--laranja); }
-    .bg-areia .t1 { color: var(--preto); }
-    .bg-areia .t2 { color: var(--laranja); }
-    .bg-areia .tdesc { color: rgba(13,13,11,0.6); }
-
-    /* azul */
-    .bg-azul { background: var(--azul); }
-    .bg-azul .lbl { color: rgba(240,236,228,0.35); }
-    .bg-azul .t1 { color: var(--areia); }
-    .bg-azul .t2 { color: var(--areia); }
-    .bg-azul .tdesc { color: rgba(240,236,228,0.65); }
-
-    /* preto */
-    .bg-preto { background: var(--preto); border-top: 1px solid rgba(240,236,228,0.08); }
-    .bg-preto .lbl { color: var(--laranja); }
-    .bg-preto .t1 { color: var(--areia); }
-    .bg-preto .t2 { color: var(--laranja); }
-    .bg-preto .tdesc { color: rgba(240,236,228,0.55); }
-
-    .t1 { font-family: 'Clother', sans-serif; font-weight: 700; font-size: clamp(0.9rem, 1.8vw, 1.3rem); display: block; margin-bottom: 4px; }
-    .t2 { font-family: 'Jack', sans-serif; font-size: clamp(2.8rem, 5.5vw, 5.8rem); line-height: 0.85; display: block; margin-bottom: 20px; }
-    .t2 em { font-family: 'Jack', sans-serif; font-style: normal; }
-    .tdesc { font-size: 0.95rem; line-height: 1.8; margin-bottom: 36px; max-width: 460px; }
-
-    /* botão */
-    .btn {
-      display: inline-flex; align-items: center; gap: 16px;
-      padding: 18px 32px; font-family: 'Clother', sans-serif; font-weight: 900;
-      font-size: 1rem; letter-spacing: 0.04em; text-transform: uppercase;
-      border-radius: 999px; text-decoration: none; border: 2px solid; align-self: flex-start;
-      transition: all 0.25s;
+    .hero-tag {
+      font-family: 'Space Mono', monospace; font-size: 0.65rem; color: var(--laranja);
+      letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 20px;
+      display: flex; align-items: center; gap: 12px;
     }
-    .btn-dark { background: var(--preto); color: var(--areia); border-color: var(--preto); }
-    .btn-dark:hover { background: transparent; color: var(--preto); }
-    .btn-areia { background: var(--areia); color: var(--preto); border-color: var(--areia); }
-    .btn-areia:hover { background: transparent; color: var(--areia); }
-    .btn-circle { width: 40px; height: 40px; border-radius: 50%; background: var(--laranja); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; transition: all 0.25s; }
+    .hero-tag::before { content: ''; display: block; width: 40px; height: 1px; background: var(--laranja); }
+    .hero-wordmark { margin-bottom: 40px; line-height: 1; }
+    .hero-wordmark .maratu {
+      font-family: 'Jack', sans-serif;
+      font-size: clamp(3.2rem, 10vw, 11rem);
+      color: var(--laranja); display: block; line-height: 0.9;
+      white-space: nowrap; overflow: hidden; text-overflow: clip; max-width: 100%;
+    }
+    .hero-wordmark .estudio {
+      font-family: 'Clother', sans-serif; font-weight: 700;
+      font-size: clamp(1rem, 2.5vw, 2.4rem);
+      color: var(--areia); display: block; letter-spacing: 0.08em; text-transform: uppercase; margin-top: 4px;
+    }
+    .hero-desc { max-width: 520px; font-size: 1rem; line-height: 1.7; color: rgba(240,236,228,0.7); }
+    .hero-scroll {
+      position: absolute; bottom: 40px; right: 40px;
+      font-family: 'Space Mono', monospace; font-size: 0.6rem;
+      color: rgba(240,236,228,0.3); letter-spacing: 0.15em; writing-mode: vertical-rl; text-transform: uppercase;
+    }
 
-    /* ═══════════════════════════════════
-       ③ SOBRE — sólido areia
-    ═══════════════════════════════════ */
-    .solido { padding: 80px 48px; }
+    /* ── SECTION NUMBER ── */
+    .section-number {
+      font-family: 'Space Mono', monospace; font-size: 0.65rem; color: var(--laranja);
+      letter-spacing: 0.2em; margin-bottom: 32px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .section-number::before { content: ''; display: block; width: 40px; height: 1px; background: currentColor; }
 
-    .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; margin-top: 12px; }
-    .stat { border-left: 2px solid var(--laranja); padding: 16px 20px; }
-    .bg-areia .stat { background: rgba(13,13,11,0.06); }
-    .stat-l { font-family: 'Space Mono', monospace; font-size: 0.48rem; color: var(--laranja); letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 5px; }
-    .bg-areia .stat-v { font-family: 'Clother', sans-serif; font-weight: 700; font-size: 0.88rem; color: var(--preto); line-height: 1.35; }
+    /* ── SOBRE ── */
+    .sobre {
+      padding: 120px 40px; display: grid; grid-template-columns: 1fr 1fr;
+      gap: 80px; align-items: start; border-top: 1px solid rgba(240,236,228,0.08);
+    }
+    .sobre-title { font-family: 'Clother', sans-serif; font-weight: 700; font-size: clamp(2.2rem, 4.5vw, 4.5rem); line-height: 1; color: var(--areia); margin-bottom: 28px; }
+    .sobre-title .destaque { font-family: 'Jack', sans-serif; color: var(--laranja); display: block; }
+    .sobre-text { font-size: 1rem; line-height: 1.8; color: rgba(240,236,228,0.65); margin-bottom: 32px; }
+    .sobre-right { display: flex; flex-direction: column; gap: 24px; }
+    .stat-block { border-left: 2px solid var(--laranja); padding: 20px 24px; background: rgba(200,80,26,0.04); }
+    .stat-label { font-family: 'Space Mono', monospace; font-size: 0.6rem; color: var(--laranja); letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 8px; }
+    .stat-value { font-family: 'Clother', sans-serif; font-weight: 700; font-size: 1.05rem; color: var(--areia); }
+    .mat-destaque { color: var(--laranja); font-weight: 900; }
 
-    /* ═══════════════════════════════════
-       ⑤ O QUE FAZEMOS — sólido areia + cards
-    ═══════════════════════════════════ */
-    .fazemos-titulo { font-family: 'Clother', sans-serif; font-weight: 700; font-size: clamp(1rem, 2vw, 1.4rem); color: var(--preto); margin-bottom: 24px; }
-    .fazemos-titulo span { font-family: 'Jack', sans-serif; color: var(--laranja); }
-    .cards-col { display: flex; flex-direction: column; gap: 2px; }
-    .card-item { background: var(--preto); padding: 20px 24px; display: flex; align-items: center; gap: 20px; transition: border-color 0.2s; border: 1px solid rgba(240,236,228,0.04); border-radius: 0 10px 0 0; }
-    .card-item:hover { border-color: rgba(200,80,26,0.25); }
-    .card-img { width: 72px; height: 72px; object-fit: cover; flex-shrink: 0; filter: brightness(0.6) saturate(0.7); border-radius: 0 6px 0 0; }
-    .card-num { font-family: 'Space Mono', monospace; font-size: 0.48rem; color: var(--laranja); letter-spacing: 0.2em; margin-bottom: 5px; }
-    .card-nome { font-family: 'Clother', sans-serif; font-weight: 900; font-size: 1rem; color: var(--areia); text-transform: uppercase; margin-bottom: 3px; }
-    .card-desc-txt { font-size: 0.78rem; color: rgba(240,236,228,0.4); line-height: 1.5; }
+    /* Accordion O que fazemos */
+    .accordion-btn {
+      display: flex; align-items: center; gap: 12px;
+      background: none; border: 1px solid rgba(240,236,228,0.12);
+      color: var(--areia); font-family: 'Clother', sans-serif; font-weight: 900;
+      font-size: 0.9rem; letter-spacing: 0.06em; text-transform: uppercase;
+      padding: 14px 20px; cursor: pointer; transition: all 0.2s;
+      border-radius: 0 8px 0 0; width: 100%;
+    }
+    .accordion-btn:hover { border-color: rgba(200,80,26,0.4); color: var(--laranja); }
+    .accordion-btn.open { background: rgba(200,80,26,0.08); border-color: rgba(200,80,26,0.3); color: var(--laranja); }
+    .accordion-arrow { margin-left: auto; transition: transform 0.3s ease; font-size: 0.8rem; }
+    .accordion-btn.open .accordion-arrow { transform: rotate(180deg); }
+    .accordion-content {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px;
+      max-height: 0; overflow: hidden; transition: max-height 0.4s ease;
+      margin-top: 0;
+    }
+    .accordion-content.open { max-height: 600px; margin-top: 2px; }
+    .servico-card {
+      background: rgba(240,236,228,0.02); border: 1px solid rgba(240,236,228,0.06);
+      overflow: hidden; transition: border-color 0.3s ease; display: flex; flex-direction: column;
+    }
+    .servico-card:hover { border-color: rgba(200,80,26,0.3); }
+    .servico-card:hover .servico-number { color: var(--laranja); }
+    .servico-img { width: 100%; height: 140px; object-fit: cover; filter: brightness(0.6) saturate(0.8); transition: filter 0.4s ease; display: block; }
+    .servico-card:hover .servico-img { filter: brightness(1) saturate(1); }
+    .servico-body { padding: 16px 18px 20px; flex: 1; }
+    .servico-number { font-family: 'Space Mono', monospace; font-size: 0.55rem; color: rgba(240,236,228,0.2); letter-spacing: 0.2em; margin-bottom: 8px; transition: color 0.3s ease; }
+    .servico-name { font-family: 'Clother', sans-serif; font-weight: 900; font-size: 1.1rem; color: var(--areia); margin-bottom: 6px; text-transform: uppercase; }
+    .servico-desc { font-size: 0.78rem; line-height: 1.6; color: rgba(240,236,228,0.45); }
 
-    /* ═══════════════════════════════════
-       ⑥ CONTATO — split preto | foto
-    ═══════════════════════════════════ */
-    .links { display: flex; flex-direction: column; gap: 2px; }
-    .clink {
+    /* ── ORIGEM — seção 002 ── */
+    .origem { padding: 120px 40px; background: var(--laranja); position: relative; overflow: hidden; border-top: 1px solid rgba(240,236,228,0.08); }
+    .origem-bg {
+      position: absolute; inset: 0;
+      background: url('mangue.jpg') center center / cover no-repeat;
+      opacity: 0.28;
+    }
+    .origem::before {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(200,80,26,0.82) 0%, rgba(200,80,26,0.68) 100%);
+      z-index: 1;
+    }
+    .origem-inner { position: relative; z-index: 2; max-width: 680px; }
+    .origem-title { font-family: 'Clother', sans-serif; font-weight: 700; font-size: clamp(2.2rem, 4.5vw, 4.5rem); line-height: 1; color: var(--areia); margin-bottom: 40px; }
+    .origem-title .destaque { font-family: 'Jack', sans-serif; color: var(--preto); display: block; }
+    .origem-text { font-size: 1rem; line-height: 1.8; color: rgba(240,236,228,0.9); }
+
+    /* ── COLEÇÕES ── */
+    .embreve { padding: 120px 40px; border-top: 1px solid rgba(240,236,228,0.08); background: rgba(200,80,26,0.03); }
+    .embreve-header { margin-bottom: 64px; }
+    .embreve-title { font-family: 'Clother', sans-serif; font-weight: 700; font-size: clamp(2.2rem, 4.5vw, 4.5rem); line-height: 1; color: var(--areia); }
+    .embreve-title .destaque { font-family: 'Jack', sans-serif; color: var(--laranja); display: block; }
+    .embreve-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
+    .colecao-card { padding: 48px 40px 80px; border: 1px solid rgba(240,236,228,0.06); background: rgba(240,236,228,0.02); position: relative; overflow: hidden; transition: border-color 0.3s; }
+    .colecao-card:hover { border-color: rgba(200,80,26,0.3); }
+    .colecao-card:hover .colecao-badge { border-color: rgba(200,80,26,0.5); color: var(--laranja); }
+    .colecao-tag { font-family: 'Space Mono', monospace; font-size: 0.6rem; color: var(--laranja); letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 24px; display: flex; align-items: center; gap: 10px; }
+    .colecao-tag::before { content: ''; display: block; width: 24px; height: 1px; background: var(--laranja); }
+    .colecao-nome { font-family: 'Jack', sans-serif; font-size: clamp(1.8rem, 3vw, 3rem); color: var(--areia); margin-bottom: 24px; line-height: 1; text-transform: uppercase; }
+    .colecao-desc { font-size: 0.95rem; line-height: 1.75; color: rgba(240,236,228,0.55); }
+    .colecao-badge { position: absolute; bottom: 32px; right: 32px; font-family: 'Space Mono', monospace; font-size: 0.55rem; color: var(--laranja); letter-spacing: 0.2em; text-transform: uppercase; border: 1px solid rgba(200,80,26,0.3); padding: 6px 12px; }
+
+    /* ── FEIRA BANNER ── */
+    .feira-banner {
+      border-top: 1px solid rgba(240,236,228,0.08);
+      background: var(--laranja); position: relative; overflow: hidden;
+      display: grid; grid-template-columns: 1fr auto; align-items: center;
+      gap: 40px; padding: 60px 40px;
+    }
+    .feira-banner::before {
+      content: ''; position: absolute; inset: 0;
+      background: url('foto-atalaia.jpg') center center / cover no-repeat;
+      opacity: 0.1;
+    }
+    .feira-banner-content { position: relative; z-index: 1; }
+    .feira-banner-tag { font-family: 'Space Mono', monospace; font-size: 0.6rem; color: rgba(13,13,11,0.45); letter-spacing: 0.22em; text-transform: uppercase; margin-bottom: 14px; display: flex; align-items: center; gap: 10px; }
+    .feira-banner-tag::before { content: ''; display: block; width: 28px; height: 1px; background: rgba(13,13,11,0.3); }
+    .feira-banner-title { line-height: 0.88; margin-bottom: 16px; }
+    .feira-banner-title .titulo-maratu {
+      font-family: 'Clother', sans-serif; font-weight: 900;
+      font-size: clamp(2.4rem, 6vw, 6.5rem); color: var(--preto); display: block; line-height: 1;
+    }
+    .feira-banner-title .titulo-maratu em { font-family: 'Jack', sans-serif; font-style: normal; }
+    .feira-banner-desc { font-size: 1rem; color: rgba(13,13,11,0.6); line-height: 1.7; max-width: 460px; font-weight: 700; }
+    .feira-banner-cta { position: relative; z-index: 1; flex-shrink: 0; }
+    .feira-btn {
+      display: flex; align-items: center; gap: 22px;
+      text-decoration: none; background: var(--areia); color: var(--preto);
+      padding: 28px 42px; font-family: 'Clother', sans-serif; font-weight: 900;
+      font-size: 1.3rem; letter-spacing: 0.04em; text-transform: uppercase;
+      transition: all 0.25s; border-radius: 999px; border: 2px solid var(--preto);
+    }
+    .feira-btn:hover { background: var(--preto); color: var(--areia); }
+    .feira-btn-arrow {
+      width: 52px; height: 52px; border-radius: 50%;
+      background: var(--laranja); color: var(--preto);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem; flex-shrink: 0; transition: all 0.25s;
+    }
+    .feira-btn:hover .feira-btn-arrow { background: var(--areia); color: var(--preto); }
+    .feira-btn-text { display: flex; flex-direction: column; gap: 3px; }
+    .feira-btn-label { font-size: 0.58rem; font-family: 'Space Mono', monospace; font-weight: 400; opacity: 0.5; letter-spacing: 0.15em; }
+
+    /* ── CONTATO ── */
+    .contato { padding: 120px 40px; border-top: 1px solid rgba(240,236,228,0.08); }
+    .contato-header { margin-bottom: 64px; display: flex; justify-content: space-between; align-items: flex-end; gap: 40px; flex-wrap: wrap; }
+    .contato-title { font-family: 'Clother', sans-serif; font-weight: 700; font-size: clamp(2.2rem, 4.5vw, 4.5rem); line-height: 1; color: var(--areia); }
+    .contato-title .destaque { font-family: 'Jack', sans-serif; font-weight: 400; color: var(--laranja); }
+    .contato-desc { font-size: 1rem; line-height: 1.7; color: rgba(240,236,228,0.55); max-width: 320px; }
+    .contato-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
+    .contato-link {
       display: flex; align-items: center; justify-content: space-between;
-      padding: 18px 20px; background: rgba(240,236,228,0.03);
-      border: 1px solid rgba(240,236,228,0.07); text-decoration: none; color: var(--areia);
-      transition: background 0.2s;
+      padding: 28px 32px; background: rgba(240,236,228,0.02);
+      border: 1px solid rgba(240,236,228,0.06); text-decoration: none;
+      color: var(--areia); transition: all 0.25s ease; min-height: 90px;
     }
-    .clink:hover { background: rgba(200,80,26,0.12); border-color: rgba(200,80,26,0.2); }
-    .clink-left { display: flex; align-items: center; gap: 14px; }
-    .clink-icon { width: 28px; height: 28px; object-fit: contain; opacity: 0.7; }
-    .clink-meta { font-family: 'Space Mono', monospace; font-size: 0.45rem; color: var(--laranja); letter-spacing: 0.15em; text-transform: uppercase; display: block; margin-bottom: 2px; }
-    .clink-nome { font-family: 'Clother', sans-serif; font-weight: 700; font-size: 0.95rem; }
-    .clink-arrow { color: rgba(240,236,228,0.3); font-size: 1rem; }
-    .clink-breve { font-family: 'Space Mono', monospace; font-size: 0.45rem; color: rgba(240,236,228,0.25); letter-spacing: 0.1em; }
+    .contato-link:hover { background: var(--laranja); border-color: var(--laranja); }
+    .contato-link:hover .link-label { color: var(--preto); }
+    .contato-link:hover .link-type { color: rgba(13,13,11,0.55); }
+    .contato-link:hover .link-arrow { color: var(--preto); transform: translate(4px,-4px); }
+    .link-left { display: flex; align-items: center; gap: 18px; }
+    .link-icon { width: 40px; height: 40px; border-radius: 50%; mix-blend-mode: screen; flex-shrink: 0; }
+    .link-text { display: flex; flex-direction: column; gap: 4px; }
+    .link-type { font-family: 'Space Mono', monospace; font-size: 0.6rem; color: var(--laranja); letter-spacing: 0.2em; text-transform: uppercase; transition: color 0.25s ease; }
+    .link-label { font-family: 'Clother', sans-serif; font-weight: 700; font-size: 1.2rem; transition: color 0.25s ease; line-height: 1.2; }
+    .link-em-breve { font-family: 'Space Mono', monospace; font-size: 0.5rem; color: rgba(240,236,228,0.3); letter-spacing: 0.15em; text-transform: uppercase; }
+    .link-arrow { font-size: 1.1rem; transition: all 0.25s ease; color: rgba(240,236,228,0.3); flex-shrink: 0; }
+    .link-disabled { opacity: 0.3; cursor: default; pointer-events: none; }
+    .nl-card {
+      grid-column: span 2; padding: 36px 32px;
+      background: rgba(240,236,228,0.02); border: 1px solid rgba(240,236,228,0.06);
+    }
+    .nl-card-header { display: flex; align-items: baseline; gap: 16px; margin-bottom: 20px; flex-wrap: wrap; }
+    .nl-card-type { font-family: 'Space Mono', monospace; font-size: 0.6rem; color: var(--laranja); letter-spacing: 0.2em; text-transform: uppercase; }
+    .nl-card-title { font-family: 'Clother', sans-serif; font-weight: 700; font-size: 1.2rem; color: var(--areia); }
+    .nl-card-form { display: flex; gap: 0; }
+    .nl-card-input {
+      flex: 1; background: rgba(240,236,228,0.05); border: 1px solid rgba(240,236,228,0.12);
+      border-right: none; color: var(--areia); font-family: 'Clother', sans-serif;
+      font-size: 1rem; padding: 14px 20px; outline: none; transition: border-color 0.2s;
+    }
+    .nl-card-input:focus { border-color: rgba(200,80,26,0.5); }
+    .nl-card-input::placeholder { color: rgba(240,236,228,0.2); }
+    .nl-card-btn {
+      background: var(--laranja); border: none; color: var(--preto);
+      font-family: 'Clother', sans-serif; font-weight: 900; font-size: 0.9rem;
+      letter-spacing: 0.1em; text-transform: uppercase; padding: 14px 28px;
+      cursor: pointer; transition: opacity 0.2s; white-space: nowrap;
+    }
+    .nl-card-btn:hover { opacity: 0.85; }
+    .nl-card-success {
+      font-family: 'Space Mono', monospace; font-size: 0.7rem;
+      color: var(--laranja); letter-spacing: 0.1em; padding: 14px 0; display: none;
+    }
 
-    /* newsletter no contato */
-    .nl-card { background: rgba(240,236,228,0.03); border: 1px solid rgba(240,236,228,0.07); padding: 20px; }
-    .nl-card-meta { font-family: 'Space Mono', monospace; font-size: 0.45rem; color: var(--laranja); letter-spacing: 0.15em; text-transform: uppercase; display: block; margin-bottom: 4px; }
-    .nl-card-title { font-family: 'Clother', sans-serif; font-weight: 700; font-size: 0.95rem; color: var(--areia); display: block; margin-bottom: 14px; }
-    .nl-row { display: flex; }
-    .nl-input { flex: 1; background: rgba(240,236,228,0.05); border: 1px solid rgba(240,236,228,0.1); border-right: none; color: var(--areia); font-family: 'Clother', sans-serif; font-size: 0.9rem; padding: 11px 14px; outline: none; }
-    .nl-input::placeholder { color: rgba(240,236,228,0.3); }
-    .nl-btn { background: var(--laranja); border: none; color: var(--preto); font-family: 'Clother', sans-serif; font-weight: 900; font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; padding: 11px 16px; cursor: pointer; border-radius: 0 8px 0 0; transition: background 0.2s; white-space: nowrap; }
-    .nl-btn:hover { background: var(--areia); }
-    .nl-success { display: none; font-size: 0.85rem; color: var(--laranja); margin-top: 10px; font-weight: 700; }
-
-    /* ═══════════════════════════════════
-       POLÍTICA
-    ═══════════════════════════════════ */
-    .politica { padding: 80px 48px; border-top: 1px solid rgba(240,236,228,0.08); }
-    .politica-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-top: 48px; }
-    .pol-item { padding: 28px 28px 32px; border: 1px solid rgba(240,236,228,0.06); background: rgba(240,236,228,0.02); }
-    .pol-icon { font-size: 1.4rem; margin-bottom: 14px; display: block; }
-    .pol-titulo { font-family: 'Clother', sans-serif; font-weight: 900; font-size: 1rem; color: var(--areia); text-transform: uppercase; margin-bottom: 10px; }
-    .pol-texto { font-size: 0.85rem; line-height: 1.7; color: rgba(240,236,228,0.45); }
-    .pol-texto strong { color: rgba(240,236,228,0.7); font-weight: 700; }
-
-    /* ═══════════════════════════════════
-       FOOTER
-    ═══════════════════════════════════ */
-    footer { padding: 32px 48px; border-top: 1px solid rgba(240,236,228,0.06); display: flex; justify-content: space-between; align-items: center; }
-    .footer-logo img { height: 38px; width: 38px; border-radius: 50%; mix-blend-mode: screen; }
-    .footer-info { font-family: 'Space Mono', monospace; font-size: 0.5rem; color: rgba(240,236,228,0.18); letter-spacing: 0.1em; text-align: right; line-height: 1.9; }
-
-    /* ═══════════════════════════════════
-       NEWSLETTER POPUP
-    ═══════════════════════════════════ */
+    /* ── NEWSLETTER POPUP ── */
     .nl-popup {
-      position: fixed; bottom: 32px; right: 32px; z-index: 500;
-      background: var(--preto); border: 1px solid rgba(200,80,26,0.3);
-      padding: 28px 28px 24px; width: 320px; border-radius: 0 16px 0 0;
-      box-shadow: 0 24px 64px rgba(0,0,0,0.6);
-      transform: translateY(120%); opacity: 0; transition: all 0.4s cubic-bezier(0.16,1,0.3,1);
-      pointer-events: none;
+      position: fixed; bottom: 28px; right: 28px; z-index: 9000;
+      width: 300px; background: var(--preto);
+      border: 1px solid rgba(200,80,26,0.4);
+      padding: 28px 24px 24px; box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+      transform: translateY(120px); opacity: 0; pointer-events: none;
+      transition: transform 0.4s cubic-bezier(0.16,1,0.3,1), opacity 0.3s ease;
     }
     .nl-popup.visible { transform: translateY(0); opacity: 1; pointer-events: all; }
-    .nl-popup-close { position: absolute; top: 12px; right: 14px; background: none; border: none; color: rgba(240,236,228,0.3); font-size: 1rem; cursor: pointer; padding: 4px; line-height: 1; }
+    .nl-popup-close {
+      position: absolute; top: 10px; right: 12px;
+      background: none; border: none; color: rgba(240,236,228,0.35);
+      font-family: 'Space Mono', monospace; font-size: 0.75rem;
+      cursor: pointer; letter-spacing: 0.1em; transition: color 0.2s;
+      line-height: 1; padding: 4px 6px;
+    }
     .nl-popup-close:hover { color: var(--areia); }
-    .nl-popup-tag { font-family: 'Space Mono', monospace; font-size: 0.52rem; color: var(--laranja); letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 8px; }
-    .nl-popup-title { font-family: 'Clother', sans-serif; font-weight: 900; font-size: 1.3rem; color: var(--areia); line-height: 1.1; margin-bottom: 6px; }
-    .nl-popup-sub { font-size: 0.82rem; color: rgba(240,236,228,0.45); line-height: 1.6; margin-bottom: 16px; }
+    .nl-popup-tag {
+      font-family: 'Space Mono', monospace; font-size: 0.55rem;
+      color: var(--laranja); letter-spacing: 0.22em; text-transform: uppercase; margin-bottom: 10px;
+    }
+    .nl-popup-title {
+      font-family: 'Clother', sans-serif; font-weight: 700;
+      font-size: 1.05rem; color: var(--areia); margin-bottom: 6px;
+    }
+    .nl-popup-sub {
+      font-family: 'Space Mono', monospace; font-size: 0.6rem;
+      color: rgba(240,236,228,0.4); line-height: 1.6; margin-bottom: 18px;
+    }
     .nl-form { display: flex; flex-direction: column; gap: 8px; }
-    .nl-form .nl-input { border-right: 1px solid rgba(240,236,228,0.1); }
-    .nl-form .nl-btn { border-radius: 0 8px 0 0; padding: 12px; }
-    .nl-popup-success { display: none; font-size: 0.85rem; color: var(--laranja); font-weight: 700; margin-top: 6px; }
-
-    /* ═══════════════════════════════════
-       RESPONSIVE
-    ═══════════════════════════════════ */
-    @media (max-width: 900px) {
-      .split { grid-template-columns: 1fr; }
-      .split-foto { min-height: 300px; }
-      .split.foto-direita .split-foto { order: 2; }
-      .split.foto-esquerda .split-foto { order: -1; }
-      .split-texto { padding: 44px 28px; }
-      .hero { padding: 80px 24px 52px; }
-      .solido { padding: 56px 24px; }
-      .politica { padding: 60px 24px; }
-      .politica-grid { grid-template-columns: 1fr; }
-      footer { flex-direction: column; gap: 16px; align-items: flex-start; padding: 28px 24px; }
-      .footer-info { text-align: left; }
-      nav { padding: max(env(safe-area-inset-top), 14px) 20px 14px; }
-      .nav-tagline { display: none; }
-      .nl-popup { bottom: 16px; right: 16px; left: 16px; width: auto; }
+    .nl-input {
+      background: rgba(240,236,228,0.04); border: 1px solid rgba(240,236,228,0.12);
+      color: var(--areia); font-family: 'Clother', sans-serif; font-size: 0.9rem;
+      padding: 10px 14px; outline: none; transition: border-color 0.2s;
+    }
+    .nl-input:focus { border-color: rgba(200,80,26,0.5); }
+    .nl-input::placeholder { color: rgba(240,236,228,0.25); }
+    .nl-btn {
+      background: var(--laranja); border: none; color: var(--preto);
+      font-family: 'Clother', sans-serif; font-weight: 900; font-size: 0.85rem;
+      letter-spacing: 0.1em; text-transform: uppercase; padding: 11px 14px;
+      cursor: pointer; transition: opacity 0.2s;
+    }
+    .nl-btn:hover { opacity: 0.85; }
+    .nl-success {
+      font-family: 'Space Mono', monospace; font-size: 0.7rem;
+      color: var(--laranja); letter-spacing: 0.1em; text-align: center;
+      padding: 8px 0; display: none;
     }
 
-    @media (max-width: 600px) {
-      .t2 { font-size: clamp(2.6rem, 13vw, 4rem); }
-      .stats { grid-template-columns: 1fr; }
+    /* ── POLÍTICA ── */
+    .politica { padding: 80px 40px; border-top: 1px solid rgba(240,236,228,0.08); }
+    .politica-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-top: 48px; }
+    .politica-item { padding: 28px 28px 32px; border: 1px solid rgba(240,236,228,0.06); background: rgba(240,236,228,0.02); }
+    .politica-icon { font-size: 1.4rem; margin-bottom: 14px; display: block; }
+    .politica-titulo { font-family: 'Clother', sans-serif; font-weight: 900; font-size: 1rem; color: var(--areia); text-transform: uppercase; margin-bottom: 10px; }
+    .politica-texto { font-size: 0.85rem; line-height: 1.7; color: rgba(240,236,228,0.45); }
+    .politica-texto strong { color: rgba(240,236,228,0.7); font-weight: 700; }
+
+    /* ── FOOTER ── */
+    footer { padding: 40px; border-top: 1px solid rgba(240,236,228,0.08); display: flex; justify-content: space-between; align-items: center; }
+    .footer-logo img { height: 40px; width: 40px; border-radius: 50%; mix-blend-mode: screen; }
+    .footer-info { font-family: 'Space Mono', monospace; font-size: 0.6rem; color: rgba(240,236,228,0.3); letter-spacing: 0.1em; text-align: right; line-height: 1.8; }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp { from { opacity:0; transform:translateY(40px); } to { opacity:1; transform:translateY(0); } }
+    .hero-tag { animation: fadeUp 0.6s ease 0.2s both; }
+    .hero-wordmark { animation: fadeUp 0.7s ease 0.35s both; }
+    .hero-desc { animation: fadeUp 0.6s ease 0.5s both; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      nav { padding: max(env(safe-area-inset-top), 16px) 24px 16px; }
+      .hero { padding: 80px 24px 60px; }
+      .hero-wordmark .maratu { font-size: clamp(2.8rem, 14vw, 5rem); }
+      .sobre { grid-template-columns: 1fr; gap: 48px; padding: 80px 24px; }
+      .sobre-servicos { grid-template-columns: 1fr; }
+      .origem { padding: 80px 24px; }
+      .servicos { padding: 80px 24px; }
+      .servicos-grid { grid-template-columns: 1fr; }
+      .embreve { padding: 80px 24px; }
+      .embreve-grid { grid-template-columns: 1fr; }
+      .colecao-card { padding: 36px 28px 72px; }
+      .colecao-desc { font-size: 0.9rem; }
+      .colecao-badge { bottom: 24px; right: 24px; }
+      .feira-banner { grid-template-columns: 1fr; padding: 40px 24px; gap: 28px; }
+      .feira-btn { align-items: flex-start; padding: 20px 28px; font-size: 1.05rem; }
+      .feira-btn-arrow { width: 44px; height: 44px; }
+      .contato-header { flex-direction: column; align-items: flex-start; gap: 20px; margin-bottom: 40px; }
+      .contato-desc { max-width: 100%; }
+      .contato-grid { grid-template-columns: 1fr; }
+      .nl-card { grid-column: span 1; padding: 28px 20px; }
+      .nl-card-form { flex-direction: column; }
+      .nl-card-input { border-right: 1px solid rgba(240,236,228,0.12); border-bottom: none; }
+      .nl-card-btn { width: 100%; padding: 14px 20px; }
+      .contato-link { padding: 22px 20px; min-height: 76px; }
+      .link-label { font-size: 1.05rem; }
+      .politica { padding: 60px 24px; }
+      .politica-grid { grid-template-columns: 1fr; }
+      footer { flex-direction: column; gap: 16px; align-items: flex-start; padding: 32px 24px; }
+      .footer-info { text-align: left; }
     }
   </style>
 </head>
 <body>
 
-  <!-- NAV -->
   <nav>
     <a href="#" class="nav-logo"><img src="logo-redondo.png" alt="MARATU Estúdio"></a>
     <span class="nav-tagline">Impressão 3D · Design · Arte</span>
-    <a href="loja.html" class="nav-loja">Ver loja ↗</a>
   </nav>
 
-  <!-- ① HERO -->
+  <!-- HERO -->
   <section class="hero">
     <div class="hero-bg"></div>
-    <div class="hero-grid"></div>
+    <div class="hero-grid-lines"></div>
     <div class="hero-content">
-      <p class="lbl">EST. 2026 — ARACAJU, SE</p>
-      <span class="hero-w1">MARATU</span>
-      <span class="hero-w2">Estúdio</span>
+      <p class="hero-tag">EST. 2026 — ARACAJU, SE</p>
+      <div class="hero-wordmark">
+        <span class="maratu">MARATU</span>
+        <span class="estudio">Estúdio</span>
+      </div>
       <p class="hero-desc">A MARATU é um estúdio criativo de Aracaju especializado em impressão 3D, design e arte. Estamos construindo algo novo por aqui.</p>
-      <span class="hero-scroll">scroll ↓</span>
+    </div>
+    <span class="hero-scroll">SCROLL ↓</span>
+  </section>
+
+  <!-- FEIRA MARATU — BANNER -->
+  <section class="feira-banner">
+    <div class="feira-banner-content">
+      <p class="feira-banner-tag">EST. 2026 — Aracaju, SE</p>
+      <h2 class="feira-banner-title">
+        <span class="titulo-maratu">Visite nossa <em>LOJA</em></span>
+      </h2>
+      <p class="feira-banner-desc">Pôsteres · Adesivos · Chaveiros — feitos em Aracaju</p>
+    </div>
+    <div class="feira-banner-cta">
+      <a href="loja.html" class="feira-btn">
+        <span class="feira-btn-arrow">↗</span>
+        <span class="feira-btn-text">
+          <span>Ver produtos</span>
+          <span class="feira-btn-label">12 produtos disponiveis</span>
+        </span>
+      </a>
     </div>
   </section>
 
-  <div class="div-laranja"></div>
+  <!-- 001 SOBRE + O QUE FAZEMOS -->
+  <section class="sobre" id="sobre">
+    <div>
+      <p class="section-number">001 — MARATU</p>
+      <h2 class="sobre-title">O que é a<br><span class="destaque">MARATU</span></h2>
+      <p class="sobre-text">MARATU é um estúdio criativo nascido em Aracaju. Fazemos impressão 3D, design e arte carregados de identidade, momento e história regional. Cada peça é um pedaço das nossas raízes.</p>
+    </div>
+    <div class="sobre-right">
+      <div class="stat-block">
+        <p class="stat-label">O que fazemos</p>
+        <p class="stat-value"><span class="mat-destaque">Impressão 3D · Design · Arte</span></p>
+      </div>
+      <div class="stat-block">
+        <p class="stat-label">Como fazemos</p>
+        <p class="stat-value">Filamento PLA e PETG, produzido aqui, sob encomenda</p>
+      </div>
+      <div class="stat-block">
+        <p class="stat-label">Desde</p>
+        <p class="stat-value">2026 — ainda no começo, mas com muito pela frente</p>
+      </div>
+    </div>
+  </section>
 
-  <!-- ② FEIRA — split laranja | foto -->
-  <div class="split foto-direita">
-    <div class="split-texto bg-laranja">
-      <p class="lbl">Nossa loja — aberta agora</p>
-      <span class="t1">Visite nossa</span>
-      <span class="t2"><em>LOJA</em></span>
-      <p class="tdesc">Pôsteres · Adesivos · Chaveiros — feitos em Aracaju e enviados pro Brasil inteiro.</p>
-      <a href="loja.html" class="btn btn-dark">
-        <span class="btn-circle">↗</span>
-        Ver produtos
+  <!-- 002 ORIGEM -->
+  <section class="origem" id="origem">
+    <div class="origem-bg"></div>
+    <div class="origem-inner">
+      <p class="section-number" style="color: rgba(13,13,11,0.5);">002 — ORIGEM</p>
+      <h2 class="origem-title">Feito em<br><span class="destaque">ARACAJU</span></h2>
+      <p class="origem-text">Nascemos no mangue e mandamos pra todo o Brasil. A identidade regional não é detalhe, é a base de tudo. Cada cor, cada forma, cada elemento da marca vem daqui.</p>
+    </div>
+  </section>
+
+  <!-- 005 CONTATO -->
+  <section class="contato" id="contato">
+    <div class="contato-header">
+      <div>
+        <p class="section-number">005 — CONTATO</p>
+        <h2 class="contato-title">Fala com a <span class="destaque">MARATU</span></h2>
+      </div>
+      <p class="contato-desc">Em breve mais novidades no site para vocês. Entre em contato com a gente!</p>
+    </div>
+    <div class="contato-grid">
+      <a href="https://instagram.com/maratuestudio" target="_blank" rel="noopener" class="contato-link">
+        <div class="link-left">
+          <img src="icon-instagram.png" alt="Instagram" class="link-icon">
+          <div class="link-text">
+            <span class="link-type">Instagram</span>
+            <span class="link-label">Conheça nossos produtos</span>
+          </div>
+        </div>
+        <span class="link-arrow">↗</span>
       </a>
-    </div>
-    <div class="split-foto">
-      <img src="foto-atalaia.jpg" alt="Praia de Atalaia, Aracaju">
-    </div>
-  </div>
-
-  <!-- ③ SOBRE — sólido areia -->
-  <div class="solido bg-areia" id="sobre">
-    <p class="lbl" style="color:var(--laranja);">001 — MARATU</p>
-    <span class="t1" style="color:var(--preto);display:block;margin-bottom:4px;">O que é a</span>
-    <span class="t2" style="color:var(--laranja);display:block;margin-bottom:20px;">MARATU</span>
-    <p class="tdesc" style="color:rgba(13,13,11,0.6);max-width:620px;margin-bottom:0;">MARATU é um estúdio criativo nascido em Aracaju. Fazemos impressão 3D, design e arte carregados de identidade, momento e história regional. Cada peça é um pedaço das nossas raízes.</p>
-    <div class="stats">
-      <div class="stat"><p class="stat-l">O que fazemos</p><p class="stat-v bg-areia">Impressão 3D · Design · Arte</p></div>
-      <div class="stat"><p class="stat-l">Onde nascemos</p><p class="stat-v bg-areia">Aracaju, Sergipe — enviamos pro Brasil inteiro</p></div>
-      <div class="stat"><p class="stat-l">Como fazemos</p><p class="stat-v bg-areia">Filamento PLA e PETG, produzido aqui, sob encomenda</p></div>
-      <div class="stat"><p class="stat-l">Desde</p><p class="stat-v bg-areia">2026 — ainda no começo, mas com muito pela frente</p></div>
-    </div>
-  </div>
-
-  <!-- ④ ORIGEM — split foto | azul -->
-  <div class="split foto-esquerda">
-    <div class="split-foto">
-      <img src="mangue.jpg" alt="Mangue de Sergipe">
-    </div>
-    <div class="split-texto bg-azul" id="origem">
-      <p class="lbl">002 — ORIGEM</p>
-      <span class="t1">Feito em</span>
-      <span class="t2">ARACAJU</span>
-      <p class="tdesc">Nascemos no mangue e mandamos pra todo o Brasil. A identidade regional não é detalhe, é a base de tudo. Cada cor, cada forma, cada elemento da marca vem daqui.</p>
-    </div>
-  </div>
-
-  <!-- ⑤ O QUE FAZEMOS — sólido areia -->
-  <div class="solido bg-areia">
-    <p class="lbl" style="color:var(--laranja);">O que fazemos</p>
-    <p class="fazemos-titulo">Impressão 3D, Design e <span>ARTE</span></p>
-    <div class="cards-col">
-      <div class="card-item">
-        <img src="img-3d.png" class="card-img" alt="Impressão 3D">
-        <div>
-          <p class="card-num">01 ——</p>
-          <p class="card-nome">Impressão 3D</p>
-          <p class="card-desc-txt">Peças decorativas, protótipos e encomendas exclusivas. Do arquivo ao objeto, feito aqui, assinado pela MARATU.</p>
+      <a href="https://wa.me/5579981512978" target="_blank" rel="noopener" class="contato-link">
+        <div class="link-left">
+          <img src="icon-whatsapp.png" alt="WhatsApp" class="link-icon">
+          <div class="link-text">
+            <span class="link-type">WhatsApp</span>
+            <span class="link-label">Faça seu pedido aqui</span>
+          </div>
+        </div>
+        <span class="link-arrow">↗</span>
+      </a>
+      <a href="mailto:estudio@maratu.com.br" class="contato-link">
+        <div class="link-left">
+          <img src="icon-email.png" alt="Email" class="link-icon">
+          <div class="link-text">
+            <span class="link-type">Email</span>
+            <span class="link-label">Manda uma mensagem pra gente</span>
+          </div>
+        </div>
+        <span class="link-arrow">↗</span>
+      </a>
+      <div class="contato-link link-disabled">
+        <div class="link-left">
+          <img src="icon-tiktok.png" alt="TikTok" class="link-icon">
+          <div class="link-text">
+            <span class="link-type">TikTok</span>
+            <span class="link-label">@maratuestudio</span>
+            <span class="link-em-breve">— Em breve</span>
+          </div>
         </div>
       </div>
-      <div class="card-item">
-        <img src="img-design.jpg" class="card-img" alt="Design">
-        <div>
-          <p class="card-num">02 ——</p>
-          <p class="card-nome">Design</p>
-          <p class="card-desc-txt">Identidade visual, adesivos, pôsteres e lambes. Design com autoria, não produção em massa.</p>
-        </div>
-      </div>
-      <div class="card-item">
-        <img src="img-arte.jpg" class="card-img" alt="Arte">
-        <div>
-          <p class="card-num">03 ——</p>
-          <p class="card-nome">Arte</p>
-          <p class="card-desc-txt">Peças autorais, objetos colecionáveis e decoração com identidade. Arte que dá pra segurar.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="div-laranja"></div>
-
-  <!-- ⑥ CONTATO — split preto | foto -->
-  <div class="split foto-direita" id="contato">
-    <div class="split-texto bg-preto" style="border-top:none;">
-      <p class="lbl">005 — CONTATO</p>
-      <span class="t1">Fala com a</span>
-      <span class="t2">MARATU</span>
-      <div class="links">
-        <a href="https://instagram.com/maratuestudio" target="_blank" rel="noopener" class="clink">
-          <div class="clink-left">
-            <img src="icon-instagram.png" class="clink-icon" alt="Instagram">
-            <div><span class="clink-meta">Instagram</span><span class="clink-nome">Conheça nossos produtos</span></div>
-          </div>
-          <span class="clink-arrow">↗</span>
-        </a>
-        <a href="https://wa.me/5579981512978" target="_blank" rel="noopener" class="clink">
-          <div class="clink-left">
-            <img src="icon-whatsapp.png" class="clink-icon" alt="WhatsApp">
-            <div><span class="clink-meta">WhatsApp</span><span class="clink-nome">Faça seu pedido aqui</span></div>
-          </div>
-          <span class="clink-arrow">↗</span>
-        </a>
-        <a href="mailto:estudio@maratu.com.br" class="clink">
-          <div class="clink-left">
-            <img src="icon-email.png" class="clink-icon" alt="Email">
-            <div><span class="clink-meta">Email</span><span class="clink-nome">Manda uma mensagem pra gente</span></div>
-          </div>
-          <span class="clink-arrow">↗</span>
-        </a>
-        <div class="clink" style="cursor:default;">
-          <div class="clink-left">
-            <img src="icon-tiktok.png" class="clink-icon" alt="TikTok">
-            <div><span class="clink-meta">TikTok</span><span class="clink-nome" style="color:rgba(240,236,228,0.35);">@maratuestudio</span></div>
-          </div>
-          <span class="clink-breve">Em breve</span>
-        </div>
-        <div class="nl-card">
-          <span class="nl-card-meta">Newsletter</span>
+      <!-- Newsletter -->
+      <div class="nl-card">
+        <div class="nl-card-header">
+          <span class="nl-card-type">Newsletter</span>
           <span class="nl-card-title">Fique por dentro das novidades</span>
-          <form name="newsletter-contato" netlify netlify-honeypot="bot-field" id="nl-contato-form">
-            <input type="hidden" name="form-name" value="newsletter-contato">
-            <p style="display:none"><label>Não preencha isso: <input name="bot-field"></label></p>
-            <div class="nl-row">
-              <input type="email" name="email" placeholder="seu@email.com" required class="nl-input" id="nl-contato-email">
-              <button type="submit" class="nl-btn">Assinar ↗</button>
-            </div>
-          </form>
-          <p class="nl-success" id="nl-contato-success">Inscrito! Bem-vindo à MARATU.</p>
         </div>
+        <form name="newsletter-contato" netlify netlify-honeypot="bot-field" class="nl-card-form" id="nl-contato-form">
+          <input type="hidden" name="form-name" value="newsletter-contato">
+          <p style="display:none"><label>Não preencha isso: <input name="bot-field"></label></p>
+          <input type="email" name="email" placeholder="seu@email.com" required class="nl-card-input" id="nl-contato-email">
+          <button type="submit" class="nl-card-btn">Assinar ↗</button>
+        </form>
+        <p class="nl-card-success" id="nl-contato-success">Inscrito! Bem-vindo à MARATU.</p>
       </div>
     </div>
-    <div class="split-foto">
-      <img src="bg-estatuas.jpg" alt="Aracaju">
-    </div>
-  </div>
+  </section>
 
-  <!-- POLÍTICA -->
+  <!-- POLÍTICA DE TROCA E DEVOLUÇÃO -->
   <section class="politica" id="politica">
-    <p class="lbl" style="color:var(--laranja);">006 — POLITICA</p>
-    <span class="t1" style="color:var(--areia);display:block;margin-bottom:4px;">Troca e</span>
-    <span class="t2" style="color:var(--laranja);display:block;margin-bottom:0;">Devolucao</span>
+    <p class="section-number">006 — POLITICA</p>
+    <h2 class="sobre-title">Troca e<br><span class="destaque">Devolucao</span></h2>
     <div class="politica-grid">
-      <div class="pol-item">
-        <span class="pol-icon">↩</span>
-        <p class="pol-titulo">Produto com defeito</p>
-        <p class="pol-texto">Se o produto chegou com defeito de fabricação ou foi danificado no transporte, entre em contato pelo WhatsApp em até <strong>7 dias corridos</strong> após o recebimento. Vamos resolver com troca ou reembolso integral, sem custo pra você.</p>
+      <div class="politica-item">
+        <span class="politica-icon">↩</span>
+        <p class="politica-titulo">Produto com defeito</p>
+        <p class="politica-texto">Se o produto chegou com defeito de fabricação ou foi danificado no transporte, entre em contato pelo WhatsApp em até <strong>7 dias corridos</strong> após o recebimento. Vamos resolver com troca ou reembolso integral, sem custo pra você.</p>
       </div>
-      <div class="pol-item">
-        <span class="pol-icon">↔</span>
-        <p class="pol-titulo">Troca de tamanho ou modelo</p>
-        <p class="pol-texto">Pedidos de pôsteres são produzidos sob encomenda, então <strong>não aceitamos troca por arrependimento</strong> de tamanho ou modelo. Escolha com atenção antes de encomendar. Em caso de dúvida, fale com a gente antes de pedir.</p>
+      <div class="politica-item">
+        <span class="politica-icon">↔</span>
+        <p class="politica-titulo">Troca de tamanho ou modelo</p>
+        <p class="politica-texto">Pedidos de pôsteres são produzidos sob encomenda, então <strong>não aceitamos troca por arrependimento</strong> de tamanho ou modelo. Escolha com atenção antes de encomendar. Em caso de dúvida, fale com a gente antes de pedir.</p>
       </div>
-      <div class="pol-item">
-        <span class="pol-icon">◎</span>
-        <p class="pol-titulo">Como entrar em contato</p>
-        <p class="pol-texto">Toda solicitação de troca ou devolução deve ser feita pelo <strong>WhatsApp</strong>, com foto do produto e número do pedido. Respondemos em até 48 horas úteis. Nosso objetivo é que você fique satisfeito com cada peça.</p>
+      <div class="politica-item">
+        <span class="politica-icon">◎</span>
+        <p class="politica-titulo">Como entrar em contato</p>
+        <p class="politica-texto">Toda solicitação de troca ou devolução deve ser feita pelo <strong>WhatsApp</strong>, com foto do produto e número do pedido. Respondemos em até 48 horas úteis. Nosso objetivo é que você fique satisfeito com cada peça.</p>
       </div>
     </div>
   </section>
@@ -469,29 +571,30 @@
   </footer>
 
   <!-- NEWSLETTER POPUP -->
-  <div class="nl-popup" id="nl-popup">
-    <button class="nl-popup-close" id="nl-popup-close">✕</button>
+  <div class="nl-popup" id="nl-popup" role="dialog" aria-label="Newsletter">
+    <button class="nl-popup-close" id="nl-popup-close" aria-label="Fechar">✕</button>
     <p class="nl-popup-tag">Newsletter</p>
     <p class="nl-popup-title">Fique por dentro</p>
-    <p class="nl-popup-sub">Novidades, lançamentos e drops exclusivos direto no seu email.</p>
+    <p class="nl-popup-sub">Novidades, lançamentos e drops exclusivos<br>direto no seu email.</p>
     <form name="newsletter-popup" netlify netlify-honeypot="bot-field" class="nl-form" id="nl-popup-form">
       <input type="hidden" name="form-name" value="newsletter-popup">
       <p style="display:none"><label>Não preencha isso: <input name="bot-field"></label></p>
       <input type="email" name="email" placeholder="seu@email.com" required class="nl-input" id="nl-popup-email">
       <button type="submit" class="nl-btn">Assinar →</button>
-      <p class="nl-popup-success" id="nl-popup-success">Inscrito! Bem-vindo à MARATU.</p>
+      <p class="nl-success" id="nl-popup-success">Inscrito! Bem-vindo à MARATU.</p>
     </form>
   </div>
 
   <script>
     (function() {
+      // Encode form data as URL-encoded string for Netlify
       function encode(data) {
-        return Object.keys(data).map(function(k) {
-          return encodeURIComponent(k) + '=' + encodeURIComponent(data[k]);
+        return Object.keys(data).map(function(key) {
+          return encodeURIComponent(key) + '=' + encodeURIComponent(data[key]);
         }).join('&');
       }
 
-      // POPUP
+      // ── POPUP ──
       var popup = document.getElementById('nl-popup');
       var closeBtn = document.getElementById('nl-popup-close');
       if (!sessionStorage.getItem('nl-dismissed')) {
@@ -508,7 +611,10 @@
         fetch('/', {
           method: 'POST',
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: encode({ 'form-name': 'newsletter-popup', 'email': document.getElementById('nl-popup-email').value })
+          body: encode({
+            'form-name': 'newsletter-popup',
+            'email': document.getElementById('nl-popup-email').value
+          })
         }).then(function() {
           popupForm.querySelector('input[type=email]').style.display = 'none';
           popupForm.querySelector('button').style.display = 'none';
@@ -518,7 +624,7 @@
         }).catch(function() { popupForm.submit(); });
       });
 
-      // FORM CONTATO
+      // ── SECTION FORM ──
       var sectionForm = document.getElementById('nl-contato-form');
       if (sectionForm) {
         sectionForm.addEventListener('submit', function(e) {
@@ -526,7 +632,10 @@
           fetch('/', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: encode({ 'form-name': 'newsletter-contato', 'email': document.getElementById('nl-contato-email').value })
+            body: encode({
+              'form-name': 'newsletter-contato',
+              'email': document.getElementById('nl-contato-email').value
+            })
           }).then(function() {
             sectionForm.style.display = 'none';
             document.getElementById('nl-contato-success').style.display = 'block';
@@ -534,6 +643,13 @@
         });
       }
     })();
+
+    function toggleAccordion() {
+      var btn = document.getElementById('accordion-btn');
+      var content = document.getElementById('accordion-content');
+      btn.classList.toggle('open');
+      content.classList.toggle('open');
+    }
   </script>
 
 </body>

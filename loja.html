@@ -166,15 +166,31 @@
     .produtos-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2px; }
     .produtos-grid.col3 { grid-template-columns: repeat(2, 1fr); }
 
-    /* BADGE COLECAO */
+    /* BADGES — empilhados à esquerda */
+    .produto-badge {
+      position: absolute; left: 12px; z-index: 3;
+      font-family: 'Space Mono', monospace; font-size: 0.45rem;
+      letter-spacing: 0.14em; text-transform: uppercase; padding: 3px 7px;
+      font-weight: 700; border-radius: 0 5px 0 0;
+    }
+    .badge-novo { background: var(--dourado); color: var(--preto); top: 12px; }
     .badge-colecao {
-      position: absolute; top: 12px; right: 12px; z-index: 3;
+      left: 12px; top: 34px; z-index: 3;
+      position: absolute;
       font-family: 'Space Mono', monospace; font-size: 0.42rem;
       letter-spacing: 0.12em; text-transform: uppercase; padding: 3px 6px;
       font-weight: 700; border-radius: 0 5px 0 0;
       background: var(--azul-atalaia); color: #fff;
     }
     .badge-colecao.mangue { background: var(--azul-sergipe); }
+    .badge-desconto {
+      left: 12px; top: 56px; z-index: 3;
+      position: absolute;
+      font-family: 'Space Mono', monospace; font-size: 0.42rem;
+      letter-spacing: 0.1em; text-transform: uppercase; padding: 3px 6px;
+      font-weight: 700; border-radius: 0 5px 0 0;
+      background: var(--laranja); color: var(--preto);
+    }
 
     /* CARD */
     .produto-card { background: rgba(240,236,228,0.025); border: 1px solid rgba(240,236,228,0.07); overflow: hidden; display: flex; flex-direction: column; transition: border-color 0.3s; }
@@ -197,16 +213,6 @@
     }
     .produto-img:hover .img-poster { opacity: 0; }
     .produto-img:hover .img-mockup { opacity: 1; }
-
-    .produto-badge {
-      position: absolute; top: 12px; left: 12px; z-index: 2;
-      font-family: 'Space Mono', monospace; font-size: 0.45rem;
-      letter-spacing: 0.14em; text-transform: uppercase; padding: 3px 7px;
-      font-weight: 700; border-radius: 0 5px 0 0;
-    }
-    .badge-novo { background: var(--dourado); color: var(--preto); }
-
-    .produto-body { padding: 14px 14px 0; flex: 1; }
     .produto-cat { font-family: 'Space Mono', monospace; font-size: 0.48rem; color: var(--laranja); letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 5px; }
     .produto-nome { font-family: 'Clother', sans-serif; font-weight: 900; font-size: 0.95rem; color: var(--areia); text-transform: uppercase; margin-bottom: 3px; line-height: 1.1; }
     .produto-desc { font-size: 0.72rem; color: rgba(240,236,228,0.32); line-height: 1.5; }
@@ -349,7 +355,7 @@
     </a>
     <a href="#cat-posteres" class="loja-colecao-card">
       <p class="loja-colecao-tag">Colecao 02</p>
-      <h3 class="loja-colecao-nome">Mangue Haus</h3>
+      <h3 class="loja-colecao-nome">MangueHaus</h3>
       <p class="loja-colecao-desc">Onde Bauhaus encontra o mangue sergipano. Formas geometricas, filamento, arte e raiz juntos.</p>
       <span class="loja-colecao-badge">Ver produtos</span>
     </a>
@@ -389,16 +395,17 @@
       <div class="produto-card">
         <div class="produto-img" onclick="abrirLightbox('adesivos-origens.png','Colecao de Adesivos Origens')">
           <span class="produto-badge badge-novo">Novo</span>
+          <span class="badge-colecao">Origens</span>
           <img class="img-poster" src="adesivos-origens.png" alt="Colecao de Adesivos Origens" loading="lazy" style="object-fit:contain;padding:8px;">
         </div>
         <div class="produto-body">
           <p class="produto-cat">Adesivos</p>
-          <p class="produto-nome">Colecao Origens - 1 Edicao</p>
+          <p class="produto-nome">Colecao Origens - 1a Edicao</p>
           <p class="produto-desc">12 adesivos · Vinil · Impressao premium</p>
         </div>
         <div class="produto-footer">
           <p class="produto-preco"><span class="cifrao">R$</span>18</p>
-          <a href="https://wa.me/5579981512978?text=Ola!%20Tenho%20interesse%20no%20produto%3A%20Colecao%20de%20Adesivos%20Origens%201%20Edicao%20-%20R%24%2018" target="_blank" rel="noopener" class="btn-encomendar">Encomendar ↗</a>
+          <a href="https://wa.me/5579981512978?text=Ola!%20Tenho%20interesse%20no%20produto%3A%20Colecao%20de%20Adesivos%20Origens%201a%20Edicao%20-%20R%24%2018" target="_blank" rel="noopener" class="btn-encomendar">Encomendar ↗</a>
         </div>
       </div>
 
@@ -445,20 +452,23 @@
   </div>
 
   <script>
-    var PRECOS = { 'A4': 50, 'A3': 80, 'A2': 120, 'A1': 180 };
+    var PRECOS_BASE = { 'A4': 50, 'A3': 80, 'A2': 120, 'A1': 180 };
 
-    // Ordem: destaque (Por do Sol + Sol de Atalaia) na frente
+    function calcPreco(base, desconto) {
+      return desconto ? Math.round(base * 0.8) : base;
+    }
+
     var POSTERES = [
-      { id: 'pordosol',  nome: 'Por do Sol',          img: 'poster-pordosol.png',  mockup: 'mockup-pordosol.png',  colecao: 'Mangue Haus', col: 'mangue', destaque: true },
-      { id: 'atalaia',   nome: 'Sol de Atalaia',      img: 'poster-atalaia.png',   mockup: 'mockup-atalaia.png',   colecao: 'Origens',    col: 'origens', destaque: true },
-      { id: 'destrua',   nome: 'Destrua o Imperio!',  img: 'poster-destrua.png',   mockup: 'mockup-destrua.png',   colecao: 'Origens',    col: 'origens' },
-      { id: 'origens',   nome: 'Origens',             img: 'poster-origens.png',   mockup: 'mockup-origens.png',   colecao: 'Origens',    col: 'origens' },
-      { id: 'matapua',   nome: 'Matapua',             img: 'poster-matapua.png',   mockup: 'mockup-matapua.png',   colecao: 'Origens',    col: 'origens' },
-      { id: 'linguagem', nome: 'Linguagem',           img: 'poster-linguagem.png', mockup: 'mockup-linguagem.png', colecao: 'Mangue Haus', col: 'mangue' },
-      { id: 'camadas',   nome: 'Camadas',             img: 'poster-camadas.png',   mockup: 'mockup-camadas.png',   colecao: 'Mangue Haus', col: 'mangue' },
-      { id: 'areias',    nome: 'Areias',              img: 'poster-areias.png',    mockup: 'mockup-areias.png',    colecao: 'Mangue Haus', col: 'mangue' },
-      { id: 'luzes',     nome: 'Luzes',               img: 'poster-luzes.png',     mockup: 'mockup-luzes.png',     colecao: 'Mangue Haus', col: 'mangue' },
-      { id: 'ritmo',     nome: 'Ritmo',               img: 'poster-ritmo.png',     mockup: 'mockup-ritmo.png',     colecao: 'Mangue Haus', col: 'mangue' },
+      { id: 'pordosol',  nome: 'Por do Sol',         img: 'poster-pordosol.png',  mockup: 'mockup-pordosol.png',  colecao: 'MangueHaus', col: 'mangue', destaque: true },
+      { id: 'atalaia',   nome: 'Sol de Atalaia',     img: 'poster-atalaia.png',   mockup: 'mockup-atalaia.png',   colecao: 'Origens',    col: 'origens', destaque: true },
+      { id: 'destrua',   nome: 'Destrua o Imperio!', img: 'poster-destrua.png',   mockup: 'mockup-destrua.png',   colecao: 'Origens',    col: 'origens' },
+      { id: 'origens',   nome: 'Origens',            img: 'poster-origens.png',   mockup: 'mockup-origens.png',   colecao: 'Origens',    col: 'origens' },
+      { id: 'matapua',   nome: 'Matapua\u00e3',            img: 'poster-matapua.png',   mockup: 'mockup-matapua.png',   colecao: 'Origens',    col: 'origens' },
+      { id: 'linguagem', nome: 'Linguagem',          img: 'poster-linguagem.png', mockup: 'mockup-linguagem.png', colecao: 'MangueHaus', col: 'mangue' },
+      { id: 'camadas',   nome: 'Camadas',            img: 'poster-camadas.png',   mockup: 'mockup-camadas.png',   colecao: 'MangueHaus', col: 'mangue', desconto: true },
+      { id: 'areias',    nome: 'Areias',             img: 'poster-areias.png',    mockup: 'mockup-areias.png',    colecao: 'MangueHaus', col: 'mangue' },
+      { id: 'luzes',     nome: 'Luzes',              img: 'poster-luzes.png',     mockup: 'mockup-luzes.png',     colecao: 'MangueHaus', col: 'mangue', desconto: true },
+      { id: 'ritmo',     nome: 'Ritmo',              img: 'poster-ritmo.png',     mockup: 'mockup-ritmo.png',     colecao: 'MangueHaus', col: 'mangue' },
     ];
 
     function abrirLightbox(img, nome) {
@@ -483,10 +493,13 @@
         var card = document.createElement('div');
         card.className = 'produto-card' + (p.destaque ? ' destaque' : '');
         var badgeColecao = '<span class="badge-colecao' + (p.col === 'mangue' ? ' mangue' : '') + '">' + p.colecao + '</span>';
+        var badgeDesconto = p.desconto ? '<span class="badge-desconto">-20%</span>' : '';
+        var precoInicial = calcPreco(PRECOS_BASE['A4'], p.desconto);
         card.innerHTML =
           '<div class="produto-img" onclick="abrirLightbox(\'' + p.img + '\',\'' + p.nome + '\')">' +
           '<span class="produto-badge badge-novo">Novo</span>' +
           badgeColecao +
+          badgeDesconto +
           '<img class="img-poster" src="' + p.img + '" alt="' + p.nome + '" loading="lazy">' +
           '<img class="img-mockup" src="' + p.mockup + '" alt="' + p.nome + ' mockup" loading="lazy">' +
           '</div>' +
@@ -501,7 +514,7 @@
           }).join('') +
           '</div>' +
           '<div class="produto-footer">' +
-          '<p class="produto-preco" id="preco-' + p.id + '"><span class="cifrao">R$</span><span id="val-' + p.id + '">50</span></p>' +
+          '<p class="produto-preco" id="preco-' + p.id + '"><span class="cifrao">R$</span><span id="val-' + p.id + '">' + precoInicial + '</span></p>' +
           '<a href="#" id="btn-' + p.id + '" class="btn-encomendar" target="_blank" rel="noopener">Encomendar ↗</a>' +
           '</div>';
         grid.appendChild(card);
@@ -512,15 +525,17 @@
     function selecionarTam(btn) {
       var pid = btn.dataset.poster;
       var tam = btn.dataset.tam;
+      var poster = POSTERES.find(function(p) { return p.id === pid; });
       document.getElementById('tam-' + pid).querySelectorAll('.tam-btn').forEach(function(b) { b.classList.remove('selected'); });
       btn.classList.add('selected');
-      document.getElementById('val-' + pid).textContent = PRECOS[tam];
+      var preco = calcPreco(PRECOS_BASE[tam], poster.desconto);
+      document.getElementById('val-' + pid).textContent = preco;
       atualizarLink(pid, tam);
     }
 
     function atualizarLink(pid, tam) {
       var poster = POSTERES.find(function(p) { return p.id === pid; });
-      var preco = PRECOS[tam];
+      var preco = calcPreco(PRECOS_BASE[tam], poster.desconto);
       var msg = encodeURIComponent('Ola! Tenho interesse no produto: ' + poster.nome + ' - ' + tam + ' - R$ ' + preco);
       var btn = document.getElementById('btn-' + pid);
       if (btn) btn.href = 'https://wa.me/5579981512978?text=' + msg;

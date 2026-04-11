@@ -123,16 +123,29 @@
     /* ── SOBRE ── */
     .sobre {
       padding: 120px 40px; display: grid; grid-template-columns: 1fr 1fr;
-      gap: 80px; align-items: center; border-top: 1px solid rgba(240,236,228,0.08);
+      gap: 80px; align-items: start; border-top: 1px solid rgba(240,236,228,0.08);
     }
-    .sobre-title { font-family: 'Clother', sans-serif; font-weight: 700; font-size: clamp(2.2rem, 4.5vw, 4.5rem); line-height: 1; color: var(--areia); margin-bottom: 40px; }
+    .sobre-title { font-family: 'Clother', sans-serif; font-weight: 700; font-size: clamp(2.2rem, 4.5vw, 4.5rem); line-height: 1; color: var(--areia); margin-bottom: 28px; }
     .sobre-title .destaque { font-family: 'Jack', sans-serif; color: var(--laranja); display: block; }
-    .sobre-text { font-size: 1rem; line-height: 1.8; color: rgba(240,236,228,0.65); margin-bottom: 16px; }
+    .sobre-text { font-size: 1rem; line-height: 1.8; color: rgba(240,236,228,0.65); margin-bottom: 48px; }
     .sobre-right { display: flex; flex-direction: column; gap: 24px; }
     .stat-block { border-left: 2px solid var(--laranja); padding: 20px 24px; background: rgba(200,80,26,0.04); }
     .stat-label { font-family: 'Space Mono', monospace; font-size: 0.6rem; color: var(--laranja); letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 8px; }
     .stat-value { font-family: 'Clother', sans-serif; font-weight: 700; font-size: 1.05rem; color: var(--areia); }
     .mat-destaque { color: var(--laranja); font-weight: 900; }
+    .sobre-servicos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+    .servico-card {
+      background: rgba(240,236,228,0.02); border: 1px solid rgba(240,236,228,0.06);
+      overflow: hidden; transition: border-color 0.3s ease; display: flex; flex-direction: column;
+    }
+    .servico-card:hover { border-color: rgba(200,80,26,0.3); }
+    .servico-card:hover .servico-number { color: var(--laranja); }
+    .servico-img { width: 100%; height: 160px; object-fit: cover; filter: brightness(0.6) saturate(0.8); transition: filter 0.4s ease; display: block; }
+    .servico-card:hover .servico-img { filter: brightness(1) saturate(1); }
+    .servico-body { padding: 20px 22px 26px; flex: 1; }
+    .servico-number { font-family: 'Space Mono', monospace; font-size: 0.65rem; color: rgba(240,236,228,0.2); letter-spacing: 0.2em; margin-bottom: 12px; transition: color 0.3s ease; }
+    .servico-name { font-family: 'Clother', sans-serif; font-weight: 900; font-size: 1.5rem; color: var(--areia); margin-bottom: 8px; text-transform: uppercase; }
+    .servico-desc { font-size: 0.85rem; line-height: 1.7; color: rgba(240,236,228,0.5); }
 
     /* ── ORIGEM — seção 002 ── */
     .origem { padding: 120px 40px; background: var(--laranja); position: relative; overflow: hidden; border-top: 1px solid rgba(240,236,228,0.08); }
@@ -150,25 +163,6 @@
     .origem-title { font-family: 'Clother', sans-serif; font-weight: 700; font-size: clamp(2.2rem, 4.5vw, 4.5rem); line-height: 1; color: var(--areia); margin-bottom: 40px; }
     .origem-title .destaque { font-family: 'Jack', sans-serif; color: var(--preto); display: block; }
     .origem-text { font-size: 1rem; line-height: 1.8; color: rgba(240,236,228,0.9); }
-
-    /* ── SERVIÇOS ── */
-    .servicos { padding: 120px 40px; border-top: 1px solid rgba(240,236,228,0.08); }
-    .servicos-title { font-family: 'Clother', sans-serif; font-weight: 700; font-size: clamp(2.2rem, 4.5vw, 4.5rem); line-height: 1; color: var(--areia); margin-bottom: 80px; }
-    .servicos-title .destaque { font-family: 'Jack', sans-serif; font-weight: 400; color: var(--laranja); display: block; }
-    .servicos-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
-    .servico-card {
-      padding: 0; background: rgba(240,236,228,0.02);
-      border: 1px solid rgba(240,236,228,0.06); position: relative; overflow: hidden;
-      transition: border-color 0.3s ease; display: flex; flex-direction: column;
-    }
-    .servico-card:hover { border-color: rgba(200,80,26,0.3); }
-    .servico-card:hover .servico-number { color: var(--laranja); }
-    .servico-img { width: 100%; height: 220px; object-fit: cover; filter: brightness(0.6) saturate(0.8); transition: filter 0.4s ease; display: block; }
-    .servico-card:hover .servico-img { filter: brightness(1) saturate(1); }
-    .servico-body { padding: 32px 36px 40px; flex: 1; }
-    .servico-number { font-family: 'Space Mono', monospace; font-size: 0.65rem; color: rgba(240,236,228,0.2); letter-spacing: 0.2em; margin-bottom: 20px; transition: color 0.3s ease; }
-    .servico-name { font-family: 'Clother', sans-serif; font-weight: 900; font-size: 2rem; color: var(--areia); margin-bottom: 12px; text-transform: uppercase; }
-    .servico-desc { font-size: 0.9rem; line-height: 1.7; color: rgba(240,236,228,0.5); }
 
     /* ── COLEÇÕES ── */
     .embreve { padding: 120px 40px; border-top: 1px solid rgba(240,236,228,0.08); background: rgba(200,80,26,0.03); }
@@ -201,25 +195,24 @@
     .feira-banner-tag { font-family: 'Space Mono', monospace; font-size: 0.6rem; color: rgba(13,13,11,0.45); letter-spacing: 0.22em; text-transform: uppercase; margin-bottom: 14px; display: flex; align-items: center; gap: 10px; }
     .feira-banner-tag::before { content: ''; display: block; width: 28px; height: 1px; background: rgba(13,13,11,0.3); }
     .feira-banner-title { line-height: 0.85; margin-bottom: 16px; }
-    .feira-banner-title .titulo-feira { font-family: 'Clother', sans-serif; font-weight: 900; font-size: clamp(1rem, 2vw, 1.6rem); color: rgba(13,13,11,0.6); display: block; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 2px; }
-    .feira-banner-title .titulo-maratu { font-family: 'Jack', sans-serif; font-size: clamp(3.5rem, 8vw, 9rem); color: var(--preto); display: block; line-height: 0.88; }
-    .feira-banner-desc { font-size: 1rem; color: rgba(13,13,11,0.55); line-height: 1.7; max-width: 460px; }
+    .feira-banner-title .titulo-maratu { font-family: 'Jack', sans-serif; font-size: clamp(3rem, 8vw, 9rem); color: var(--preto); display: block; line-height: 0.88; }
+    .feira-banner-desc { font-size: 1rem; color: rgba(13,13,11,0.6); line-height: 1.7; max-width: 460px; font-weight: 700; }
     .feira-banner-cta { position: relative; z-index: 1; flex-shrink: 0; }
     .feira-btn {
       display: flex; align-items: center; gap: 22px;
-      text-decoration: none; background: var(--preto); color: var(--areia);
+      text-decoration: none; background: var(--areia); color: var(--preto);
       padding: 28px 42px; font-family: 'Clother', sans-serif; font-weight: 900;
       font-size: 1.3rem; letter-spacing: 0.04em; text-transform: uppercase;
       transition: all 0.25s; border-radius: 999px; border: 2px solid var(--preto);
     }
-    .feira-btn:hover { background: transparent; color: var(--preto); }
+    .feira-btn:hover { background: var(--preto); color: var(--areia); }
     .feira-btn-arrow {
       width: 52px; height: 52px; border-radius: 50%;
       background: var(--laranja); color: var(--preto);
       display: flex; align-items: center; justify-content: center;
       font-size: 1.3rem; flex-shrink: 0; transition: all 0.25s;
     }
-    .feira-btn:hover .feira-btn-arrow { background: var(--preto); color: var(--areia); }
+    .feira-btn:hover .feira-btn-arrow { background: var(--areia); color: var(--preto); }
     .feira-btn-text { display: flex; flex-direction: column; gap: 3px; }
     .feira-btn-label { font-size: 0.58rem; font-family: 'Space Mono', monospace; font-weight: 400; opacity: 0.5; letter-spacing: 0.15em; }
 
@@ -352,6 +345,7 @@
       .hero { padding: 80px 24px 60px; }
       .hero-wordmark .maratu { font-size: clamp(2.8rem, 14vw, 5rem); }
       .sobre { grid-template-columns: 1fr; gap: 48px; padding: 80px 24px; }
+      .sobre-servicos { grid-template-columns: 1fr; }
       .origem { padding: 80px 24px; }
       .servicos { padding: 80px 24px; }
       .servicos-grid { grid-template-columns: 1fr; }
@@ -404,48 +398,72 @@
   <!-- FEIRA MARATU — BANNER -->
   <section class="feira-banner">
     <div class="feira-banner-content">
-      <p class="feira-banner-tag">Aberta agora — Aracaju, SE</p>
+      <p class="feira-banner-tag">EST. 2026 — Aracaju, SE</p>
       <h2 class="feira-banner-title">
-        <span class="titulo-feira">feira</span>
-        <span class="titulo-maratu">MARATU</span>
+        <span class="titulo-maratu">COMPRE AGORA</span>
       </h2>
-      <p class="feira-banner-desc">10 posteres exclusivos, adesivos, chaveiros e mais. Enviamos pro Brasil inteiro.</p>
+      <p class="feira-banner-desc">Pôsteres · Adesivos · Chaveiros — feitos em Aracaju</p>
     </div>
     <div class="feira-banner-cta">
       <a href="loja.html" class="feira-btn">
         <span class="feira-btn-arrow">↗</span>
         <span class="feira-btn-text">
-          <span>Entrar na Feira</span>
+          <span>Ver produtos</span>
           <span class="feira-btn-label">12 produtos disponiveis</span>
         </span>
       </a>
     </div>
   </section>
 
-  <!-- 001 SOBRE -->
+  <!-- 001 SOBRE + O QUE FAZEMOS -->
   <section class="sobre" id="sobre">
     <div>
-      <p class="section-number">001 — SOBRE</p>
+      <p class="section-number">001 — MARATU</p>
       <h2 class="sobre-title">O que é a<br><span class="destaque">MARATU</span></h2>
-      <p class="sobre-text">Maratu nasce da fusão entre dois elementos profundamente enraizados na identidade de Sergipe: o mar que molda a costa do estado e o aratu, o caranguejo nativo dos manguezais.</p>
-      <p class="sobre-text">Maratu é mangue, é arte, é cultura!</p>
+      <p class="sobre-text">MARATU é um estúdio criativo nascido em Aracaju. Fazemos impressão 3D, design e arte carregados de identidade, momento e história regional. Cada peça é um pedaço das nossas raízes.</p>
+      <div class="sobre-servicos">
+        <div class="servico-card">
+          <img src="img-3d.png" alt="Impressão 3D" class="servico-img">
+          <div class="servico-body">
+            <p class="servico-number">01 ——</p>
+            <h3 class="servico-name">Impressão 3D</h3>
+            <p class="servico-desc">Peças decorativas, protótipos e encomendas exclusivas. Do arquivo ao objeto, feito aqui, assinado pela MARATU.</p>
+          </div>
+        </div>
+        <div class="servico-card">
+          <img src="img-design.jpg" alt="Design" class="servico-img">
+          <div class="servico-body">
+            <p class="servico-number">02 ——</p>
+            <h3 class="servico-name">Design</h3>
+            <p class="servico-desc">Identidade visual, adesivos, pôsteres e lambes. Design com autoria, não produção em massa.</p>
+          </div>
+        </div>
+        <div class="servico-card">
+          <img src="img-arte.jpg" alt="Arte" class="servico-img">
+          <div class="servico-body">
+            <p class="servico-number">03 ——</p>
+            <h3 class="servico-name">Arte</h3>
+            <p class="servico-desc">Peças autorais, objetos colecionáveis e decoração com identidade. Arte que dá pra segurar.</p>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="sobre-right">
       <div class="stat-block">
-        <p class="stat-label">Tecnologia</p>
-        <p class="stat-value"><span class="mat-destaque">PLA · PETG</span><br>Materiais premium, duráveis e recicláveis</p>
+        <p class="stat-label">O que fazemos</p>
+        <p class="stat-value"><span class="mat-destaque">Impressão 3D · Design · Arte</span></p>
       </div>
       <div class="stat-block">
-        <p class="stat-label">Localização</p>
-        <p class="stat-value">Aracaju, Sergipe — Brasil</p>
+        <p class="stat-label">Onde nascemos</p>
+        <p class="stat-value">Aracaju, Sergipe — enviamos pro Brasil inteiro</p>
       </div>
       <div class="stat-block">
-        <p class="stat-label">Fundação</p>
-        <p class="stat-value">EST. 2026 — Nº 001</p>
+        <p class="stat-label">Como fazemos</p>
+        <p class="stat-value">Filamento PLA e PETG, produzido aqui, sob encomenda</p>
       </div>
       <div class="stat-block">
-        <p class="stat-label">Envio</p>
-        <p class="stat-value">Enviamos para todo o Brasil</p>
+        <p class="stat-label">Desde</p>
+        <p class="stat-value">2026 — ainda no começo, mas com muito pela frente</p>
       </div>
     </div>
   </section>
@@ -457,38 +475,6 @@
       <p class="section-number" style="color: rgba(13,13,11,0.5);">002 — ORIGEM</p>
       <h2 class="origem-title">Feito em<br><span class="destaque">ARACAJU</span></h2>
       <p class="origem-text">Nascemos no mangue e mandamos pra todo o Brasil. A identidade regional não é detalhe, é a base de tudo. Cada cor, cada forma, cada elemento da marca vem daqui.</p>
-    </div>
-  </section>
-
-  <!-- 003 SERVIÇOS -->
-  <section class="servicos" id="servicos">
-    <p class="section-number">003 — O QUE FAZEMOS</p>
-    <h2 class="servicos-title">O que<br><span class="destaque">FAZEMOS</span></h2>
-    <div class="servicos-grid">
-      <div class="servico-card">
-        <img src="img-3d.png" alt="Impressão 3D" class="servico-img">
-        <div class="servico-body">
-          <p class="servico-number">01 ——</p>
-          <h3 class="servico-name">Impressão 3D</h3>
-          <p class="servico-desc">Peças decorativas, protótipos e encomendas exclusivas. Do arquivo ao objeto, feito aqui, assinado pela MARATU.</p>
-        </div>
-      </div>
-      <div class="servico-card">
-        <img src="img-design.jpg" alt="Design" class="servico-img">
-        <div class="servico-body">
-          <p class="servico-number">02 ——</p>
-          <h3 class="servico-name">Design</h3>
-          <p class="servico-desc">Identidade visual, adesivos, pôsteres e lambes. Design com autoria, não produção em massa.</p>
-        </div>
-      </div>
-      <div class="servico-card">
-        <img src="img-arte.jpg" alt="Arte" class="servico-img">
-        <div class="servico-body">
-          <p class="servico-number">03 ——</p>
-          <h3 class="servico-name">Arte</h3>
-          <p class="servico-desc">Peças autorais, objetos colecionáveis e decoração com identidade. Arte que dá pra segurar.</p>
-        </div>
-      </div>
     </div>
   </section>
 

@@ -245,9 +245,11 @@
       text-transform: uppercase; background: rgba(240,236,228,0.04);
       border: 1px solid rgba(240,236,228,0.1); color: rgba(240,236,228,0.4);
       padding: 6px 10px; cursor: pointer; transition: all 0.15s; border-radius: 0 5px 0 0;
-      min-height: 34px; display: flex; align-items: center; justify-content: center;
+      min-height: 44px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
       -webkit-tap-highlight-color: transparent;
     }
+    .tam-btn .tam-nome { font-size: 0.52rem; font-weight: 700; line-height: 1; }
+    .tam-btn .tam-dim { font-size: 0.38rem; opacity: 0.5; line-height: 1; letter-spacing: 0.05em; }
     .tam-btn:hover { border-color: rgba(200,80,26,0.4); color: var(--areia); }
     .tam-btn.selected { background: rgba(200,80,26,0.15); border-color: var(--laranja); color: var(--laranja); }
 
@@ -554,7 +556,10 @@
           '</div>' +
           '<div class="tamanho-selector" id="tam-' + p.id + '">' +
           ['A4','A3','A2','A1'].map(function(t) {
-            return '<button class="tam-btn' + (t==='A4'?' selected':'') + '" data-tam="' + t + '" data-poster="' + p.id + '" onclick="selecionarTam(this)">' + t + '</button>';
+            return '<button class="tam-btn' + (t==='A4'?' selected':'') + '" data-tam="' + t + '" data-poster="' + p.id + '" onclick="selecionarTam(this)">' +
+              '<span class="tam-nome">' + t + '</span>' +
+              '<span class="tam-dim">' + DIMS[t] + '</span>' +
+            '</button>';
           }).join('') +
           '</div>' +
           '<div class="produto-footer">' +
@@ -562,7 +567,6 @@
           '<span class="cifrao">R$</span><span id="val-' + p.id + '">' + precoInicial + '</span>' +
           '<span id="orig-' + p.id + '">' + precoOriginalHtml + '</span>' +
           '</p>' +
-          '<span class="produto-dim" id="dim-' + p.id + '">' + DIMS['A4'] + '</span>' +
           '<a href="#" id="btn-' + p.id + '" class="btn-encomendar" target="_blank" rel="noopener">Encomendar ↗</a>' +
           '</div>';
         grid.appendChild(card);
@@ -578,8 +582,6 @@
       btn.classList.add('selected');
       var preco = calcPreco(PRECOS_BASE[tam], poster.desconto);
       document.getElementById('val-' + pid).textContent = preco;
-      var dimEl = document.getElementById('dim-' + pid);
-      if (dimEl) dimEl.textContent = DIMS[tam];
       var origEl = document.getElementById('orig-' + pid);
       if (origEl) {
         origEl.innerHTML = poster.desconto

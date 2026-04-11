@@ -289,7 +289,43 @@
       cursor: default; border-radius: 0 12px 0 0; display: flex; align-items: center; min-height: 48px;
     }
 
-    /* WA BANNER */
+    /* POPUP TAMANHOS */
+    .tam-popup-overlay {
+      display: none; position: fixed; inset: 0; z-index: 9998;
+      background: rgba(13,13,11,0.85); align-items: center; justify-content: center; padding: 20px;
+    }
+    .tam-popup-overlay.open { display: flex; }
+    .tam-popup {
+      background: var(--preto); border: 1px solid rgba(240,236,228,0.12);
+      padding: 32px; max-width: 480px; width: 100%; border-radius: 0 16px 0 0;
+      position: relative;
+    }
+    .tam-popup-close {
+      position: absolute; top: 16px; right: 16px;
+      background: none; border: 1px solid rgba(240,236,228,0.15); color: rgba(240,236,228,0.5);
+      font-family: 'Space Mono', monospace; font-size: 0.65rem; letter-spacing: 0.1em;
+      padding: 6px 12px; cursor: pointer; border-radius: 999px; transition: all 0.2s;
+    }
+    .tam-popup-close:hover { background: rgba(240,236,228,0.08); }
+    .tam-popup-title { font-family: 'Clother', sans-serif; font-weight: 900; font-size: 1.1rem; color: var(--areia); text-transform: uppercase; margin-bottom: 6px; }
+    .tam-popup-sub { font-family: 'Space Mono', monospace; font-size: 0.58rem; color: rgba(240,236,228,0.35); letter-spacing: 0.1em; margin-bottom: 24px; }
+    .tam-tabela { width: 100%; border-collapse: collapse; }
+    .tam-tabela th { font-family: 'Space Mono', monospace; font-size: 0.5rem; color: var(--laranja); letter-spacing: 0.18em; text-transform: uppercase; text-align: left; padding: 0 0 10px; border-bottom: 1px solid rgba(240,236,228,0.08); }
+    .tam-tabela td { padding: 12px 0; border-bottom: 1px solid rgba(240,236,228,0.05); vertical-align: middle; }
+    .tam-tabela tr:last-child td { border-bottom: none; }
+    .tam-tam { font-family: 'Clother', sans-serif; font-weight: 900; font-size: 1rem; color: var(--areia); width: 48px; }
+    .tam-cm { font-family: 'Space Mono', monospace; font-size: 0.6rem; color: rgba(240,236,228,0.45); width: 120px; }
+    .tam-ref { font-size: 0.82rem; color: rgba(240,236,228,0.55); line-height: 1.4; }
+
+    /* Botao de info tamanho */
+    .tam-info-btn {
+      background: none; border: none; color: rgba(240,236,228,0.3);
+      font-family: 'Space Mono', monospace; font-size: 0.5rem; letter-spacing: 0.1em;
+      cursor: pointer; text-decoration: underline; padding: 0 0 0 2px;
+      transition: color 0.2s; display: block; margin-top: 6px;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .tam-info-btn:hover { color: var(--areia); }
     .wa-banner {
       margin: 0 24px 48px; padding: 20px 22px;
       background: var(--azul-sergipe); border: 1px solid rgba(46,111,196,0.3);
@@ -485,6 +521,46 @@
     </div>
   </footer>
 
+  <!-- POPUP TAMANHOS -->
+  <div class="tam-popup-overlay" id="tam-popup-overlay" onclick="fecharTamPopup(event)">
+    <div class="tam-popup">
+      <button class="tam-popup-close" onclick="fecharTamPopup()">fechar ✕</button>
+      <p class="tam-popup-title">Guia de tamanhos</p>
+      <p class="tam-popup-sub">Todos os posteres sao impressos em papel 200g</p>
+      <table class="tam-tabela">
+        <thead>
+          <tr>
+            <th>Tam.</th>
+            <th>Dimensoes</th>
+            <th>Referencia</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="tam-tam">A4</td>
+            <td class="tam-cm">21 × 29,7 cm</td>
+            <td class="tam-ref">Tamanho de uma folha de caderno</td>
+          </tr>
+          <tr>
+            <td class="tam-tam">A3</td>
+            <td class="tam-cm">29,7 × 42 cm</td>
+            <td class="tam-ref">Tamanho de uma revista aberta</td>
+          </tr>
+          <tr>
+            <td class="tam-tam">A2</td>
+            <td class="tam-cm">42 × 59,4 cm</td>
+            <td class="tam-ref">Tamanho de um quadro medio</td>
+          </tr>
+          <tr>
+            <td class="tam-tam">A1</td>
+            <td class="tam-cm">59,4 × 84,1 cm</td>
+            <td class="tam-ref">Tamanho de um poster de cinema</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
   <!-- LIGHTBOX -->
   <div class="lightbox" id="lightbox" onclick="fecharLightbox(event)">
     <button class="lightbox-close" onclick="fecharLightbox()">fechar ✕</button>
@@ -512,6 +588,18 @@
       { id: 'luzes',     nome: 'Luzes',              img: 'poster-luzes.png',     mockup: 'mockup-luzes.png',     colecao: 'MangueHaus', col: 'mangue', desconto: true },
       { id: 'ritmo',     nome: 'Ritmo',              img: 'poster-ritmo.png',     mockup: 'mockup-ritmo.png',     colecao: 'MangueHaus', col: 'mangue' },
     ];
+
+    function abrirTamPopup() {
+      document.getElementById('tam-popup-overlay').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function fecharTamPopup(e) {
+      if (!e || e.target === document.getElementById('tam-popup-overlay') || (e.currentTarget && e.currentTarget.classList.contains('tam-popup-close'))) {
+        document.getElementById('tam-popup-overlay').classList.remove('open');
+        document.body.style.overflow = '';
+      }
+    }
 
     function abrirLightbox(img, nome) {
       document.getElementById('lightbox-img').src = img;
@@ -558,10 +646,10 @@
           ['A4','A3','A2','A1'].map(function(t) {
             return '<button class="tam-btn' + (t==='A4'?' selected':'') + '" data-tam="' + t + '" data-poster="' + p.id + '" onclick="selecionarTam(this)">' +
               '<span class="tam-nome">' + t + '</span>' +
-              '<span class="tam-dim">' + DIMS[t] + '</span>' +
-            '</button>';
+              '</button>';
           }).join('') +
           '</div>' +
+          '<button class="tam-info-btn" onclick="abrirTamPopup()">Ficou na duvida do tamanho? Veja nossa tabela</button>' +
           '<div class="produto-footer">' +
           '<p class="produto-preco" id="preco-' + p.id + '">' +
           '<span class="cifrao">R$</span><span id="val-' + p.id + '">' + precoInicial + '</span>' +

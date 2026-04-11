@@ -127,25 +127,44 @@
     }
     .sobre-title { font-family: 'Clother', sans-serif; font-weight: 700; font-size: clamp(2.2rem, 4.5vw, 4.5rem); line-height: 1; color: var(--areia); margin-bottom: 28px; }
     .sobre-title .destaque { font-family: 'Jack', sans-serif; color: var(--laranja); display: block; }
-    .sobre-text { font-size: 1rem; line-height: 1.8; color: rgba(240,236,228,0.65); margin-bottom: 48px; }
+    .sobre-text { font-size: 1rem; line-height: 1.8; color: rgba(240,236,228,0.65); margin-bottom: 32px; }
     .sobre-right { display: flex; flex-direction: column; gap: 24px; }
     .stat-block { border-left: 2px solid var(--laranja); padding: 20px 24px; background: rgba(200,80,26,0.04); }
     .stat-label { font-family: 'Space Mono', monospace; font-size: 0.6rem; color: var(--laranja); letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 8px; }
     .stat-value { font-family: 'Clother', sans-serif; font-weight: 700; font-size: 1.05rem; color: var(--areia); }
     .mat-destaque { color: var(--laranja); font-weight: 900; }
-    .sobre-servicos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+
+    /* Accordion O que fazemos */
+    .accordion-btn {
+      display: flex; align-items: center; gap: 12px;
+      background: none; border: 1px solid rgba(240,236,228,0.12);
+      color: var(--areia); font-family: 'Clother', sans-serif; font-weight: 900;
+      font-size: 0.9rem; letter-spacing: 0.06em; text-transform: uppercase;
+      padding: 14px 20px; cursor: pointer; transition: all 0.2s;
+      border-radius: 0 8px 0 0; width: 100%;
+    }
+    .accordion-btn:hover { border-color: rgba(200,80,26,0.4); color: var(--laranja); }
+    .accordion-btn.open { background: rgba(200,80,26,0.08); border-color: rgba(200,80,26,0.3); color: var(--laranja); }
+    .accordion-arrow { margin-left: auto; transition: transform 0.3s ease; font-size: 0.8rem; }
+    .accordion-btn.open .accordion-arrow { transform: rotate(180deg); }
+    .accordion-content {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px;
+      max-height: 0; overflow: hidden; transition: max-height 0.4s ease;
+      margin-top: 0;
+    }
+    .accordion-content.open { max-height: 600px; margin-top: 2px; }
     .servico-card {
       background: rgba(240,236,228,0.02); border: 1px solid rgba(240,236,228,0.06);
       overflow: hidden; transition: border-color 0.3s ease; display: flex; flex-direction: column;
     }
     .servico-card:hover { border-color: rgba(200,80,26,0.3); }
     .servico-card:hover .servico-number { color: var(--laranja); }
-    .servico-img { width: 100%; height: 160px; object-fit: cover; filter: brightness(0.6) saturate(0.8); transition: filter 0.4s ease; display: block; }
+    .servico-img { width: 100%; height: 140px; object-fit: cover; filter: brightness(0.6) saturate(0.8); transition: filter 0.4s ease; display: block; }
     .servico-card:hover .servico-img { filter: brightness(1) saturate(1); }
-    .servico-body { padding: 20px 22px 26px; flex: 1; }
-    .servico-number { font-family: 'Space Mono', monospace; font-size: 0.65rem; color: rgba(240,236,228,0.2); letter-spacing: 0.2em; margin-bottom: 12px; transition: color 0.3s ease; }
-    .servico-name { font-family: 'Clother', sans-serif; font-weight: 900; font-size: 1.5rem; color: var(--areia); margin-bottom: 8px; text-transform: uppercase; }
-    .servico-desc { font-size: 0.85rem; line-height: 1.7; color: rgba(240,236,228,0.5); }
+    .servico-body { padding: 16px 18px 20px; flex: 1; }
+    .servico-number { font-family: 'Space Mono', monospace; font-size: 0.55rem; color: rgba(240,236,228,0.2); letter-spacing: 0.2em; margin-bottom: 8px; transition: color 0.3s ease; }
+    .servico-name { font-family: 'Clother', sans-serif; font-weight: 900; font-size: 1.1rem; color: var(--areia); margin-bottom: 6px; text-transform: uppercase; }
+    .servico-desc { font-size: 0.78rem; line-height: 1.6; color: rgba(240,236,228,0.45); }
 
     /* ── ORIGEM — seção 002 ── */
     .origem { padding: 120px 40px; background: var(--laranja); position: relative; overflow: hidden; border-top: 1px solid rgba(240,236,228,0.08); }
@@ -194,8 +213,12 @@
     .feira-banner-content { position: relative; z-index: 1; }
     .feira-banner-tag { font-family: 'Space Mono', monospace; font-size: 0.6rem; color: rgba(13,13,11,0.45); letter-spacing: 0.22em; text-transform: uppercase; margin-bottom: 14px; display: flex; align-items: center; gap: 10px; }
     .feira-banner-tag::before { content: ''; display: block; width: 28px; height: 1px; background: rgba(13,13,11,0.3); }
-    .feira-banner-title { line-height: 0.85; margin-bottom: 16px; }
-    .feira-banner-title .titulo-maratu { font-family: 'Jack', sans-serif; font-size: clamp(3rem, 8vw, 9rem); color: var(--preto); display: block; line-height: 0.88; }
+    .feira-banner-title { line-height: 0.88; margin-bottom: 16px; }
+    .feira-banner-title .titulo-maratu {
+      font-family: 'Clother', sans-serif; font-weight: 900;
+      font-size: clamp(2.4rem, 6vw, 6.5rem); color: var(--preto); display: block; line-height: 1;
+    }
+    .feira-banner-title .titulo-maratu em { font-family: 'Jack', sans-serif; font-style: normal; }
     .feira-banner-desc { font-size: 1rem; color: rgba(13,13,11,0.6); line-height: 1.7; max-width: 460px; font-weight: 700; }
     .feira-banner-cta { position: relative; z-index: 1; flex-shrink: 0; }
     .feira-btn {
@@ -400,7 +423,7 @@
     <div class="feira-banner-content">
       <p class="feira-banner-tag">EST. 2026 — Aracaju, SE</p>
       <h2 class="feira-banner-title">
-        <span class="titulo-maratu">COMPRE AGORA</span>
+        <span class="titulo-maratu">Visite nossa <em>LOJA</em></span>
       </h2>
       <p class="feira-banner-desc">Pôsteres · Adesivos · Chaveiros — feitos em Aracaju</p>
     </div>
@@ -421,7 +444,11 @@
       <p class="section-number">001 — MARATU</p>
       <h2 class="sobre-title">O que é a<br><span class="destaque">MARATU</span></h2>
       <p class="sobre-text">MARATU é um estúdio criativo nascido em Aracaju. Fazemos impressão 3D, design e arte carregados de identidade, momento e história regional. Cada peça é um pedaço das nossas raízes.</p>
-      <div class="sobre-servicos">
+      <button class="accordion-btn" id="accordion-btn" onclick="toggleAccordion()">
+        O que fazemos
+        <span class="accordion-arrow">↓</span>
+      </button>
+      <div class="accordion-content" id="accordion-content">
         <div class="servico-card">
           <img src="img-3d.png" alt="Impressão 3D" class="servico-img">
           <div class="servico-body">
@@ -650,6 +677,13 @@
         });
       }
     })();
+
+    function toggleAccordion() {
+      var btn = document.getElementById('accordion-btn');
+      var content = document.getElementById('accordion-content');
+      btn.classList.toggle('open');
+      content.classList.toggle('open');
+    }
   </script>
 
 </body>

@@ -166,17 +166,18 @@
     .produtos-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2px; }
     .produtos-grid.col3 { grid-template-columns: repeat(2, 1fr); }
 
-    /* BADGES — empilhados à esquerda */
+    /* BADGES — lado a lado no topo esquerdo */
+    .badges-grupo {
+      position: absolute; top: 12px; left: 12px; z-index: 3;
+      display: flex; gap: 4px; flex-wrap: wrap; max-width: calc(100% - 24px);
+    }
     .produto-badge {
-      position: absolute; left: 12px; z-index: 3;
       font-family: 'Space Mono', monospace; font-size: 0.45rem;
       letter-spacing: 0.14em; text-transform: uppercase; padding: 3px 7px;
       font-weight: 700; border-radius: 0 5px 0 0;
     }
-    .badge-novo { background: var(--dourado); color: var(--preto); top: 12px; }
+    .badge-novo { background: var(--dourado); color: var(--preto); }
     .badge-colecao {
-      left: 12px; top: 34px; z-index: 3;
-      position: absolute;
       font-family: 'Space Mono', monospace; font-size: 0.42rem;
       letter-spacing: 0.12em; text-transform: uppercase; padding: 3px 6px;
       font-weight: 700; border-radius: 0 5px 0 0;
@@ -184,8 +185,6 @@
     }
     .badge-colecao.mangue { background: var(--azul-sergipe); }
     .badge-desconto {
-      left: 12px; top: 56px; z-index: 3;
-      position: absolute;
       font-family: 'Space Mono', monospace; font-size: 0.42rem;
       letter-spacing: 0.1em; text-transform: uppercase; padding: 3px 6px;
       font-weight: 700; border-radius: 0 5px 0 0;
@@ -213,12 +212,14 @@
     }
     .produto-img:hover .img-poster { opacity: 0; }
     .produto-img:hover .img-mockup { opacity: 1; }
+
+    .produto-body { padding: 14px 14px 8px; flex: 1; }
     .produto-cat { font-family: 'Space Mono', monospace; font-size: 0.48rem; color: var(--laranja); letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 5px; }
     .produto-nome { font-family: 'Clother', sans-serif; font-weight: 900; font-size: 0.95rem; color: var(--areia); text-transform: uppercase; margin-bottom: 3px; line-height: 1.1; }
-    .produto-desc { font-size: 0.72rem; color: rgba(240,236,228,0.32); line-height: 1.5; }
+    .produto-desc { font-size: 0.72rem; color: rgba(240,236,228,0.32); line-height: 1.5; padding-bottom: 6px; }
 
     /* SELETOR TAMANHO */
-    .tamanho-selector { padding: 10px 14px; display: flex; gap: 5px; flex-wrap: wrap; }
+    .tamanho-selector { padding: 10px 14px 12px; display: flex; gap: 5px; flex-wrap: wrap; }
     .tam-btn {
       font-family: 'Space Mono', monospace; font-size: 0.48rem; letter-spacing: 0.1em;
       text-transform: uppercase; background: rgba(240,236,228,0.04);
@@ -231,8 +232,16 @@
     .tam-btn.selected { background: rgba(200,80,26,0.15); border-color: var(--laranja); color: var(--laranja); }
 
     .produto-footer { display: flex; align-items: stretch; border-top: 1px solid rgba(240,236,228,0.06); }
-    .produto-preco { padding: 12px 14px; font-family: 'Clother', sans-serif; font-weight: 900; font-size: 1.2rem; color: var(--areia); flex: 1; display: flex; align-items: center; }
-    .produto-preco .cifrao { font-size: 0.6rem; font-weight: 400; color: rgba(240,236,228,0.35); margin-right: 2px; vertical-align: super; }
+    .produto-preco {
+      padding: 12px 14px; font-family: 'Clother', sans-serif; font-weight: 900;
+      font-size: 1.2rem; color: var(--areia); flex: 1;
+      display: flex; align-items: center; gap: 7px; flex-wrap: wrap;
+    }
+    .produto-preco .cifrao { font-size: 0.6rem; font-weight: 400; color: rgba(240,236,228,0.35); margin-right: 1px; vertical-align: super; }
+    .produto-preco .preco-original {
+      font-size: 0.75rem; font-weight: 400; color: rgba(240,236,228,0.25);
+      text-decoration: line-through; align-self: center; letter-spacing: 0;
+    }
     .produto-preco.indisponivel { font-size: 0.9rem; color: rgba(240,236,228,0.2); letter-spacing: 0.08em; }
 
     .btn-encomendar {
@@ -394,8 +403,10 @@
 
       <div class="produto-card">
         <div class="produto-img" onclick="abrirLightbox('adesivos-origens.png','Colecao de Adesivos Origens')">
-          <span class="produto-badge badge-novo">Novo</span>
-          <span class="badge-colecao">Origens</span>
+          <div class="badges-grupo">
+            <span class="produto-badge badge-novo">Novo</span>
+            <span class="badge-colecao">Origens</span>
+          </div>
           <img class="img-poster" src="adesivos-origens.png" alt="Colecao de Adesivos Origens" loading="lazy" style="object-fit:contain;padding:8px;">
         </div>
         <div class="produto-body">
@@ -463,7 +474,7 @@
       { id: 'atalaia',   nome: 'Sol de Atalaia',     img: 'poster-atalaia.png',   mockup: 'mockup-atalaia.png',   colecao: 'Origens',    col: 'origens', destaque: true },
       { id: 'destrua',   nome: 'Destrua o Imperio!', img: 'poster-destrua.png',   mockup: 'mockup-destrua.png',   colecao: 'Origens',    col: 'origens' },
       { id: 'origens',   nome: 'Origens',            img: 'poster-origens.png',   mockup: 'mockup-origens.png',   colecao: 'Origens',    col: 'origens' },
-      { id: 'matapua',   nome: 'Matapua\u00e3',            img: 'poster-matapua.png',   mockup: 'mockup-matapua.png',   colecao: 'Origens',    col: 'origens' },
+      { id: 'matapua',   nome: 'Matapuã',            img: 'poster-matapua.png',   mockup: 'mockup-matapua.png',   colecao: 'Origens',    col: 'origens' },
       { id: 'linguagem', nome: 'Linguagem',          img: 'poster-linguagem.png', mockup: 'mockup-linguagem.png', colecao: 'MangueHaus', col: 'mangue' },
       { id: 'camadas',   nome: 'Camadas',            img: 'poster-camadas.png',   mockup: 'mockup-camadas.png',   colecao: 'MangueHaus', col: 'mangue', desconto: true },
       { id: 'areias',    nome: 'Areias',             img: 'poster-areias.png',    mockup: 'mockup-areias.png',    colecao: 'MangueHaus', col: 'mangue' },
@@ -492,14 +503,18 @@
       POSTERES.forEach(function(p) {
         var card = document.createElement('div');
         card.className = 'produto-card' + (p.destaque ? ' destaque' : '');
-        var badgeColecao = '<span class="badge-colecao' + (p.col === 'mangue' ? ' mangue' : '') + '">' + p.colecao + '</span>';
         var badgeDesconto = p.desconto ? '<span class="badge-desconto">-20%</span>' : '';
         var precoInicial = calcPreco(PRECOS_BASE['A4'], p.desconto);
+        var precoOriginalHtml = p.desconto
+          ? '<span class="preco-original">R$' + PRECOS_BASE['A4'] + '</span>'
+          : '';
         card.innerHTML =
           '<div class="produto-img" onclick="abrirLightbox(\'' + p.img + '\',\'' + p.nome + '\')">' +
+          '<div class="badges-grupo">' +
           '<span class="produto-badge badge-novo">Novo</span>' +
-          badgeColecao +
+          '<span class="badge-colecao' + (p.col === 'mangue' ? ' mangue' : '') + '">' + p.colecao + '</span>' +
           badgeDesconto +
+          '</div>' +
           '<img class="img-poster" src="' + p.img + '" alt="' + p.nome + '" loading="lazy">' +
           '<img class="img-mockup" src="' + p.mockup + '" alt="' + p.nome + ' mockup" loading="lazy">' +
           '</div>' +
@@ -514,7 +529,10 @@
           }).join('') +
           '</div>' +
           '<div class="produto-footer">' +
-          '<p class="produto-preco" id="preco-' + p.id + '"><span class="cifrao">R$</span><span id="val-' + p.id + '">' + precoInicial + '</span></p>' +
+          '<p class="produto-preco" id="preco-' + p.id + '">' +
+          '<span class="cifrao">R$</span><span id="val-' + p.id + '">' + precoInicial + '</span>' +
+          '<span id="orig-' + p.id + '">' + precoOriginalHtml + '</span>' +
+          '</p>' +
           '<a href="#" id="btn-' + p.id + '" class="btn-encomendar" target="_blank" rel="noopener">Encomendar ↗</a>' +
           '</div>';
         grid.appendChild(card);
@@ -530,6 +548,12 @@
       btn.classList.add('selected');
       var preco = calcPreco(PRECOS_BASE[tam], poster.desconto);
       document.getElementById('val-' + pid).textContent = preco;
+      var origEl = document.getElementById('orig-' + pid);
+      if (origEl) {
+        origEl.innerHTML = poster.desconto
+          ? '<span class="preco-original">R$' + PRECOS_BASE[tam] + '</span>'
+          : '';
+      }
       atualizarLink(pid, tam);
     }
 

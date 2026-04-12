@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Newsletter — MARATU Estúdio</title>
+  <meta name="description" content="Inscreva-se na newsletter da MARATU e receba lançamentos, bastidores e drops exclusivos direto do estúdio.">
+
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="apple-touch-icon" href="favicon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    @font-face { font-family: 'Jack'; src: url('TRYJackAlpha-Regular.ttf') format('truetype'); font-weight: 400; }
+    @font-face { font-family: 'Clother'; src: url('TRYClother-Regular.ttf') format('truetype'); font-weight: 400; }
+    @font-face { font-family: 'Clother'; src: url('TRYClother-Bold.ttf') format('truetype'); font-weight: 700; }
+    @font-face { font-family: 'Clother'; src: url('TRYClother-Black.ttf') format('truetype'); font-weight: 900; }
+
+    :root {
+      --laranja: #C8501A;
+      --azul: #0E3272;
+      --areia: #F0ECE4;
+      --preto: #0D0D0B;
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; }
+    body { font-family: 'Clother', sans-serif; overflow: hidden; }
+
+    /* FOTO FUNDO */
+    .bg {
+      position: fixed; inset: 0; z-index: 0;
+      background: url('foto-atalaia.jpg') center center / cover no-repeat;
+    }
+    .bg::after {
+      content: ''; position: absolute; inset: 0;
+      background: rgba(13,13,11,0.35);
+    }
+
+    /* CONTAINER CENTRAL */
+    .container {
+      position: relative; z-index: 2;
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      padding: 24px;
+    }
+
+    /* BLOCO BRANCO */
+    .card {
+      background: var(--areia);
+      padding: 52px 48px 48px;
+      max-width: 520px; width: 100%;
+      border-radius: 0 24px 0 0;
+      box-shadow: 0 32px 80px rgba(13,13,11,0.4);
+    }
+
+    /* LOGO */
+    .logo { display: flex; align-items: center; gap: 12px; margin-bottom: 40px; }
+    .logo img { height: 36px; width: 36px; border-radius: 50%; }
+    .logo-nome { font-family: 'Clother', sans-serif; font-weight: 900; font-size: 0.85rem; color: var(--preto); letter-spacing: 0.06em; text-transform: uppercase; }
+
+    /* TEXTOS */
+    .tag { font-family: 'Space Mono', monospace; font-size: 0.55rem; color: var(--azul); letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+    .tag::before { content: ''; display: block; width: 20px; height: 1px; background: var(--azul); }
+
+    .titulo { font-family: 'Jack', sans-serif; font-size: clamp(3rem, 8vw, 5rem); color: var(--laranja); line-height: 0.85; margin-bottom: 20px; }
+
+    .subtitulo { font-family: 'Clother', sans-serif; font-weight: 700; font-size: 1rem; color: var(--azul); line-height: 1.7; margin-bottom: 36px; }
+
+    /* FORM */
+    .form { display: flex; flex-direction: column; gap: 12px; }
+    .input {
+      width: 100%; padding: 16px 18px;
+      background: #fff; border: 1.5px solid rgba(13,13,11,0.12);
+      font-family: 'Clother', sans-serif; font-size: 1rem; color: var(--preto);
+      outline: none; border-radius: 0 8px 0 0; transition: border-color 0.2s;
+    }
+    .input::placeholder { color: rgba(13,13,11,0.35); }
+    .input:focus { border-color: var(--laranja); }
+
+    .btn-submit {
+      width: 100%; padding: 18px;
+      background: var(--laranja); border: none;
+      font-family: 'Clother', sans-serif; font-weight: 900;
+      font-size: 1rem; letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--areia); cursor: pointer; border-radius: 0 12px 0 0;
+      transition: background 0.2s;
+    }
+    .btn-submit:hover { background: var(--azul); }
+
+    .msg-sucesso {
+      display: none; text-align: center; padding: 16px;
+      background: rgba(200,80,26,0.08); border: 1px solid rgba(200,80,26,0.2);
+      font-family: 'Clother', sans-serif; font-weight: 700; font-size: 0.95rem;
+      color: var(--laranja); border-radius: 0 8px 0 0; line-height: 1.5;
+    }
+
+    .msg-erro {
+      display: none; font-size: 0.82rem; color: var(--laranja);
+      font-family: 'Space Mono', monospace; margin-top: 4px;
+    }
+
+    /* RODAPÉ DO CARD */
+    .card-footer { margin-top: 28px; padding-top: 20px; border-top: 1px solid rgba(13,13,11,0.08); display: flex; justify-content: space-between; align-items: center; }
+    .card-footer-text { font-family: 'Space Mono', monospace; font-size: 0.5rem; color: rgba(13,13,11,0.3); letter-spacing: 0.1em; line-height: 1.8; }
+    .card-footer a { font-family: 'Space Mono', monospace; font-size: 0.5rem; color: var(--laranja); text-decoration: none; letter-spacing: 0.1em; }
+    .card-footer a:hover { text-decoration: underline; }
+
+    @media (max-width: 480px) {
+      .card { padding: 36px 28px 32px; }
+      .titulo { font-size: clamp(2.5rem, 12vw, 4rem); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg"></div>
+
+  <div class="container">
+    <div class="card">
+
+      <div class="logo">
+        <img src="logo-redondo.png" alt="MARATU Estúdio">
+        <span class="logo-nome">MARATU Estúdio</span>
+      </div>
+
+      <p class="tag">Newsletter</p>
+      <h1 class="titulo">Chegue primeiro.</h1>
+      <p class="subtitulo">Lançamentos, bastidores e drops exclusivos direto do estúdio pra você.</p>
+
+      <form class="form" id="nl-form">
+        <input type="email" class="input" id="nl-email" placeholder="seu@email.com" required>
+        <button type="submit" class="btn-submit" id="nl-btn">Quero me inscrever</button>
+        <p class="msg-erro" id="nl-erro"></p>
+      </form>
+
+      <div class="msg-sucesso" id="nl-sucesso">
+        Inscrito! Bem-vindo à MARATU.<br>
+        <span style="font-weight:400;font-size:0.85rem;color:rgba(200,80,26,0.7);">Fique de olho no seu email.</span>
+      </div>
+
+      <div class="card-footer">
+        <div class="card-footer-text">
+          <p>MARATU Estúdio · Aracaju, SE</p>
+          <p>EST. 2026</p>
+        </div>
+        <a href="index.html">← Voltar ao site</a>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    var WORKER_URL = 'https://maratu-newsletter.raphaelnascimento.workers.dev';
+
+    document.getElementById('nl-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      var email = document.getElementById('nl-email').value;
+      var btn = document.getElementById('nl-btn');
+      var erro = document.getElementById('nl-erro');
+      var sucesso = document.getElementById('nl-sucesso');
+
+      btn.textContent = 'Inscrevendo...';
+      btn.disabled = true;
+      erro.style.display = 'none';
+
+      fetch(WORKER_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email })
+      }).then(function(res) {
+        if (res.ok) {
+          document.getElementById('nl-form').style.display = 'none';
+          sucesso.style.display = 'block';
+        } else {
+          erro.style.display = 'block';
+          erro.textContent = 'Algo deu errado, tente novamente.';
+          btn.textContent = 'Quero me inscrever';
+          btn.disabled = false;
+        }
+      }).catch(function() {
+        erro.style.display = 'block';
+        erro.textContent = 'Erro de conexão, tente novamente.';
+        btn.textContent = 'Quero me inscrever';
+        btn.disabled = false;
+      });
+    });
+  </script>
+
+</body>
+</html>

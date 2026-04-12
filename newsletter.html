@@ -11,6 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <style>
+    @font-face { font-family: 'Jack'; src: url('TRYJackAlpha-Regular.ttf') format('truetype'); font-weight: 400; }
     @font-face { font-family: 'Clother'; src: url('TRYClother-Regular.ttf') format('truetype'); font-weight: 400; }
     @font-face { font-family: 'Clother'; src: url('TRYClother-Bold.ttf') format('truetype'); font-weight: 700; }
     @font-face { font-family: 'Clother'; src: url('TRYClother-Black.ttf') format('truetype'); font-weight: 900; }
@@ -22,13 +23,14 @@
     .bg::after { content: ''; position: absolute; inset: 0; background: rgba(13,13,11,0.72); }
     .bg-laranja { position: fixed; bottom: 0; left: 0; right: 0; z-index: 1; height: 35vh; background: linear-gradient(to top, rgba(200,80,26,0.45) 0%, transparent 100%); pointer-events: none; }
     .container { position: relative; z-index: 2; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 60px 48px; max-width: 680px; }
-    .logo { display: flex; align-items: center; gap: 12px; margin-bottom: 56px; }
-    .logo img { height: 36px; width: 36px; border-radius: 50%; mix-blend-mode: screen; }
-    .logo-nome { font-family: 'Clother', sans-serif; font-weight: 900; font-size: 0.85rem; color: rgba(240,236,228,0.6); letter-spacing: 0.1em; text-transform: uppercase; }
+    .logo { display: flex; align-items: baseline; gap: 8px; margin-bottom: 56px; }
+    .logo img { height: 36px; width: 36px; border-radius: 50%; mix-blend-mode: screen; margin-right: 4px; }
+    .logo-maratu { font-family: 'Jack', sans-serif; font-size: 1.6rem; color: var(--laranja); line-height: 1; }
+    .logo-estudio { font-family: 'Clother', sans-serif; font-weight: 700; font-size: 0.85rem; color: rgba(240,236,228,0.55); letter-spacing: 0.1em; text-transform: uppercase; }
     .tag { font-family: 'Space Mono', monospace; font-size: 0.55rem; color: var(--laranja); letter-spacing: 0.25em; text-transform: uppercase; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
     .tag::before { content: ''; display: block; width: 24px; height: 1px; background: var(--laranja); }
     .titulo { font-family: 'Clother', sans-serif; font-weight: 900; font-size: clamp(2.8rem, 6vw, 5.5rem); color: var(--areia); line-height: 0.95; margin-bottom: 24px; }
-    .titulo span { color: var(--laranja); }
+    .titulo span { color: var(--laranja); font-family: 'Jack', sans-serif; font-size: 1.15em; vertical-align: baseline; }
     .subtitulo { font-size: 1.05rem; color: rgba(240,236,228,0.6); line-height: 1.75; margin-bottom: 48px; max-width: 480px; }
     .form { display: flex; flex-direction: column; gap: 12px; max-width: 440px; }
     .input { width: 100%; padding: 18px 20px; background: rgba(240,236,228,0.08); border: 1px solid rgba(240,236,228,0.2); font-family: 'Clother', sans-serif; font-size: 1rem; color: var(--areia); outline: none; border-radius: 0 8px 0 0; transition: border-color 0.2s; }
@@ -50,7 +52,8 @@
   <div class="container">
     <div class="logo">
       <img src="logo-redondo.png" alt="MARATU Estúdio">
-      <span class="logo-nome">MARATU Estúdio</span>
+      <span class="logo-maratu">MARATU</span>
+      <span class="logo-estudio">Estúdio</span>
     </div>
     <p class="tag">Newsletter</p>
     <h1 class="titulo">Descubra <span>primeiro.</span></h1>

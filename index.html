@@ -488,74 +488,75 @@
     <p class="nl-popup-tag">Newsletter</p>
     <p class="nl-popup-title">Fique por dentro</p>
     <p class="nl-popup-sub">Novidades, lançamentos e drops exclusivos direto no seu email.</p>
-    <form name="newsletter-popup" netlify netlify-honeypot="bot-field" class="nl-form" id="nl-popup-form">
-      <input type="hidden" name="form-name" value="newsletter-popup">
-      <p style="display:none"><label>Não preencha isso: <input name="bot-field"></label></p>
-      <input type="email" name="email" placeholder="seu@email.com" required class="nl-input" id="nl-popup-email">
+    <form class="nl-form" id="nl-popup-form">
+      <input type="email" placeholder="seu@email.com" required class="nl-input" id="nl-popup-email">
       <button type="submit" class="nl-btn">Assinar →</button>
-      <p class="nl-popup-success" id="nl-popup-success">Inscrito! Bem-vindo à MARATU.</p>
+      <p class="nl-popup-success" id="nl-popup-success"></p>
     </form>
   </div>
 
   <script>
-    (function() {
-      function encode(data) {
-        return Object.keys(data).map(function(k) {
-          return encodeURIComponent(k) + '=' + encodeURIComponent(data[k]);
-        }).join('&');
-      }
+    var BREVO_KEY = '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';
 
-      // POPUP
-      var popup = document.getElementById('nl-popup');
-      var closeBtn = document.getElementById('nl-popup-close');
-      if (!sessionStorage.getItem('nl-dismissed')) {
-        setTimeout(function() { popup.classList.add('visible'); }, 3000);
-      }
-      closeBtn.addEventListener('click', function() {
-        popup.classList.remove('visible');
-        sessionStorage.setItem('nl-dismissed', '1');
+    function brevoSubscribe(email, successEl, hideEl) {
+      fetch('https://api.brevo.com/v3/contacts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'api-key': BREVO_KEY },
+        body: JSON.stringify({ email: email, listIds: [3], updateEnabled: true })
+      }).then(function(res) {
+        successEl.style.display = 'block';
+        if (res.ok || res.status === 204) {
+          successEl.style.color = '#C8501A';
+          successEl.textContent = 'Inscrito! Bem-vindo à MARATU.';
+          if (hideEl) hideEl.style.display = 'none';
+        } else {
+          successEl.style.color = '#C8501A';
+          successEl.textContent = 'Algo deu errado, tente novamente.';
+        }
+      }).catch(function() {
+        successEl.style.display = 'block';
+        successEl.textContent = 'Erro de conexão, tente novamente.';
       });
+    }
 
-      var popupForm = document.getElementById('nl-popup-form');
-      popupForm.addEventListener('submit', function(e) {
+    // POPUP
+    var popup = document.getElementById('nl-popup');
+    var closeBtn = document.getElementById('nl-popup-close');
+    if (!sessionStorage.getItem('nl-dismissed')) {
+      setTimeout(function() { popup.classList.add('visible'); }, 3000);
+    }
+    closeBtn.addEventListener('click', function() {
+      popup.classList.remove('visible');
+      sessionStorage.setItem('nl-dismissed', '1');
+    });
+    document.getElementById('nl-popup-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      var email = document.getElementById('nl-popup-email').value;
+      brevoSubscribe(email, document.getElementById('nl-popup-success'), null);
+      sessionStorage.setItem('nl-dismissed', '1');
+      setTimeout(function() { popup.classList.remove('visible'); }, 3500);
+    });
+
+    // FORM CONTATO
+    var sectionForm = document.getElementById('nl-contato-form');
+    if (sectionForm) {
+      sectionForm.addEventListener('submit', function(e) {
         e.preventDefault();
-        fetch('/', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: encode({ 'form-name': 'newsletter-popup', 'email': document.getElementById('nl-popup-email').value })
-        }).then(function() {
-          popupForm.querySelector('input[type=email]').style.display = 'none';
-          popupForm.querySelector('button').style.display = 'none';
-          document.getElementById('nl-popup-success').style.display = 'block';
-          sessionStorage.setItem('nl-dismissed', '1');
-          setTimeout(function() { popup.classList.remove('visible'); }, 3000);
-        }).catch(function() { popupForm.submit(); });
+        var email = document.getElementById('nl-contato-email').value;
+        brevoSubscribe(email, document.getElementById('nl-contato-success'), sectionForm);
       });
+    }
 
-      // FORM CONTATO
-      var sectionForm = document.getElementById('nl-contato-form');
-      if (sectionForm) {
-        sectionForm.addEventListener('submit', function(e) {
-          e.preventDefault();
-          fetch('/', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: encode({ 'form-name': 'newsletter-contato', 'email': document.getElementById('nl-contato-email').value })
-          }).then(function() {
-            sectionForm.style.display = 'none';
-            document.getElementById('nl-contato-success').style.display = 'block';
-          }).catch(function() { sectionForm.submit(); });
-        });
-      }
-      // SLIDESHOW FEIRA
-      var slides = document.querySelectorAll('#feira-slideshow .slideshow-img');
-      var atual = 0;
+    // SLIDESHOW FEIRA
+    var slides = document.querySelectorAll('#feira-slideshow .slideshow-img');
+    var atual = 0;
+    if (slides.length) {
       setInterval(function() {
         slides[atual].classList.remove('ativo');
         atual = (atual + 1) % slides.length;
         slides[atual].classList.add('ativo');
       }, 2000);
-    })();
+    }
   </script>
 
 </body>

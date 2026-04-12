@@ -114,7 +114,7 @@
     .hero-desc { font-size: 0.9rem; color: rgba(13,13,11,0.55); max-width: 420px; line-height: 1.6; }
 
     /* COLECOES */
-    .loja-colecoes { padding: 48px 24px 0; display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
+    .loja-colecoes { padding: 48px 24px 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
     .loja-colecao-card {
       padding: 28px 28px 52px; border: 1px solid rgba(240,236,228,0.06);
       background: rgba(240,236,228,0.02); position: relative; overflow: hidden;
@@ -163,19 +163,48 @@
     .filtro-btn:hover:not(.active) { color: var(--areia); background: rgba(240,236,228,0.04); }
     .filtro-count { font-size: 0.48rem; background: rgba(240,236,228,0.1); color: rgba(240,236,228,0.4); padding: 2px 5px; border-radius: 0 4px 0 0; }
     .filtro-btn.active .filtro-count { background: rgba(13,13,11,0.2); color: var(--preto); }
+    .filtro-sep { width: 1px; background: rgba(240,236,228,0.15); align-self: stretch; flex-shrink: 0; }
+    .filtro-label { font-family: 'Space Mono', monospace; font-size: 0.42rem; color: rgba(240,236,228,0.2); letter-spacing: 0.15em; text-transform: uppercase; padding: 0 10px; align-self: center; white-space: nowrap; }
 
     /* CATEGORIA */
-    .categoria { padding: 48px 24px; border-bottom: 1px solid rgba(240,236,228,0.06); }
+    .categoria { padding: 0 0 48px; border-bottom: 1px solid rgba(240,236,228,0.06); }
     .categoria:last-of-type { border-bottom: none; }
     .cat-header {
       display: flex; align-items: flex-end; justify-content: space-between;
-      margin-bottom: 28px; padding-bottom: 20px; border-bottom: 1px solid rgba(240,236,228,0.08);
+      margin-bottom: 28px; padding: 40px 24px 28px;
+      border-bottom: 1px solid rgba(240,236,228,0.08);
       flex-wrap: wrap; gap: 8px;
     }
+    .cat-header.bg-laranja { background: var(--laranja); }
+    .cat-header.bg-laranja .cat-num { color: rgba(13,13,11,0.3); }
+    .cat-header.bg-laranja .cat-nome { color: var(--preto); }
+    .cat-header.bg-laranja .cat-desc { color: rgba(13,13,11,0.55); }
+    .cat-header.bg-laranja .cat-total { color: rgba(13,13,11,0.3); }
+    .cat-header.bg-laranja { border-bottom-color: rgba(13,13,11,0.1); }
+
+    .cat-header.bg-azul { background: var(--azul-sergipe); }
+    .cat-header.bg-azul .cat-num { color: rgba(240,236,228,0.25); }
+    .cat-header.bg-azul .cat-nome { color: var(--areia); }
+    .cat-header.bg-azul .cat-desc { color: rgba(240,236,228,0.55); }
+    .cat-header.bg-azul .cat-total { color: rgba(240,236,228,0.25); }
+    .cat-header.bg-azul { border-bottom-color: rgba(240,236,228,0.08); }
+
+    .cat-header.bg-dourado { background: var(--dourado); }
+    .cat-header.bg-dourado .cat-num { color: rgba(13,13,11,0.3); }
+    .cat-header.bg-dourado .cat-nome { color: var(--preto); }
+    .cat-header.bg-dourado .cat-desc { color: rgba(13,13,11,0.55); }
+    .cat-header.bg-dourado .cat-total { color: rgba(13,13,11,0.3); }
+    .cat-header.bg-dourado { border-bottom-color: rgba(13,13,11,0.1); }
+
+    .cat-header.bg-atalaia { background: var(--azul-atalaia); }
+    .cat-header.bg-atalaia .cat-num { color: rgba(240,236,228,0.25); }
+    .cat-header.bg-atalaia .cat-nome { color: var(--areia); }
+    .cat-header.bg-atalaia .cat-desc { color: rgba(240,236,228,0.55); }
+    .cat-header.bg-atalaia .cat-total { color: rgba(240,236,228,0.25); }
+    .cat-header.bg-atalaia { border-bottom-color: rgba(240,236,228,0.08); }
+
     .cat-num { font-family: 'Space Mono', monospace; font-size: 0.55rem; color: rgba(240,236,228,0.2); letter-spacing: 0.18em; margin-bottom: 6px; }
     .cat-nome { font-family: 'Clother', sans-serif; font-weight: 900; font-size: clamp(1.8rem, 4vw, 3.2rem); text-transform: uppercase; line-height: 0.9; }
-    .cat-nome.laranja { color: var(--laranja); }
-    .cat-nome.azul { color: var(--azul-atalaia); }
     .cat-desc { font-size: 0.85rem; color: rgba(240,236,228,0.4); line-height: 1.6; margin-top: 10px; max-width: 480px; }
     .cat-total { font-family: 'Space Mono', monospace; font-size: 0.55rem; color: rgba(240,236,228,0.2); letter-spacing: 0.12em; text-transform: uppercase; }
 
@@ -322,7 +351,10 @@
       -webkit-tap-highlight-color: transparent;
     }
     .tam-info-btn:hover { color: var(--areia); }
-    .wa-banner {
+    .produto-card.em-breve { opacity: 0.65; pointer-events: none; }
+    .badge-embreve { background: rgba(240,236,228,0.08); color: rgba(240,236,228,0.4); border: 1px solid rgba(240,236,228,0.12); }
+    .promo-tag { font-family: 'Space Mono', monospace; font-size: 0.42rem; background: var(--dourado); color: var(--preto); padding: 3px 7px; border-radius: 0 4px 0 0; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; display: inline-block; margin-bottom: 10px; }
+    .preco-riscado { font-family: 'Clother', sans-serif; font-size: 0.75rem; font-weight: 400; color: rgba(240,236,228,0.28); text-decoration: line-through; margin-right: 4px; align-self: center; }
       margin: 0 24px 48px; padding: 20px 22px;
       background: var(--azul-sergipe); border: 1px solid rgba(46,111,196,0.3);
       border-radius: 0 14px 0 0; display: flex; align-items: flex-start; gap: 14px;
@@ -379,7 +411,9 @@
     @media (min-width: 600px) {
       .hero { padding: 100px 40px 56px; }
       .loja-colecoes { padding: 56px 40px 0; }
-      .categoria { padding: 56px 40px; }
+      .categoria { padding: 0 0 56px; }
+      .cat-header { padding: 48px 40px 32px; }
+      .produtos-grid, .produtos-grid.col3 { padding: 0 40px !important; }
       .wa-banner { margin: 0 40px 56px; }
       footer { padding: 32px 40px; }
       .produtos-grid { grid-template-columns: repeat(3, 1fr); }
@@ -434,15 +468,25 @@
       <p class="loja-colecao-desc">Onde Bauhaus encontra o mangue sergipano. Formas geométricas, filamento, arte e raiz juntos.</p>
       <span class="loja-colecao-badge">Ver produtos</span>
     </a>
+    <a href="#cat-essenciais" class="loja-colecao-card">
+      <p class="loja-colecao-tag">Coleção 03</p>
+      <h3 class="loja-colecao-nome">Essenciais</h3>
+      <p class="loja-colecao-desc">Design funcional com estética MARATU. Peças para o seu dia a dia.</p>
+      <span class="loja-colecao-badge">Ver produtos</span>
+    </a>
   </div>
 
   <div class="filtros-wrapper">
     <div class="filtros">
-      <button class="filtro-btn active" onclick="filtrar(this,'todos')">Todos <span class="filtro-count">12</span></button>
+      <button class="filtro-btn active" onclick="filtrar(this,'todos')">Todos <span class="filtro-count">14</span></button>
       <button class="filtro-btn" onclick="filtrar(this,'posteres')">Pôsteres <span class="filtro-count">10</span></button>
+      <button class="filtro-btn" onclick="filtrar(this,'decoracao')">Decoração <span class="filtro-count">2</span></button>
       <button class="filtro-btn" onclick="filtrar(this,'use-maratu')">USE MARATU <span class="filtro-count">2</span></button>
+      <div class="filtro-sep"></div>
+      <span class="filtro-label">Coleção</span>
       <button class="filtro-btn" onclick="filtrarColecao(this,'Origens')">Origens <span class="filtro-count">5</span></button>
       <button class="filtro-btn" onclick="filtrarColecao(this,'MangueHaus')">MangueHaus <span class="filtro-count">6</span></button>
+      <button class="filtro-btn" onclick="filtrarColecao(this,'Essenciais')">Essenciais <span class="filtro-count">2</span></button>
     </div>
   </div>
 
@@ -450,51 +494,54 @@
     ← Ver todos os produtos
   </button>
   <section class="categoria" id="cat-posteres" data-categoria="posteres">
-    <div class="cat-header">
+    <div class="cat-header bg-laranja">
       <div>
         <p class="cat-num">01 ——</p>
-        <h2 class="cat-nome laranja">Pôsteres</h2>
+        <h2 class="cat-nome">Pôsteres</h2>
         <p class="cat-desc">Um pedacinho de Aracaju na sua casa. Arte autoral em papel premium, disponíveis nos tamanhos A4, A3, A2 e A1.</p>
       </div>
       <span class="cat-total">10 designs · A4 / A3 / A2 / A1</span>
     </div>
-    <div class="produtos-grid" id="grid-posteres"></div>
+    <div class="produtos-grid" id="grid-posteres" style="padding: 0 24px;"></div>
   </section>
 
   <!-- USE MARATU -->
   <section class="categoria" id="cat-use-maratu" data-categoria="use-maratu">
-    <div class="cat-header">
+    <div class="cat-header bg-azul">
       <div>
         <p class="cat-num">02 ——</p>
-        <h2 class="cat-nome azul">USE MARATU</h2>
+        <h2 class="cat-nome">USE MARATU</h2>
         <p class="cat-desc">Use, vista, seja MARATU. Peças pra levar a identidade de Sergipe pra onde você for.</p>
       </div>
       <span class="cat-total">2 produtos</span>
     </div>
-    <div class="produtos-grid col3">
+    <div class="produtos-grid col3" style="padding: 0 24px;">
 
       <div class="produto-card">
-        <div class="produto-img" onclick="abrirLightbox('adesivos-origens.png','Colecao de Adesivos Origens')">
+        <div class="produto-img" onclick="abrirLightbox('adesivos-origens.png','Coleção de Adesivos Origens')">
           <div class="badges-grupo">
             <span class="produto-badge badge-novo">Novo</span>
             <span class="badge-colecao">Origens</span>
           </div>
-          <img class="img-poster" src="adesivos-origens.png" alt="Colecao de Adesivos Origens" loading="lazy" style="object-fit:contain;padding:8px;">
+          <img class="img-poster" src="adesivos-origens.png" alt="Coleção de Adesivos Origens" loading="lazy" style="object-fit:contain;padding:8px;">
         </div>
         <div class="produto-body">
+          <span class="promo-tag">Promoção de lançamento</span>
           <p class="produto-cat">Adesivos</p>
           <p class="produto-nome">Coleção Origens — 1ª Edição</p>
           <p class="produto-desc">12 adesivos · Vinil · Impressão premium</p>
         </div>
         <div class="produto-footer">
-          <p class="produto-preco"><span class="cifrao">R$</span>18</p>
-          <a href="https://wa.me/5579981512978?text=Ola!%20Tenho%20interesse%20no%20produto%3A%20Colecao%20de%20Adesivos%20Origens%201a%20Edicao%20-%20R%24%2018" target="_blank" rel="noopener" class="btn-encomendar">Encomendar ↗</a>
+          <p class="produto-preco"><span class="preco-riscado">R$25</span><span class="cifrao">R$</span>18</p>
+          <a href="https://wa.me/5579981512978?text=Ol%C3%A1!%20Tenho%20interesse%20no%20produto%3A%20Cole%C3%A7%C3%A3o%20de%20Adesivos%20Origens%201%C2%AA%20Edi%C3%A7%C3%A3o%20-%20R%24%2018" target="_blank" rel="noopener" class="btn-encomendar">Encomendar ↗</a>
         </div>
       </div>
 
-      <div class="produto-card">
-        <div class="produto-img cor-atalaia" style="cursor:default;">
-          <span class="produto-badge badge-novo">Novo</span>
+      <div class="produto-card em-breve">
+        <div class="produto-img cor-atalaia" style="cursor:default; display:flex; align-items:center; justify-content:center;">
+          <div class="badges-grupo">
+            <span class="produto-badge badge-embreve">Em breve</span>
+          </div>
         </div>
         <div class="produto-body">
           <p class="produto-cat">Chaveiro</p>
@@ -502,8 +549,98 @@
           <p class="produto-desc">PLA · Impressão 3D · 6 cm</p>
         </div>
         <div class="produto-footer">
-          <p class="produto-preco"><span class="cifrao">R$</span>22</p>
-          <a href="https://wa.me/5579981512978?text=Ola!%20Tenho%20interesse%20no%20produto%3A%20Chaveiro%20Aratu%203D%20-%20R%24%2022" target="_blank" rel="noopener" class="btn-encomendar">Encomendar ↗</a>
+          <p class="produto-preco indisponivel">Em breve</p>
+          <span class="btn-indisponivel">—</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- DECORAÇÃO -->
+  <section class="categoria" id="cat-decoracao" data-categoria="decoracao">
+    <div class="cat-header bg-dourado">
+      <div>
+        <p class="cat-num">03 ——</p>
+        <h2 class="cat-nome">Decoração</h2>
+        <p class="cat-desc">Objetos para o seu espaço. Design autoral com identidade MARATU — peças que habitam e transformam.</p>
+      </div>
+      <span class="cat-total">Em breve</span>
+    </div>
+    <div class="produtos-grid col3" style="padding: 0 24px;">
+
+      <div class="produto-card em-breve">
+        <div class="produto-img" style="background:var(--azul-sergipe);cursor:default;display:flex;align-items:center;justify-content:center;">
+          <div class="badges-grupo"><span class="produto-badge badge-embreve">Em breve</span></div>
+        </div>
+        <div class="produto-body">
+          <p class="produto-cat">Decoração</p>
+          <p class="produto-nome">Vaso Geométrico</p>
+          <p class="produto-desc">PLA · Impressão 3D · Design autoral</p>
+        </div>
+        <div class="produto-footer">
+          <p class="produto-preco indisponivel">Em breve</p>
+          <span class="btn-indisponivel">—</span>
+        </div>
+      </div>
+
+      <div class="produto-card em-breve">
+        <div class="produto-img" style="background:var(--azul-sergipe);cursor:default;display:flex;align-items:center;justify-content:center;">
+          <div class="badges-grupo"><span class="produto-badge badge-embreve">Em breve</span></div>
+        </div>
+        <div class="produto-body">
+          <p class="produto-cat">Decoração</p>
+          <p class="produto-nome">Decoração de Parede</p>
+          <p class="produto-desc">PLA · Impressão 3D · Design autoral</p>
+        </div>
+        <div class="produto-footer">
+          <p class="produto-preco indisponivel">Em breve</p>
+          <span class="btn-indisponivel">—</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ESSENCIAIS -->
+  <section class="categoria" id="cat-essenciais" data-categoria="essenciais">
+    <div class="cat-header bg-atalaia">
+      <div>
+        <p class="cat-num">04 ——</p>
+        <h2 class="cat-nome">Essenciais</h2>
+        <p class="cat-desc">Design funcional com estética MARATU. Peças para o seu dia a dia.</p>
+      </div>
+      <span class="cat-total">Em breve</span>
+    </div>
+    <div class="produtos-grid col3" style="padding: 0 24px;">
+
+      <div class="produto-card em-breve">
+        <div class="produto-img" style="background:var(--azul-atalaia);cursor:default;display:flex;align-items:center;justify-content:center;">
+          <div class="badges-grupo"><span class="produto-badge badge-embreve">Em breve</span></div>
+        </div>
+        <div class="produto-body">
+          <p class="produto-cat">Essenciais</p>
+          <p class="produto-nome">Suporte de Fone</p>
+          <p class="produto-desc">PLA · Impressão 3D · Design autoral</p>
+        </div>
+        <div class="produto-footer">
+          <p class="produto-preco indisponivel">Em breve</p>
+          <span class="btn-indisponivel">—</span>
+        </div>
+      </div>
+
+      <div class="produto-card em-breve">
+        <div class="produto-img" style="background:var(--azul-atalaia);cursor:default;display:flex;align-items:center;justify-content:center;">
+          <div class="badges-grupo"><span class="produto-badge badge-embreve">Em breve</span></div>
+        </div>
+        <div class="produto-body">
+          <p class="produto-cat">Essenciais</p>
+          <p class="produto-nome">Organizador de Mesa</p>
+          <p class="produto-desc">PLA · Impressão 3D · Design autoral</p>
+        </div>
+        <div class="produto-footer">
+          <p class="produto-preco indisponivel">Em breve</p>
+          <span class="btn-indisponivel">—</span>
         </div>
       </div>
 
@@ -584,7 +721,7 @@
     }
 
     var POSTERES = [
-      { id: 'pordosol',  nome: 'Por do Sol',         img: 'poster-pordosol.png',  mockup: 'mockup-pordosol.png',  colecao: 'MangueHaus', col: 'mangue', destaque: true },
+      { id: 'pordosol',  nome: 'Pôr do Sol',         img: 'poster-pordosol.png',  mockup: 'mockup-pordosol.png',  colecao: 'MangueHaus', col: 'mangue', destaque: true },
       { id: 'atalaia',   nome: 'Sol de Atalaia',     img: 'poster-atalaia.png',   mockup: 'mockup-atalaia.png',   colecao: 'Origens',    col: 'origens', destaque: true },
       { id: 'destrua',   nome: 'Destrua o Império!', img: 'poster-destrua.png',   mockup: 'mockup-destrua.png',   colecao: 'Origens',    col: 'origens' },
       { id: 'origens',   nome: 'Origens',            img: 'poster-origens.png',   mockup: 'mockup-origens.png',   colecao: 'Origens',    col: 'origens' },

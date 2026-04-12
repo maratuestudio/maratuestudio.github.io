@@ -114,7 +114,7 @@
     .split { display: grid; grid-template-columns: 1fr 1fr; min-height: 540px; }
     .split-texto { padding: 64px 56px; display: flex; flex-direction: column; justify-content: center; }
     .split-foto { position: relative; overflow: hidden; }
-    .split-foto img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+    .split-foto > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
 
     /* laranja */
     .bg-laranja { background: var(--laranja); }
@@ -188,8 +188,8 @@
     .card-desc-txt { font-size: 0.78rem; color: rgba(13,13,11,0.65); line-height: 1.5; }
 
     /* Slideshow feira */
-    .slideshow { position: relative; overflow: hidden; width: 100%; height: 100%; background: #A8401A; }
-    .slideshow-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; opacity: 0; transition: opacity 0.8s ease; }
+    .slideshow { position: relative; overflow: hidden; width: 100%; height: 100%; background: var(--preto); }
+    .slideshow-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; padding: 20px; opacity: 0; transition: opacity 0.8s ease; }
     .slideshow-img.ativo { opacity: 1; }
 
     /* ═══════════════════════════════════

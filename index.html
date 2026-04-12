@@ -496,16 +496,16 @@
   </div>
 
   <script>
-    var BREVO_KEY = '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';
+    var WORKER_URL = 'https://maratu-newsletter.raphaelnascimento.workers.dev';
 
     function brevoSubscribe(email, successEl, hideEl) {
-      fetch('https://api.brevo.com/v3/contacts', {
+      fetch(WORKER_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'api-key': BREVO_KEY },
-        body: JSON.stringify({ email: email, listIds: [3], updateEnabled: true })
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email })
       }).then(function(res) {
         successEl.style.display = 'block';
-        if (res.ok || res.status === 204) {
+        if (res.ok) {
           successEl.style.color = '#C8501A';
           successEl.textContent = 'Inscrito! Bem-vindo à MARATU.';
           if (hideEl) hideEl.style.display = 'none';

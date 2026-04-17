@@ -6,27 +6,29 @@
 /* ---------- FONTES ---------- */
 @font-face {
   font-family: 'Jack';
-  src: url('fonts/Jack.woff2') format('woff2'),
-       url('fonts/Jack.woff') format('woff'),
-       url('fonts/Jack.ttf') format('truetype');
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Clother';
-  src: url('fonts/Clother-Regular.woff2') format('woff2'),
-       url('fonts/Clother-Regular.woff') format('woff'),
-       url('fonts/Clother-Regular.ttf') format('truetype');
+  src: url('TRYJackAlpha-Regular.ttf') format('truetype');
   font-weight: 400;
   font-display: swap;
 }
 
 @font-face {
   font-family: 'Clother';
-  src: url('fonts/Clother-Bold.woff2') format('woff2'),
-       url('fonts/Clother-Bold.woff') format('woff'),
-       url('fonts/Clother-Bold.ttf') format('truetype');
+  src: url('TRYClother-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Clother';
+  src: url('TRYClother-Bold.ttf') format('truetype');
   font-weight: 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Clother';
+  src: url('TRYClother-Black.ttf') format('truetype');
+  font-weight: 900;
   font-display: swap;
 }
 

@@ -1,6 +1,6 @@
 // ============================================================
 // MARATU - TESTE DE REDESIGN
-// intera\u00e7\u00f5es base
+// interações base
 // ============================================================
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // ---------- SELETOR DE TAMANHO (p\u00e1gina de produto) ----------
+  // ---------- SELETOR DE TAMANHO (página de produto) ----------
   const tamanhos = document.querySelectorAll('.tamanho-btn');
   tamanhos.forEach(btn => {
     btn.addEventListener('click', () => {
@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const nome = document.querySelector('.produto-page__nome')?.textContent || 'produto';
       const cta = document.querySelector('.produto-page__cta');
       if (cta) {
-        const msg = `ol\u00e1, quero encomendar o ${nome.trim()} no tamanho ${tam} por R$ ${preco}`;
+        const msg = `olá, quero encomendar o ${nome.trim()} no tamanho ${tam} por R$ ${preco}`;
         cta.href = `https://wa.me/5579999999999?text=${encodeURIComponent(msg)}`;
       }
     });

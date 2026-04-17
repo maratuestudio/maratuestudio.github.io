@@ -1,6 +1,6 @@
 /* ===================================================================
    MARATU — TESTE DE REDESIGN
-   bauhaus tropical · grade vista · desconstru\u00e7\u00e3o controlada
+   bauhaus tropical · grade vista · desconstrução controlada
    =================================================================== */
 
 /* ---------- FONTES ---------- */
@@ -34,7 +34,7 @@
 
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap');
 
-/* ---------- VARI\u00c1VEIS ---------- */
+/* ---------- VARIÁVEIS ---------- */
 :root {
   /* paleta MARATU */
   --areia: #F0ECE4;
@@ -142,7 +142,7 @@ p {
   max-width: 54ch;
 }
 
-/* ---------- GRADE VIS\u00cdVEL ---------- */
+/* ---------- GRADE VISÍVEL ---------- */
 .grid-overlay {
   position: fixed;
   inset: 0;
@@ -435,7 +435,7 @@ body.grid-visible .grid-overlay {
   .hero__scroll { grid-column: 1 / -1; align-items: flex-start; text-align: left; }
 }
 
-/* ---------- SE\u00c7\u00d5ES ---------- */
+/* ---------- SEÇÕES ---------- */
 .secao {
   padding: var(--secao-padding) var(--margem);
   position: relative;
@@ -538,7 +538,7 @@ body.grid-visible .grid-overlay {
   .manifesto__alfabeto { grid-column: 1 / -1; margin-top: 40px; max-width: 240px; }
 }
 
-/* ---------- VITRINE (cole\u00e7\u00f5es) ---------- */
+/* ---------- VITRINE (coleções) ---------- */
 .vitrine {
   display: grid;
   grid-template-columns: repeat(12, 1fr);
@@ -645,7 +645,7 @@ body.grid-visible .grid-overlay {
 }
 
 .vitrine__link::after {
-  content: '\u2192';
+  content: '→';
   transition: transform 0.3s;
 }
 
@@ -941,7 +941,7 @@ body.grid-visible .grid-overlay {
 .reveal[data-delay="3"] { transition-delay: 0.3s; }
 .reveal[data-delay="4"] { transition-delay: 0.4s; }
 
-/* ---------- P\u00c1GINA DE COLE\u00c7\u00c3O ---------- */
+/* ---------- PÁGINA DE COLEÇÃO ---------- */
 .colecao-capa {
   min-height: 100vh;
   padding: 120px var(--margem) 40px;
@@ -1024,7 +1024,7 @@ body.grid-visible .grid-overlay {
   .colecao-manifesto__meta { grid-column: 1 / -1; }
 }
 
-/* ---------- P\u00c1GINA DE PRODUTO INDIVIDUAL ---------- */
+/* ---------- PÁGINA DE PRODUTO INDIVIDUAL ---------- */
 .produto-page {
   padding: 120px var(--margem) 60px;
   display: grid;
@@ -1146,7 +1146,7 @@ body.grid-visible .grid-overlay {
   .produto-page__detalhe p { grid-column: 1 / -1; }
 }
 
-/* ---------- P\u00c1GINA EST\u00daDIO ---------- */
+/* ---------- PÁGINA ESTÚDIO ---------- */
 .estudio-hero {
   min-height: 80vh;
   padding: 120px var(--margem) 60px;
@@ -1211,7 +1211,7 @@ body.grid-visible .grid-overlay {
   .estudio-bloco__corpo { margin-top: 24px; }
 }
 
-/* ---------- \u00cdNDICE DE COLE\u00c7\u00d5ES ---------- */
+/* ---------- ÍNDICE DE COLEÇÕES ---------- */
 .indice {
   padding: 120px var(--margem) var(--secao-padding);
 }
@@ -1372,7 +1372,7 @@ body.grid-visible .grid-overlay {
   .contato__cols { grid-template-columns: 1fr; gap: 40px; }
 }
 
-/* ---------- ANIMA\u00c7\u00c3O DE ENTRADA DA P\u00c1GINA ---------- */
+/* ---------- ANIMAÇÃO DE ENTRADA DA PÁGINA ---------- */
 .page-transition {
   position: fixed;
   inset: 0;
@@ -1388,7 +1388,7 @@ body.grid-visible .grid-overlay {
   100% { transform: scaleY(0); transform-origin: top; }
 }
 
-/* ---------- UTILIT\u00c1RIOS ---------- */
+/* ---------- UTILITÁRIOS ---------- */
 .cor-laranja { color: var(--laranja); }
 .cor-azul { color: var(--azul-sergipe); }
 .cor-dourado { color: var(--dourado); }

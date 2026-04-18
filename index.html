@@ -101,7 +101,6 @@
       pointer-events: none; z-index: 9999;
       transform: translate(-50%, -50%);
       transition: width 0.25s, height 0.25s, background 0.25s;
-      mix-blend-mode: difference;
     }
     .cursor.hover { width: 44px; height: 44px; background: var(--areia); }
     @media (max-width: 1024px), (hover: none) {
@@ -114,7 +113,6 @@
       padding: 20px var(--margem);
       display: grid; grid-template-columns: 1fr auto 1fr;
       align-items: center;
-      mix-blend-mode: difference;
       color: var(--areia);
       transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
@@ -510,40 +508,25 @@
     /* ── FOOTER ── */
     .footer {
       background: var(--preto); color: var(--areia);
-      padding: clamp(56px, 8vh, 96px) var(--margem) 40px;
+      padding: clamp(40px, 6vh, 72px) var(--margem) 32px;
       border-top: 1px solid rgba(240,236,228,0.06);
     }
-    .footer__grid {
-      display: grid; grid-template-columns: repeat(12, 1fr);
-      gap: var(--gutter); margin-bottom: 64px;
-    }
     .footer__logo {
-      grid-column: 1 / span 5;
       font-family: var(--jack);
       font-size: clamp(2rem, 4vw, 4.5rem);
       line-height: 0.9; letter-spacing: -0.02em; text-transform: uppercase;
       color: var(--areia);
+      margin-bottom: 40px;
     }
-    .footer__col { grid-column: span 2; display: flex; flex-direction: column; gap: 10px; }
-    .footer__col h4 {
-      font-family: var(--mono); font-size: 0.58rem;
-      letter-spacing: 0.12em; text-transform: uppercase;
-      opacity: 0.4; margin-bottom: 10px;
-    }
-    .footer__col a,
-    .footer__col p { font-family: var(--clother); font-size: 0.88rem; opacity: 0.8; transition: opacity 0.2s; }
-    .footer__col a:hover { opacity: 1; }
     .footer__baseline {
       border-top: 1px solid rgba(240,236,228,0.08);
-      padding-top: 24px; display: flex;
+      padding-top: 20px; display: flex;
       justify-content: space-between; flex-wrap: wrap; gap: 8px;
       font-family: var(--mono); font-size: 0.5rem;
       letter-spacing: 0.12em; text-transform: uppercase;
       color: rgba(240,236,228,0.2);
     }
     @media (max-width: 768px) {
-      .footer__logo { grid-column: 1 / -1; margin-bottom: 32px; }
-      .footer__col { grid-column: span 6; }
       .footer__baseline { flex-direction: column; }
     }
 
@@ -820,27 +803,7 @@
 
   <!-- FOOTER -->
   <footer class="footer">
-    <div class="footer__grid">
-      <div class="footer__logo">MARATU</div>
-      <div class="footer__col">
-        <h4>navegar</h4>
-        <a href="index.html">início</a>
-        <a href="index.html#sobre">estúdio</a>
-        <a href="index.html#origem">origem</a>
-        <a href="loja.html">loja</a>
-      </div>
-      <div class="footer__col">
-        <h4>contato</h4>
-        <a href="mailto:estudio@maratu.com.br">estudio@maratu.com.br</a>
-        <a href="https://wa.me/5579981512978" target="_blank" rel="noopener">whatsapp</a>
-        <a href="https://instagram.com/maratuestudio" target="_blank" rel="noopener">instagram</a>
-      </div>
-      <div class="footer__col">
-        <h4>endereço</h4>
-        <p>Aracaju</p>
-        <p>Sergipe, Brasil</p>
-      </div>
-    </div>
+    <div class="footer__logo">MARATU</div>
     <div class="footer__baseline">
       <p>© 2026 MARATU Estúdio · feito em Aracaju</p>
       <p>Impressão 3D · Design · Arte</p>

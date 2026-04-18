@@ -235,7 +235,7 @@
     .hero__title {
       grid-column: 1 / span 12; grid-row: 2;
       font-family: var(--jack);
-      font-size: clamp(4.5rem, 18vw, 16rem);
+      font-size: clamp(3rem, 11vw, 10rem);
       line-height: 0.88;
       letter-spacing: -0.02em;
       text-transform: uppercase;
@@ -464,43 +464,6 @@
     .card-desc-txt { font-size: 0.75rem; color: rgba(13,13,11,0.6); line-height: 1.5; }
     .div-laranja { height: 3px; background: var(--laranja); }
 
-    /* ── MANIFESTO (bloco de texto com alfabeto) ── */
-    .manifesto {
-      display: grid; grid-template-columns: repeat(12, 1fr); gap: var(--gutter);
-      align-items: start;
-    }
-    .manifesto__corpo {
-      grid-column: 3 / span 6;
-      font-size: clamp(1.2rem, 1.9vw, 1.75rem);
-      line-height: 1.35; font-family: var(--clother); font-weight: 400;
-    }
-    .manifesto__corpo strong { font-weight: 700; color: var(--laranja); }
-    .manifesto__alfabeto {
-      grid-column: 10 / span 3;
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; align-self: start;
-    }
-    .alfabeto-cel {
-      aspect-ratio: 1; background: var(--laranja);
-      position: relative; overflow: hidden;
-      animation: pulse-bg 6s ease-in-out infinite;
-    }
-    .alfabeto-cel:nth-child(even) { animation-delay: 0.5s; }
-    .alfabeto-cel:nth-child(3n)   { animation-delay: 1s; }
-    @keyframes pulse-bg { 0%, 100% { opacity: 1; } 50% { opacity: 0.65; } }
-    .alfabeto-cel::before { content: ''; position: absolute; inset: 0; background: var(--areia); clip-path: circle(50% at 50% 100%); }
-    .alfabeto-cel--2::before { clip-path: circle(50% at 0% 50%); }
-    .alfabeto-cel--3::before { clip-path: circle(50% at 100% 50%); }
-    .alfabeto-cel--4::before { clip-path: circle(50% at 50% 0%); }
-    .alfabeto-cel--5::before { clip-path: polygon(0 100%, 100% 0, 100% 100%); }
-    .alfabeto-cel--6::before { clip-path: polygon(0 0, 100% 100%, 0 100%); }
-    .alfabeto-cel--7::before { clip-path: inset(0 0 50% 0); }
-    .alfabeto-cel--8::before { clip-path: inset(50% 0 0 0); }
-    .alfabeto-cel--9::before { clip-path: circle(50% at 50% 50%); }
-    @media (max-width: 768px) {
-      .manifesto__corpo { grid-column: 1 / -1; }
-      .manifesto__alfabeto { grid-column: 1 / -1; margin-top: 32px; max-width: 200px; }
-    }
-
     /* ── CONTATO / LINKS ── */
     .links { display: flex; flex-direction: column; gap: 2px; }
     .clink {
@@ -557,7 +520,7 @@
     .footer__logo {
       grid-column: 1 / span 5;
       font-family: var(--jack);
-      font-size: clamp(3.5rem, 8vw, 8rem);
+      font-size: clamp(2rem, 4vw, 4.5rem);
       line-height: 0.9; letter-spacing: -0.02em; text-transform: uppercase;
       color: var(--areia);
     }
@@ -606,15 +569,15 @@
     .nl-popup-success { display: none; font-size: 0.85rem; color: var(--laranja); font-weight: 700; margin-top: 6px; }
     @media (max-width: 600px) { .nl-popup { bottom: 16px; right: 16px; left: 16px; width: auto; } }
 
-    /* ── SCROLL REVEAL ── */
+    /* ── SCROLL REVEAL (fade puro) ── */
     .reveal {
-      opacity: 0; transform: translateY(24px);
-      transition: opacity 0.8s cubic-bezier(0.4,0,0.2,1), transform 0.8s cubic-bezier(0.4,0,0.2,1);
+      opacity: 0;
+      transition: opacity 0.9s cubic-bezier(0.4,0,0.2,1);
     }
-    .reveal.in { opacity: 1; transform: translateY(0); }
-    .reveal[data-delay="1"] { transition-delay: 0.1s; }
-    .reveal[data-delay="2"] { transition-delay: 0.2s; }
-    .reveal[data-delay="3"] { transition-delay: 0.3s; }
+    .reveal.in { opacity: 1; }
+    .reveal[data-delay="1"] { transition-delay: 0.15s; }
+    .reveal[data-delay="2"] { transition-delay: 0.3s; }
+    .reveal[data-delay="3"] { transition-delay: 0.45s; }
 
     /* ── RESPONSIVE ── */
     @media (max-width: 900px) {
@@ -695,7 +658,7 @@
   </section>
 
   <!-- ② FEIRA — split laranja | slideshow -->
-  <div class="split foto-direita">
+  <div class="split foto-direita reveal">
     <div class="split-texto bg-laranja">
       <p class="lbl">Nossa loja — aberta agora</p>
       <span class="t1">Visite nossa</span>
@@ -719,7 +682,7 @@
   </div>
 
   <!-- ③ SOBRE — foto de fundo + overlay -->
-  <div class="solido" id="sobre">
+  <div class="solido reveal" id="sobre">
     <div class="solido-bg" style="background-image: url('foto-atalaia.jpg');"></div>
     <div class="solido-overlay" style="background: rgba(240,236,228,0.88);"></div>
     <div class="solido-content">
@@ -731,7 +694,7 @@
   </div>
 
   <!-- ④ ORIGEM — split foto estatuas | azul -->
-  <div class="split foto-esquerda">
+  <div class="split foto-esquerda reveal">
     <div class="split-foto">
       <img src="bg-estatuas.jpg" alt="Estatuas de Aracaju">
     </div>
@@ -744,7 +707,7 @@
   </div>
 
   <!-- ⑤ O QUE FAZEMOS — laranja sólido -->
-  <div class="solido secao--laranja">
+  <div class="solido secao--laranja reveal">
     <div class="solido-content">
       <p class="fazemos-label">O que fazemos</p>
       <p class="fazemos-titulo">Impressão 3D, Design e <span>ARTE</span></p>
@@ -779,36 +742,8 @@
 
   <div class="div-laranja"></div>
 
-  <!-- MANIFESTO — bloco preto com alfabeto semicircular -->
-  <section class="secao secao--preto">
-    <div class="secao__header">
-      <span class="secao__num mono reveal">003 / manifesto</span>
-      <h2 class="secao__titulo reveal" data-delay="1">O que nos move.</h2>
-    </div>
-    <div class="manifesto">
-      <div class="manifesto__corpo reveal" data-delay="2">
-        MARATU é um estúdio que traduz a identidade sergipana em objetos e impressos.
-        O arco da orla, a carranca do rio, o relojoeiro do mercado, o caju, o mangue.
-        Cada peça carrega um pedaço do que nos forma, <strong>pra levar pra dentro de casa</strong>.
-        <br><br>
-        Projetamos, imprimimos e empacotamos em Aracaju.
-      </div>
-      <div class="manifesto__alfabeto reveal" data-delay="3" aria-hidden="true">
-        <div class="alfabeto-cel"></div>
-        <div class="alfabeto-cel alfabeto-cel--2"></div>
-        <div class="alfabeto-cel alfabeto-cel--3"></div>
-        <div class="alfabeto-cel alfabeto-cel--4"></div>
-        <div class="alfabeto-cel alfabeto-cel--5"></div>
-        <div class="alfabeto-cel alfabeto-cel--6"></div>
-        <div class="alfabeto-cel alfabeto-cel--7"></div>
-        <div class="alfabeto-cel alfabeto-cel--8"></div>
-        <div class="alfabeto-cel alfabeto-cel--9"></div>
-      </div>
-    </div>
-  </section>
-
   <!-- ⑥ CONTATO — split preto | foto -->
-  <div class="split foto-direita" id="contato">
+  <div class="split foto-direita reveal" id="contato">
     <div class="split-texto bg-preto-split" style="border-top:none;">
       <p class="lbl">005 — CONTATO</p>
       <span class="t1">Fala com a</span>
@@ -861,7 +796,7 @@
   </div>
 
   <!-- POLÍTICA -->
-  <section class="politica" id="politica">
+  <section class="politica reveal" id="politica">
     <p class="lbl" style="color:var(--laranja);margin-bottom:8px;">006 — POLÍTICA</p>
     <p class="politica-titulo">Troca e <span>Devolução</span></p>
     <div class="politica-grid">

@@ -70,18 +70,7 @@
       pointer-events: none; z-index: 1000; opacity: 0.35;
     }
 
-    /* ── PAGE TRANSITION ── */
-    .page-transition {
-      position: fixed; inset: 0;
-      background: var(--laranja); z-index: 9998;
-      transform-origin: bottom;
-      animation: page-in 0.9s cubic-bezier(0.76, 0, 0.24, 1) forwards;
-      pointer-events: none;
-    }
-    @keyframes page-in {
-      0%   { transform: scaleY(1); transform-origin: bottom; }
-      100% { transform: scaleY(0); transform-origin: top; }
-    }
+
 
     /* ── GRADE VISÍVEL (debug: tecla G) ── */
     .grid-overlay {
@@ -550,7 +539,19 @@
     .nl-form .nl-input { border-right: 1px solid rgba(240,236,228,0.1); }
     .nl-form .nl-btn { border-radius: 0 8px 0 0; padding: 12px; }
     .nl-popup-success { display: none; font-size: 0.85rem; color: var(--laranja); font-weight: 700; margin-top: 6px; }
-    @media (max-width: 600px) { .nl-popup { bottom: 16px; right: 16px; left: 16px; width: auto; } }
+    @media (max-width: 600px) {
+      .hero__grid { display: none; }
+      .nl-popup {
+        bottom: 0; right: 0; left: 0; width: auto;
+        border-radius: 16px 16px 0 0;
+        background: var(--azul);
+        border: none;
+        padding: 20px 20px 28px;
+        box-shadow: 0 -8px 40px rgba(0,0,0,0.5);
+      }
+      .nl-popup-title { font-size: 1rem; }
+      .nl-popup-sub { font-size: 0.78rem; margin-bottom: 12px; }
+    }
 
     /* ── SCROLL REVEAL (fade puro) ── */
     .reveal {
@@ -578,8 +579,6 @@
 </head>
 <body>
 
-  <!-- TRANSIÇÃO DE ENTRADA -->
-  <div class="page-transition"></div>
 
   <!-- GRADE DEBUG (tecla G) -->
   <div class="grid-overlay" aria-hidden="true">
@@ -803,7 +802,7 @@
 
   <!-- FOOTER -->
   <footer class="footer">
-    <div class="footer__logo">MARATU</div>
+    <div class="footer__logo">MARATU<br><span style="font-family:var(--clother);font-weight:400;font-size:clamp(0.7rem,1.5vw,1rem);letter-spacing:0.18em;text-transform:uppercase;opacity:0.45;">Estúdio</span></div>
     <div class="footer__baseline">
       <p>© 2026 MARATU Estúdio · feito em Aracaju</p>
       <p>Impressão 3D · Design · Arte</p>

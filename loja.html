@@ -366,6 +366,7 @@
     .badge-embreve { background: rgba(240,236,228,0.08); color: rgba(240,236,228,0.4); border: 1px solid rgba(240,236,228,0.12); }
     .promo-tag { font-family: 'Space Mono', monospace; font-size: 0.42rem; background: var(--dourado); color: var(--preto); padding: 3px 7px; border-radius: 0 4px 0 0; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; display: inline-block; margin-bottom: 10px; }
     .preco-riscado { font-family: 'Clother', sans-serif; font-size: 0.75rem; font-weight: 400; color: rgba(240,236,228,0.28); text-decoration: line-through; margin-right: 4px; align-self: center; }
+    .wa-banner {
       margin: 0 24px 48px; padding: 20px 22px;
       background: var(--azul-sergipe); border: 1px solid rgba(46,111,196,0.3);
       border-radius: 0 14px 0 0; display: flex; align-items: flex-start; gap: 14px;
@@ -410,8 +411,12 @@
     .footer__logo {
       font-family: 'Jack', sans-serif;
       font-size: clamp(2rem, 4vw, 4.5rem);
-      line-height: 0.9; letter-spacing: -0.02em; text-transform: uppercase;
+      line-height: 1; letter-spacing: -0.02em; text-transform: uppercase;
       color: var(--areia); margin-bottom: 32px;
+    }
+    .footer__logo span {
+      display: block;
+      margin-top: 4px;
     }
     .footer__baseline {
       border-top: 1px solid rgba(240,236,228,0.08);
@@ -440,6 +445,8 @@
     .reveal[data-delay="2"] { transition-delay: 0.3s; }
 
     @media (max-width: 599px) {
+      .header { grid-template-columns: 1fr auto; }
+      .header__meta { display: none; }
       .loja-colecoes { grid-template-columns: 1fr; gap: 2px; }
       .loja-colecao-card { padding: 24px 24px 52px; }
       .footer { padding-bottom: 48px; }
@@ -634,7 +641,7 @@
   </div>
 
   <footer class="footer">
-    <div class="footer__logo">MARATU<br><span style="font-family:'Clother',sans-serif;font-weight:400;font-size:clamp(0.7rem,1.5vw,1rem);letter-spacing:0.18em;text-transform:uppercase;opacity:0.45;">Estúdio</span></div>
+    <div class="footer__logo">MARATU<span style="font-family:'Clother',sans-serif;font-weight:400;font-size:clamp(0.65rem,1.2vw,0.85rem);letter-spacing:0.22em;text-transform:uppercase;opacity:0.4;">Estúdio</span></div>
     <div class="footer__baseline">
       <p>© 2026 MARATU Estúdio · feito em Aracaju</p>
       <p>Impressão 3D · Design · Arte</p>

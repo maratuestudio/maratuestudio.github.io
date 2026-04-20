@@ -76,7 +76,7 @@
     .grid-overlay {
       position: fixed; inset: 0; pointer-events: none; z-index: 1;
       display: grid; grid-template-columns: repeat(12, 1fr);
-      padding: 0 var(--margem); opacity: 0.04;
+      padding: 0 var(--margem); opacity: 0;
     }
     .grid-overlay span { border-left: 1px solid var(--areia); height: 100%; }
     .grid-overlay span:last-child { border-right: 1px solid var(--areia); }
@@ -509,7 +509,13 @@
     }
     .footer__logo span {
       display: block;
-      margin-top: 4px;
+      font-family: var(--clother);
+      font-weight: 400;
+      font-size: 0.28em;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      opacity: 0.5;
+      margin-top: 2px;
     }
     .footer__baseline {
       border-top: 1px solid rgba(240,236,228,0.08);
@@ -526,9 +532,10 @@
     /* ── NEWSLETTER POPUP ── */
     .nl-popup {
       position: fixed; bottom: 32px; right: 32px; z-index: 500;
-      background: var(--preto); border: 1px solid rgba(200,80,26,0.3);
-      padding: 28px 28px 24px; width: 320px; border-radius: 0 16px 0 0;
-      box-shadow: 0 24px 64px rgba(0,0,0,0.6);
+      background: rgba(13,13,11,0.82); border: 1px solid rgba(200,80,26,0.2);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      padding: 28px 28px 24px; width: 320px; border-radius: 16px;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.5);
       transform: translateY(120%); opacity: 0;
       transition: all 0.4s cubic-bezier(0.16,1,0.3,1);
       pointer-events: none;
@@ -547,7 +554,7 @@
       .hero__grid { display: none; }
       .nl-popup {
         bottom: 0; right: 0; left: 0; width: auto;
-        border-radius: 16px 16px 0 0;
+        border-radius: 16px 16px 16px 16px;
         background: var(--azul);
         border: none;
         padding: 20px 20px 28px;
@@ -806,7 +813,7 @@
 
   <!-- FOOTER -->
   <footer class="footer">
-    <div class="footer__logo">MARATU<span style="font-family:var(--clother);font-weight:400;font-size:clamp(0.65rem,1.2vw,0.85rem);letter-spacing:0.22em;text-transform:uppercase;opacity:0.4;">Estúdio</span></div>
+    <div class="footer__logo">MARATU<span>Estúdio</span></div>
     <div class="footer__baseline">
       <p>© 2026 MARATU Estúdio · feito em Aracaju</p>
       <p>Impressão 3D · Design · Arte</p>

@@ -587,6 +587,7 @@
       .t2 { font-size: clamp(2.2rem, 11vw, 3.6rem); }
     }
   </style>
+  <link rel="stylesheet" href="aratu-mascote.css">
 </head>
 <body>
 
@@ -963,6 +964,27 @@
       if (e.key === 'g' || e.key === 'G') document.body.classList.toggle('grid-visible');
     });
   </script>
+
+  <div class="aratu-mascote" aria-hidden="true">
+    <svg viewBox="0 0 318.24 152.9" xmlns="http://www.w3.org/2000/svg">
+      <g data-aratu="claw-left">
+        <path fill="#C8501A" d="M0,104.77c0,26.58,21.55,48.13,48.13,48.13V56.65C21.55,56.65,0,78.19,0,104.77Z"/>
+      </g>
+      <g data-aratu="claw-right">
+        <path fill="#C8501A" d="M270.11,56.65v96.26c26.58,0,48.13-21.55,48.13-48.13s-21.55-48.13-48.13-48.13Z"/>
+      </g>
+      <g data-aratu="body">
+        <path fill="#C8501A" d="M159.12,152.9c53.16,0,96.26-43.1,96.26-96.26H62.86c0,53.16,43.1,96.26,96.26,96.26Z"/>
+      </g>
+      <g data-aratu="eye-right">
+        <path fill="#C8501A" d="M224.82,24.08c0-13.3-10.78-24.08-24.08-24.08v48.16c13.3,0,24.08-10.78,24.08-24.08Z"/>
+      </g>
+      <g data-aratu="eye-left">
+        <path fill="#C8501A" d="M117.49,48.16V0c-13.3,0-24.08,10.78-24.08,24.08s10.78,24.08,24.08,24.08Z"/>
+      </g>
+    </svg>
+  </div>
+  <script src="aratu-mascote.js" defer></script>
 
 </body>
 </html>

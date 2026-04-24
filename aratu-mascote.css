@@ -1,0 +1,34 @@
+/* MARATU — Mascote Aratu
+   Aratu oficial da marca caminhando pelo rodapé.
+   Anda da esquerda pra direita e volta, foge do mouse/toque quando chega perto. */
+
+.aratu-mascote {
+  position: fixed;
+  left: 0;
+  bottom: 16px;
+  width: 48px;
+  height: 24px;
+  pointer-events: none;
+  z-index: 50;
+  will-change: transform;
+  overflow: visible;
+}
+
+.aratu-mascote svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  display: block;
+}
+
+@media (max-width: 640px) {
+  .aratu-mascote {
+    width: 40px;
+    height: 20px;
+    bottom: 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aratu-mascote { display: none; }
+}

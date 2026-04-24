@@ -51,12 +51,11 @@
 
     /* ── RESET ── */
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-    html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+    html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
     body {
       font-family: var(--clother);
       background: var(--preto);
       color: var(--areia);
-      overflow-x: hidden;
       line-height: 1.5;
     }
     a { color: inherit; text-decoration: none; }

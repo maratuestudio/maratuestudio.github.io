@@ -9,7 +9,7 @@
   width: 48px;
   height: 24px;
   pointer-events: none;
-  z-index: 50;
+  z-index: 1001;
   will-change: transform;
   overflow: visible;
 }

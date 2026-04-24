@@ -269,6 +269,8 @@
     }
     .produto-img:hover .img-poster { opacity: 0; }
     .produto-img:hover .img-mockup { opacity: 1; }
+    .produto-img.sem-hover:hover .img-poster { opacity: 1; }
+    .produto-img.sem-hover:hover .img-mockup { opacity: 0; }
 
     .produto-body { padding: 14px 14px 8px; flex: 1; }
     .produto-cat { font-family: 'Space Mono', monospace; font-size: 0.48rem; color: var(--laranja); letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 5px; }
@@ -589,7 +591,7 @@
       </div>
 
       <div class="produto-card" data-colecao="Origens">
-        <div class="produto-img" onclick="abrirLightbox('carranca-chaveiro.png','Carranca — Chaveiro')">
+        <div class="produto-img sem-hover" onclick="abrirLightbox('carranca-chaveiro.png','Carranca — Chaveiro')">
           <div class="badges-grupo">
             <span class="produto-badge badge-novo">Novo</span>
             <span class="badge-colecao">Origens</span>
@@ -608,7 +610,7 @@
       </div>
 
       <div class="produto-card" data-colecao="Origens">
-        <div class="produto-img" onclick="abrirLightbox('relogio-chaveiro.png','Rel\u00f3gio do Mercado — Chaveiro')">
+        <div class="produto-img sem-hover" onclick="abrirLightbox('relogio-chaveiro.png','Rel\u00f3gio do Mercado — Chaveiro')">
           <div class="badges-grupo">
             <span class="produto-badge badge-novo">Novo</span>
             <span class="badge-colecao">Origens</span>
@@ -627,7 +629,7 @@
       </div>
 
       <div class="produto-card" data-colecao="Origens">
-        <div class="produto-img" onclick="abrirLightbox('maratu-chaveiro.png','Chaveiro MARATU')">
+        <div class="produto-img sem-hover" onclick="abrirLightbox('maratu-chaveiro.png','Chaveiro MARATU')">
           <div class="badges-grupo">
             <span class="produto-badge badge-novo">Novo</span>
             <span class="badge-colecao">Origens</span>
@@ -646,7 +648,7 @@
       </div>
 
       <div class="produto-card" data-colecao="Origens">
-        <div class="produto-img" style="cursor:default;">
+        <div class="produto-img sem-hover" style="cursor:default;">
           <div class="badges-grupo">
             <span class="badge-colecao">Origens</span>
             <span class="produto-badge" style="background:rgba(240,236,228,0.08);color:rgba(240,236,228,0.4);border:1px solid rgba(240,236,228,0.12);">Indisponível</span>
@@ -665,7 +667,7 @@
       </div>
 
       <div class="produto-card destaque" data-colecao="Origens">
-        <div class="produto-img" onclick="abrirLightbox('kit-aracaju-chaveiro.png','Kit Aracaju — Coleção Completa')">
+        <div class="produto-img sem-hover" onclick="abrirLightbox('kit-aracaju-chaveiro.png','Kit Aracaju — Coleção Completa')">
           <div class="badges-grupo">
             <span class="produto-badge badge-novo">Novo</span>
             <span class="badge-colecao">Origens</span>

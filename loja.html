@@ -444,6 +444,8 @@
     .btn-ver-tudo:hover { background: rgba(200,80,26,0.15); }
 
 
+    .oculta { display: none !important; }
+
     /* SCROLL REVEAL */
     .reveal { opacity: 0; transition: opacity 0.9s cubic-bezier(0.4,0,0.2,1); }
     .reveal.in { opacity: 1; }
@@ -527,15 +529,15 @@
 
   <div class="filtros-wrapper">
     <div class="filtros">
-      <button class="filtro-btn active" onclick="filtrar(this,'todos')">Todos <span class="filtro-count">14</span></button>
+      <button class="filtro-btn active" onclick="filtrar(this,'todos')">Todos <span class="filtro-count">20</span></button>
       <button class="filtro-btn" onclick="filtrar(this,'posteres')">Pôsteres <span class="filtro-count">10</span></button>
       <button class="filtro-btn" onclick="filtrar(this,'decoracao')">Decoração <span class="filtro-count">2</span></button>
-      <button class="filtro-btn" onclick="filtrar(this,'use-maratu')">USE MARATU <span class="filtro-count">2</span></button>
+      <button class="filtro-btn" onclick="filtrar(this,'use-maratu')">USE MARATU <span class="filtro-count">1</span></button>
+      <button class="filtro-btn" onclick="filtrar(this,'essenciais')">Essenciais <span class="filtro-count">5</span></button>
       <div class="filtro-sep"></div>
       <span class="filtro-label">Coleção</span>
-      <button class="filtro-btn" onclick="filtrarColecao(this,'Origens')">Origens <span class="filtro-count">5</span></button>
+      <button class="filtro-btn" onclick="filtrarColecao(this,'Origens')">Origens <span class="filtro-count">10</span></button>
       <button class="filtro-btn" onclick="filtrarColecao(this,'MangueHaus')">MangueHaus <span class="filtro-count">6</span></button>
-      <button class="filtro-btn" onclick="filtrarColecao(this,'Essenciais')">Essenciais <span class="filtro-count">2</span></button>
     </div>
   </div>
 
@@ -562,7 +564,7 @@
         <h2 class="cat-nome">USE MARATU</h2>
         <p class="cat-desc">Use, vista, seja MARATU. Peças pra levar a identidade de Sergipe pra onde você for.</p>
       </div>
-      <span class="cat-total">2 produtos</span>
+      <span class="cat-total">1 produto</span>
     </div>
     <div class="produtos-grid col3" style="padding: 0 24px;">
 
@@ -573,6 +575,7 @@
             <span class="badge-colecao">Origens</span>
           </div>
           <img class="img-poster" src="adesivos-origens.png" alt="Coleção de Adesivos Origens" loading="lazy" style="object-fit:contain;padding:8px;">
+          <img class="img-mockup" src="mockup-adesivos.png" alt="Coleção de Adesivos Origens mockup" loading="lazy">
         </div>
         <div class="produto-body">
           <span class="promo-tag">Promoção de lançamento</span>
@@ -583,23 +586,6 @@
         <div class="produto-footer">
           <p class="produto-preco"><span class="preco-riscado">R$25</span><span class="cifrao">R$</span>18</p>
           <a href="https://wa.me/5579981512978?text=Ol%C3%A1!%20Tenho%20interesse%20no%20produto%3A%20Cole%C3%A7%C3%A3o%20de%20Adesivos%20Origens%201%C2%AA%20Edi%C3%A7%C3%A3o%20-%20R%24%2018" target="_blank" rel="noopener" class="btn-encomendar">Encomendar ↗</a>
-        </div>
-      </div>
-
-      <div class="produto-card em-breve">
-        <div class="produto-img bg-azul" style="cursor:default;">
-          <div class="badges-grupo">
-            <span class="produto-badge badge-embreve">Em breve</span>
-          </div>
-        </div>
-        <div class="produto-body">
-          <p class="produto-cat">Chaveiros</p>
-          <p class="produto-nome">Coleção de Chaveiros</p>
-          <p class="produto-desc">PLA · Impressão 3D · Design autoral</p>
-        </div>
-        <div class="produto-footer">
-          <p class="produto-preco indisponivel">Em breve</p>
-          <span class="btn-indisponivel">—</span>
         </div>
       </div>
 
@@ -627,12 +613,109 @@
       <div>
         <p class="cat-num">04 ——</p>
         <h2 class="cat-nome">Essenciais</h2>
-        <p class="cat-desc">Design funcional com estética MARATU. Peças para o seu dia a dia.</p>
+        <p class="cat-desc">Peças feitas na impressora, desenhadas na MARATU. PLA matte, acabamento preciso, identidade sergipana.</p>
       </div>
-      <span class="cat-total">Em breve</span>
+      <span class="cat-total">5 produtos · Coleção Origens</span>
     </div>
-    <div style="padding: 40px 24px;">
-      <p style="font-family:'Space Mono',monospace;font-size:0.6rem;color:rgba(240,236,228,0.25);letter-spacing:0.2em;text-transform:uppercase;">Em breve — novidades chegando</p>
+    <div class="produtos-grid col3" id="grid-essenciais" style="padding: 0 24px;">
+
+      <div class="produto-card" data-colecao="Origens">
+        <div class="produto-img" onclick="abrirLightbox('carranca-chaveiro.png','Carranca — Chaveiro')">
+          <div class="badges-grupo">
+            <span class="produto-badge badge-novo">Novo</span>
+            <span class="badge-colecao">Origens</span>
+          </div>
+          <img class="img-poster" src="carranca-chaveiro.png" alt="Carranca Chaveiro" loading="lazy" style="object-fit:contain;padding:12px;">
+        </div>
+        <div class="produto-body">
+          <p class="produto-cat">Chaveiro · Impressão 3D</p>
+          <p class="produto-nome">Carranca</p>
+          <p class="produto-desc">PLA Matte · Design autoral · Coleção Origens</p>
+        </div>
+        <div class="produto-footer">
+          <p class="produto-preco"><span class="cifrao">R$</span>20</p>
+          <a href="https://wa.me/5579981512978?text=Ol%C3%A1!%20Tenho%20interesse%20no%20produto%3A%20Chaveiro%20Carranca%20-%20R%24%2020" target="_blank" rel="noopener" class="btn-encomendar">Encomendar ↗</a>
+        </div>
+      </div>
+
+      <div class="produto-card" data-colecao="Origens">
+        <div class="produto-img" onclick="abrirLightbox('relogio-chaveiro.png','Rel\u00f3gio do Mercado — Chaveiro')">
+          <div class="badges-grupo">
+            <span class="produto-badge badge-novo">Novo</span>
+            <span class="badge-colecao">Origens</span>
+          </div>
+          <img class="img-poster" src="relogio-chaveiro.png" alt="Relógio do Mercado Chaveiro" loading="lazy" style="object-fit:contain;padding:12px;">
+        </div>
+        <div class="produto-body">
+          <p class="produto-cat">Chaveiro · Impressão 3D</p>
+          <p class="produto-nome">Relógio do Mercado</p>
+          <p class="produto-desc">PLA Matte · Design autoral · Coleção Origens</p>
+        </div>
+        <div class="produto-footer">
+          <p class="produto-preco"><span class="cifrao">R$</span>20</p>
+          <a href="https://wa.me/5579981512978?text=Ol%C3%A1!%20Tenho%20interesse%20no%20produto%3A%20Chaveiro%20Rel%C3%B3gio%20do%20Mercado%20-%20R%24%2020" target="_blank" rel="noopener" class="btn-encomendar">Encomendar ↗</a>
+        </div>
+      </div>
+
+      <div class="produto-card" data-colecao="Origens">
+        <div class="produto-img" onclick="abrirLightbox('maratu-chaveiro.png','Chaveiro MARATU')">
+          <div class="badges-grupo">
+            <span class="produto-badge badge-novo">Novo</span>
+            <span class="badge-colecao">Origens</span>
+          </div>
+          <img class="img-poster" src="maratu-chaveiro.png" alt="Chaveiro MARATU" loading="lazy" style="object-fit:contain;padding:12px;">
+        </div>
+        <div class="produto-body">
+          <p class="produto-cat">Chaveiro · Impressão 3D</p>
+          <p class="produto-nome">Chaveiro MARATU</p>
+          <p class="produto-desc">PLA Matte · Design autoral · Coleção Origens</p>
+        </div>
+        <div class="produto-footer">
+          <p class="produto-preco"><span class="cifrao">R$</span>20</p>
+          <a href="https://wa.me/5579981512978?text=Ol%C3%A1!%20Tenho%20interesse%20no%20produto%3A%20Chaveiro%20MARATU%20-%20R%24%2020" target="_blank" rel="noopener" class="btn-encomendar">Encomendar ↗</a>
+        </div>
+      </div>
+
+      <div class="produto-card" data-colecao="Origens">
+        <div class="produto-img" style="cursor:default;">
+          <div class="badges-grupo">
+            <span class="badge-colecao">Origens</span>
+            <span class="produto-badge" style="background:rgba(240,236,228,0.08);color:rgba(240,236,228,0.4);border:1px solid rgba(240,236,228,0.12);">Indisponível</span>
+          </div>
+          <img class="img-poster" src="arcos-chaveiro.png" alt="Arcos da Orla Chaveiro" loading="lazy" style="object-fit:contain;padding:12px;opacity:0.45;">
+        </div>
+        <div class="produto-body">
+          <p class="produto-cat">Chaveiro · Impressão 3D</p>
+          <p class="produto-nome">Arcos da Orla</p>
+          <p class="produto-desc">PLA Matte · Design autoral · Coleção Origens</p>
+        </div>
+        <div class="produto-footer">
+          <p class="produto-preco indisponivel">Indisponível</p>
+          <span class="btn-indisponivel">—</span>
+        </div>
+      </div>
+
+      <div class="produto-card destaque" data-colecao="Origens">
+        <div class="produto-img" onclick="abrirLightbox('kit-aracaju-chaveiro.png','Kit Aracaju — Coleção Completa')">
+          <div class="badges-grupo">
+            <span class="produto-badge badge-novo">Novo</span>
+            <span class="badge-colecao">Origens</span>
+            <span class="badge-desconto">Kit</span>
+          </div>
+          <img class="img-poster" src="kit-aracaju-chaveiro.png" alt="Kit Aracaju Chaveiro" loading="lazy" style="object-fit:contain;padding:12px;">
+        </div>
+        <div class="produto-body">
+          <span class="promo-tag">Coleção completa</span>
+          <p class="produto-cat">Chaveiros · Impressão 3D</p>
+          <p class="produto-nome">Kit Aracaju</p>
+          <p class="produto-desc">4 chaveiros · PLA Matte · Coleção Origens</p>
+        </div>
+        <div class="produto-footer">
+          <p class="produto-preco"><span class="preco-riscado">R$80</span><span class="cifrao">R$</span>68</p>
+          <a href="https://wa.me/5579981512978?text=Ol%C3%A1!%20Tenho%20interesse%20no%20produto%3A%20Kit%20Aracaju%20(4%20chaveiros)%20-%20R%24%2068" target="_blank" rel="noopener" class="btn-encomendar">Encomendar ↗</a>
+        </div>
+      </div>
+
     </div>
   </section>
 
@@ -827,22 +910,28 @@
       document.querySelectorAll('.categoria').forEach(function(c) {
         c.classList.toggle('oculta', cat !== 'todos' && c.dataset.categoria !== cat);
       });
-      // reset: show all cards
-      document.querySelectorAll('#grid-posteres .produto-card').forEach(function(c) { c.style.display = ''; });
+      document.querySelectorAll('#grid-posteres .produto-card, #grid-essenciais .produto-card').forEach(function(c) { c.style.display = ''; });
       document.getElementById('btn-ver-tudo').style.display = 'none';
     }
 
     function filtrarColecao(btn, colecao) {
       document.querySelectorAll('.filtro-btn').forEach(function(b) { b.classList.remove('active'); });
       btn.classList.add('active');
-      // mostrar posteres, esconder use-maratu
       document.querySelectorAll('.categoria').forEach(function(c) {
-        c.classList.toggle('oculta', c.dataset.categoria === 'use-maratu');
+        c.classList.toggle('oculta', c.dataset.categoria === 'use-maratu' || c.dataset.categoria === 'decoracao');
       });
-      // mostrar só cards da coleção
       document.querySelectorAll('#grid-posteres .produto-card').forEach(function(c) {
         c.style.display = c.dataset.colecao === colecao ? '' : 'none';
       });
+      document.querySelectorAll('#grid-essenciais .produto-card').forEach(function(c) {
+        c.style.display = c.dataset.colecao === colecao ? '' : 'none';
+      });
+      // ocultar seção essenciais se não tiver nenhum card visível
+      var essenciaisGrid = document.getElementById('grid-essenciais');
+      if (essenciaisGrid) {
+        var temVisivel = Array.from(essenciaisGrid.querySelectorAll('.produto-card')).some(function(c) { return c.style.display !== 'none'; });
+        document.getElementById('cat-essenciais').classList.toggle('oculta', !temVisivel);
+      }
       document.getElementById('btn-ver-tudo').style.display = 'block';
     }
 

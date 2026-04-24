@@ -532,8 +532,7 @@
       <button class="filtro-btn active" onclick="filtrar(this,'todos')">Todos <span class="filtro-count">20</span></button>
       <button class="filtro-btn" onclick="filtrar(this,'posteres')">Pôsteres <span class="filtro-count">10</span></button>
       <button class="filtro-btn" onclick="filtrar(this,'decoracao')">Decoração <span class="filtro-count">2</span></button>
-      <button class="filtro-btn" onclick="filtrar(this,'use-maratu')">USE MARATU <span class="filtro-count">1</span></button>
-      <button class="filtro-btn" onclick="filtrar(this,'essenciais')">Essenciais <span class="filtro-count">5</span></button>
+      <button class="filtro-btn" onclick="filtrar(this,'use-maratu')">USE MARATU <span class="filtro-count">6</span></button>
       <div class="filtro-sep"></div>
       <span class="filtro-label">Coleção</span>
       <button class="filtro-btn" onclick="filtrarColecao(this,'Origens')">Origens <span class="filtro-count">10</span></button>
@@ -564,11 +563,11 @@
         <h2 class="cat-nome">USE MARATU</h2>
         <p class="cat-desc">Use, vista, seja MARATU. Peças pra levar a identidade de Sergipe pra onde você for.</p>
       </div>
-      <span class="cat-total">1 produto</span>
+      <span class="cat-total">6 produtos · Coleção Origens</span>
     </div>
-    <div class="produtos-grid col3" style="padding: 0 24px;">
+    <div class="produtos-grid col3" id="grid-use-maratu" style="padding: 0 24px;">
 
-      <div class="produto-card">
+      <div class="produto-card" data-colecao="Origens">
         <div class="produto-img" onclick="abrirLightbox('adesivos-origens.png','Coleção de Adesivos Origens')">
           <div class="badges-grupo">
             <span class="produto-badge badge-novo">Novo</span>
@@ -588,36 +587,6 @@
           <a href="https://wa.me/5579981512978?text=Ol%C3%A1!%20Tenho%20interesse%20no%20produto%3A%20Cole%C3%A7%C3%A3o%20de%20Adesivos%20Origens%201%C2%AA%20Edi%C3%A7%C3%A3o%20-%20R%24%2018" target="_blank" rel="noopener" class="btn-encomendar">Encomendar ↗</a>
         </div>
       </div>
-
-    </div>
-  </section>
-
-  <!-- DECORAÇÃO -->
-  <section class="categoria" id="cat-decoracao" data-categoria="decoracao">
-    <div class="cat-header bg-dourado">
-      <div>
-        <p class="cat-num">03 ——</p>
-        <h2 class="cat-nome">Decoração</h2>
-        <p class="cat-desc">Objetos para o seu espaço. Design autoral com identidade MARATU — peças que habitam e transformam.</p>
-      </div>
-      <span class="cat-total">Em breve</span>
-    </div>
-    <div style="padding: 40px 24px;">
-      <p style="font-family:'Space Mono',monospace;font-size:0.6rem;color:rgba(240,236,228,0.25);letter-spacing:0.2em;text-transform:uppercase;">Em breve — novidades chegando</p>
-    </div>
-  </section>
-
-  <!-- ESSENCIAIS -->
-  <section class="categoria" id="cat-essenciais" data-categoria="essenciais">
-    <div class="cat-header bg-atalaia">
-      <div>
-        <p class="cat-num">04 ——</p>
-        <h2 class="cat-nome">Essenciais</h2>
-        <p class="cat-desc">Peças feitas na impressora, desenhadas na MARATU. PLA matte, acabamento preciso, identidade sergipana.</p>
-      </div>
-      <span class="cat-total">5 produtos · Coleção Origens</span>
-    </div>
-    <div class="produtos-grid col3" id="grid-essenciais" style="padding: 0 24px;">
 
       <div class="produto-card" data-colecao="Origens">
         <div class="produto-img" onclick="abrirLightbox('carranca-chaveiro.png','Carranca — Chaveiro')">
@@ -716,6 +685,36 @@
         </div>
       </div>
 
+    </div>
+  </section>
+
+  <!-- DECORAÇÃO -->
+  <section class="categoria" id="cat-decoracao" data-categoria="decoracao">
+    <div class="cat-header bg-dourado">
+      <div>
+        <p class="cat-num">03 ——</p>
+        <h2 class="cat-nome">Decoração</h2>
+        <p class="cat-desc">Objetos para o seu espaço. Design autoral com identidade MARATU — peças que habitam e transformam.</p>
+      </div>
+      <span class="cat-total">Em breve</span>
+    </div>
+    <div style="padding: 40px 24px;">
+      <p style="font-family:'Space Mono',monospace;font-size:0.6rem;color:rgba(240,236,228,0.25);letter-spacing:0.2em;text-transform:uppercase;">Em breve — novidades chegando</p>
+    </div>
+  </section>
+
+  <!-- ESSENCIAIS -->
+  <section class="categoria" id="cat-essenciais" data-categoria="essenciais">
+    <div class="cat-header bg-atalaia">
+      <div>
+        <p class="cat-num">04 ——</p>
+        <h2 class="cat-nome">Essenciais</h2>
+        <p class="cat-desc">Design funcional com estética MARATU. Peças para o seu dia a dia.</p>
+      </div>
+      <span class="cat-total">Em breve</span>
+    </div>
+    <div style="padding: 40px 24px;">
+      <p style="font-family:'Space Mono',monospace;font-size:0.6rem;color:rgba(240,236,228,0.25);letter-spacing:0.2em;text-transform:uppercase;">Em breve — novidades chegando</p>
     </div>
   </section>
 
@@ -910,7 +909,7 @@
       document.querySelectorAll('.categoria').forEach(function(c) {
         c.classList.toggle('oculta', cat !== 'todos' && c.dataset.categoria !== cat);
       });
-      document.querySelectorAll('#grid-posteres .produto-card, #grid-essenciais .produto-card').forEach(function(c) { c.style.display = ''; });
+      document.querySelectorAll('#grid-posteres .produto-card, #grid-use-maratu .produto-card').forEach(function(c) { c.style.display = ''; });
       document.getElementById('btn-ver-tudo').style.display = 'none';
     }
 
@@ -918,19 +917,19 @@
       document.querySelectorAll('.filtro-btn').forEach(function(b) { b.classList.remove('active'); });
       btn.classList.add('active');
       document.querySelectorAll('.categoria').forEach(function(c) {
-        c.classList.toggle('oculta', c.dataset.categoria === 'use-maratu' || c.dataset.categoria === 'decoracao');
+        c.classList.toggle('oculta', c.dataset.categoria === 'decoracao' || c.dataset.categoria === 'essenciais');
       });
       document.querySelectorAll('#grid-posteres .produto-card').forEach(function(c) {
         c.style.display = c.dataset.colecao === colecao ? '' : 'none';
       });
-      document.querySelectorAll('#grid-essenciais .produto-card').forEach(function(c) {
+      document.querySelectorAll('#grid-use-maratu .produto-card').forEach(function(c) {
         c.style.display = c.dataset.colecao === colecao ? '' : 'none';
       });
-      // ocultar seção essenciais se não tiver nenhum card visível
-      var essenciaisGrid = document.getElementById('grid-essenciais');
-      if (essenciaisGrid) {
-        var temVisivel = Array.from(essenciaisGrid.querySelectorAll('.produto-card')).some(function(c) { return c.style.display !== 'none'; });
-        document.getElementById('cat-essenciais').classList.toggle('oculta', !temVisivel);
+      // ocultar seção use-maratu se não tiver nenhum card visível
+      var useMaratuGrid = document.getElementById('grid-use-maratu');
+      if (useMaratuGrid) {
+        var temVisivel = Array.from(useMaratuGrid.querySelectorAll('.produto-card')).some(function(c) { return c.style.display !== 'none'; });
+        document.getElementById('cat-use-maratu').classList.toggle('oculta', !temVisivel);
       }
       document.getElementById('btn-ver-tudo').style.display = 'block';
     }

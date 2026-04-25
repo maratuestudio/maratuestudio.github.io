@@ -22,7 +22,7 @@
     var WALK_SPEED = 0.6;
     var FLEE_RADIUS = 80;
     var FLEE_BOOST = 3.5;
-    var FLEE_RECOVERY_MS = 1200;
+    var FLEE_RECOVERY_MS = 200;
 
     var posX = 0;
     var direction = 1;

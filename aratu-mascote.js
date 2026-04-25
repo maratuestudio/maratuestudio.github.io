@@ -63,8 +63,6 @@
     window.addEventListener('touchend', function() {
       mouseX = -9999;
       mouseY = -9999;
-      velocityBoost = 0;
-      lastFleeTime = 0;
     });
 
     function animate() {

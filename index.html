@@ -51,7 +51,7 @@
 
     /* ── RESET ── */
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-    html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; overflow-x: hidden; background: #0D0D0B; }
     body {
       font-family: var(--clother);
       background: var(--preto);
@@ -277,7 +277,7 @@
       .hero__label-tr { display: none; }
       .hero__title { grid-column: 1 / -1; }
       .hero__subtitle { grid-column: 1 / -1; }
-      .hero__scroll { grid-column: 1 / -1; align-items: flex-start; }
+      .hero__scroll { display: none; }
     }
 
     /* ── MONO (utilitário) ── */
@@ -498,6 +498,8 @@
       background: var(--preto); color: var(--areia);
       padding: clamp(40px, 6vh, 72px) var(--margem) 32px;
       border-top: 1px solid rgba(240,236,228,0.06);
+      position: relative;
+      overflow: hidden;
     }
     .footer__logo {
       font-family: var(--jack);
@@ -820,6 +822,25 @@
       <p>© 2026 MARATU Estúdio · feito em Aracaju</p>
       <p>Impressão 3D · Design · Arte</p>
     </div>
+    <div class="aratu-mascote" aria-hidden="true">
+      <svg viewBox="0 0 318.24 152.9" xmlns="http://www.w3.org/2000/svg">
+        <g data-aratu="claw-left">
+          <path fill="#C8501A" d="M0,104.77c0,26.58,21.55,48.13,48.13,48.13V56.65C21.55,56.65,0,78.19,0,104.77Z"/>
+        </g>
+        <g data-aratu="claw-right">
+          <path fill="#C8501A" d="M270.11,56.65v96.26c26.58,0,48.13-21.55,48.13-48.13s-21.55-48.13-48.13-48.13Z"/>
+        </g>
+        <g data-aratu="body">
+          <path fill="#C8501A" d="M159.12,152.9c53.16,0,96.26-43.1,96.26-96.26H62.86c0,53.16,43.1,96.26,96.26,96.26Z"/>
+        </g>
+        <g data-aratu="eye-right">
+          <path fill="#C8501A" d="M224.82,24.08c0-13.3-10.78-24.08-24.08-24.08v48.16c13.3,0,24.08-10.78,24.08-24.08Z"/>
+        </g>
+        <g data-aratu="eye-left">
+          <path fill="#C8501A" d="M117.49,48.16V0c-13.3,0-24.08,10.78-24.08,24.08s10.78,24.08,24.08,24.08Z"/>
+        </g>
+      </svg>
+    </div>
   </footer>
 
   <!-- NEWSLETTER POPUP -->
@@ -964,25 +985,6 @@
     });
   </script>
 
-  <div class="aratu-mascote" aria-hidden="true">
-    <svg viewBox="0 0 318.24 152.9" xmlns="http://www.w3.org/2000/svg">
-      <g data-aratu="claw-left">
-        <path fill="#C8501A" d="M0,104.77c0,26.58,21.55,48.13,48.13,48.13V56.65C21.55,56.65,0,78.19,0,104.77Z"/>
-      </g>
-      <g data-aratu="claw-right">
-        <path fill="#C8501A" d="M270.11,56.65v96.26c26.58,0,48.13-21.55,48.13-48.13s-21.55-48.13-48.13-48.13Z"/>
-      </g>
-      <g data-aratu="body">
-        <path fill="#C8501A" d="M159.12,152.9c53.16,0,96.26-43.1,96.26-96.26H62.86c0,53.16,43.1,96.26,96.26,96.26Z"/>
-      </g>
-      <g data-aratu="eye-right">
-        <path fill="#C8501A" d="M224.82,24.08c0-13.3-10.78-24.08-24.08-24.08v48.16c13.3,0,24.08-10.78,24.08-24.08Z"/>
-      </g>
-      <g data-aratu="eye-left">
-        <path fill="#C8501A" d="M117.49,48.16V0c-13.3,0-24.08,10.78-24.08,24.08s10.78,24.08,24.08,24.08Z"/>
-      </g>
-    </svg>
-  </div>
   <script src="aratu-mascote.js" defer></script>
 
 </body>

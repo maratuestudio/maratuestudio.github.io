@@ -1,6 +1,6 @@
 /* MARATU — Mascote Aratu
-   Comportamento: anda pelo rodapé da janela, foge do mouse/toque quando chega perto.
-   Sem dependências. Auto-inicializa quando o DOM carrega. */
+   Easter egg: aparece ao rolar até o rodapé.
+   Anda dentro do footer, foge do mouse/toque quando chega perto. */
 
 (function() {
   'use strict';
@@ -9,6 +9,7 @@
     var container = document.querySelector('.aratu-mascote');
     if (!container) return;
 
+    var footer = container.parentElement;
     var svg = container.querySelector('svg');
     var clawLeft = container.querySelector('[data-aratu="claw-left"]');
     var clawRight = container.querySelector('[data-aratu="claw-right"]');
@@ -33,9 +34,12 @@
     var isBlinking = false;
     var blinkStart = 0;
     var crabWidth = container.offsetWidth || 48;
+    var arenaWidth = footer.offsetWidth || window.innerWidth;
+    var isVisible = false;
 
     window.addEventListener('resize', function() {
       crabWidth = container.offsetWidth || 48;
+      arenaWidth = footer.offsetWidth || window.innerWidth;
     });
 
     window.addEventListener('mousemove', function(e) {
@@ -53,12 +57,24 @@
     window.addEventListener('touchend', function() {
       mouseX = -9999;
       mouseY = -9999;
+      velocityBoost = 0;
+      lastFleeTime = 0;
     });
 
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        isVisible = entry.isIntersecting;
+        container.classList.toggle('visivel', isVisible);
+      });
+    }, { threshold: 0.1 });
+    observer.observe(footer);
+
     function animate() {
+      requestAnimationFrame(animate);
+      if (!isVisible) return;
+
       var now = Date.now();
-      var winWidth = window.innerWidth;
-      var winHeight = window.innerHeight;
+      arenaWidth = footer.offsetWidth || window.innerWidth;
 
       var containerRect = container.getBoundingClientRect();
       var crabCenterX = containerRect.left + crabWidth / 2;
@@ -74,24 +90,16 @@
         lastFleeTime = now;
       } else {
         var timeSinceFlee = now - lastFleeTime;
-        if (timeSinceFlee < FLEE_RECOVERY_MS) {
-          var recovery = 1 - (timeSinceFlee / FLEE_RECOVERY_MS);
-          velocityBoost = FLEE_BOOST * recovery;
-        } else {
-          velocityBoost = 0;
-        }
+        velocityBoost = timeSinceFlee < FLEE_RECOVERY_MS
+          ? FLEE_BOOST * (1 - timeSinceFlee / FLEE_RECOVERY_MS)
+          : 0;
       }
 
       var speed = WALK_SPEED + velocityBoost;
       posX += speed * direction;
 
-      if (posX <= 0) {
-        posX = 0;
-        direction = 1;
-      } else if (posX >= winWidth - crabWidth) {
-        posX = winWidth - crabWidth;
-        direction = -1;
-      }
+      if (posX <= 0) { posX = 0; direction = 1; }
+      else if (posX >= arenaWidth - crabWidth) { posX = arenaWidth - crabWidth; direction = -1; }
 
       var facing = direction === 1 ? 1 : -1;
       var isFleeing = velocityBoost > 0.5;
@@ -99,13 +107,11 @@
       var clawSpeed = isFleeing ? 120 : 380;
       var clawAmp = isFleeing ? 22 : 10;
       var clawWave = Math.sin(now / clawSpeed);
-      var clawAngleLeft = clawWave * clawAmp;
-      var clawAngleRight = -clawWave * clawAmp;
-      clawLeft.setAttribute('transform', 'rotate(' + clawAngleLeft + ' 48.13 104.77)');
-      clawRight.setAttribute('transform', 'rotate(' + clawAngleRight + ' 270.11 104.77)');
+      clawLeft.setAttribute('transform', 'rotate(' + (clawWave * clawAmp) + ' 48.13 104.77)');
+      clawRight.setAttribute('transform', 'rotate(' + (-clawWave * clawAmp) + ' 270.11 104.77)');
 
-      var breatheAmp = isFleeing ? 0.04 : 0.02;
       var breatheSpeed = isFleeing ? 200 : 600;
+      var breatheAmp = isFleeing ? 0.04 : 0.02;
       var breathe = 1 + Math.sin(now / breatheSpeed) * breatheAmp;
       bodyMain.setAttribute('transform', 'translate(159.12 152.9) scale(1 ' + breathe + ') translate(-159.12 -152.9)');
 
@@ -122,8 +128,8 @@
           eyeRight.setAttribute('transform', 'translate(212.74 24.08) scale(1 1) translate(-212.74 -24.08)');
         } else {
           var blinkScale = blinkProgress < 0.5
-            ? 1 - (blinkProgress * 2) * 0.9
-            : 0.1 + ((blinkProgress - 0.5) * 2) * 0.9;
+            ? 1 - blinkProgress * 2 * 0.9
+            : 0.1 + (blinkProgress - 0.5) * 2 * 0.9;
           eyeLeft.setAttribute('transform', 'translate(105.5 24.08) scale(1 ' + blinkScale + ') translate(-105.5 -24.08)');
           eyeRight.setAttribute('transform', 'translate(212.74 24.08) scale(1 ' + blinkScale + ') translate(-212.74 -24.08)');
         }
@@ -134,8 +140,6 @@
       var wiggle = Math.sin(now / wiggleFreq) * wiggleAmp;
 
       container.style.transform = 'translate(' + posX + 'px, ' + wiggle + 'px) scaleX(' + facing + ')';
-
-      requestAnimationFrame(animate);
     }
 
     animate();

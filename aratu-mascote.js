@@ -35,7 +35,6 @@
     var blinkStart = 0;
     var crabWidth = container.offsetWidth || 48;
     var arenaWidth = footer.offsetWidth || window.innerWidth;
-    var isVisible = false;
 
     window.addEventListener('resize', function() {
       crabWidth = container.offsetWidth || 48;
@@ -61,17 +60,11 @@
       lastFleeTime = 0;
     });
 
-    var observer = new IntersectionObserver(function(entries) {
-      entries.forEach(function(entry) {
-        isVisible = entry.isIntersecting;
-        container.classList.toggle('visivel', isVisible);
-      });
-    }, { threshold: 0 });
-    observer.observe(footer);
-
     function animate() {
       requestAnimationFrame(animate);
-      if (!isVisible) return;
+
+      var footerRect = footer.getBoundingClientRect();
+      if (footerRect.bottom < 0 || footerRect.top > window.innerHeight) return;
 
       var now = Date.now();
       arenaWidth = footer.offsetWidth || window.innerWidth;

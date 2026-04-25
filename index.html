@@ -325,15 +325,19 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       min-height: 540px;
+      min-width: 0;
+      max-width: 100%;
     }
+    .split > * { min-width: 0; }
     .split-texto {
       padding: clamp(48px, 7vw, 80px) clamp(32px, 5vw, 64px);
       display: flex; flex-direction: column; justify-content: center;
+      min-width: 0;
     }
-    .split-foto { position: relative; overflow: hidden; }
+    .split-foto { position: relative; overflow: hidden; min-width: 0; max-width: 100%; }
     .split-foto > img {
       position: absolute; inset: 0;
-      width: 100%; height: 100%; object-fit: cover; display: block;
+      width: 100%; height: 100%; max-width: 100%; object-fit: cover; display: block;
     }
 
     /* cores split */
@@ -580,7 +584,7 @@
       .t2 { font-size: clamp(2.2rem, 11vw, 3.6rem); }
     }
   </style>
-  <link rel="stylesheet" href="aratu-mascote.css?v=5">
+  <link rel="stylesheet" href="aratu-mascote.css?v=6">
 </head>
 <body>
 
@@ -959,7 +963,7 @@
     });
   </script>
 
-  <script src="aratu-mascote.js?v=5" defer></script>
+  <script src="aratu-mascote.js?v=6" defer></script>
 
 </body>
 </html>

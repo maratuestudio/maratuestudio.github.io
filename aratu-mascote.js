@@ -46,6 +46,13 @@
       mouseY = e.clientY;
     });
 
+    window.addEventListener('touchstart', function(e) {
+      if (e.touches.length > 0) {
+        mouseX = e.touches[0].clientX;
+        mouseY = e.touches[0].clientY;
+      }
+    }, { passive: true });
+
     window.addEventListener('touchmove', function(e) {
       if (e.touches.length > 0) {
         mouseX = e.touches[0].clientX;

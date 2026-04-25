@@ -66,7 +66,7 @@
         isVisible = entry.isIntersecting;
         container.classList.toggle('visivel', isVisible);
       });
-    }, { threshold: 0.1 });
+    }, { threshold: 0 });
     observer.observe(footer);
 
     function animate() {

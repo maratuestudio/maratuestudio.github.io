@@ -88,20 +88,6 @@
     .grid-overlay span:last-child { border-right: 1px solid var(--areia); }
     body.grid-visible .grid-overlay { opacity: 0.07; }
 
-    /* ── CURSOR CUSTOM ── */
-    .cursor {
-      position: fixed; top: 0; left: 0;
-      width: 12px; height: 12px;
-      background: var(--laranja); border-radius: 50%;
-      pointer-events: none; z-index: 9999;
-      transform: translate(-50%, -50%);
-      transition: width 0.25s, height 0.25s, background 0.25s;
-    }
-    .cursor.hover { width: 44px; height: 44px; background: var(--areia); }
-    @media (max-width: 1024px), (hover: none) {
-      .cursor { display: none; }
-    }
-
     /* ── HEADER ── */
     .header {
       position: fixed; top: 0; left: 0; right: 0; z-index: 50;
@@ -594,7 +580,7 @@
       .t2 { font-size: clamp(2.2rem, 11vw, 3.6rem); }
     }
   </style>
-  <link rel="stylesheet" href="aratu-mascote.css?v=4">
+  <link rel="stylesheet" href="aratu-mascote.css?v=5">
 </head>
 <body>
 
@@ -925,24 +911,6 @@
       }, 2000);
     }
 
-    // CURSOR CUSTOM
-    var cursor = document.createElement('div');
-    cursor.className = 'cursor';
-    document.body.appendChild(cursor);
-    var mouseX = 0, mouseY = 0, cursorX = 0, cursorY = 0;
-    document.addEventListener('mousemove', function(e) { mouseX = e.clientX; mouseY = e.clientY; });
-    (function animateCursor() {
-      cursorX += (mouseX - cursorX) * 0.2;
-      cursorY += (mouseY - cursorY) * 0.2;
-      cursor.style.left = cursorX + 'px';
-      cursor.style.top = cursorY + 'px';
-      requestAnimationFrame(animateCursor);
-    })();
-    document.querySelectorAll('a, button, .card-item').forEach(function(el) {
-      el.addEventListener('mouseenter', function() { cursor.classList.add('hover'); });
-      el.addEventListener('mouseleave', function() { cursor.classList.remove('hover'); });
-    });
-
     // HEADER HIDE ON SCROLL
     var header = document.querySelector('.header');
     var lastScroll = 0;
@@ -991,7 +959,7 @@
     });
   </script>
 
-  <script src="aratu-mascote.js?v=4" defer></script>
+  <script src="aratu-mascote.js?v=5" defer></script>
 
 </body>
 </html>

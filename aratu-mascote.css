@@ -28,6 +28,3 @@
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .aratu-mascote { display: none; }
-}

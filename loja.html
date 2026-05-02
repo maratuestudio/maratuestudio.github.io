@@ -293,14 +293,16 @@
 
     .produto-footer { display: flex; align-items: stretch; border-top: 1px solid rgba(240,236,228,0.06); }
     .produto-preco {
-      padding: 12px 14px; font-family: 'Clother', sans-serif; font-weight: 900;
-      font-size: 1.2rem; color: var(--areia); flex: 1;
-      display: flex; align-items: center; gap: 7px; flex-wrap: wrap;
+      padding: 10px 14px 12px; font-family: 'Clother', sans-serif; font-weight: 900;
+      font-size: 1.2rem; color: var(--areia); flex: 1; min-width: 0;
+      display: flex; align-items: baseline; gap: 0; flex-wrap: wrap; line-height: 1;
     }
     .produto-preco .cifrao { font-size: 0.6rem; font-weight: 400; color: rgba(240,236,228,0.35); margin-right: 1px; vertical-align: super; }
     .produto-preco .preco-original {
-      font-size: 0.75rem; font-weight: 400; color: rgba(240,236,228,0.25);
-      text-decoration: line-through; align-self: center; letter-spacing: 0;
+      flex-basis: 100%; width: 100%; display: block;
+      font-size: 0.68rem; font-weight: 400; color: rgba(240,236,228,0.3);
+      text-decoration: line-through; letter-spacing: 0; line-height: 1;
+      margin: 0 0 4px; order: -1;
     }
     .produto-preco.indisponivel { font-size: 0.9rem; color: rgba(240,236,228,0.2); letter-spacing: 0.08em; }
     .produto-dim {
@@ -367,7 +369,12 @@
     .produto-card.em-breve { opacity: 0.65; pointer-events: none; }
     .badge-embreve { background: rgba(240,236,228,0.08); color: rgba(240,236,228,0.4); border: 1px solid rgba(240,236,228,0.12); }
     .promo-tag { font-family: 'Space Mono', monospace; font-size: 0.42rem; background: var(--dourado); color: var(--preto); padding: 3px 7px; border-radius: 0 4px 0 0; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; display: inline-block; margin-bottom: 10px; }
-    .preco-riscado { font-family: 'Clother', sans-serif; font-size: 0.75rem; font-weight: 400; color: rgba(240,236,228,0.28); text-decoration: line-through; margin-right: 4px; align-self: center; }
+    .preco-riscado {
+      flex-basis: 100%; width: 100%; display: block;
+      font-family: 'Clother', sans-serif; font-size: 0.68rem; font-weight: 400;
+      color: rgba(240,236,228,0.3); text-decoration: line-through;
+      line-height: 1; margin: 0 0 4px; order: -1;
+    }
     .wa-banner {
       margin: 0 24px 48px; padding: 20px 22px;
       background: var(--azul-sergipe); border: 1px solid rgba(46,111,196,0.3);

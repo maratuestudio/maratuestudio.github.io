@@ -412,6 +412,18 @@
       color: rgba(240,236,228,0.5); letter-spacing: 0.12em; text-transform: uppercase;
     }
 
+    /* POLÍTICA */
+    .politica { padding: clamp(48px,7vh,96px) clamp(20px,4vw,56px); border-top: 1px solid rgba(240,236,228,0.08); }
+    .politica-titulo { font-family: 'Clother', sans-serif; font-weight: 700; font-size: clamp(1.1rem, 2vw, 1.6rem); color: var(--areia); margin-bottom: 28px; margin-top: 8px; }
+    .politica-titulo span { color: var(--laranja); }
+    .politica-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-top: 28px; }
+    .pol-item { padding: 18px 20px 22px; border: 1px solid rgba(240,236,228,0.06); background: rgba(240,236,228,0.02); }
+    .pol-icon { font-size: 1rem; margin-bottom: 8px; display: block; }
+    .pol-titulo { font-family: 'Clother', sans-serif; font-weight: 900; font-size: 0.85rem; color: var(--areia); text-transform: uppercase; margin-bottom: 6px; }
+    .pol-texto { font-size: 0.75rem; line-height: 1.6; color: rgba(240,236,228,0.4); }
+    .pol-texto strong { color: rgba(240,236,228,0.6); font-weight: 700; }
+    @media (max-width: 768px) { .politica-grid { grid-template-columns: 1fr; } }
+
     /* FOOTER */
     .footer {
       padding: clamp(40px, 6vh, 72px) 24px 32px;
@@ -732,9 +744,32 @@
       <p class="wa-title">Como funciona a encomenda</p>
       <p class="wa-desc">Clique em "Encomendar" e você vai direto pro WhatsApp com a mensagem já preenchida. A gente confirma disponibilidade, prazo e frete.</p>
       <span class="wa-msg-preview">Olá! Tenho interesse: Por do Sol - A3 - R$ 80</span>
-      <p style="font-size:0.7rem;color:rgba(240,236,228,0.3);margin-top:10px;">Dúvidas sobre troca ou devolução? <a href="index.html#politica" style="color:rgba(240,236,228,0.5);text-decoration:underline;">Veja nossa política</a>.</p>
+      <p style="font-size:0.7rem;color:rgba(240,236,228,0.3);margin-top:10px;">Dúvidas sobre troca ou devolução? <a href="#politica" style="color:rgba(240,236,228,0.5);text-decoration:underline;">Veja nossa política abaixo</a>.</p>
     </div>
   </div>
+
+  <!-- POLÍTICA -->
+  <section class="politica" id="politica">
+    <p class="lbl" style="color:var(--laranja);margin-bottom:8px;">— POLÍTICA</p>
+    <p class="politica-titulo">Troca e <span>Devolução</span></p>
+    <div class="politica-grid">
+      <div class="pol-item">
+        <span class="pol-icon">↩</span>
+        <p class="pol-titulo">Produto com defeito</p>
+        <p class="pol-texto">Se o produto chegou com defeito de fabricação ou foi danificado no transporte, entre em contato pelo WhatsApp em até <strong>7 dias corridos</strong> após o recebimento. Vamos resolver com troca ou reembolso integral, sem custo pra você.</p>
+      </div>
+      <div class="pol-item">
+        <span class="pol-icon">↔</span>
+        <p class="pol-titulo">Troca de tamanho ou modelo</p>
+        <p class="pol-texto">Pedidos de pôsteres são produzidos sob encomenda, então <strong>não aceitamos troca por arrependimento</strong> de tamanho ou modelo. Escolha com atenção antes de encomendar. Em caso de dúvida, fale com a gente antes de pedir.</p>
+      </div>
+      <div class="pol-item">
+        <span class="pol-icon">◎</span>
+        <p class="pol-titulo">Como entrar em contato</p>
+        <p class="pol-texto">Toda solicitação de troca ou devolução deve ser feita pelo <strong>WhatsApp</strong>, com foto do produto e número do pedido. Respondemos em até 48 horas úteis. Nosso objetivo é que você fique satisfeito com cada peça.</p>
+      </div>
+    </div>
+  </section>
 
   <footer class="footer">
     <div class="footer__logo">MARATU<span>Estúdio</span></div>

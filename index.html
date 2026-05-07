@@ -192,17 +192,19 @@
     }
     .hero__bg {
       position: absolute; inset: 0;
-      background:
-        linear-gradient(to bottom, rgba(13,13,11,0.15) 0%, rgba(13,13,11,0.96) 65%),
-        url('hero-bg.png') center/cover no-repeat;
+      overflow: hidden;
     }
-    .hero__grid {
+    .hero__bg::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(to bottom, rgba(13,13,11,0.15) 0%, rgba(13,13,11,0.96) 65%);
+      z-index: 1;
+    }
+    .hero__bg-slide {
       position: absolute; inset: 0;
-      background-image:
-        linear-gradient(rgba(240,236,228,0.025) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(240,236,228,0.025) 1px, transparent 1px);
-      background-size: 52px 52px;
+      background-size: cover; background-position: center; background-repeat: no-repeat;
+      opacity: 0; transition: opacity 1.2s ease;
     }
+    .hero__bg-slide.ativo { opacity: 1; }
     .hero__label-tl {
       grid-column: 1 / span 5; grid-row: 1;
       display: flex; flex-direction: column; gap: 4px;
@@ -549,7 +551,6 @@
     .nl-form .nl-btn { border-radius: 0 8px 0 0; padding: 12px; }
     .nl-popup-success { display: none; font-size: 0.85rem; color: var(--laranja); font-weight: 700; margin-top: 6px; }
     @media (max-width: 600px) {
-      .hero__grid { display: none; }
       .nl-popup {
         bottom: 0; right: 0; left: 0; width: auto;
         border-radius: 16px 16px 16px 16px;
@@ -630,8 +631,13 @@
 
   <!-- ① HERO -->
   <section class="hero">
-    <div class="hero__bg"></div>
-    <div class="hero__grid"></div>
+    <div class="hero__bg">
+      <div class="hero__bg-slide ativo" style="background-image: url('Artboard 1@300x.png');"></div>
+      <div class="hero__bg-slide" style="background-image: url('Artboard 2@300x.png');"></div>
+      <div class="hero__bg-slide" style="background-image: url('Artboard 3@300x.png');"></div>
+      <div class="hero__bg-slide" style="background-image: url('Artboard 4@300x.png');"></div>
+      <div class="hero__bg-slide" style="background-image: url('Artboard 5@300x.png');"></div>
+    </div>
     <div class="hero__label-tl">
       <span class="mono">EST. 2026 — Aracaju, SE</span>
       <span class="mono">Impressão 3D · Design · Arte</span>
@@ -903,6 +909,17 @@
         var email = document.getElementById('nl-contato-email').value;
         brevoSubscribe(email, document.getElementById('nl-contato-success'), sectionForm);
       });
+    }
+
+    // HERO SLIDESHOW
+    var heroSlides = document.querySelectorAll('.hero__bg-slide');
+    var heroAtual = 0;
+    if (heroSlides.length > 1) {
+      setInterval(function() {
+        heroSlides[heroAtual].classList.remove('ativo');
+        heroAtual = (heroAtual + 1) % heroSlides.length;
+        heroSlides[heroAtual].classList.add('ativo');
+      }, 5000);
     }
 
     // SLIDESHOW FEIRA

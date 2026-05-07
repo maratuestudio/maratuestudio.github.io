@@ -126,12 +126,30 @@
     }
     .header__nav a:hover::after,
     .header__nav a.active::after { transform: scaleX(1); transform-origin: left; }
-    .header__meta {
-      text-align: right;
-      font-family: var(--mono);
-      font-size: 0.65rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
+    .btn-loja {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 10px 24px;
+      background: var(--laranja); color: var(--preto);
+      font-family: var(--clother); font-weight: 900;
+      font-size: 0.82rem; letter-spacing: 0.06em; text-transform: uppercase;
+      border-radius: 999px; text-decoration: none;
+      justify-self: end; position: relative;
+      animation: loja-pulse 2.2s ease-in-out infinite;
+    }
+    .btn-loja::after {
+      content: ''; position: absolute; inset: 0;
+      border-radius: 999px; background: var(--laranja);
+      animation: loja-ring 2.2s ease-in-out infinite;
+      z-index: -1;
+    }
+    @keyframes loja-pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    @keyframes loja-ring {
+      0% { transform: scale(1); opacity: 0.5; }
+      65% { transform: scale(1.55); opacity: 0; }
+      100% { transform: scale(1.55); opacity: 0; }
     }
     .header__menu-toggle {
       display: none;
@@ -139,12 +157,11 @@
       font-size: 0.68rem;
       letter-spacing: 0.1em;
       text-transform: uppercase;
-      justify-self: end;
     }
     @media (max-width: 768px) {
-      .header { grid-template-columns: 1fr auto; }
+      .header { grid-template-columns: 1fr auto auto; gap: 14px; }
       .header__nav { display: none; }
-      .header__meta { display: none; }
+      .btn-loja { padding: 9px 18px; font-size: 0.75rem; }
       .header__menu-toggle { display: block; }
     }
 
@@ -478,21 +495,6 @@
     .nl-btn:hover { background: var(--areia); }
     .nl-success { display: none; font-size: 0.85rem; color: var(--laranja); margin-top: 10px; font-weight: 700; }
 
-    /* ── POLÍTICA ── */
-    .politica { padding: var(--secao-padding) var(--margem); border-top: 1px solid rgba(240,236,228,0.08); }
-    .politica-titulo {
-      font-family: var(--clother); font-weight: 700;
-      font-size: clamp(1.1rem, 2vw, 1.6rem); color: var(--areia);
-      margin-bottom: 28px; margin-top: 8px;
-    }
-    .politica-titulo span { color: var(--laranja); }
-    .politica-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-top: 28px; }
-    .pol-item { padding: 18px 20px 22px; border: 1px solid rgba(240,236,228,0.06); background: rgba(240,236,228,0.02); }
-    .pol-icon { font-size: 1rem; margin-bottom: 8px; display: block; }
-    .pol-titulo { font-family: var(--clother); font-weight: 900; font-size: 0.85rem; color: var(--areia); text-transform: uppercase; margin-bottom: 6px; }
-    .pol-texto { font-size: 0.75rem; line-height: 1.6; color: rgba(240,236,228,0.4); }
-    .pol-texto strong { color: rgba(240,236,228,0.6); font-weight: 700; }
-
     /* ── FOOTER ── */
     .footer {
       background: var(--preto); color: var(--areia);
@@ -607,10 +609,9 @@
       <a href="index.html" class="active">início</a>
       <a href="index.html#sobre">estúdio</a>
       <a href="index.html#origem">origem</a>
-      <a href="loja.html">loja</a>
       <a href="index.html#contato">contato</a>
     </nav>
-    <div class="header__meta">aracaju / se</div>
+    <a href="loja.html" class="btn-loja">Loja ↗</a>
     <button class="header__menu-toggle" aria-label="abrir menu">menu</button>
   </header>
 
@@ -656,30 +657,6 @@
       <div class="hero__scroll-line"></div>
     </div>
   </section>
-
-  <!-- ② FEIRA — split laranja | slideshow -->
-  <div class="split foto-direita reveal">
-    <div class="split-texto bg-laranja">
-      <p class="lbl">Nossa loja — aberta agora</p>
-      <span class="t1">Visite nossa</span>
-      <span class="t2">LOJA</span>
-      <p class="tdesc">Pôsteres · Adesivos · Chaveiros — feitos em Aracaju e enviados pro Brasil inteiro.</p>
-      <a href="loja.html" class="btn btn-dark">
-        <span class="btn-circle">↗</span>
-        Ver produtos
-      </a>
-    </div>
-    <div class="split-foto">
-      <div class="slideshow" id="feira-slideshow">
-        <img class="slideshow-img ativo" src="poster-pordosol.png" alt="Por do Sol">
-        <img class="slideshow-img" src="poster-atalaia.png" alt="Sol de Atalaia">
-        <img class="slideshow-img" src="poster-origens.png" alt="Origens">
-        <img class="slideshow-img" src="poster-destrua.png" alt="Destrua o Imperio">
-        <img class="slideshow-img" src="poster-linguagem.png" alt="Linguagem">
-        <img class="slideshow-img" src="adesivos-origens.png" alt="Adesivos Origens">
-      </div>
-    </div>
-  </div>
 
   <!-- ③ SOBRE — foto de fundo + overlay -->
   <div class="solido reveal" id="sobre">
@@ -794,29 +771,6 @@
       <img src="mangue.jpg" alt="Mangue de Sergipe">
     </div>
   </div>
-
-  <!-- POLÍTICA -->
-  <section class="politica reveal" id="politica">
-    <p class="lbl" style="color:var(--laranja);margin-bottom:8px;">006 — POLÍTICA</p>
-    <p class="politica-titulo">Troca e <span>Devolução</span></p>
-    <div class="politica-grid">
-      <div class="pol-item">
-        <span class="pol-icon">↩</span>
-        <p class="pol-titulo">Produto com defeito</p>
-        <p class="pol-texto">Se o produto chegou com defeito de fabricação ou foi danificado no transporte, entre em contato pelo WhatsApp em até <strong>7 dias corridos</strong> após o recebimento. Vamos resolver com troca ou reembolso integral, sem custo pra você.</p>
-      </div>
-      <div class="pol-item">
-        <span class="pol-icon">↔</span>
-        <p class="pol-titulo">Troca de tamanho ou modelo</p>
-        <p class="pol-texto">Pedidos de pôsteres são produzidos sob encomenda, então <strong>não aceitamos troca por arrependimento</strong> de tamanho ou modelo. Escolha com atenção antes de encomendar. Em caso de dúvida, fale com a gente antes de pedir.</p>
-      </div>
-      <div class="pol-item">
-        <span class="pol-icon">◎</span>
-        <p class="pol-titulo">Como entrar em contato</p>
-        <p class="pol-texto">Toda solicitação de troca ou devolução deve ser feita pelo <strong>WhatsApp</strong>, com foto do produto e número do pedido. Respondemos em até 48 horas úteis. Nosso objetivo é que você fique satisfeito com cada peça.</p>
-      </div>
-    </div>
-  </section>
 
   <!-- FOOTER -->
   <footer class="footer">

@@ -539,11 +539,14 @@
 
     function applyVisibility() {
       var f = state.filtro;
+      var filtrando = f !== 'todos';
       document.querySelectorAll('.produto-card').forEach(function(c) {
-        var tipoOk = f === 'todos' || c.dataset.tipo === f;
+        var tipoOk = filtrando ? c.dataset.tipo === f : true;
         var isExtra = c.dataset.extra === '1';
         var expanded = state[c.dataset.faixa];
-        c.style.display = (tipoOk && (!isExtra || expanded)) ? '' : 'none';
+        // restrição de 4 cards só se aplica na view "todos" sem expansão
+        var bloqueadoPorExtra = !filtrando && isExtra && !expanded;
+        c.style.display = (tipoOk && !bloqueadoPorExtra) ? '' : 'none';
       });
       ['origens', 'manguehaus'].forEach(function(faixa) {
         var grid = document.getElementById('grid-' + faixa);
@@ -552,10 +555,9 @@
         document.getElementById('faixa-' + faixa).style.display = hasVisible ? '' : 'none';
         var btn = document.getElementById('btn-ver-' + faixa);
         if (btn) {
-          var hasHiddenExtra = !state[faixa] && cards.some(function(c) {
-            return c.dataset.extra === '1' && (f === 'todos' || c.dataset.tipo === f);
-          });
-          btn.style.display = hasHiddenExtra ? '' : 'none';
+          // botão só aparece na view "todos" quando há extras ainda ocultos
+          var hasExtra = !filtrando && !state[faixa] && cards.some(function(c) { return c.dataset.extra === '1'; });
+          btn.style.display = hasExtra ? '' : 'none';
         }
       });
       document.querySelectorAll('.filtro-btn').forEach(function(b) {

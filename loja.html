@@ -63,8 +63,8 @@
       text-decoration: none; color: var(--areia);
     }
     .header__meta {
-      font-family: 'Space Mono', monospace; font-size: 0.52rem;
-      letter-spacing: 0.14em; text-transform: uppercase;
+      font-family: 'Clother', sans-serif; font-weight: 700; font-size: 12px;
+      letter-spacing: 0.12em; text-transform: uppercase;
       color: rgba(240,236,228,0.3); text-align: center;
     }
     .header__back {
@@ -154,13 +154,19 @@
 
     .tag-badge {
       position: absolute; top: 8px; left: 8px; z-index: 2;
-      display: flex; gap: 4px;
+      display: flex; gap: 4px; flex-wrap: wrap;
     }
     .badge {
       font-family: 'Space Mono', monospace; font-weight: 700;
       font-size: 8px; letter-spacing: 0.1em; text-transform: uppercase;
       padding: 2px 6px; border-radius: 3px;
       background: var(--dourado); color: var(--preto); border: 1px solid var(--preto);
+    }
+    .badge-colecao {
+      font-family: 'Space Mono', monospace; font-weight: 700;
+      font-size: 8px; letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 2px 6px; border-radius: 3px;
+      background: transparent; color: #F0ECE4; border: 1px solid #F0ECE4;
     }
 
     .produto-info {
@@ -299,24 +305,24 @@
       <button class="filtro-btn active" data-filtro="todos" onclick="filtrar('todos')">Todos <span class="filtro-count">16</span></button>
       <button class="filtro-btn" data-filtro="poster" onclick="filtrar('poster')">Pôsteres <span class="filtro-count">10</span></button>
       <button class="filtro-btn" data-filtro="adesivo" onclick="filtrar('adesivo')">Adesivos <span class="filtro-count">1</span></button>
-      <button class="filtro-btn" data-filtro="chaveiro" onclick="filtrar('chaveiro')">Chaveiros <span class="filtro-count">5</span></button>
+      <button class="filtro-btn" data-filtro="chaveiro" onclick="filtrar('chaveiro')">Use MARATU <span class="filtro-count">5</span></button>
     </div>
   </div>
 
-  <!-- FAIXA 01 — ORIGENS -->
-  <section class="faixa" id="faixa-origens">
+  <!-- FAIXA 01 — USE MARATU -->
+  <section class="faixa" id="faixa-usemaratu">
     <div class="faixa-header">
       <div>
-        <p class="faixa-tag">— COLEÇÃO 01</p>
-        <h2 class="faixa-nome">ORIGENS</h2>
+        <p class="faixa-tag">— CATEGORIA 01</p>
+        <h2 class="faixa-nome">USE MARATU</h2>
       </div>
-      <button class="faixa-ver-todos" id="btn-ver-origens" onclick="verTodos('origens')">VER TODOS (6) ↗</button>
+      <button class="faixa-ver-todos" id="btn-ver-usemaratu" onclick="verTodos('usemaratu')">VER TODOS (5) ↗</button>
     </div>
-    <div class="produtos-grid" id="grid-origens">
+    <div class="produtos-grid" id="grid-usemaratu">
 
-      <div class="produto-card" data-tipo="chaveiro" data-faixa="origens">
+      <div class="produto-card" data-tipo="chaveiro" data-faixa="usemaratu">
         <div class="produto-img-wrap quadrado" onclick="abrirLightbox('carranca-chaveiro.png','Carranca — Chaveiro')">
-          <div class="tag-badge"><span class="badge">Novo</span></div>
+          <div class="tag-badge"><span class="badge">Novo</span><span class="badge-colecao">ORIGENS</span></div>
           <img class="img-principal" src="carranca-chaveiro.png" alt="Carranca Chaveiro" loading="lazy">
         </div>
         <div class="produto-info">
@@ -326,9 +332,9 @@
         <a href="https://wa.me/5579981512978?text=Ol%C3%A1!%20Tenho%20interesse%20no%20produto%3A%20Chaveiro%20Carranca%20-%20R%24%2020" target="_blank" rel="noopener" class="btn-encomendar">Encomendar ↗</a>
       </div>
 
-      <div class="produto-card" data-tipo="chaveiro" data-faixa="origens">
+      <div class="produto-card" data-tipo="chaveiro" data-faixa="usemaratu">
         <div class="produto-img-wrap quadrado" onclick="abrirLightbox('arcos-chaveiro.png','Arcos da Orla — Chaveiro')">
-          <div class="tag-badge"><span class="badge">Novo</span></div>
+          <div class="tag-badge"><span class="badge">Novo</span><span class="badge-colecao">ORIGENS</span></div>
           <img class="img-principal" src="arcos-chaveiro.png" alt="Arcos da Orla Chaveiro" loading="lazy">
         </div>
         <div class="produto-info">
@@ -338,10 +344,10 @@
         <a href="https://wa.me/5579981512978?text=Ol%C3%A1!%20Tenho%20interesse%20no%20produto%3A%20Chaveiro%20Arcos%20da%20Orla%20-%20R%24%2020" target="_blank" rel="noopener" class="btn-encomendar">Encomendar ↗</a>
       </div>
 
-      <div class="produto-card" data-tipo="chaveiro" data-faixa="origens">
-        <div class="produto-img-wrap quadrado" onclick="abrirLightbox('relogio-chaveiro.png','Rel\u00f3gio do Mercado — Chaveiro')">
-          <div class="tag-badge"><span class="badge">Novo</span></div>
-          <img class="img-principal" src="relogio-chaveiro.png" alt="Rel\u00f3gio do Mercado Chaveiro" loading="lazy">
+      <div class="produto-card" data-tipo="chaveiro" data-faixa="usemaratu">
+        <div class="produto-img-wrap quadrado" onclick="abrirLightbox('relogio-chaveiro.png','Relógio do Mercado — Chaveiro')">
+          <div class="tag-badge"><span class="badge">Novo</span><span class="badge-colecao">ORIGENS</span></div>
+          <img class="img-principal" src="relogio-chaveiro.png" alt="Relógio do Mercado Chaveiro" loading="lazy">
         </div>
         <div class="produto-info">
           <div><p class="produto-nome">Rel&oacute;gio do Mercado</p><p class="produto-tipo">Chaveiro · 3D</p></div>
@@ -350,9 +356,9 @@
         <a href="https://wa.me/5579981512978?text=Ol%C3%A1!%20Tenho%20interesse%20no%20produto%3A%20Chaveiro%20Rel%C3%B3gio%20do%20Mercado%20-%20R%24%2020" target="_blank" rel="noopener" class="btn-encomendar">Encomendar ↗</a>
       </div>
 
-      <div class="produto-card" data-tipo="chaveiro" data-faixa="origens">
-        <div class="produto-img-wrap quadrado" onclick="abrirLightbox('kit-aracaju-chaveiro.png','Kit Aracaju — Cole\u00e7\u00e3o Completa')">
-          <div class="tag-badge"><span class="badge">Novo</span><span class="badge">Kit</span></div>
+      <div class="produto-card" data-tipo="chaveiro" data-faixa="usemaratu">
+        <div class="produto-img-wrap quadrado" onclick="abrirLightbox('kit-aracaju-chaveiro.png','Kit Aracaju — Coleção Completa')">
+          <div class="tag-badge"><span class="badge">Novo</span><span class="badge">Kit</span><span class="badge-colecao">ORIGENS</span></div>
           <img class="img-principal" src="kit-aracaju-chaveiro.png" alt="Kit Aracaju Chaveiro" loading="lazy">
         </div>
         <div class="produto-info">
@@ -362,10 +368,10 @@
         <a href="https://wa.me/5579981512978?text=Ol%C3%A1!%20Tenho%20interesse%20no%20produto%3A%20Kit%20Aracaju%20(4%20chaveiros)%20-%20R%24%2068" target="_blank" rel="noopener" class="btn-encomendar">Encomendar ↗</a>
       </div>
 
-      <!-- extras: ocultos por padrão -->
-      <div class="produto-card" data-tipo="chaveiro" data-faixa="origens" data-extra="1">
+      <!-- extra: oculto por padrão -->
+      <div class="produto-card" data-tipo="chaveiro" data-faixa="usemaratu" data-extra="1">
         <div class="produto-img-wrap quadrado" onclick="abrirLightbox('maratu-chaveiro.png','Chaveiro MARATU')">
-          <div class="tag-badge"><span class="badge">Novo</span></div>
+          <div class="tag-badge"><span class="badge">Novo</span><span class="badge-colecao">ORIGENS</span></div>
           <img class="img-principal" src="maratu-chaveiro.png" alt="Chaveiro MARATU" loading="lazy">
         </div>
         <div class="produto-info">
@@ -375,10 +381,35 @@
         <a href="https://wa.me/5579981512978?text=Ol%C3%A1!%20Tenho%20interesse%20no%20produto%3A%20Chaveiro%20MARATU%20-%20R%24%2020" target="_blank" rel="noopener" class="btn-encomendar">Encomendar ↗</a>
       </div>
 
-      <div class="produto-card" data-tipo="adesivo" data-faixa="origens" data-extra="1">
-        <div class="produto-img-wrap quadrado" onclick="abrirLightbox('adesivos-origens.png','Cole\u00e7\u00e3o de Adesivos Origens')">
-          <div class="tag-badge"><span class="badge">Novo</span></div>
-          <img class="img-principal" src="adesivos-origens.png" alt="Cole\u00e7\u00e3o de Adesivos Origens" loading="lazy" style="object-fit:contain;padding:8px;">
+    </div>
+  </section>
+
+  <!-- FAIXA 02 — PÔSTERES -->
+  <section class="faixa" id="faixa-posteres">
+    <div class="faixa-header">
+      <div>
+        <p class="faixa-tag">— CATEGORIA 02</p>
+        <h2 class="faixa-nome">PÔSTERES</h2>
+      </div>
+      <button class="faixa-ver-todos" id="btn-ver-posteres" onclick="verTodos('posteres')">VER TODOS (10) ↗</button>
+    </div>
+    <div class="produtos-grid" id="grid-posteres"></div>
+  </section>
+
+  <!-- FAIXA 03 — ADESIVOS -->
+  <section class="faixa" id="faixa-adesivos">
+    <div class="faixa-header">
+      <div>
+        <p class="faixa-tag">— CATEGORIA 03</p>
+        <h2 class="faixa-nome">ADESIVOS</h2>
+      </div>
+    </div>
+    <div class="produtos-grid" id="grid-adesivos">
+
+      <div class="produto-card" data-tipo="adesivo" data-faixa="adesivos">
+        <div class="produto-img-wrap quadrado" onclick="abrirLightbox('adesivos-origens.png','Coleção de Adesivos Origens')">
+          <div class="tag-badge"><span class="badge">Novo</span><span class="badge-colecao">ORIGENS</span></div>
+          <img class="img-principal" src="adesivos-origens.png" alt="Coleção de Adesivos Origens" loading="lazy" style="object-fit:contain;padding:8px;">
         </div>
         <div class="produto-info">
           <div><p class="produto-nome">Origens — 1&ordf; Edi&ccedil;&atilde;o</p><p class="produto-tipo">Adesivos · 12 un</p></div>
@@ -388,18 +419,6 @@
       </div>
 
     </div>
-  </section>
-
-  <!-- FAIXA 02 — MANGUEHAUS -->
-  <section class="faixa" id="faixa-manguehaus">
-    <div class="faixa-header">
-      <div>
-        <p class="faixa-tag">— COLEÇÃO 02</p>
-        <h2 class="faixa-nome">MANGUEHAUS</h2>
-      </div>
-      <button class="faixa-ver-todos" id="btn-ver-manguehaus" onclick="verTodos('manguehaus')">VER TODOS (10) ↗</button>
-    </div>
-    <div class="produtos-grid" id="grid-manguehaus"></div>
   </section>
 
   <div class="wa-wrap">
@@ -471,11 +490,11 @@
     var PRECOS_BASE = { 'A4': 50, 'A3': 80, 'A2': 120, 'A1': 180 };
 
     var POSTERES = [
-      { id: 'pordosol',  nome: 'P\u00f4r do Sol',        img: 'poster-pordosol.png',  mockup: 'mockup-pordosol.png',  desconto: false },
+      { id: 'pordosol',  nome: 'Pôr do Sol',        img: 'poster-pordosol.png',  mockup: 'mockup-pordosol.png',  desconto: false },
       { id: 'atalaia',   nome: 'Sol de Atalaia',     img: 'poster-atalaia.png',   mockup: 'mockup-atalaia.png',   desconto: false },
-      { id: 'destrua',   nome: 'Destrua o Imp\u00e9rio!', img: 'poster-destrua.png', mockup: 'mockup-destrua.png',   desconto: false },
+      { id: 'destrua',   nome: 'Destrua o Império!', img: 'poster-destrua.png',   mockup: 'mockup-destrua.png',   desconto: false },
       { id: 'origens',   nome: 'Origens',            img: 'poster-origens.png',   mockup: 'mockup-origens.png',   desconto: false },
-      { id: 'matapua',   nome: 'Matapua\u0303',      img: 'poster-matapua.png',   mockup: 'mockup-matapua.png',   desconto: false },
+      { id: 'matapua',   nome: 'Matapuã',            img: 'poster-matapua.png',   mockup: 'mockup-matapua.png',   desconto: false },
       { id: 'linguagem', nome: 'Linguagem',          img: 'poster-linguagem.png', mockup: 'mockup-linguagem.png', desconto: false },
       { id: 'camadas',   nome: 'Camadas',            img: 'poster-camadas.png',   mockup: 'mockup-camadas.png',   desconto: true },
       { id: 'areias',    nome: 'Areias',             img: 'poster-areias.png',    mockup: 'mockup-areias.png',    desconto: false },
@@ -483,27 +502,28 @@
       { id: 'ritmo',     nome: 'Ritmo',              img: 'poster-ritmo.png',     mockup: 'mockup-ritmo.png',     desconto: false }
     ];
 
-    var state = { filtro: 'todos', origens: false, manguehaus: false };
+    var state = { filtro: 'todos', usemaratu: false, posteres: false, adesivos: false };
 
     function calcPreco(base, desconto) { return desconto ? Math.round(base * 0.8) : base; }
 
     function buildPosters() {
-      var grid = document.getElementById('grid-manguehaus');
+      var grid = document.getElementById('grid-posteres');
       POSTERES.forEach(function(p, i) {
         var precoA4 = calcPreco(PRECOS_BASE['A4'], p.desconto);
         var card = document.createElement('div');
         card.className = 'produto-card';
         card.dataset.tipo = 'poster';
-        card.dataset.faixa = 'manguehaus';
+        card.dataset.faixa = 'posteres';
         if (i >= 4) card.dataset.extra = '1';
         var origHtml = p.desconto ? '<span class="produto-preco-riscado">R$' + PRECOS_BASE['A4'] + '</span>' : '';
         card.innerHTML =
           '<div class="produto-img-wrap poster" onclick="abrirLightbox(\'' + p.img + '\',\'' + p.nome.replace(/'/g, '&#39;') + '\')">' +
+          '<div class="tag-badge"><span class="badge-colecao">MANGUEHAUS</span></div>' +
           '<img class="img-principal com-hover" src="' + p.img + '" alt="' + p.nome + '" loading="lazy">' +
           '<img class="img-hover" src="' + p.mockup + '" alt="' + p.nome + ' mockup" loading="lazy">' +
           '</div>' +
           '<div class="produto-info">' +
-          '<div><p class="produto-nome">' + p.nome + '</p><p class="produto-tipo">P\u00f4ster · A4\u2013A1</p></div>' +
+          '<div><p class="produto-nome">' + p.nome + '</p><p class="produto-tipo">Pôster · A4–A1</p></div>' +
           '<div class="produto-preco-wrap" style="text-align:right">' + origHtml + '<p class="produto-preco" id="preco-' + p.id + '">R$' + precoA4 + '</p></div>' +
           '</div>' +
           '<div class="tam-selector" id="tam-' + p.id + '">' +
@@ -511,8 +531,8 @@
             return '<button class="tam-btn' + (t === 'A4' ? ' selected' : '') + '" data-tam="' + t + '" data-poster="' + p.id + '" onclick="selecionarTam(this)">' + t + '</button>';
           }).join('') +
           '</div>' +
-          '<button class="tam-info-btn" onclick="abrirTamPopup()">Ficou na d\u00favida do tamanho? Ver tabela</button>' +
-          '<a href="#" id="btn-' + p.id + '" class="btn-encomendar" target="_blank" rel="noopener">Encomendar \u2197</a>';
+          '<button class="tam-info-btn" onclick="abrirTamPopup()">Ficou na dúvida do tamanho? Ver tabela</button>' +
+          '<a href="#" id="btn-' + p.id + '" class="btn-encomendar" target="_blank" rel="noopener">Encomendar ↗</a>';
         grid.appendChild(card);
         atualizarLink(p.id, 'A4');
       });
@@ -544,18 +564,16 @@
         var tipoOk = filtrando ? c.dataset.tipo === f : true;
         var isExtra = c.dataset.extra === '1';
         var expanded = state[c.dataset.faixa];
-        // restrição de 4 cards só se aplica na view "todos" sem expansão
         var bloqueadoPorExtra = !filtrando && isExtra && !expanded;
         c.style.display = (tipoOk && !bloqueadoPorExtra) ? '' : 'none';
       });
-      ['origens', 'manguehaus'].forEach(function(faixa) {
+      ['usemaratu', 'posteres', 'adesivos'].forEach(function(faixa) {
         var grid = document.getElementById('grid-' + faixa);
         var cards = Array.from(grid.querySelectorAll('.produto-card'));
         var hasVisible = cards.some(function(c) { return c.style.display !== 'none'; });
         document.getElementById('faixa-' + faixa).style.display = hasVisible ? '' : 'none';
         var btn = document.getElementById('btn-ver-' + faixa);
         if (btn) {
-          // botão só aparece na view "todos" quando há extras ainda ocultos
           var hasExtra = !filtrando && !state[faixa] && cards.some(function(c) { return c.dataset.extra === '1'; });
           btn.style.display = hasExtra ? '' : 'none';
         }

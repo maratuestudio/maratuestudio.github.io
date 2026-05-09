@@ -303,16 +303,6 @@
       color: rgba(240,236,228,0.4);
     }
 
-    /* ── HERO LABELS (vintage) ── */
-    .hero__label-tl .mono,
-    .hero__label-tr .mono {
-      font-family: 'Space Mono', monospace;
-      font-weight: 700;
-      font-size: 11px;
-      letter-spacing: 0.18em;
-      color: rgba(240,236,228,0.7);
-    }
-
     /* ── SEÇÕES ── */
     .secao {
       padding: var(--secao-padding) var(--margem);
@@ -478,33 +468,78 @@
     .card-desc-txt { font-size: 0.75rem; color: rgba(13,13,11,0.6); line-height: 1.5; }
     .div-laranja { height: 3px; background: var(--laranja); }
 
-    /* ── CONTATO / LINKS ── */
-    .links { display: flex; flex-direction: column; gap: 2px; }
-    .clink {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 18px 20px; background: rgba(240,236,228,0.03);
-      border: 1px solid rgba(240,236,228,0.07);
-      text-decoration: none; color: var(--areia);
-      transition: background 0.2s;
+    /* ── CONTATO VINTAGE ── */
+    .contato-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
+      margin-bottom: 20px;
     }
-    .clink:hover { background: rgba(200,80,26,0.12); border-color: rgba(200,80,26,0.2); }
-    .clink-left { display: flex; align-items: center; gap: 14px; }
-    .clink-icon { width: 28px; height: 28px; object-fit: contain; opacity: 0.7; }
-    .clink-meta { font-family: var(--mono); font-size: 0.45rem; color: var(--laranja); letter-spacing: 0.15em; text-transform: uppercase; display: block; margin-bottom: 2px; }
-    .clink-nome { font-family: var(--clother); font-weight: 700; font-size: 0.95rem; }
-    .clink-arrow { color: rgba(240,236,228,0.3); font-size: 1rem; }
-    .clink-breve { font-family: var(--mono); font-size: 0.45rem; color: rgba(240,236,228,0.25); letter-spacing: 0.1em; }
+    @media (max-width: 600px) { .contato-grid { grid-template-columns: 1fr; } }
+    .clink-pill {
+      display: flex; align-items: center; gap: 14px;
+      padding: 14px 20px 14px 14px;
+      border: 1.5px solid #F0ECE4; border-radius: 999px;
+      box-shadow: 3px 3px 0 0 #F0ECE4;
+      text-decoration: none; color: var(--areia);
+      transition: box-shadow 0.15s ease, transform 0.15s ease;
+    }
+    .clink-pill:hover { box-shadow: 1px 1px 0 0 #F0ECE4; transform: translate(2px, 2px); }
+    .clink-pill__icon {
+      width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .clink-pill__icon img { width: 18px; height: 18px; object-fit: contain; display: block; }
+    .clink-pill__body { flex: 1; min-width: 0; }
+    .clink-pill__tag {
+      font-family: 'Space Mono', monospace; font-size: 9px;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      color: rgba(240,236,228,0.5); display: block; margin-bottom: 2px;
+    }
+    .clink-pill__nome {
+      font-family: var(--clother); font-weight: 700; font-size: 13px;
+      color: var(--areia);
+    }
+    .clink-pill__arrow { color: rgba(240,236,228,0.4); font-size: 1rem; flex-shrink: 0; }
 
-    /* newsletter inline */
-    .nl-card { background: rgba(240,236,228,0.03); border: 1px solid rgba(240,236,228,0.07); padding: 20px; }
-    .nl-card-meta { font-family: var(--mono); font-size: 0.45rem; color: var(--laranja); letter-spacing: 0.15em; text-transform: uppercase; display: block; margin-bottom: 4px; }
-    .nl-card-title { font-family: var(--clother); font-weight: 700; font-size: 0.95rem; color: var(--areia); display: block; margin-bottom: 14px; }
-    .nl-row { display: flex; }
-    .nl-input { flex: 1; background: rgba(240,236,228,0.05); border: 1px solid rgba(240,236,228,0.1); border-right: none; color: var(--areia); font-family: var(--clother); font-size: 0.9rem; padding: 11px 14px; outline: none; }
-    .nl-input::placeholder { color: rgba(240,236,228,0.3); }
-    .nl-btn { background: var(--laranja); border: none; color: var(--preto); font-family: var(--clother); font-weight: 900; font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; padding: 11px 16px; cursor: pointer; border-radius: 0 8px 0 0; transition: background 0.2s; white-space: nowrap; }
-    .nl-btn:hover { background: var(--areia); }
-    .nl-success { display: none; font-size: 0.85rem; color: var(--laranja); margin-top: 10px; font-weight: 700; }
+    /* newsletter vintage */
+    .nl-vintage {
+      border: 1.5px solid #F0ECE4; border-radius: 16px;
+      box-shadow: 3px 3px 0 0 #F0ECE4; padding: 24px;
+    }
+    .nl-vintage__tag {
+      font-family: 'Space Mono', monospace; font-size: 9px;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--laranja); display: flex; align-items: center; gap: 8px;
+      margin-bottom: 8px;
+    }
+    .nl-vintage__tag::before { content: ''; display: block; width: 18px; height: 1px; background: var(--laranja); }
+    .nl-vintage__titulo {
+      font-family: var(--clother); font-weight: 900; font-size: 18px;
+      color: var(--areia); margin-bottom: 16px;
+    }
+    .nl-vintage__row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    .nl-vintage__input {
+      flex: 1; min-width: 160px;
+      background: transparent;
+      border: 1.5px solid rgba(240,236,228,0.3);
+      border-radius: 999px; padding: 10px 18px;
+      color: var(--areia); font-family: var(--clother); font-size: 0.9rem; outline: none;
+    }
+    .nl-vintage__input::placeholder { color: rgba(240,236,228,0.3); }
+    .nl-vintage__btn {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 10px 14px 10px 18px;
+      background: var(--dourado); color: var(--preto);
+      font-family: var(--clother); font-weight: 900;
+      font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase;
+      border-radius: 999px; border: 1.5px solid var(--preto);
+      box-shadow: 3px 3px 0 0 var(--preto);
+      cursor: pointer; transition: all 0.15s ease; white-space: nowrap;
+    }
+    .nl-vintage__btn:hover { box-shadow: 1px 1px 0 0 var(--preto); transform: translate(2px, 2px); }
+    .nl-vintage__btn:active { box-shadow: 0 0 0 0 var(--preto); transform: translate(3px, 3px); }
+    .nl-divisor { width: 1.5px; height: 14px; background: var(--preto); flex-shrink: 0; }
+    .nl-seta { font-size: 14px; font-weight: 900; color: var(--preto); line-height: 1; }
+    .nl-vintage__success { display: none; font-size: 0.85rem; color: var(--laranja); margin-top: 10px; font-weight: 700; }
 
     /* ── FOOTER ── */
     .footer {
@@ -542,39 +577,7 @@
       .footer__baseline { flex-direction: column; }
     }
 
-    /* ── NEWSLETTER POPUP ── */
-    .nl-popup {
-      position: fixed; bottom: 32px; right: 32px; z-index: 500;
-      background: rgba(13,13,11,0.82); border: 1px solid rgba(200,80,26,0.2);
-      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-      padding: 28px 28px 24px; width: 320px; border-radius: 16px;
-      box-shadow: 0 24px 64px rgba(0,0,0,0.5);
-      transform: translateY(120%); opacity: 0;
-      transition: all 0.4s cubic-bezier(0.16,1,0.3,1);
-      pointer-events: none;
-    }
-    .nl-popup.visible { transform: translateY(0); opacity: 1; pointer-events: all; }
-    .nl-popup-close { position: absolute; top: 12px; right: 14px; background: none; border: none; color: rgba(240,236,228,0.3); font-size: 1rem; cursor: pointer; padding: 4px; line-height: 1; }
-    .nl-popup-close:hover { color: var(--areia); }
-    .nl-popup-tag { font-family: var(--mono); font-size: 0.52rem; color: var(--laranja); letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 8px; }
-    .nl-popup-title { font-family: var(--clother); font-weight: 900; font-size: 1.2rem; color: var(--areia); line-height: 1.1; margin-bottom: 6px; }
-    .nl-popup-sub { font-size: 0.82rem; color: rgba(240,236,228,0.45); line-height: 1.6; margin-bottom: 16px; }
-    .nl-form { display: flex; flex-direction: column; gap: 8px; }
-    .nl-form .nl-input { border-right: 1px solid rgba(240,236,228,0.1); }
-    .nl-form .nl-btn { border-radius: 0 8px 0 0; padding: 12px; }
-    .nl-popup-success { display: none; font-size: 0.85rem; color: var(--laranja); font-weight: 700; margin-top: 6px; }
-    @media (max-width: 600px) {
-      .nl-popup {
-        bottom: 0; right: 0; left: 0; width: auto;
-        border-radius: 16px 16px 16px 16px;
-        background: var(--azul);
-        border: none;
-        padding: 20px 20px 28px;
-        box-shadow: 0 -8px 40px rgba(0,0,0,0.5);
-      }
-      .nl-popup-title { font-size: 1rem; }
-      .nl-popup-sub { font-size: 0.78rem; margin-bottom: 12px; }
-    }
+
 
     /* ── SCROLL REVEAL (fade puro) ── */
     .reveal {
@@ -691,58 +694,69 @@
     </div>
   </div>
 
-  <!-- ⑥ CONTATO — split preto | foto -->
-  <div class="split foto-direita reveal" id="contato">
-    <div class="split-texto bg-preto-split" style="border-top:none;">
-      <p class="lbl">003 — CONTATO</p>
-      <span class="t1">Fala com a</span>
-      <span class="t2">MARATU</span>
-      <div class="links">
-        <a href="https://instagram.com/maratuestudio" target="_blank" rel="noopener" class="clink">
-          <div class="clink-left">
-            <img src="icon-instagram.png" class="clink-icon" alt="Instagram">
-            <div><span class="clink-meta">Instagram</span><span class="clink-nome">Conheça nossos produtos</span></div>
-          </div>
-          <span class="clink-arrow">↗</span>
-        </a>
-        <a href="https://wa.me/5579981512978" target="_blank" rel="noopener" class="clink">
-          <div class="clink-left">
-            <img src="icon-whatsapp.png" class="clink-icon" alt="WhatsApp">
-            <div><span class="clink-meta">WhatsApp</span><span class="clink-nome">Faça seu pedido aqui</span></div>
-          </div>
-          <span class="clink-arrow">↗</span>
-        </a>
-        <a href="mailto:estudio@maratu.com.br" class="clink">
-          <div class="clink-left">
-            <img src="icon-email.png" class="clink-icon" alt="Email">
-            <div><span class="clink-meta">Email</span><span class="clink-nome">Manda uma mensagem pra gente</span></div>
-          </div>
-          <span class="clink-arrow">↗</span>
-        </a>
-        <a href="https://tiktok.com/@maratuestudio" target="_blank" rel="noopener" class="clink">
-          <div class="clink-left">
-            <img src="icon-tiktok.png" class="clink-icon" alt="TikTok">
-            <div><span class="clink-meta">TikTok</span><span class="clink-nome">@maratuestudio</span></div>
-          </div>
-          <span class="clink-arrow">↗</span>
-        </a>
-        <div class="nl-card">
-          <span class="nl-card-meta">Newsletter</span>
-          <span class="nl-card-title">Fique por dentro das novidades</span>
-          <form id="nl-contato-form">
-            <div class="nl-row">
-              <input type="email" name="email" placeholder="seu@email.com" required class="nl-input" id="nl-contato-email">
-              <button type="submit" class="nl-btn">Assinar ↗</button>
-            </div>
-          </form>
-          <p class="nl-success" id="nl-contato-success">Inscrito! Bem-vindo à MARATU.</p>
+  <!-- ⑥ CONTATO -->
+  <section class="secao secao--preto reveal" id="contato">
+    <p class="lbl" style="color:var(--laranja);">003 — CONTATO</p>
+    <span class="t1" style="color:rgba(240,236,228,0.65);display:block;margin-bottom:4px;">Fala com a</span>
+    <span class="t2" style="color:var(--laranja);display:block;margin-bottom:32px;">MARATU</span>
+
+    <div class="contato-grid">
+      <a href="https://instagram.com/maratuestudio" target="_blank" rel="noopener" class="clink-pill">
+        <div class="clink-pill__icon" style="background:#C8501A;">
+          <img src="icon-instagram.png" alt="Instagram" style="filter:brightness(0) invert(1);">
         </div>
-      </div>
+        <div class="clink-pill__body">
+          <span class="clink-pill__tag">Instagram</span>
+          <span class="clink-pill__nome">Conheça nossos produtos</span>
+        </div>
+        <span class="clink-pill__arrow">↗</span>
+      </a>
+      <a href="https://wa.me/5579981512978" target="_blank" rel="noopener" class="clink-pill">
+        <div class="clink-pill__icon" style="background:#D4960A;">
+          <img src="icon-whatsapp.png" alt="WhatsApp" style="filter:brightness(0) invert(1);">
+        </div>
+        <div class="clink-pill__body">
+          <span class="clink-pill__tag">WhatsApp</span>
+          <span class="clink-pill__nome">Faça seu pedido aqui</span>
+        </div>
+        <span class="clink-pill__arrow">↗</span>
+      </a>
+      <a href="mailto:estudio@maratu.com.br" class="clink-pill">
+        <div class="clink-pill__icon" style="background:#2E6FC4;">
+          <img src="icon-email.png" alt="Email" style="filter:brightness(0) invert(1);">
+        </div>
+        <div class="clink-pill__body">
+          <span class="clink-pill__tag">Email</span>
+          <span class="clink-pill__nome">Manda uma mensagem pra gente</span>
+        </div>
+        <span class="clink-pill__arrow">↗</span>
+      </a>
+      <a href="https://tiktok.com/@maratuestudio" target="_blank" rel="noopener" class="clink-pill">
+        <div class="clink-pill__icon" style="background:#F0ECE4;">
+          <img src="icon-tiktok.png" alt="TikTok" style="filter:brightness(0);">
+        </div>
+        <div class="clink-pill__body">
+          <span class="clink-pill__tag">TikTok</span>
+          <span class="clink-pill__nome">@maratuestudio</span>
+        </div>
+        <span class="clink-pill__arrow">↗</span>
+      </a>
     </div>
-    <div class="split-foto">
-      <img src="mangue.jpg" alt="Mangue de Sergipe">
+
+    <div class="nl-vintage">
+      <p class="nl-vintage__tag">NEWSLETTER</p>
+      <p class="nl-vintage__titulo">Fique por dentro das novidades</p>
+      <form id="nl-contato-form">
+        <div class="nl-vintage__row">
+          <input type="email" name="email" placeholder="seu@email.com" required class="nl-vintage__input" id="nl-contato-email">
+          <button type="submit" class="nl-vintage__btn">
+            <span>ASSINAR</span><span class="nl-divisor"></span><span class="nl-seta">↗</span>
+          </button>
+        </div>
+      </form>
+      <p class="nl-vintage__success" id="nl-contato-success">Inscrito! Bem-vindo à MARATU.</p>
     </div>
-  </div>
+  </section>
 
   <!-- FOOTER -->
   <footer class="footer">
@@ -772,18 +786,7 @@
     </div>
   </footer>
 
-  <!-- NEWSLETTER POPUP -->
-  <div class="nl-popup" id="nl-popup">
-    <button class="nl-popup-close" id="nl-popup-close">✕</button>
-    <p class="nl-popup-tag">Newsletter</p>
-    <p class="nl-popup-title">Fique por dentro</p>
-    <p class="nl-popup-sub">Novidades, lançamentos e drops exclusivos direto no seu email.</p>
-    <form class="nl-form" id="nl-popup-form">
-      <input type="email" placeholder="seu@email.com" required class="nl-input" id="nl-popup-email">
-      <button type="submit" class="nl-btn">Assinar →</button>
-      <p class="nl-popup-success" id="nl-popup-success"></p>
-    </form>
-  </div>
+
 
   <script>
     var WORKER_URL = 'https://maratu-newsletter.raphaelnascimento.workers.dev';
@@ -809,25 +812,9 @@
       });
     }
 
-    // POPUP newsletter
-    var popup = document.getElementById('nl-popup');
-    var closeBtn = document.getElementById('nl-popup-close');
-    if (!sessionStorage.getItem('nl-dismissed')) {
-      setTimeout(function() { popup.classList.add('visible'); }, 3000);
-    }
-    closeBtn.addEventListener('click', function() {
-      popup.classList.remove('visible');
-      sessionStorage.setItem('nl-dismissed', '1');
-    });
-    document.getElementById('nl-popup-form').addEventListener('submit', function(e) {
-      e.preventDefault();
-      var email = document.getElementById('nl-popup-email').value;
-      brevoSubscribe(email, document.getElementById('nl-popup-success'), null);
-      sessionStorage.setItem('nl-dismissed', '1');
-      setTimeout(function() { popup.classList.remove('visible'); }, 3500);
-    });
 
-    // FORM CONTATO
+
+    // FORM NEWSLETTER
     var sectionForm = document.getElementById('nl-contato-form');
     if (sectionForm) {
       sectionForm.addEventListener('submit', function(e) {

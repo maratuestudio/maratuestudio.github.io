@@ -500,31 +500,29 @@
     }
     .clink-pill__arrow { color: rgba(240,236,228,0.4); font-size: 1rem; flex-shrink: 0; }
 
-    /* newsletter vintage */
+    /* newsletter vintage — pílula compacta */
     .nl-vintage {
-      border: 1.5px solid #F0ECE4; border-radius: 16px;
-      box-shadow: 3px 3px 0 0 #F0ECE4; padding: 24px;
+      border: 1.5px solid #F0ECE4; border-radius: 999px;
+      box-shadow: 3px 3px 0 0 #F0ECE4;
+      padding: 14px 14px 14px 20px;
+      display: flex; align-items: center; gap: 14px;
+      flex-wrap: wrap;
     }
     .nl-vintage__tag {
       font-family: 'Space Mono', monospace; font-size: 9px;
       letter-spacing: 0.15em; text-transform: uppercase;
-      color: var(--laranja); display: flex; align-items: center; gap: 8px;
-      margin-bottom: 8px;
+      color: var(--laranja); flex-shrink: 0;
     }
-    .nl-vintage__tag::before { content: ''; display: block; width: 18px; height: 1px; background: var(--laranja); }
-    .nl-vintage__titulo {
-      font-family: var(--clother); font-weight: 900; font-size: 18px;
-      color: var(--areia); margin-bottom: 16px;
-    }
-    .nl-vintage__row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    .nl-vintage__titulo { display: none; }
+    .nl-vintage__form { flex: 1; min-width: 200px; display: flex; }
+    .nl-vintage__row { display: flex; gap: 8px; align-items: center; flex: 1; }
     .nl-vintage__input {
-      flex: 1; min-width: 160px;
-      background: transparent;
-      border: 1.5px solid rgba(240,236,228,0.3);
-      border-radius: 999px; padding: 10px 18px;
+      flex: 1; min-width: 100px;
+      background: transparent; border: none;
       color: var(--areia); font-family: var(--clother); font-size: 0.9rem; outline: none;
+      padding: 0;
     }
-    .nl-vintage__input::placeholder { color: rgba(240,236,228,0.3); }
+    .nl-vintage__input::placeholder { color: rgba(240,236,228,0.35); }
     .nl-vintage__btn {
       display: inline-flex; align-items: center; gap: 10px;
       padding: 10px 14px 10px 18px;
@@ -539,7 +537,7 @@
     .nl-vintage__btn:active { box-shadow: 0 0 0 0 var(--preto); transform: translate(3px, 3px); }
     .nl-divisor { width: 1.5px; height: 14px; background: var(--preto); flex-shrink: 0; }
     .nl-seta { font-size: 14px; font-weight: 900; color: var(--preto); line-height: 1; }
-    .nl-vintage__success { display: none; font-size: 0.85rem; color: var(--laranja); margin-top: 10px; font-weight: 700; }
+    .nl-vintage__success { display: none; font-size: 0.85rem; color: var(--laranja); font-weight: 700; flex-basis: 100%; padding-left: 4px; margin-top: 4px; }
 
     /* ── FOOTER ── */
     .footer {
@@ -737,7 +735,7 @@
         </div>
         <div class="clink-pill__body">
           <span class="clink-pill__tag">TikTok</span>
-          <span class="clink-pill__nome">@maratuestudio</span>
+          <span class="clink-pill__nome">Segue a gente aqui também</span>
         </div>
         <span class="clink-pill__arrow">↗</span>
       </a>
@@ -745,8 +743,7 @@
 
     <div class="nl-vintage">
       <p class="nl-vintage__tag">NEWSLETTER</p>
-      <p class="nl-vintage__titulo">Fique por dentro das novidades</p>
-      <form id="nl-contato-form">
+      <form id="nl-contato-form" class="nl-vintage__form">
         <div class="nl-vintage__row">
           <input type="email" name="email" placeholder="seu@email.com" required class="nl-vintage__input" id="nl-contato-email">
           <button type="submit" class="nl-vintage__btn">
@@ -762,10 +759,10 @@
   <footer class="footer">
     <div class="footer__logo">MARATU<span>Estúdio</span></div>
     <div class="footer__baseline">
-      <p>© 2026 MARATU Estúdio · feito em Aracaju</p>
+      <p>© 2026 MARATU Estúdio · feito em Aracaju · Projeta o Mangue!</p>
       <p>Impressão 3D · Design · Arte</p>
     </div>
-    <div class="aratu-mascote" aria-hidden="true">
+    <div class="aratu-mascote" aria-hidden="true" style="margin-top:28px;">
       <svg viewBox="0 0 318.24 152.9" xmlns="http://www.w3.org/2000/svg">
         <g data-aratu="claw-left">
           <path fill="#C8501A" d="M0,104.77c0,26.58,21.55,48.13,48.13,48.13V56.65C21.55,56.65,0,78.19,0,104.77Z"/>

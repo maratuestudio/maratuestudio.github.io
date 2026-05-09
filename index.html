@@ -76,8 +76,6 @@
       pointer-events: none; z-index: 1000; opacity: 0.35;
     }
 
-
-
     /* ── GRADE VISÍVEL (debug: tecla G) ── */
     .grid-overlay {
       position: fixed; inset: 0; pointer-events: none; z-index: 0;
@@ -95,9 +93,12 @@
       display: grid; grid-template-columns: 1fr auto 1fr;
       align-items: center;
       color: var(--areia);
-      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s ease;
     }
     .header.hidden { transform: translateY(-100%); }
+    .header__logo { transition: color 0.3s ease; }
+    .header--on-light .header__logo,
+    .header--on-light .header__nav a { color: var(--preto); }
     .header__logo {
       font-family: var(--jack);
       font-size: 1.4rem;
@@ -110,22 +111,17 @@
       justify-content: center;
     }
     .header__nav a {
-      font-family: var(--mono);
-      font-size: 0.68rem;
-      letter-spacing: 0.1em;
+      font-family: var(--clother);
+      font-weight: 700;
+      font-size: 12px;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
-      position: relative;
-      padding: 4px 0;
-      transition: opacity 0.2s;
+      padding-bottom: 3px;
+      border-bottom: 1.5px solid transparent;
+      transition: opacity 0.2s, color 0.3s ease, border-color 0.3s ease;
     }
-    .header__nav a::after {
-      content: ''; position: absolute; bottom: 0; left: 0; right: 0;
-      height: 1px; background: currentColor;
-      transform: scaleX(0); transform-origin: right;
-      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    .header__nav a:hover::after,
-    .header__nav a.active::after { transform: scaleX(1); transform-origin: left; }
+    .header__nav a:hover { opacity: 0.5; }
+    .header__nav a.active { border-bottom-color: currentColor; }
     .btn-loja {
       display: inline-flex; align-items: center; gap: 10px;
       padding: 8px 14px 8px 18px;
@@ -597,9 +593,6 @@
 </head>
 <body>
 
-
-
-
   <!-- GRADE DEBUG (tecla G) -->
   <div class="grid-overlay" aria-hidden="true">
     <span></span><span></span><span></span><span></span>
@@ -868,6 +861,21 @@
       }
       lastScroll = current <= 0 ? 0 : current;
     });
+
+    // INVERSÃO DE COR — seções claras atrás do header
+    var lightSections = document.querySelectorAll('.solido');
+    var activeLight = new Set();
+    var lightObserver = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) { activeLight.add(entry.target); }
+        else { activeLight.delete(entry.target); }
+        header.classList.toggle('header--on-light', activeLight.size > 0);
+      });
+    }, {
+      rootMargin: '0px 0px -' + (document.documentElement.clientHeight - 80) + 'px 0px',
+      threshold: 0
+    });
+    lightSections.forEach(function(s) { lightObserver.observe(s); });
 
     // MOBILE MENU
     var menuToggle = document.querySelector('.header__menu-toggle');

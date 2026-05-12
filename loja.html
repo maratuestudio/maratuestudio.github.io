@@ -162,10 +162,38 @@
       padding: 2px 6px; border-radius: 3px;
       background: var(--dourado); color: var(--preto); border: 1px solid var(--preto);
     }
-    .badge-colecao {
-      font-family: 'Space Mono', monospace; font-weight: 700;
-      font-size: 8px; letter-spacing: 0.1em; text-transform: uppercase;
-      padding: 2px 6px; border-radius: 3px;
+    .tag-novo {
+      position: relative;
+      padding: 2px;
+      border-radius: 6px;
+      background: linear-gradient(
+        90deg,
+        #2a2a2a, #888888, #f5f5f5, #ffffff, #f5f5f5, #888888,
+        #2a2a2a, #888888, #f5f5f5, #ffffff, #f5f5f5, #888888, #2a2a2a
+      );
+      background-size: 300% 100%;
+      animation: chrome-slide 5s linear infinite;
+      display: inline-block;
+      border: none;
+    }
+    .tag-novo > span {
+      display: block;
+      background: #F0ECE4;
+      color: #0D0D0B;
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-family: 'Space Mono', monospace;
+      font-size: 8px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    @keyframes chrome-slide {
+      0%   { background-position: 0% 50%; }
+      100% { background-position: 300% 50%; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .tag-novo { animation: none; }
     }
     .badge-manguehaus {
       font-family: 'Space Mono', monospace; font-weight: 700;
@@ -349,7 +377,7 @@
 
       <div class="produto-card" data-tipo="chaveiro" data-faixa="usemaratu">
         <div class="produto-img-wrap quadrado" onclick="abrirLightbox('carranca-chaveiro.png','Carranca — Chaveiro')">
-          <div class="tag-badge"><span class="badge">Novo</span><span class="badge-origens">ORIGENS</span></div>
+          <div class="tag-badge"><div class="tag-novo"><span>NOVO</span></div><span class="badge-origens">ORIGENS</span></div>
           <img class="img-principal" src="carranca-chaveiro.png" alt="Carranca Chaveiro" loading="lazy">
         </div>
         <div class="produto-info">
@@ -361,7 +389,7 @@
 
       <div class="produto-card" data-tipo="chaveiro" data-faixa="usemaratu">
         <div class="produto-img-wrap quadrado" onclick="abrirLightbox('arcos-chaveiro.png','Arcos da Orla — Chaveiro')">
-          <div class="tag-badge"><span class="badge">Novo</span><span class="badge-origens">ORIGENS</span></div>
+          <div class="tag-badge"><div class="tag-novo"><span>NOVO</span></div><span class="badge-origens">ORIGENS</span></div>
           <img class="img-principal" src="arcos-chaveiro.png" alt="Arcos da Orla Chaveiro" loading="lazy">
         </div>
         <div class="produto-info">
@@ -373,7 +401,7 @@
 
       <div class="produto-card" data-tipo="chaveiro" data-faixa="usemaratu">
         <div class="produto-img-wrap quadrado" onclick="abrirLightbox('relogio-chaveiro.png','Relógio do Mercado — Chaveiro')">
-          <div class="tag-badge"><span class="badge">Novo</span><span class="badge-origens">ORIGENS</span></div>
+          <div class="tag-badge"><div class="tag-novo"><span>NOVO</span></div><span class="badge-origens">ORIGENS</span></div>
           <img class="img-principal" src="relogio-chaveiro.png" alt="Relógio do Mercado Chaveiro" loading="lazy">
         </div>
         <div class="produto-info">
@@ -385,7 +413,7 @@
 
       <div class="produto-card" data-tipo="chaveiro" data-faixa="usemaratu">
         <div class="produto-img-wrap quadrado" onclick="abrirLightbox('kit-aracaju-chaveiro.png','Kit Aracaju — Coleção Completa')">
-          <div class="tag-badge"><span class="badge">Novo</span><span class="badge">Kit</span><span class="badge-origens">ORIGENS</span></div>
+          <div class="tag-badge"><div class="tag-novo"><span>NOVO</span></div><span class="badge">Kit</span><span class="badge-origens">ORIGENS</span></div>
           <img class="img-principal" src="kit-aracaju-chaveiro.png" alt="Kit Aracaju Chaveiro" loading="lazy">
         </div>
         <div class="produto-info">
@@ -398,7 +426,7 @@
       <!-- extra: oculto por padrão -->
       <div class="produto-card" data-tipo="adesivo" data-faixa="usemaratu" data-extra="1">
         <div class="produto-img-wrap quadrado" onclick="abrirLightbox('adesivos-origens.png','Coleção de Adesivos Origens')">
-          <div class="tag-badge"><span class="badge">Novo</span><span class="badge-origens">ORIGENS</span></div>
+          <div class="tag-badge"><div class="tag-novo"><span>NOVO</span></div><span class="badge-origens">ORIGENS</span></div>
           <img class="img-principal" src="adesivos-origens.png" alt="Coleção de Adesivos Origens" loading="lazy" style="object-fit:contain;padding:8px;">
         </div>
         <div class="produto-info">
@@ -411,7 +439,7 @@
       <!-- extra: oculto por padrão -->
       <div class="produto-card" data-tipo="chaveiro" data-faixa="usemaratu" data-extra="1">
         <div class="produto-img-wrap quadrado" onclick="abrirLightbox('maratu-chaveiro.png','Chaveiro MARATU')">
-          <div class="tag-badge"><span class="badge">Novo</span><span class="badge-origens">ORIGENS</span></div>
+          <div class="tag-badge"><div class="tag-novo"><span>NOVO</span></div><span class="badge-origens">ORIGENS</span></div>
           <img class="img-principal" src="maratu-chaveiro.png" alt="Chaveiro MARATU" loading="lazy">
         </div>
         <div class="produto-info">

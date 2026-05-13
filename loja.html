@@ -70,15 +70,14 @@
     .header__back {
       font-family: 'Clother', sans-serif; font-weight: 900;
       font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase;
-      color: var(--preto); text-decoration: none;
+      color: var(--areia); text-decoration: none;
       padding: 7px 14px; border-radius: 999px;
-      background: var(--areia);
-      border: 1.5px solid var(--preto);
-      box-shadow: 2px 2px 0 0 var(--preto);
+      border: 1.5px solid var(--areia);
+      box-shadow: 2px 2px 0 0 var(--areia);
       transition: all 0.15s ease;
       justify-self: end; white-space: nowrap; display: inline-block;
     }
-    .header__back:hover { box-shadow: 1px 1px 0 0 var(--preto); transform: translate(1px, 1px); }
+    .header__back:hover { box-shadow: 1px 1px 0 0 var(--areia); transform: translate(1px, 1px); }
     @media (max-width: 599px) {
       .header { grid-template-columns: 1fr auto; }
       .header__meta { display: none; }
@@ -349,8 +348,8 @@
     .lightbox { display: none; position: fixed; inset: 0; z-index: 9999; background: rgba(13,13,11,0.96); align-items: center; justify-content: center; padding: 16px; }
     .lightbox.open { display: flex; }
     .lightbox-img { max-height: 88vh; max-width: 92vw; object-fit: contain; border-radius: 14px; }
-    .lightbox-close { position: absolute; top: 16px; right: 16px; background: none; border: 1px solid rgba(240,236,228,0.2); color: var(--areia); font-family: 'Space Mono', monospace; font-size: 0.65rem; letter-spacing: 0.1em; padding: 8px 14px; cursor: pointer; border-radius: 999px; transition: all 0.2s; min-height: 40px; }
-    .lightbox-close:hover { background: rgba(240,236,228,0.1); }
+    .lightbox-close { position: absolute; top: 16px; right: 16px; background: var(--areia); border: 1.5px solid var(--preto); color: var(--preto); font-family: 'Space Mono', monospace; font-size: 0.65rem; letter-spacing: 0.1em; padding: 8px 14px; cursor: pointer; border-radius: 999px; box-shadow: 2px 2px 0 0 var(--preto); transition: all 0.15s ease; min-height: 40px; }
+    .lightbox-close:hover { box-shadow: 1px 1px 0 0 var(--preto); transform: translate(1px, 1px); }
     .lightbox-nome { position: absolute; top: 18px; left: 18px; font-family: 'Clother', sans-serif; font-weight: 900; font-size: 0.8rem; color: rgba(240,236,228,0.5); letter-spacing: 0.12em; text-transform: uppercase; }
   </style>
 </head>
@@ -446,9 +445,9 @@
 
       <!-- extra: oculto por padrão -->
       <div class="produto-card" data-tipo="chaveiro" data-faixa="usemaratu" data-extra="1">
-        <div class="produto-img-wrap quadrado" onclick="abrirLightbox('maratu-chaveiro.png?v=2','Chaveiro MARATU')">
+        <div class="produto-img-wrap quadrado" onclick="abrirLightbox('maratu-chaveiro.png','Chaveiro MARATU')">
           <div class="tag-badge"><div class="tag-novo"><span>NOVO</span></div><span class="badge-origens">ORIGENS</span></div>
-          <img class="img-principal" src="maratu-chaveiro.png?v=2" alt="Chaveiro MARATU" loading="lazy">
+          <img class="img-principal" src="maratu-chaveiro.png" alt="Chaveiro MARATU" loading="lazy">
         </div>
         <div class="produto-info">
           <div><p class="produto-nome">Chaveiro MARATU</p><p class="produto-tipo">Chaveiro · 3D</p></div>

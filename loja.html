@@ -643,16 +643,16 @@
     var PRECOS_BASE = { 'A4': 50, 'A3': 80, 'A2': 120, 'A1': 180 };
 
     var POSTERES = [
-      { id: 'pordosol',  nome: 'Pôr do Sol',        img: 'poster-pordosol.png',  mockup: 'mockup-pordosol.png',  desconto: false },
-      { id: 'atalaia',   nome: 'Sol de Atalaia',     img: 'poster-atalaia.png',   mockup: 'mockup-atalaia.png',   desconto: false },
-      { id: 'destrua',   nome: 'Destrua o Império!', img: 'poster-destrua.png',   mockup: 'mockup-destrua.png',   desconto: false },
-      { id: 'origens',   nome: 'Origens',            img: 'poster-origens.png',   mockup: 'mockup-origens.png',   desconto: false },
-      { id: 'matapua',   nome: 'Matapuã',            img: 'poster-matapua.png',   mockup: 'mockup-matapua.png',   desconto: false },
-      { id: 'linguagem', nome: 'Linguagem',          img: 'poster-linguagem.png', mockup: 'mockup-linguagem.png', desconto: false },
-      { id: 'camadas',   nome: 'Camadas',            img: 'poster-camadas.png',   mockup: 'mockup-camadas.png',   desconto: true },
-      { id: 'areias',    nome: 'Areias',             img: 'poster-areias.png',    mockup: 'mockup-areias.png',    desconto: false },
-      { id: 'luzes',     nome: 'Luzes',              img: 'poster-luzes.png',     mockup: 'mockup-luzes.png',     desconto: true },
-      { id: 'ritmo',     nome: 'Ritmo',              img: 'poster-ritmo.png',     mockup: 'mockup-ritmo.png',     desconto: false }
+      { id: 'pordosol',  nome: 'Pôr do Sol',        img: 'poster-pordosol.png',  mockup: 'mockup-pordosol.png',  desconto: false, colecao: 'manguehaus' },
+      { id: 'atalaia',   nome: 'Sol de Atalaia',     img: 'poster-atalaia.png',   mockup: 'mockup-atalaia.png',   desconto: false, colecao: 'origens' },
+      { id: 'destrua',   nome: 'Destrua o Império!', img: 'poster-destrua.png',   mockup: 'mockup-destrua.png',   desconto: false, colecao: 'origens' },
+      { id: 'origens',   nome: 'Origens',            img: 'poster-origens.png',   mockup: 'mockup-origens.png',   desconto: false, colecao: 'origens' },
+      { id: 'matapua',   nome: 'Matapuã',            img: 'poster-matapua.png',   mockup: 'mockup-matapua.png',   desconto: false, colecao: 'origens' },
+      { id: 'linguagem', nome: 'Linguagem',          img: 'poster-linguagem.png', mockup: 'mockup-linguagem.png', desconto: false, colecao: 'manguehaus' },
+      { id: 'camadas',   nome: 'Camadas',            img: 'poster-camadas.png',   mockup: 'mockup-camadas.png',   desconto: true,  colecao: 'manguehaus' },
+      { id: 'areias',    nome: 'Areias',             img: 'poster-areias.png',    mockup: 'mockup-areias.png',    desconto: false, colecao: 'manguehaus' },
+      { id: 'luzes',     nome: 'Luzes',              img: 'poster-luzes.png',     mockup: 'mockup-luzes.png',     desconto: true,  colecao: 'manguehaus' },
+      { id: 'ritmo',     nome: 'Ritmo',              img: 'poster-ritmo.png',     mockup: 'mockup-ritmo.png',     desconto: false, colecao: 'manguehaus' }
     ];
 
     var state = { filtro: 'todos', usemaratu: false, posteres: false, adesivos: false };
@@ -671,7 +671,7 @@
         var origHtml = p.desconto ? '<span class="produto-preco-riscado">R$' + PRECOS_BASE['A4'] + '</span>' : '';
         card.innerHTML =
           '<div class="produto-img-wrap poster" onclick="abrirLightbox(\'' + p.img + '\',\'' + p.nome.replace(/'/g, '&#39;') + '\')">' +
-          '<div class="tag-badge"><span class="badge-manguehaus">MANGUEHAUS</span></div>' +
+          '<div class="tag-badge"><span class="badge-' + p.colecao + '">' + p.colecao.toUpperCase() + '</span></div>' +
           '<img class="img-principal com-hover" src="' + p.img + '" alt="' + p.nome + '" loading="lazy">' +
           '<img class="img-hover" src="' + p.mockup + '" alt="' + p.nome + ' mockup" loading="lazy">' +
           '</div>' +

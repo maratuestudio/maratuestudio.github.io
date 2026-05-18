@@ -1,40 +1,69 @@
-/* Radio MARATU — lógica do player
-   Playlist Spotify: 1JwBGozDx60NsCv4e4oalJ */
-(function() {
-  const radio = document.getElementById('maratu-radio');
-  const body = document.getElementById('mr-body');
-  const panel = document.getElementById('mr-panel');
-  const iframeWrap = document.getElementById('mr-iframe-wrap');
-  const display = document.getElementById('mr-display');
-  const bottomLabel = document.getElementById('mr-bottom-label');
+/* Radio MARATU — dropdown header + chiado via Web Audio API */
+(function () {
+  var PLAYLIST = '1JwBGozDx60NsCv4e4oalJ';
+  var btn = document.getElementById('mr-btn');
+  var drop = document.getElementById('mr-drop');
+  var inner = document.getElementById('mr-drop-inner');
+  if (!btn || !drop || !inner) return;
 
-  const PLAYLIST_ID = '1JwBGozDx60NsCv4e4oalJ';
-  const embedHTML = `<iframe src="https://open.spotify.com/embed/playlist/${PLAYLIST_ID}?utm_source=generator&theme=0" height="152" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>`;
+  var on = false;
 
-  let on = false;
+  function playStatic() {
+    try {
+      var ctx = new (window.AudioContext || window.webkitAudioContext)();
+      var bufLen = ctx.sampleRate * 0.45;
+      var buf = ctx.createBuffer(1, bufLen, ctx.sampleRate);
+      var data = buf.getChannelData(0);
+      for (var i = 0; i < bufLen; i++) data[i] = (Math.random() * 2 - 1);
+
+      var src = ctx.createBufferSource();
+      src.buffer = buf;
+
+      var filter = ctx.createBiquadFilter();
+      filter.type = 'bandpass';
+      filter.frequency.setValueAtTime(800, ctx.currentTime);
+      filter.frequency.linearRampToValueAtTime(3200, ctx.currentTime + 0.2);
+      filter.Q.value = 0.8;
+
+      var gain = ctx.createGain();
+      gain.gain.setValueAtTime(0.35, ctx.currentTime);
+      gain.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.45);
+
+      src.connect(filter);
+      filter.connect(gain);
+      gain.connect(ctx.destination);
+      src.start();
+      src.stop(ctx.currentTime + 0.45);
+    } catch (e) {}
+  }
 
   function toggle() {
     on = !on;
+    playStatic();
+    btn.classList.toggle('on', on);
+    btn.setAttribute('aria-expanded', String(on));
     if (on) {
-      radio.classList.add('on');
-      display.textContent = 'NO AR';
-      bottomLabel.textContent = 'TOCANDO';
-      iframeWrap.innerHTML = embedHTML;
-      panel.classList.add('open');
+      inner.innerHTML = '<iframe src="https://open.spotify.com/embed/playlist/' + PLAYLIST + '?utm_source=generator&theme=0" height="152" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>';
+      drop.classList.add('open');
     } else {
-      radio.classList.remove('on');
-      display.textContent = '88.5 FM';
-      bottomLabel.textContent = 'DESLIGADO';
-      panel.classList.remove('open');
-      setTimeout(() => { if (!on) iframeWrap.innerHTML = ''; }, 400);
+      drop.classList.remove('open');
+      setTimeout(function () { if (!on) inner.innerHTML = ''; }, 380);
     }
   }
 
-  body.addEventListener('click', toggle);
-  body.addEventListener('keydown', e => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      toggle();
+  btn.addEventListener('click', toggle);
+  btn.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); }
+  });
+
+  document.addEventListener('click', function (e) {
+    if (on && !btn.contains(e.target) && !drop.contains(e.target)) {
+      on = false;
+      playStatic();
+      btn.classList.remove('on');
+      btn.setAttribute('aria-expanded', 'false');
+      drop.classList.remove('open');
+      setTimeout(function () { inner.innerHTML = ''; }, 380);
     }
   });
 })();

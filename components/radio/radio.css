@@ -1,53 +1,44 @@
 /* Radio MARATU — botão no header + painel dropdown */
 
 .btn-radio {
-  display: inline-flex; align-items: center; gap: 10px;
-  padding: 8px 14px 8px 18px;
-  background: var(--preto); color: var(--areia);
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 8px 16px;
+  background: transparent;
+  color: var(--areia);
   font-family: var(--clother); font-weight: 900;
   font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;
-  border: 2px solid var(--areia);
+  border: 1.5px solid rgba(240,236,228,0.5);
   border-radius: 999px;
   cursor: pointer;
-  box-shadow: 3px 3px 0 0 var(--areia);
   transition: all 0.15s ease;
   line-height: 1;
 }
 .btn-radio:hover {
-  box-shadow: 1px 1px 0 0 var(--areia);
-  transform: translate(2px, 2px);
-}
-.btn-radio:active {
-  box-shadow: 0 0 0 0 var(--areia);
-  transform: translate(3px, 3px);
+  border-color: var(--areia);
+  background: rgba(240,236,228,0.08);
 }
 .btn-radio.on {
   background: var(--laranja);
   border-color: var(--laranja);
   color: var(--areia);
-  box-shadow: 3px 3px 0 0 var(--preto);
-}
-.btn-radio.on:hover {
-  box-shadow: 1px 1px 0 0 var(--preto);
 }
 
 .btn-radio-dot {
-  width: 7px; height: 7px;
+  width: 6px; height: 6px;
   border-radius: 50%;
   background: var(--areia);
-  opacity: 0.5;
+  opacity: 0.45;
   flex-shrink: 0;
-  transition: background 0.2s, opacity 0.2s;
+  transition: opacity 0.2s;
 }
 .btn-radio.on .btn-radio-dot {
-  background: var(--areia);
   opacity: 1;
   box-shadow: 0 0 5px var(--areia);
   animation: radio-pulse 1.2s ease-in-out infinite;
 }
 @keyframes radio-pulse {
   0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
+  50%       { opacity: 0.3; }
 }
 
 /* painel dropdown */
@@ -57,8 +48,8 @@
   right: var(--margem, 20px);
   z-index: 49;
   width: 320px;
-  background: var(--dourado);
-  border: 2.5px solid var(--preto);
+  background: var(--areia);
+  border: 2px solid var(--preto);
   border-radius: 10px;
   box-shadow: 4px 4px 0 var(--preto);
   overflow: hidden;
@@ -83,7 +74,7 @@
 }
 
 @media (max-width: 768px) {
-  .btn-radio { padding: 7px 12px 7px 14px; font-size: 11px; }
+  .btn-radio { padding: 6px 12px; font-size: 11px; }
   .mr-drop {
     right: 15px;
     width: calc(100vw - 30px);

@@ -351,39 +351,6 @@
     .lightbox-close { position: absolute; top: 20px; right: 20px; background: none; border: 1.5px solid var(--areia); color: var(--areia); font-family: 'Clother', sans-serif; font-weight: 900; font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase; padding: 10px 20px; cursor: pointer; border-radius: 999px; box-shadow: 2px 2px 0 0 var(--areia); transition: all 0.15s ease; }
     .lightbox-close:hover { box-shadow: 1px 1px 0 0 var(--areia); transform: translate(1px, 1px); }
     .lightbox-nome { position: absolute; top: 18px; left: 18px; font-family: 'Clother', sans-serif; font-weight: 900; font-size: 0.8rem; color: rgba(240,236,228,0.5); letter-spacing: 0.12em; text-transform: uppercase; }
-
-    /* SLIDESHOW CORES — Vaso Pindá */
-    .vaso-slideshow {
-      position: relative; overflow: hidden;
-      border-radius: 4px; background: #1a1a18;
-      aspect-ratio: 1 / 1; margin: 0;
-      outline: none;
-    }
-    .vaso-slide {
-      position: absolute; inset: 0; width: 100%; height: 100%;
-      object-fit: cover; display: block;
-      opacity: 0; transition: opacity 400ms ease;
-    }
-    @media (prefers-reduced-motion: reduce) { .vaso-slide { transition: none; } }
-    .vaso-slide.ativo { opacity: 1; }
-    .vaso-dots {
-      list-style: none; display: flex; gap: 0;
-      justify-content: center; margin: 4px 0 8px; padding: 0;
-    }
-    .vaso-dot {
-      width: 40px; height: 40px; border-radius: 50%;
-      background: transparent; border: none;
-      cursor: pointer; padding: 0;
-      display: flex; align-items: center; justify-content: center;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .vaso-dot::before {
-      content: ''; width: 12px; height: 12px; border-radius: 50%;
-      background: var(--dot-color); border: 1px solid #0D0D0B;
-      transition: transform 0.15s ease, border-width 0.15s ease;
-      display: block;
-    }
-    .vaso-dot.ativo::before { transform: scale(1.2); border-width: 2.5px; }
   </style>
 </head>
 <body>
@@ -799,58 +766,8 @@
       lastScroll = current <= 0 ? 0 : current;
     });
 
-
-    function initVasoSlideshow() {
-      var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      var el = document.getElementById('vaso-pinda-slide');
-      if (!el) return;
-      var slides = Array.from(el.querySelectorAll('.vaso-slide'));
-      var dots   = Array.from(document.querySelectorAll('.vaso-dot'));
-      var current = 0, timer = null, resumeTimer = null;
-
-      function ir(idx) {
-        slides[current].classList.remove('ativo');
-        dots[current].classList.remove('ativo');
-        current = idx;
-        slides[current].classList.add('ativo');
-        dots[current].classList.add('ativo');
-      }
-
-      function proximo() { ir((current + 1) % slides.length); }
-      function pausar()  { clearInterval(timer); timer = null; }
-      function iniciar() {
-        if (reducedMotion) return;
-        clearInterval(timer);
-        timer = setInterval(proximo, 2500);
-      }
-      function agendarRetomada(ms) {
-        clearTimeout(resumeTimer);
-        resumeTimer = setTimeout(iniciar, ms);
-      }
-
-      dots.forEach(function(btn) {
-        btn.addEventListener('click', function() {
-          pausar();
-          ir(parseInt(btn.dataset.idx, 10));
-          agendarRetomada(5000);
-        });
-      });
-
-      el.addEventListener('mouseenter', pausar);
-      el.addEventListener('mouseleave', iniciar);
-      el.addEventListener('touchstart', pausar, { passive: true });
-      el.addEventListener('touchend', function() { agendarRetomada(2500); });
-      el.addEventListener('keydown', function(e) {
-        if (e.key === 'ArrowRight') { pausar(); ir((current + 1) % slides.length); agendarRetomada(5000); }
-        if (e.key === 'ArrowLeft')  { pausar(); ir((current - 1 + slides.length) % slides.length); agendarRetomada(5000); }
-      });
-
-      if (!reducedMotion) iniciar();
-    }
-
     buildPosters();
     applyVisibility();
-    initVasoSlideshow();
   </script>
 </body>
 </html>

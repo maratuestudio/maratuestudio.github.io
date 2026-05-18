@@ -351,6 +351,32 @@
     .lightbox-close { position: absolute; top: 20px; right: 20px; background: none; border: 1.5px solid var(--areia); color: var(--areia); font-family: 'Clother', sans-serif; font-weight: 900; font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase; padding: 10px 20px; cursor: pointer; border-radius: 999px; box-shadow: 2px 2px 0 0 var(--areia); transition: all 0.15s ease; }
     .lightbox-close:hover { box-shadow: 1px 1px 0 0 var(--areia); transform: translate(1px, 1px); }
     .lightbox-nome { position: absolute; top: 18px; left: 18px; font-family: 'Clother', sans-serif; font-weight: 900; font-size: 0.8rem; color: rgba(240,236,228,0.5); letter-spacing: 0.12em; text-transform: uppercase; }
+
+    /* HIERARQUIA MARCA / SUB-FAIXA */
+    .marca-bloco { border-bottom: 0.5px solid rgba(240,236,228,0.1); }
+    .marca-titulo {
+      font-family: 'Jack', sans-serif;
+      font-size: clamp(2.8rem, 7vw, 6rem);
+      color: var(--areia); line-height: 1;
+      letter-spacing: -0.02em; text-transform: uppercase;
+      padding: 48px var(--margem) 28px;
+      border-bottom: 0.5px solid rgba(240,236,228,0.1);
+    }
+    .sub-faixa {
+      padding: 32px var(--margem) 40px;
+      border-bottom: 0.5px solid rgba(240,236,228,0.07);
+    }
+    .sub-faixa:last-child { border-bottom: none; }
+    .sub-faixa-header {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px; gap: 16px; flex-wrap: wrap;
+    }
+    .sub-faixa-nome {
+      font-family: 'Clother', sans-serif; font-weight: 900;
+      font-size: 12px; color: rgba(240,236,228,0.4);
+      text-transform: uppercase; letter-spacing: 0.16em;
+    }
   </style>
 </head>
 <body>
@@ -371,18 +397,18 @@
     </div>
   </div>
 
-  <!-- FAIXA 01 — USE MARATU -->
-  <section class="faixa" id="faixa-usemaratu">
-    <div class="faixa-header">
-      <div>
-        <p class="faixa-tag">— USE MARATU</p>
-        <h2 class="faixa-nome">USE MARATU</h2>
-      </div>
-      <button class="faixa-ver-todos" id="btn-ver-usemaratu" onclick="verTodos('usemaratu')">VER TODOS (6) ↗</button>
-    </div>
-    <div class="produtos-grid" id="grid-usemaratu">
 
-      <div class="produto-card" data-tipo="chaveiro" data-faixa="usemaratu">
+  <!-- USE MARATU -->
+  <section class="marca-bloco" id="marca-usemaratu">
+    <h2 class="marca-titulo">USE MARATU</h2>
+
+    <div class="sub-faixa" id="faixa-chaveiros">
+      <div class="sub-faixa-header">
+        <h3 class="sub-faixa-nome">CHAVEIROS</h3>
+        <button class="faixa-ver-todos" id="btn-ver-chaveiros" onclick="verTodos('chaveiros')">VER TODOS (5) ↗</button>
+      </div>
+      <div class="produtos-grid" id="grid-chaveiros">
+      <div class="produto-card" data-tipo="chaveiro" data-faixa="chaveiros">
         <div class="produto-img-wrap quadrado" onclick="abrirLightbox('carranca-chaveiro.png','Carranca — Chaveiro')">
           <div class="tag-badge"><div class="tag-novo"><span>NOVO</span></div><span class="badge-origens">ORIGENS</span></div>
           <img class="img-principal" src="carranca-chaveiro.png" alt="Carranca Chaveiro" loading="lazy">
@@ -393,8 +419,7 @@
         </div>
         <a href="https://wa.me/5579981512978?text=Ol%C3%A1!%20Tenho%20interesse%20no%20produto%3A%20Chaveiro%20Carranca%20-%20R%24%2020" target="_blank" rel="noopener" class="btn-encomendar">Encomendar ↗</a>
       </div>
-
-      <div class="produto-card" data-tipo="chaveiro" data-faixa="usemaratu">
+      <div class="produto-card" data-tipo="chaveiro" data-faixa="chaveiros">
         <div class="produto-img-wrap quadrado" onclick="abrirLightbox('arcos-chaveiro.png','Arcos da Orla — Chaveiro')">
           <div class="tag-badge"><div class="tag-novo"><span>NOVO</span></div><span class="badge-origens">ORIGENS</span></div>
           <img class="img-principal" src="arcos-chaveiro.png" alt="Arcos da Orla Chaveiro" loading="lazy">
@@ -405,8 +430,7 @@
         </div>
         <a href="https://wa.me/5579981512978?text=Ol%C3%A1!%20Tenho%20interesse%20no%20produto%3A%20Chaveiro%20Arcos%20da%20Orla%20-%20R%24%2020" target="_blank" rel="noopener" class="btn-encomendar">Encomendar ↗</a>
       </div>
-
-      <div class="produto-card" data-tipo="chaveiro" data-faixa="usemaratu">
+      <div class="produto-card" data-tipo="chaveiro" data-faixa="chaveiros">
         <div class="produto-img-wrap quadrado" onclick="abrirLightbox('relogio-chaveiro.png','Relógio do Mercado — Chaveiro')">
           <div class="tag-badge"><div class="tag-novo"><span>NOVO</span></div><span class="badge-origens">ORIGENS</span></div>
           <img class="img-principal" src="relogio-chaveiro.png" alt="Relógio do Mercado Chaveiro" loading="lazy">
@@ -417,8 +441,7 @@
         </div>
         <a href="https://wa.me/5579981512978?text=Ol%C3%A1!%20Tenho%20interesse%20no%20produto%3A%20Chaveiro%20Rel%C3%B3gio%20do%20Mercado%20-%20R%24%2020" target="_blank" rel="noopener" class="btn-encomendar">Encomendar ↗</a>
       </div>
-
-      <div class="produto-card" data-tipo="chaveiro" data-faixa="usemaratu">
+      <div class="produto-card" data-tipo="chaveiro" data-faixa="chaveiros">
         <div class="produto-img-wrap quadrado" onclick="abrirLightbox('kit-aracaju-chaveiro.png','Kit Aracaju — Coleção Completa')">
           <div class="tag-badge"><div class="tag-novo"><span>NOVO</span></div><span class="badge">Kit</span><span class="badge-origens">ORIGENS</span></div>
           <img class="img-principal" src="kit-aracaju-chaveiro.png" alt="Kit Aracaju Chaveiro" loading="lazy">
@@ -429,22 +452,7 @@
         </div>
         <a href="https://wa.me/5579981512978?text=Ol%C3%A1!%20Tenho%20interesse%20no%20produto%3A%20Kit%20Aracaju%20(4%20chaveiros)%20-%20R%24%2068" target="_blank" rel="noopener" class="btn-encomendar">Encomendar ↗</a>
       </div>
-
-      <!-- extra: oculto por padrão -->
-      <div class="produto-card" data-tipo="adesivo" data-faixa="usemaratu" data-extra="1">
-        <div class="produto-img-wrap quadrado" onclick="abrirLightbox('adesivos-origens.png','Coleção de Adesivos Origens')">
-          <div class="tag-badge"><div class="tag-novo"><span>NOVO</span></div><span class="badge-origens">ORIGENS</span></div>
-          <img class="img-principal" src="adesivos-origens.png" alt="Coleção de Adesivos Origens" loading="lazy" style="object-fit:contain;padding:8px;">
-        </div>
-        <div class="produto-info">
-          <div><p class="produto-nome">Origens — 1&ordf; Edi&ccedil;&atilde;o</p><p class="produto-tipo">Adesivos · 12 un</p></div>
-          <div class="produto-preco-wrap"><span class="produto-preco-riscado">R$25</span><p class="produto-preco">R$18</p></div>
-        </div>
-        <a href="https://wa.me/5579981512978?text=Ol%C3%A1!%20Tenho%20interesse%20no%20produto%3A%20Cole%C3%A7%C3%A3o%20de%20Adesivos%20Origens%201%C2%AA%20Edi%C3%A7%C3%A3o%20-%20R%24%2018" target="_blank" rel="noopener" class="btn-encomendar">Encomendar ↗</a>
-      </div>
-
-      <!-- extra: oculto por padrão -->
-      <div class="produto-card" data-tipo="chaveiro" data-faixa="usemaratu" data-extra="1">
+      <div class="produto-card" data-tipo="chaveiro" data-faixa="chaveiros" data-extra="1">
         <div class="produto-img-wrap quadrado" onclick="abrirLightbox('maratu-chaveiro-tag.jpg','Chaveiro MARATU')">
           <div class="tag-badge"><div class="tag-novo"><span>NOVO</span></div><span class="badge-origens">ORIGENS</span></div>
           <img class="img-principal" src="maratu-chaveiro-tag.jpg" alt="Chaveiro MARATU" loading="lazy">
@@ -455,34 +463,46 @@
         </div>
         <a href="https://wa.me/5579981512978?text=Ol%C3%A1!%20Tenho%20interesse%20no%20produto%3A%20Chaveiro%20MARATU%20-%20R%24%2020" target="_blank" rel="noopener" class="btn-encomendar">Encomendar ↗</a>
       </div>
+      </div>
+    </div>
 
+    <div class="sub-faixa" id="faixa-adesivos">
+      <div class="sub-faixa-header">
+        <h3 class="sub-faixa-nome">ADESIVOS</h3>
+      </div>
+      <div class="produtos-grid" id="grid-adesivos">
+      <div class="produto-card" data-tipo="adesivo" data-faixa="adesivos">
+        <div class="produto-img-wrap quadrado" onclick="abrirLightbox('adesivos-origens.png','Coleção de Adesivos Origens')">
+          <div class="tag-badge"><div class="tag-novo"><span>NOVO</span></div><span class="badge-origens">ORIGENS</span></div>
+          <img class="img-principal" src="adesivos-origens.png" alt="Coleção de Adesivos Origens" loading="lazy" style="object-fit:contain;padding:8px;">
+        </div>
+        <div class="produto-info">
+          <div><p class="produto-nome">Origens — 1&ordf; Edi&ccedil;&atilde;o</p><p class="produto-tipo">Adesivos · 12 un</p></div>
+          <div class="produto-preco-wrap"><span class="produto-preco-riscado">R$25</span><p class="produto-preco">R$18</p></div>
+        </div>
+        <a href="https://wa.me/5579981512978?text=Ol%C3%A1!%20Tenho%20interesse%20no%20produto%3A%20Cole%C3%A7%C3%A3o%20de%20Adesivos%20Origens%201%C2%AA%20Edi%C3%A7%C3%A3o%20-%20R%24%2018" target="_blank" rel="noopener" class="btn-encomendar">Encomendar ↗</a>
+      </div>
+      </div>
     </div>
   </section>
 
-  <!-- FAIXA 02 — PÔSTERES -->
-  <section class="faixa" id="faixa-posteres">
-    <div class="faixa-header">
-      <div>
-        <p class="faixa-tag">— CASA MARATU</p>
-        <h2 class="faixa-nome">PÔSTERES</h2>
+  <!-- CASA MARATU -->
+  <section class="marca-bloco" id="marca-casamaratu">
+    <h2 class="marca-titulo">CASA MARATU</h2>
+
+    <div class="sub-faixa" id="faixa-posteres">
+      <div class="sub-faixa-header">
+        <h3 class="sub-faixa-nome">PÔSTERES</h3>
+        <button class="faixa-ver-todos" id="btn-ver-posteres" onclick="verTodos('posteres')">VER TODOS (10) ↗</button>
       </div>
-      <button class="faixa-ver-todos" id="btn-ver-posteres" onclick="verTodos('posteres')">VER TODOS (10) ↗</button>
+      <div class="produtos-grid" id="grid-posteres"></div>
     </div>
-    <div class="produtos-grid" id="grid-posteres"></div>
-  </section>
 
-
-
-
-  <!-- FAIXA 03 — ESSENCIAIS -->
-  <section class="faixa" id="faixa-essenciais">
-    <div class="faixa-header">
-      <div>
-        <p class="faixa-tag">— CASA MARATU</p>
-        <h2 class="faixa-nome">DECOR</h2>
+    <div class="sub-faixa" id="faixa-essenciais">
+      <div class="sub-faixa-header">
+        <h3 class="sub-faixa-nome">DECOR</h3>
       </div>
-    </div>
-    <div class="produtos-grid" id="grid-essenciais">
+      <div class="produtos-grid" id="grid-essenciais">
       <div class="produto-card" data-tipo="essenciais" data-faixa="essenciais">
         <div class="produto-img-wrap quadrado" onclick="abrirLightbox('kit-cobogo-praia.png','Kit Cobogó Praia')">
           <div class="tag-badge"><div class="tag-novo"><span>NOVO</span></div><span class="badge">Kit</span><span class="badge-manguehaus">MANGUEHAUS</span></div>
@@ -572,6 +592,7 @@
         </div>
         <a href="https://wa.me/5579981512978?text=Ol%C3%A1!%20Tenho%20interesse%20no%20produto%3A%20Vaso%20Pind%C3%A1%20-%20R%24%2060" target="_blank" rel="noopener" class="btn-encomendar">Encomendar &#x2197;</a>
       </div>
+          </div>
     </div>
   </section>
 
@@ -655,7 +676,7 @@
       { id: 'ritmo',     nome: 'Ritmo',              img: 'poster-ritmo.png',     mockup: 'mockup-ritmo.png',     desconto: false, colecao: 'manguehaus' }
     ];
 
-    var state = { filtro: 'todos', usemaratu: false, posteres: false, adesivos: false };
+    var state = { filtro: 'todos', chaveiros: false, posteres: false };
 
     function calcPreco(base, desconto) { return desconto ? Math.round(base * 0.8) : base; }
 
@@ -720,16 +741,23 @@
         var bloqueadoPorExtra = !filtrando && isExtra && !expanded;
         c.style.display = (tipoOk && !bloqueadoPorExtra) ? '' : 'none';
       });
-      ['usemaratu', 'posteres', 'essenciais'].forEach(function(faixa) {
-        var grid = document.getElementById('grid-' + faixa);
-        var cards = Array.from(grid.querySelectorAll('.produto-card'));
+      ['chaveiros', 'adesivos', 'posteres', 'essenciais'].forEach(function(faixa) {
+        var subfaixa = document.getElementById('faixa-' + faixa);
+        if (!subfaixa) return;
+        var cards = Array.from(subfaixa.querySelectorAll('.produto-card'));
         var hasVisible = cards.some(function(c) { return c.style.display !== 'none'; });
-        document.getElementById('faixa-' + faixa).style.display = hasVisible ? '' : 'none';
+        subfaixa.style.display = hasVisible ? '' : 'none';
         var btn = document.getElementById('btn-ver-' + faixa);
         if (btn) {
           var hasExtra = !filtrando && !state[faixa] && cards.some(function(c) { return c.dataset.extra === '1'; });
           btn.style.display = hasExtra ? '' : 'none';
         }
+      });
+      ['usemaratu', 'casamaratu'].forEach(function(marca) {
+        var bloco = document.getElementById('marca-' + marca);
+        if (!bloco) return;
+        var subs = Array.from(bloco.querySelectorAll('.sub-faixa'));
+        bloco.style.display = subs.some(function(s) { return s.style.display !== 'none'; }) ? '' : 'none';
       });
       document.querySelectorAll('.filtro-btn').forEach(function(b) {
         b.classList.toggle('active', b.dataset.filtro === f);

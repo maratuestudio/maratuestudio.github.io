@@ -142,6 +142,9 @@
       box-shadow: 0 0 0 0 #0D0D0B;
       transform: translate(3px, 3px);
     }
+    .header__actions {
+      display: flex; align-items: center; gap: 8px; justify-content: flex-end;
+    }
     .botao-loja-divisor {
       width: 1.5px; height: 14px;
       background: #0D0D0B;
@@ -644,11 +647,12 @@
       <a href="index.html#origem">origem</a>
       <a href="index.html#contato">contato</a>
     </nav>
-      <!-- Radio MARATU -->
-  <button class="btn-radio" id="mr-btn" aria-label="Radio MARATU" aria-expanded="false">
-    <span>RÁDIO</span><span class="btn-radio-dot"></span>
-  </button>
-    <a href="loja.html" class="btn-loja"><span>LOJA</span><span class="botao-loja-divisor"></span><span class="botao-loja-seta">↗</span></a>
+    <div class="header__actions">
+      <button class="btn-radio" id="mr-btn" aria-label="Radio MARATU" aria-expanded="false">
+        <span>RÁDIO</span><span class="btn-radio-dot"></span>
+      </button>
+      <a href="loja.html" class="btn-loja"><span>LOJA</span><span class="botao-loja-divisor"></span><span class="botao-loja-seta">↗</span></a>
+    </div>
     <button class="header__menu-toggle" aria-label="abrir menu" aria-expanded="false">MENU</button>
   </header>
 

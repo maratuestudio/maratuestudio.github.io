@@ -12,22 +12,42 @@
   function playStatic() {
     try {
       var ctx = new (window.AudioContext || window.webkitAudioContext)();
-      var len = ctx.sampleRate * 0.45;
-      var buf = ctx.createBuffer(1, len, ctx.sampleRate);
-      var d   = buf.getChannelData(0);
-      for (var i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
-      var src = ctx.createBufferSource();
-      src.buffer = buf;
-      var f = ctx.createBiquadFilter();
-      f.type = 'bandpass';
-      f.frequency.setValueAtTime(800, ctx.currentTime);
-      f.frequency.linearRampToValueAtTime(3200, ctx.currentTime + 0.2);
-      f.Q.value = 0.8;
-      var g = ctx.createGain();
-      g.gain.setValueAtTime(0.35, ctx.currentTime);
-      g.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.45);
-      src.connect(f); f.connect(g); g.connect(ctx.destination);
-      src.start(); src.stop(ctx.currentTime + 0.45);
+      var dur = 0.9;
+      var sr  = ctx.sampleRate;
+
+      /* ruído rosa suave — base do chiado */
+      var buf = ctx.createBuffer(1, sr * dur, sr);
+      var data = buf.getChannelData(0);
+      var b0=0,b1=0,b2=0,b3=0,b4=0,b5=0,b6=0;
+      for (var i = 0; i < data.length; i++) {
+        var w = Math.random() * 2 - 1;
+        b0=0.99886*b0+w*0.0555179; b1=0.99332*b1+w*0.0750759;
+        b2=0.96900*b2+w*0.1538520; b3=0.86650*b3+w*0.3104856;
+        b4=0.55000*b4+w*0.5329522; b5=-0.7616*b5-w*0.0168980;
+        data[i] = (b0+b1+b2+b3+b4+b5+b6+w*0.5362) * 0.05;
+        b6 = w * 0.115926;
+      }
+      var noise = ctx.createBufferSource();
+      noise.buffer = buf;
+
+      /* filtro que varre frequências — efeito sintonizando */
+      var filt = ctx.createBiquadFilter();
+      filt.type = 'bandpass';
+      filt.Q.value = 1.2;
+      filt.frequency.setValueAtTime(400, ctx.currentTime);
+      filt.frequency.linearRampToValueAtTime(1800, ctx.currentTime + 0.35);
+      filt.frequency.linearRampToValueAtTime(900,  ctx.currentTime + 0.6);
+      filt.frequency.linearRampToValueAtTime(1200, ctx.currentTime + 0.9);
+
+      /* envelope suave: entra e sai devagar */
+      var gain = ctx.createGain();
+      gain.gain.setValueAtTime(0, ctx.currentTime);
+      gain.gain.linearRampToValueAtTime(0.18, ctx.currentTime + 0.1);
+      gain.gain.linearRampToValueAtTime(0.22, ctx.currentTime + 0.45);
+      gain.gain.linearRampToValueAtTime(0,    ctx.currentTime + dur);
+
+      noise.connect(filt); filt.connect(gain); gain.connect(ctx.destination);
+      noise.start(); noise.stop(ctx.currentTime + dur);
     } catch(e) {}
   }
 

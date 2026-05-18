@@ -5,7 +5,7 @@
   flex-direction: column;
   align-items: stretch;
   background: rgba(240,236,228,0.12);
-  border: 1.5px solid rgba(240,236,228,0.35);
+  border: 1.5px solid var(--laranja);
   border-radius: 999px;
   box-shadow: 3px 3px 0 rgba(13,13,11,0.6);
   cursor: pointer;
@@ -19,7 +19,7 @@
 }
 .btn-radio:hover {
   background: rgba(240,236,228,0.2);
-  border-color: rgba(240,236,228,0.6);
+  border-color: var(--laranja);
   transform: translate(-1px, -1px);
   box-shadow: 4px 4px 0 rgba(13,13,11,0.6);
 }

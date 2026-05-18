@@ -145,3 +145,11 @@
     max-width: 320px;
   }
 }
+
+/* agrupa botões no grid do header */
+.header__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: flex-end;
+}

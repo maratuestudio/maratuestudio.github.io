@@ -627,7 +627,7 @@
     }
   </style>
   <link rel="stylesheet" href="aratu-mascote.css?v=7">
-  <link rel="stylesheet" href="components/radio/radio.css?v=2">
+  <link rel="stylesheet" href="components/radio/radio.css?v=3">
 </head>
 <body>
 
@@ -649,7 +649,19 @@
     </nav>
     <div class="header__actions">
       <button class="btn-radio" id="mr-btn" aria-label="Radio MARATU" aria-expanded="false">
-        <span>RÁDIO</span><span class="btn-radio-dot"></span>
+        <div class="mr-btn-top">
+          <span class="mr-btn-brand">MARATU</span>
+          <span class="mr-btn-led"></span>
+        </div>
+        <div class="mr-btn-main">
+          <div class="mr-btn-speaker">
+            <span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span>
+          </div>
+          <div class="mr-btn-display" id="mr-display">88.5
+FM</div>
+        </div>
       </button>
       <a href="loja.html" class="btn-loja"><span>LOJA</span><span class="botao-loja-divisor"></span><span class="botao-loja-seta">↗</span></a>
     </div>

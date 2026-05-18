@@ -377,6 +377,21 @@
       font-size: 12px; color: rgba(240,236,228,0.4);
       text-transform: uppercase; letter-spacing: 0.16em;
     }
+
+    /* VASO PINDÁ SLIDESHOW */
+    .vaso-slideshow {
+      position: relative; overflow: hidden;
+      border-radius: 4px; background: #1a1a18;
+      aspect-ratio: 1 / 1; margin: 0 0 8px;
+      outline: none; cursor: grab;
+    }
+    .vaso-slide {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      object-fit: cover; display: block;
+      opacity: 0; transition: opacity 400ms ease;
+    }
+    @media (prefers-reduced-motion: reduce) { .vaso-slide { transition: none; } }
+    .vaso-slide.ativo { opacity: 1; }
   </style>
 </head>
 <body>
@@ -504,9 +519,9 @@
       </div>
       <div class="produtos-grid" id="grid-essenciais">
       <div class="produto-card" data-tipo="essenciais" data-faixa="essenciais">
-        <div class="produto-img-wrap quadrado" onclick="abrirLightbox('kit-cobogo-praia.png','Kit Cobogó Praia')">
+        <div class="produto-img-wrap quadrado" onclick="abrirLightbox('kit-cobogo-praia.png?v=2','Kit Cobogó Praia')">
           <div class="tag-badge"><div class="tag-novo"><span>NOVO</span></div><span class="badge">Kit</span><span class="badge-manguehaus">MANGUEHAUS</span></div>
-          <img class="img-principal" src="kit-cobogo-praia.png" alt="Kit Cobogó Praia com 4 peças" loading="lazy">
+          <img class="img-principal" src="kit-cobogo-praia.png?v=2" alt="Kit Cobogó Praia com 4 peças" loading="lazy">
         </div>
         <div class="produto-info">
           <div>
@@ -518,9 +533,9 @@
         <a href="https://wa.me/5579981512978?text=Ol%C3%A1%21%20Tenho%20interesse%20no%20produto%3A%20Kit%20Cobog%C3%B3%20Praia%20-%20R%24%20180" target="_blank" rel="noopener" class="btn-encomendar">Encomendar &#x2197;</a>
       </div>
       <div class="produto-card" data-tipo="essenciais" data-faixa="essenciais">
-        <div class="produto-img-wrap quadrado" onclick="abrirLightbox('cobogo-por-do-sol.png','Cobogó Pôr do Sol')">
+        <div class="produto-img-wrap quadrado" onclick="abrirLightbox('cobogo-por-do-sol.png?v=2','Cobogó Pôr do Sol')">
           <div class="tag-badge"><div class="tag-novo"><span>NOVO</span></div><span class="badge-manguehaus">MANGUEHAUS</span></div>
-          <img class="img-principal" src="cobogo-por-do-sol.png" alt="Cobogó Pôr do Sol em vermelho fosco" loading="lazy">
+          <img class="img-principal" src="cobogo-por-do-sol.png?v=2" alt="Cobogó Pôr do Sol em vermelho fosco" loading="lazy">
         </div>
         <div class="produto-info">
           <div>
@@ -533,9 +548,9 @@
         <a href="https://wa.me/5579981512978?text=Ol%C3%A1%21%20Tenho%20interesse%20no%20produto%3A%20Cobog%C3%B3%20P%C3%B4r%20do%20Sol%20-%20R%24%2050" target="_blank" rel="noopener" class="btn-encomendar">Encomendar &#x2197;</a>
       </div>
       <div class="produto-card" data-tipo="essenciais" data-faixa="essenciais">
-        <div class="produto-img-wrap quadrado" onclick="abrirLightbox('cobogo-chico.png','Cobogó Chico')">
+        <div class="produto-img-wrap quadrado" onclick="abrirLightbox('cobogo-chico.png?v=2','Cobogó Chico')">
           <div class="tag-badge"><div class="tag-novo"><span>NOVO</span></div><span class="badge-manguehaus">MANGUEHAUS</span></div>
-          <img class="img-principal" src="cobogo-chico.png" alt="Cobogó Chico em azul fosco" loading="lazy">
+          <img class="img-principal" src="cobogo-chico.png?v=2" alt="Cobogó Chico em azul fosco" loading="lazy">
         </div>
         <div class="produto-info">
           <div>
@@ -548,9 +563,9 @@
         <a href="https://wa.me/5579981512978?text=Ol%C3%A1%21%20Tenho%20interesse%20no%20produto%3A%20Cobog%C3%B3%20Chico%20-%20R%24%2050" target="_blank" rel="noopener" class="btn-encomendar">Encomendar &#x2197;</a>
       </div>
       <div class="produto-card" data-tipo="essenciais" data-faixa="essenciais">
-        <div class="produto-img-wrap quadrado" onclick="abrirLightbox('cobogo-arcos.png','Cobogó Arcos')">
+        <div class="produto-img-wrap quadrado" onclick="abrirLightbox('cobogo-arcos.png?v=2','Cobogó Arcos')">
           <div class="tag-badge"><div class="tag-novo"><span>NOVO</span></div><span class="badge-manguehaus">MANGUEHAUS</span></div>
-          <img class="img-principal" src="cobogo-arcos.png" alt="Cobogó Arcos em amarelo fosco" loading="lazy">
+          <img class="img-principal" src="cobogo-arcos.png?v=2" alt="Cobogó Arcos em amarelo fosco" loading="lazy">
         </div>
         <div class="produto-info">
           <div>
@@ -578,10 +593,12 @@
         <a href="https://wa.me/5579981512978?text=Ol%C3%A1%21%20Tenho%20interesse%20no%20produto%3A%20Cobog%C3%B3%20Ondas%20-%20R%24%2050" target="_blank" rel="noopener" class="btn-encomendar">Encomendar &#x2197;</a>
       </div>
       <div class="produto-card" data-tipo="essenciais" data-faixa="essenciais">
-        <div class="produto-img-wrap quadrado" onclick="abrirLightbox('vaso-pinda-cinza.png?v=2','Vaso Pindá')">
+        <figure class="vaso-slideshow" id="vaso-pinda-slide" tabindex="0" aria-label="Vaso Pindá — deslize para ver cores">
           <div class="tag-badge"><div class="tag-novo"><span>NOVO</span></div><span class="badge-essenciais">DECOR</span></div>
-          <img class="img-principal" src="vaso-pinda-cinza.png?v=2" alt="Vaso Pindá — disponível em várias cores" loading="lazy">
-        </div>
+          <img class="vaso-slide ativo" src="vaso-pinda-cinza.png?v=2" alt="Vaso Pindá na cor cinza" loading="lazy">
+          <img class="vaso-slide" src="vaso-pinda-vermelho.png" alt="Vaso Pindá na cor vermelha" loading="lazy">
+          <img class="vaso-slide" src="vaso-pinda-azul.png" alt="Vaso Pindá na cor azul" loading="lazy">
+        </figure>
         <div class="produto-info">
           <div>
             <p class="produto-nome">Pind&aacute;</p>
@@ -789,8 +806,47 @@
       lastScroll = current <= 0 ? 0 : current;
     });
 
+
+    function initVasoSlideshow() {
+      var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var el = document.getElementById('vaso-pinda-slide');
+      if (!el) return;
+      var slides = Array.from(el.querySelectorAll('.vaso-slide'));
+      var current = 0, timer = null, touchStartX = 0;
+
+      function ir(idx) {
+        slides[current].classList.remove('ativo');
+        current = ((idx % slides.length) + slides.length) % slides.length;
+        slides[current].classList.add('ativo');
+      }
+      function pausar() { clearInterval(timer); timer = null; }
+      function iniciar() {
+        if (reducedMotion) return;
+        clearInterval(timer);
+        timer = setInterval(function() { ir(current + 1); }, 2500);
+      }
+
+      el.addEventListener('mouseenter', pausar);
+      el.addEventListener('mouseleave', iniciar);
+      el.addEventListener('touchstart', function(e) {
+        touchStartX = e.touches[0].clientX; pausar();
+      }, { passive: true });
+      el.addEventListener('touchend', function(e) {
+        var dx = e.changedTouches[0].clientX - touchStartX;
+        if (Math.abs(dx) > 40) ir(current + (dx < 0 ? 1 : -1));
+        setTimeout(iniciar, 3000);
+      });
+      el.addEventListener('keydown', function(e) {
+        if (e.key === 'ArrowRight') { pausar(); ir(current + 1); setTimeout(iniciar, 5000); }
+        if (e.key === 'ArrowLeft')  { pausar(); ir(current - 1); setTimeout(iniciar, 5000); }
+      });
+
+      if (!reducedMotion) iniciar();
+    }
+
     buildPosters();
     applyVisibility();
+    initVasoSlideshow();
   </script>
 </body>
 </html>

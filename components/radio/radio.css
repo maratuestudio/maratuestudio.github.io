@@ -1,0 +1,231 @@
+/* Radio MARATU — componente fixed bottom-right
+   Tokens: --dourado, --laranja, --preto, --areia, --mono, --jack, --clother */
+
+.maratu-radio {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+  font-family: var(--clother), sans-serif;
+}
+
+.maratu-radio .mr-body {
+  width: 200px;
+  background: var(--dourado);
+  border: 3px solid var(--preto);
+  border-radius: 14px;
+  box-shadow: 5px 5px 0 var(--preto);
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.3s ease;
+  overflow: hidden;
+}
+
+.maratu-radio .mr-body:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 7px 7px 0 var(--preto);
+}
+
+.maratu-radio .mr-body:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 var(--preto);
+}
+
+.maratu-radio.on .mr-body {
+  background: var(--laranja);
+}
+
+.mr-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 10px 4px;
+  border-bottom: 2px solid var(--preto);
+}
+
+.mr-brand {
+  font-family: var(--jack), sans-serif;
+  font-weight: 900;
+  font-style: italic;
+  font-size: 14px;
+  color: var(--preto);
+  letter-spacing: 1px;
+}
+
+.mr-model {
+  font-family: var(--mono), monospace;
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+  color: var(--preto);
+  opacity: 0.7;
+}
+
+.mr-main {
+  display: grid;
+  grid-template-columns: 1fr 70px;
+  gap: 8px;
+  padding: 10px;
+  align-items: center;
+}
+
+.mr-speaker {
+  background: var(--preto);
+  border-radius: 6px;
+  height: 50px;
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  gap: 3px;
+  padding: 6px;
+}
+
+.mr-speaker span {
+  background: var(--dourado);
+  border-radius: 50%;
+  width: 4px;
+  height: 4px;
+  align-self: center;
+  justify-self: center;
+}
+
+.maratu-radio.on .mr-speaker span {
+  background: var(--areia);
+}
+
+.mr-right {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  align-items: center;
+}
+
+.mr-display {
+  background: var(--preto);
+  color: var(--dourado);
+  font-family: var(--mono), monospace;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  padding: 3px 6px;
+  border-radius: 3px;
+  width: 100%;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.maratu-radio.on .mr-display {
+  color: #6FE36A;
+}
+
+.mr-knob-row {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  align-items: center;
+}
+
+.mr-knob {
+  width: 16px;
+  height: 16px;
+  background: var(--preto);
+  border-radius: 50%;
+  position: relative;
+}
+
+.mr-knob::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1.5px;
+  height: 5px;
+  background: var(--dourado);
+  border-radius: 1px;
+}
+
+.mr-led {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #6B2F16;
+  border: 1px solid var(--preto);
+  transition: all 0.2s ease;
+}
+
+.maratu-radio.on .mr-led {
+  background: var(--laranja);
+  box-shadow: 0 0 6px var(--laranja);
+}
+
+.mr-bottom {
+  padding: 4px 10px 6px;
+  border-top: 2px solid var(--preto);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.mr-bottom-label {
+  font-family: var(--mono), monospace;
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  color: var(--preto);
+}
+
+.mr-power-icon {
+  width: 12px;
+  height: 12px;
+}
+
+.mr-power-icon circle,
+.mr-power-icon line {
+  stroke: var(--preto);
+}
+
+.mr-player-panel {
+  width: 320px;
+  background: var(--dourado);
+  border: 3px solid var(--preto);
+  border-radius: 14px;
+  box-shadow: 5px 5px 0 var(--preto);
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height 0.35s ease, opacity 0.25s ease;
+}
+
+.mr-player-panel.open {
+  max-height: 200px;
+  opacity: 1;
+}
+
+.mr-iframe-wrap {
+  padding: 8px;
+}
+
+.mr-iframe-wrap iframe {
+  width: 100%;
+  border-radius: 8px;
+  display: block;
+  border: 0;
+}
+
+@media (max-width: 768px) {
+  .maratu-radio {
+    bottom: 15px;
+    right: 15px;
+  }
+  .maratu-radio .mr-body {
+    width: 160px;
+  }
+  .mr-player-panel {
+    width: calc(100vw - 30px);
+    max-width: 320px;
+  }
+}

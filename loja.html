@@ -261,16 +261,23 @@
     /* TAMANHOS */
     .tam-selector { display: flex; gap: 4px; margin-bottom: 6px; flex-wrap: wrap; }
     .tam-btn {
-      font-family: 'Space Mono', monospace; font-size: 8px; font-weight: 700;
-      letter-spacing: 0.06em; text-transform: uppercase;
-      padding: 3px 8px; border-radius: 999px;
-      border: 1px solid rgba(240,236,228,0.2);
-      background: transparent; color: rgba(240,236,228,0.45);
+      font-family: 'Space Mono', monospace; font-size: 9px; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      padding: 3px 10px; border-radius: 999px;
+      border: 1.5px solid rgba(240,236,228,0.3);
+      background: transparent; color: rgba(240,236,228,0.55);
       cursor: pointer; transition: all 0.12s ease;
       -webkit-tap-highlight-color: transparent;
     }
-    .tam-btn.selected { background: var(--dourado); color: var(--preto); border-color: var(--preto); }
-    .tam-btn:hover:not(.selected) { border-color: rgba(240,236,228,0.5); color: rgba(240,236,228,0.7); }
+    .tam-btn.selected {
+      background: var(--dourado); color: var(--preto);
+      border-color: var(--preto);
+      box-shadow: 2px 2px 0 0 var(--preto);
+    }
+    .tam-btn:hover:not(.selected) {
+      border-color: var(--areia);
+      color: var(--areia);
+    }
     .tam-info-btn {
       background: none; border: none; font-family: 'Space Mono', monospace; font-size: 8px;
       color: rgba(240,236,228,0.25); letter-spacing: 0.08em; cursor: pointer;
@@ -282,14 +289,15 @@
     /* BOTÃO ENCOMENDAR */
     .btn-encomendar {
       display: block; width: 100%; text-align: center;
-      font-family: 'Clother', sans-serif; font-weight: 900;
-      font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase;
+      font-family: 'Space Mono', monospace; font-weight: 700;
+      font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
       color: var(--preto); background: var(--dourado);
-      padding: 8px 12px; border-radius: 999px;
-      border: 1.5px solid var(--preto); box-shadow: 2px 2px 0 0 var(--preto);
+      padding: 10px 16px; border-radius: 999px;
+      border: 1.5px solid var(--preto); box-shadow: 3px 3px 0 0 var(--preto);
       text-decoration: none; transition: all 0.15s ease; cursor: pointer;
     }
-    .btn-encomendar:hover { box-shadow: 1px 1px 0 0 var(--preto); transform: translate(1px, 1px); }
+    .btn-encomendar:hover { box-shadow: 1px 1px 0 0 var(--preto); transform: translate(2px, 2px); }
+    .btn-encomendar:active { box-shadow: 0 0 0 0 var(--preto); transform: translate(3px, 3px); }
 
     /* WA BANNER */
     .wa-wrap { padding: 40px var(--margem) 0; }

@@ -849,13 +849,14 @@
         slides[current].classList.add('ativo');
       }
       function iniciar() {
-        if (reducedMotion) return;
         clearInterval(timer);
         timer = setInterval(function() { ir(current + 1); }, 2500);
       }
 
-      /* desktop: clique avança, sem pause no hover */
-      el.addEventListener('click', function() { ir(current + 1); });
+      /* desktop: pausa no hover, clique avança e reinicia timer */
+      el.addEventListener('mouseenter', function() { clearInterval(timer); });
+      el.addEventListener('mouseleave', iniciar);
+      el.addEventListener('click', function() { ir(current + 1); iniciar(); });
 
       /* mobile: swipe */
       el.addEventListener('touchstart', function(e) {

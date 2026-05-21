@@ -156,12 +156,6 @@
       position: absolute; top: 8px; left: 8px; z-index: 2;
       display: flex; gap: 4px; flex-wrap: wrap;
     }
-    .badge {
-      font-family: 'Space Mono', monospace; font-weight: 700;
-      font-size: 8px; letter-spacing: 0.1em; text-transform: uppercase;
-      padding: 2px 6px; border-radius: 3px;
-      background: var(--dourado); color: var(--preto); border: 1px solid var(--preto);
-    }
     .tag-novo {
       position: relative;
       padding: 2px;
@@ -195,28 +189,31 @@
     @media (prefers-reduced-motion: reduce) {
       .tag-novo { animation: none; }
     }
-    .badge-manguehaus {
+    /* PILLS DE COLEÇÃO */
+    .pill-colecao {
       font-family: 'Space Mono', monospace; font-weight: 700;
-      font-size: 8px; letter-spacing: 0.1em; text-transform: uppercase;
-      padding: 2px 6px; border-radius: 3px;
-      background: #C8501A; color: #F0ECE4; border: 1px solid #0D0D0B;
+      font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 999px;
+      border: 1.5px solid var(--preto);
+      box-shadow: 2px 2px 0 0 var(--preto);
+      display: inline-block;
     }
-    .badge-origens {
-      font-family: 'Space Mono', monospace; font-weight: 700;
-      font-size: 8px; letter-spacing: 0.1em; text-transform: uppercase;
-      padding: 2px 6px; border-radius: 3px;
-      background: #2E6FC4; color: #F0ECE4; border: 1px solid #0D0D0B;
+    .pill-origens {
+      background: #2E6FC4; color: var(--areia);
     }
-    .badge-essenciais {
-      font-family: 'Space Mono', monospace; font-weight: 700;
-      font-size: 8px; letter-spacing: 0.1em; text-transform: uppercase;
-      padding: 2px 6px; border-radius: 3px;
-      background: #D4960A; color: #0D0D0B; border: 1px solid #0D0D0B;
+    .pill-manguehaus {
+      background: #C8501A; color: var(--areia);
+    }
+    .pill-essenciais {
+      background: var(--dourado); color: var(--preto);
+    }
+    .pill-kit {
+      background: var(--preto); color: var(--areia);
     }
 
     .produto-info {
-      display: flex; justify-content: space-between; align-items: flex-start;
-      gap: 8px; margin-bottom: 8px;
+      margin-bottom: 8px;
     }
     .produto-nome {
       font-family: 'Clother', sans-serif; font-weight: 700;
@@ -227,14 +224,37 @@
       font-family: 'Space Mono', monospace; font-size: 9px;
       color: rgba(240,236,228,0.5); letter-spacing: 0.1em; text-transform: uppercase;
     }
-    .produto-preco-wrap { text-align: right; flex-shrink: 0; }
-    .produto-preco-riscado {
-      font-family: 'Space Mono', monospace; font-size: 9px;
-      color: rgba(240,236,228,0.3); text-decoration: line-through; display: block;
+    /* SELO DE PREÇO */
+    .preco-selo {
+      position: absolute; bottom: 12px; right: 12px;
+      width: 72px; height: 72px;
+      background: var(--areia); color: var(--preto);
+      border: 1.5px solid var(--preto);
+      border-radius: 50%;
+      box-shadow: 2px 2px 0 0 var(--preto);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Clother', sans-serif; font-weight: 900;
+      transform: rotate(-8deg);
+      z-index: 2;
     }
-    .produto-preco {
+    .preco-selo .preco-valor {
+      font-size: 22px; line-height: 1;
+      display: flex; align-items: baseline; gap: 1px;
+    }
+    .preco-selo .preco-cifrao {
       font-family: 'Space Mono', monospace; font-weight: 700;
-      font-size: 14px; color: var(--dourado); white-space: nowrap;
+      font-size: 11px;
+    }
+    .preco-selo .preco-riscado {
+      position: absolute; top: -6px; right: -4px;
+      background: var(--preto); color: var(--areia);
+      border-radius: 999px;
+      padding: 2px 8px;
+      font-family: 'Space Mono', monospace; font-weight: 700;
+      font-size: 9px;
+      border: 1.5px solid var(--preto);
+      text-decoration: line-through;
+      text-decoration-color: var(--areia);
     }
 
     /* TAMANHOS */
@@ -430,58 +450,58 @@
       <div class="produtos-grid" id="grid-chaveiros">
       <div class="produto-card" data-tipo="chaveiro" data-faixa="chaveiros">
         <div class="produto-img-wrap quadrado" onclick="abrirLightbox('carranca-chaveiro.png','Carranca — Chaveiro')">
-          <div class="tag-badge"><span class="badge-origens">ORIGENS</span></div>
+          <div class="tag-badge"><span class="pill-colecao pill-origens">Origens</span></div>
           <img class="img-principal" src="carranca-chaveiro.png" alt="Carranca Chaveiro" loading="lazy">
+          <div class="preco-selo"><span class="preco-valor"><span class="preco-cifrao">R$</span>19</span></div>
         </div>
         <div class="produto-info">
           <div><p class="produto-nome">Carranca</p><p class="produto-tipo">Chaveiro · 3D</p></div>
-          <div class="produto-preco-wrap"><p class="produto-preco">R$20</p></div>
         </div>
-        <a href="https://wa.me/5579981512978?text=Ol%C3%A1!%20Tenho%20interesse%20no%20produto%3A%20Chaveiro%20Carranca%20-%20R%24%2020" target="_blank" rel="noopener" class="btn-encomendar">Encomendar ↗</a>
+        <a href="https://wa.me/5579981512978?text=Ol%C3%A1!%20Tenho%20interesse%20no%20produto%3A%20Chaveiro%20Carranca%20-%20R%24%2019" target="_blank" rel="noopener" class="btn-encomendar">Encomendar ↗</a>
       </div>
       <div class="produto-card" data-tipo="chaveiro" data-faixa="chaveiros">
         <div class="produto-img-wrap quadrado" onclick="abrirLightbox('arcos-chaveiro.png','Arcos da Orla — Chaveiro')">
-          <div class="tag-badge"><span class="badge-origens">ORIGENS</span></div>
+          <div class="tag-badge"><span class="pill-colecao pill-origens">Origens</span></div>
           <img class="img-principal" src="arcos-chaveiro.png" alt="Arcos da Orla Chaveiro" loading="lazy">
+          <div class="preco-selo"><span class="preco-valor"><span class="preco-cifrao">R$</span>19</span></div>
         </div>
         <div class="produto-info">
           <div><p class="produto-nome">Arcos da Orla</p><p class="produto-tipo">Chaveiro · 3D</p></div>
-          <div class="produto-preco-wrap"><p class="produto-preco">R$20</p></div>
         </div>
-        <a href="https://wa.me/5579981512978?text=Ol%C3%A1!%20Tenho%20interesse%20no%20produto%3A%20Chaveiro%20Arcos%20da%20Orla%20-%20R%24%2020" target="_blank" rel="noopener" class="btn-encomendar">Encomendar ↗</a>
+        <a href="https://wa.me/5579981512978?text=Ol%C3%A1!%20Tenho%20interesse%20no%20produto%3A%20Chaveiro%20Arcos%20da%20Orla%20-%20R%24%2019" target="_blank" rel="noopener" class="btn-encomendar">Encomendar ↗</a>
       </div>
       <div class="produto-card" data-tipo="chaveiro" data-faixa="chaveiros">
         <div class="produto-img-wrap quadrado" onclick="abrirLightbox('relogio-chaveiro.png','Relógio do Mercado — Chaveiro')">
-          <div class="tag-badge"><span class="badge-origens">ORIGENS</span></div>
+          <div class="tag-badge"><span class="pill-colecao pill-origens">Origens</span></div>
           <img class="img-principal" src="relogio-chaveiro.png" alt="Relógio do Mercado Chaveiro" loading="lazy">
+          <div class="preco-selo"><span class="preco-valor"><span class="preco-cifrao">R$</span>19</span></div>
         </div>
         <div class="produto-info">
           <div><p class="produto-nome">Rel&oacute;gio do Mercado</p><p class="produto-tipo">Chaveiro · 3D</p></div>
-          <div class="produto-preco-wrap"><p class="produto-preco">R$20</p></div>
         </div>
-        <a href="https://wa.me/5579981512978?text=Ol%C3%A1!%20Tenho%20interesse%20no%20produto%3A%20Chaveiro%20Rel%C3%B3gio%20do%20Mercado%20-%20R%24%2020" target="_blank" rel="noopener" class="btn-encomendar">Encomendar ↗</a>
+        <a href="https://wa.me/5579981512978?text=Ol%C3%A1!%20Tenho%20interesse%20no%20produto%3A%20Chaveiro%20Rel%C3%B3gio%20do%20Mercado%20-%20R%24%2019" target="_blank" rel="noopener" class="btn-encomendar">Encomendar ↗</a>
       </div>
       <div class="produto-card" data-tipo="chaveiro" data-faixa="chaveiros">
         <div class="produto-img-wrap quadrado" onclick="abrirLightbox('kit-aracaju-chaveiro.png','Kit Aracaju — Coleção Completa')">
-          <div class="tag-badge"><span class="badge">Kit</span><span class="badge-origens">ORIGENS</span></div>
+          <div class="tag-badge"><span class="pill-colecao pill-kit">Kit</span><span class="pill-colecao pill-origens">Origens</span></div>
           <img class="img-principal" src="kit-aracaju-chaveiro.png" alt="Kit Aracaju Chaveiro" loading="lazy">
+          <div class="preco-selo"><span class="preco-riscado">R$79</span><span class="preco-valor"><span class="preco-cifrao">R$</span>69</span></div>
         </div>
         <div class="produto-info">
           <div><p class="produto-nome">Kit Aracaju</p><p class="produto-tipo">Kit · 4 Chaveiros</p></div>
-          <div class="produto-preco-wrap"><span class="produto-preco-riscado">R$80</span><p class="produto-preco">R$68</p></div>
         </div>
-        <a href="https://wa.me/5579981512978?text=Ol%C3%A1!%20Tenho%20interesse%20no%20produto%3A%20Kit%20Aracaju%20(4%20chaveiros)%20-%20R%24%2068" target="_blank" rel="noopener" class="btn-encomendar">Encomendar ↗</a>
+        <a href="https://wa.me/5579981512978?text=Ol%C3%A1!%20Tenho%20interesse%20no%20produto%3A%20Kit%20Aracaju%20(4%20chaveiros)%20-%20R%24%2069" target="_blank" rel="noopener" class="btn-encomendar">Encomendar ↗</a>
       </div>
       <div class="produto-card" data-tipo="chaveiro" data-faixa="chaveiros" data-extra="1">
         <div class="produto-img-wrap quadrado" onclick="abrirLightbox('maratu-chaveiro-tag.jpg','Chaveiro MARATU')">
-          <div class="tag-badge"><span class="badge-origens">ORIGENS</span></div>
+          <div class="tag-badge"><span class="pill-colecao pill-origens">Origens</span></div>
           <img class="img-principal" src="maratu-chaveiro-tag.jpg" alt="Chaveiro MARATU" loading="lazy">
+          <div class="preco-selo"><span class="preco-valor"><span class="preco-cifrao">R$</span>19</span></div>
         </div>
         <div class="produto-info">
           <div><p class="produto-nome">Chaveiro MARATU</p><p class="produto-tipo">Chaveiro · 3D</p></div>
-          <div class="produto-preco-wrap"><p class="produto-preco">R$20</p></div>
         </div>
-        <a href="https://wa.me/5579981512978?text=Ol%C3%A1!%20Tenho%20interesse%20no%20produto%3A%20Chaveiro%20MARATU%20-%20R%24%2020" target="_blank" rel="noopener" class="btn-encomendar">Encomendar ↗</a>
+        <a href="https://wa.me/5579981512978?text=Ol%C3%A1!%20Tenho%20interesse%20no%20produto%3A%20Chaveiro%20MARATU%20-%20R%24%2019" target="_blank" rel="noopener" class="btn-encomendar">Encomendar ↗</a>
       </div>
       </div>
     </div>
@@ -493,14 +513,14 @@
       <div class="produtos-grid" id="grid-adesivos">
       <div class="produto-card" data-tipo="adesivo" data-faixa="adesivos">
         <div class="produto-img-wrap quadrado" onclick="abrirLightbox('adesivos-origens.png','Coleção de Adesivos Origens')">
-          <div class="tag-badge"><span class="badge-origens">ORIGENS</span></div>
+          <div class="tag-badge"><span class="pill-colecao pill-origens">Origens</span></div>
           <img class="img-principal" src="adesivos-origens.png" alt="Coleção de Adesivos Origens" loading="lazy" style="object-fit:contain;padding:8px;">
+          <div class="preco-selo"><span class="preco-riscado">R$29</span><span class="preco-valor"><span class="preco-cifrao">R$</span>19</span></div>
         </div>
         <div class="produto-info">
           <div><p class="produto-nome">Origens — 1&ordf; Edi&ccedil;&atilde;o</p><p class="produto-tipo">Adesivos · 12 un</p></div>
-          <div class="produto-preco-wrap"><span class="produto-preco-riscado">R$25</span><p class="produto-preco">R$18</p></div>
         </div>
-        <a href="https://wa.me/5579981512978?text=Ol%C3%A1!%20Tenho%20interesse%20no%20produto%3A%20Cole%C3%A7%C3%A3o%20de%20Adesivos%20Origens%201%C2%AA%20Edi%C3%A7%C3%A3o%20-%20R%24%2018" target="_blank" rel="noopener" class="btn-encomendar">Encomendar ↗</a>
+        <a href="https://wa.me/5579981512978?text=Ol%C3%A1!%20Tenho%20interesse%20no%20produto%3A%20Cole%C3%A7%C3%A3o%20de%20Adesivos%20Origens%201%C2%AA%20Edi%C3%A7%C3%A3o%20-%20R%24%2019" target="_blank" rel="noopener" class="btn-encomendar">Encomendar ↗</a>
       </div>
       </div>
     </div>
@@ -525,8 +545,9 @@
       <div class="produtos-grid" id="grid-essenciais">
       <div class="produto-card" data-tipo="essenciais" data-faixa="essenciais">
         <div class="produto-img-wrap quadrado" onclick="abrirLightbox('kit-cobogo-praia.png?v=2','Kit Cobogó Praia')">
-          <div class="tag-badge"><div class="tag-novo"><span>NOVO</span></div><span class="badge">Kit</span><span class="badge-manguehaus">MANGUEHAUS</span></div>
+          <div class="tag-badge"><div class="tag-novo"><span>NOVO</span></div><span class="pill-colecao pill-kit">Kit</span><span class="pill-colecao pill-manguehaus">Manguehaus</span></div>
           <img class="img-principal" src="kit-cobogo-praia.png?v=2" alt="Kit Cobogó Praia com 4 peças" loading="lazy">
+          <div class="preco-selo"><span class="preco-riscado">R$239</span><span class="preco-valor"><span class="preco-cifrao">R$</span>179</span></div>
         </div>
         <div class="produto-info">
           <div>
@@ -534,14 +555,14 @@
             <p class="produto-tipo">Kit · 4 Cob&oacute;g&oacute;s · 15&times;15cm</p>
             <p class="produto-tipo">Monte sua combina&ccedil;&atilde;o de cores.</p>
           </div>
-          <div class="produto-preco-wrap"><span class="produto-preco-riscado">R$240</span><p class="produto-preco">R$180</p></div>
         </div>
-        <a href="https://wa.me/5579981512978?text=Ol%C3%A1%21%20Tenho%20interesse%20no%20produto%3A%20Kit%20Cobog%C3%B3%20Praia%20-%20R%24%20180" target="_blank" rel="noopener" class="btn-encomendar">Encomendar &#x2197;</a>
+        <a href="https://wa.me/5579981512978?text=Ol%C3%A1%21%20Tenho%20interesse%20no%20produto%3A%20Kit%20Cobog%C3%B3%20Praia%20-%20R%24%20179" target="_blank" rel="noopener" class="btn-encomendar">Encomendar &#x2197;</a>
       </div>
       <div class="produto-card" data-tipo="essenciais" data-faixa="essenciais">
         <div class="produto-img-wrap quadrado" onclick="abrirLightbox('cobogo-por-do-sol.png?v=2','Cobogó Pôr do Sol')">
-          <div class="tag-badge"><div class="tag-novo"><span>NOVO</span></div><span class="badge-manguehaus">MANGUEHAUS</span></div>
+          <div class="tag-badge"><div class="tag-novo"><span>NOVO</span></div><span class="pill-colecao pill-manguehaus">Manguehaus</span></div>
           <img class="img-principal" src="cobogo-por-do-sol.png?v=2" alt="Cobogó Pôr do Sol em vermelho fosco" loading="lazy">
+          <div class="preco-selo"><span class="preco-riscado">R$69</span><span class="preco-valor"><span class="preco-cifrao">R$</span>49</span></div>
         </div>
         <div class="produto-info">
           <div>
@@ -549,14 +570,14 @@
             <p class="produto-tipo">Cob&oacute;g&oacute; · 15&times;15cm</p>
           <p class="produto-tipo">Dispon&iacute;vel em v&aacute;rias cores. Consulte disponibilidade.</p>
           </div>
-          <div class="produto-preco-wrap"><span class="produto-preco-riscado">R$70</span><p class="produto-preco">R$50</p></div>
         </div>
-        <a href="https://wa.me/5579981512978?text=Ol%C3%A1%21%20Tenho%20interesse%20no%20produto%3A%20Cobog%C3%B3%20P%C3%B4r%20do%20Sol%20-%20R%24%2050" target="_blank" rel="noopener" class="btn-encomendar">Encomendar &#x2197;</a>
+        <a href="https://wa.me/5579981512978?text=Ol%C3%A1%21%20Tenho%20interesse%20no%20produto%3A%20Cobog%C3%B3%20P%C3%B4r%20do%20Sol%20-%20R%24%2049" target="_blank" rel="noopener" class="btn-encomendar">Encomendar &#x2197;</a>
       </div>
       <div class="produto-card" data-tipo="essenciais" data-faixa="essenciais">
         <div class="produto-img-wrap quadrado" onclick="abrirLightbox('cobogo-chico.png?v=2','Cobogó Chico')">
-          <div class="tag-badge"><div class="tag-novo"><span>NOVO</span></div><span class="badge-manguehaus">MANGUEHAUS</span></div>
+          <div class="tag-badge"><div class="tag-novo"><span>NOVO</span></div><span class="pill-colecao pill-manguehaus">Manguehaus</span></div>
           <img class="img-principal" src="cobogo-chico.png?v=2" alt="Cobogó Chico em azul fosco" loading="lazy">
+          <div class="preco-selo"><span class="preco-riscado">R$69</span><span class="preco-valor"><span class="preco-cifrao">R$</span>49</span></div>
         </div>
         <div class="produto-info">
           <div>
@@ -564,14 +585,14 @@
             <p class="produto-tipo">Cob&oacute;g&oacute; · 15&times;15cm</p>
           <p class="produto-tipo">Dispon&iacute;vel em v&aacute;rias cores. Consulte disponibilidade.</p>
           </div>
-          <div class="produto-preco-wrap"><span class="produto-preco-riscado">R$70</span><p class="produto-preco">R$50</p></div>
         </div>
-        <a href="https://wa.me/5579981512978?text=Ol%C3%A1%21%20Tenho%20interesse%20no%20produto%3A%20Cobog%C3%B3%20Chico%20-%20R%24%2050" target="_blank" rel="noopener" class="btn-encomendar">Encomendar &#x2197;</a>
+        <a href="https://wa.me/5579981512978?text=Ol%C3%A1%21%20Tenho%20interesse%20no%20produto%3A%20Cobog%C3%B3%20Chico%20-%20R%24%2049" target="_blank" rel="noopener" class="btn-encomendar">Encomendar &#x2197;</a>
       </div>
       <div class="produto-card" data-tipo="essenciais" data-faixa="essenciais">
         <div class="produto-img-wrap quadrado" onclick="abrirLightbox('cobogo-arcos.png?v=2','Cobogó Arcos')">
-          <div class="tag-badge"><div class="tag-novo"><span>NOVO</span></div><span class="badge-manguehaus">MANGUEHAUS</span></div>
+          <div class="tag-badge"><div class="tag-novo"><span>NOVO</span></div><span class="pill-colecao pill-manguehaus">Manguehaus</span></div>
           <img class="img-principal" src="cobogo-arcos.png?v=2" alt="Cobogó Arcos em amarelo fosco" loading="lazy">
+          <div class="preco-selo"><span class="preco-riscado">R$69</span><span class="preco-valor"><span class="preco-cifrao">R$</span>49</span></div>
         </div>
         <div class="produto-info">
           <div>
@@ -579,14 +600,14 @@
             <p class="produto-tipo">Cob&oacute;g&oacute; · 15&times;15cm</p>
           <p class="produto-tipo">Dispon&iacute;vel em v&aacute;rias cores. Consulte disponibilidade.</p>
           </div>
-          <div class="produto-preco-wrap"><span class="produto-preco-riscado">R$70</span><p class="produto-preco">R$50</p></div>
         </div>
-        <a href="https://wa.me/5579981512978?text=Ol%C3%A1%21%20Tenho%20interesse%20no%20produto%3A%20Cobog%C3%B3%20Arcos%20-%20R%24%2050" target="_blank" rel="noopener" class="btn-encomendar">Encomendar &#x2197;</a>
+        <a href="https://wa.me/5579981512978?text=Ol%C3%A1%21%20Tenho%20interesse%20no%20produto%3A%20Cobog%C3%B3%20Arcos%20-%20R%24%2049" target="_blank" rel="noopener" class="btn-encomendar">Encomendar &#x2197;</a>
       </div>
       <div class="produto-card" data-tipo="essenciais" data-faixa="essenciais">
         <div class="produto-img-wrap quadrado" onclick="abrirLightbox('cobogo-ondas.png?v=2','Cobogó Ondas')">
-          <div class="tag-badge"><div class="tag-novo"><span>NOVO</span></div><span class="badge-manguehaus">MANGUEHAUS</span></div>
+          <div class="tag-badge"><div class="tag-novo"><span>NOVO</span></div><span class="pill-colecao pill-manguehaus">Manguehaus</span></div>
           <img class="img-principal" src="cobogo-ondas.png?v=2" alt="Cobogó Ondas em cinza fosco" loading="lazy">
+          <div class="preco-selo"><span class="preco-riscado">R$69</span><span class="preco-valor"><span class="preco-cifrao">R$</span>49</span></div>
         </div>
         <div class="produto-info">
           <div>
@@ -594,16 +615,16 @@
             <p class="produto-tipo">Cob&oacute;g&oacute; · 15&times;15cm</p>
           <p class="produto-tipo">Dispon&iacute;vel em v&aacute;rias cores. Consulte disponibilidade.</p>
           </div>
-          <div class="produto-preco-wrap"><span class="produto-preco-riscado">R$70</span><p class="produto-preco">R$50</p></div>
         </div>
-        <a href="https://wa.me/5579981512978?text=Ol%C3%A1%21%20Tenho%20interesse%20no%20produto%3A%20Cobog%C3%B3%20Ondas%20-%20R%24%2050" target="_blank" rel="noopener" class="btn-encomendar">Encomendar &#x2197;</a>
+        <a href="https://wa.me/5579981512978?text=Ol%C3%A1%21%20Tenho%20interesse%20no%20produto%3A%20Cobog%C3%B3%20Ondas%20-%20R%24%2049" target="_blank" rel="noopener" class="btn-encomendar">Encomendar &#x2197;</a>
       </div>
       <div class="produto-card" data-tipo="essenciais" data-faixa="essenciais">
         <figure class="vaso-slideshow" id="vaso-pinda-slide" tabindex="0" aria-label="Vaso Pindá — deslize para ver cores">
-          <div class="tag-badge"><div class="tag-novo"><span>NOVO</span></div><span class="badge-essenciais">DECOR</span></div>
+          <div class="tag-badge"><div class="tag-novo"><span>NOVO</span></div><span class="pill-colecao pill-essenciais">Decor</span></div>
           <img class="vaso-slide ativo" src="vaso-pinda-cinza.png?v=2" alt="Vaso Pindá na cor cinza" loading="lazy">
           <img class="vaso-slide" src="vaso-pinda-vermelho.png" alt="Vaso Pindá na cor vermelha" loading="lazy">
           <img class="vaso-slide" src="vaso-pinda-azul.png" alt="Vaso Pindá na cor azul" loading="lazy">
+          <div class="preco-selo"><span class="preco-valor"><span class="preco-cifrao">R$</span>59</span></div>
         </figure>
         <div class="produto-info">
           <div>
@@ -611,9 +632,8 @@
             <p class="produto-tipo">Vaso &middot; 12cm &middot; com pratinho</p>
             <p class="produto-tipo">Dispon&iacute;vel em v&aacute;rias cores. Consulte disponibilidade.</p>
           </div>
-          <div class="produto-preco-wrap"><p class="produto-preco">R$60</p></div>
         </div>
-        <a href="https://wa.me/5579981512978?text=Ol%C3%A1!%20Tenho%20interesse%20no%20produto%3A%20Vaso%20Pind%C3%A1%20-%20R%24%2060" target="_blank" rel="noopener" class="btn-encomendar">Encomendar &#x2197;</a>
+        <a href="https://wa.me/5579981512978?text=Ol%C3%A1!%20Tenho%20interesse%20no%20produto%3A%20Vaso%20Pind%C3%A1%20-%20R%24%2059" target="_blank" rel="noopener" class="btn-encomendar">Encomendar &#x2197;</a>
       </div>
           </div>
     </div>
@@ -684,7 +704,7 @@
   </div>
 
   <script>
-    var PRECOS_BASE = { 'A4': 50, 'A3': 80, 'A2': 120, 'A1': 180 };
+    var PRECOS_BASE = { 'A4': 49, 'A3': 79, 'A2': 119, 'A1': 179 };
 
     var POSTERES = [
       { id: 'pordosol',  nome: 'Pôr do Sol',        img: 'poster-pordosol.png',  mockup: 'mockup-pordosol.png',  desconto: false, colecao: 'manguehaus' },
@@ -712,16 +732,18 @@
         card.dataset.tipo = 'poster';
         card.dataset.faixa = 'posteres';
         if (i >= 4) card.dataset.extra = '1';
-        var origHtml = p.desconto ? '<span class="produto-preco-riscado">R$' + PRECOS_BASE['A4'] + '</span>' : '';
         card.innerHTML =
           '<div class="produto-img-wrap poster" onclick="abrirLightbox(\'' + p.img + '\',\'' + p.nome.replace(/'/g, '&#39;') + '\')">' +
-          '<div class="tag-badge"><span class="badge-' + p.colecao + '">' + p.colecao.toUpperCase() + '</span></div>' +
+          '<div class="tag-badge"><span class="pill-colecao pill-' + p.colecao + '">' + p.colecao.charAt(0).toUpperCase() + p.colecao.slice(1) + '</span></div>' +
           '<img class="img-principal com-hover" src="' + p.img + '" alt="' + p.nome + '" loading="lazy">' +
           '<img class="img-hover" src="' + p.mockup + '" alt="' + p.nome + ' mockup" loading="lazy">' +
+          '<div class="preco-selo">' +
+          (p.desconto ? '<span class="preco-riscado">R$' + PRECOS_BASE['A4'] + '</span>' : '') +
+          '<span class="preco-valor"><span class="preco-cifrao">R$</span><span id="preco-' + p.id + '">' + precoA4 + '</span></span>' +
+          '</div>' +
           '</div>' +
           '<div class="produto-info">' +
           '<div><p class="produto-nome">' + p.nome + '</p><p class="produto-tipo">Pôster · A4–A1</p></div>' +
-          '<div class="produto-preco-wrap" style="text-align:right">' + origHtml + '<p class="produto-preco" id="preco-' + p.id + '">R$' + precoA4 + '</p></div>' +
           '</div>' +
           '<div class="tam-selector" id="tam-' + p.id + '">' +
           ['A4','A3','A2','A1'].map(function(t) {
@@ -742,7 +764,7 @@
       document.getElementById('tam-' + pid).querySelectorAll('.tam-btn').forEach(function(b) { b.classList.remove('selected'); });
       btn.classList.add('selected');
       var precoEl = document.getElementById('preco-' + pid);
-      if (precoEl) precoEl.textContent = 'R$' + calcPreco(PRECOS_BASE[tam], poster.desconto);
+      if (precoEl) precoEl.textContent = calcPreco(PRECOS_BASE[tam], poster.desconto);
       atualizarLink(pid, tam);
     }
 

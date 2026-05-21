@@ -154,7 +154,7 @@
 
     .tag-badge {
       position: absolute; top: 8px; left: 8px; z-index: 2;
-      display: flex; gap: 4px; flex-wrap: wrap;
+      display: flex; gap: 4px; flex-wrap: wrap; align-items: center;
     }
     .tag-novo {
       position: relative;
@@ -167,21 +167,22 @@
       );
       background-size: 300% 100%;
       animation: chrome-slide 4s linear infinite;
-      display: inline-block;
+      display: inline-flex; align-items: center;
       border: none;
-      box-shadow: 2px 2px 0 0 var(--preto);
+      box-shadow: 2px 2px 0 0 var(--areia);
     }
     .tag-novo > span {
       display: block;
       background: var(--areia);
       color: var(--preto);
-      padding: 1px 8px;
+      padding: 3px 8px;
       border-radius: 999px;
       font-family: 'Space Mono', monospace;
       font-size: 9px;
       font-weight: 700;
       letter-spacing: 0.12em;
       text-transform: uppercase;
+      line-height: 1;
     }
     @keyframes chrome-slide {
       0%   { background-position: 0% 50%; }
@@ -190,15 +191,16 @@
     @media (prefers-reduced-motion: reduce) {
       .tag-novo { animation: none; }
     }
-    /* PILLS DE COLEÇÃO */
+    /* VINTAGE BADGE SYSTEM */
+    .vintage-badge,
     .pill-colecao {
       font-family: 'Space Mono', monospace; font-weight: 700;
       font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase;
       padding: 3px 10px;
       border-radius: 999px;
-      border: 1.5px solid var(--preto);
-      box-shadow: 2px 2px 0 0 var(--preto);
-      display: inline-block;
+      border: 1.5px solid var(--areia);
+      box-shadow: 2px 2px 0 0 var(--areia);
+      display: inline-flex; align-items: center; line-height: 1;
     }
     .pill-origens {
       background: #2E6FC4; color: var(--areia);
@@ -230,9 +232,9 @@
       position: absolute; bottom: 12px; right: 12px;
       width: 72px; height: 72px;
       background: var(--areia); color: var(--preto);
-      border: 1.5px solid var(--preto);
+      border: 1.5px solid var(--areia);
       border-radius: 50%;
-      box-shadow: 2px 2px 0 0 var(--preto);
+      box-shadow: 2px 2px 0 0 var(--areia);
       display: flex; align-items: center; justify-content: center;
       font-family: 'Clother', sans-serif; font-weight: 900;
       transform: rotate(-8deg);
@@ -271,8 +273,8 @@
     }
     .tam-btn.selected {
       background: var(--dourado); color: var(--preto);
-      border-color: var(--preto);
-      box-shadow: 2px 2px 0 0 var(--preto);
+      border-color: var(--areia);
+      box-shadow: 2px 2px 0 0 var(--areia);
     }
     .tam-btn:hover:not(.selected) {
       border-color: var(--areia);
@@ -293,11 +295,11 @@
       font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
       color: var(--preto); background: var(--dourado);
       padding: 10px 16px; border-radius: 999px;
-      border: 1.5px solid var(--preto); box-shadow: 3px 3px 0 0 var(--preto);
+      border: 1.5px solid var(--areia); box-shadow: 3px 3px 0 0 var(--areia);
       text-decoration: none; transition: all 0.15s ease; cursor: pointer;
     }
-    .btn-encomendar:hover { box-shadow: 1px 1px 0 0 var(--preto); transform: translate(2px, 2px); }
-    .btn-encomendar:active { box-shadow: 0 0 0 0 var(--preto); transform: translate(3px, 3px); }
+    .btn-encomendar:hover { box-shadow: 1px 1px 0 0 var(--areia); transform: translate(2px, 2px); }
+    .btn-encomendar:active { box-shadow: 0 0 0 0 var(--areia); transform: translate(3px, 3px); }
 
     /* WA BANNER */
     .wa-wrap { padding: 40px var(--margem) 0; }

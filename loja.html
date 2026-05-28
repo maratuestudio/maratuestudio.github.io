@@ -430,10 +430,124 @@
     }
     @media (prefers-reduced-motion: reduce) { .vaso-slide { transition: none; } }
     .vaso-slide.ativo { opacity: 1; }
+
+    /* ── POPUP COLEÇÃO 1 ── */
+    .popup-c1-overlay {
+      position: fixed; inset: 0; z-index: 9990;
+      background: rgba(13,13,11,0.72);
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.4s ease;
+    }
+    .popup-c1-overlay.ativo { opacity: 1; pointer-events: auto; }
+    .popup-c1-box {
+      background: #fff; color: #0D0D0B;
+      border: 2.5px solid #0D0D0B;
+      box-shadow: 7px 7px 0 0 #0D0D0B;
+      max-width: 740px; width: 100%;
+      display: grid; grid-template-columns: 1fr 1fr;
+      position: relative; overflow: hidden;
+      max-height: 90vh;
+    }
+    .popup-c1-close {
+      position: absolute; top: 12px; right: 16px;
+      font-family: 'Space Mono', monospace; font-size: 1rem;
+      color: #0D0D0B; cursor: pointer; z-index: 10;
+      background: none; border: none; line-height: 1;
+      opacity: 0.45; transition: opacity 0.2s; padding: 4px 6px;
+    }
+    .popup-c1-close:hover { opacity: 1; }
+    .popup-c1-fotos {
+      position: relative; overflow: hidden;
+      min-height: 360px; background: #0D0D0B;
+    }
+    .popup-c1-foto {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%; object-fit: cover;
+      opacity: 0; transition: opacity 1s ease;
+    }
+    .popup-c1-foto.ativo { opacity: 1; }
+    .popup-c1-texto {
+      padding: 36px 28px 28px;
+      display: flex; flex-direction: column;
+      overflow-y: auto;
+    }
+    .popup-c1-tag {
+      font-family: 'Space Mono', monospace; font-size: 8px;
+      letter-spacing: 0.22em; text-transform: uppercase;
+      color: rgba(13,13,11,0.4); margin-bottom: 16px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .popup-c1-tag::before { content: ''; display: block; width: 18px; height: 1px; background: currentColor; }
+    .popup-c1-titulo {
+      font-family: 'Jack', 'Arial Black', sans-serif;
+      font-size: clamp(1.5rem, 3.2vw, 2.4rem);
+      line-height: 0.88; text-transform: uppercase;
+      letter-spacing: -0.02em; color: #0D0D0B;
+      margin-bottom: 16px;
+    }
+    .popup-c1-data {
+      font-family: 'Clother', 'Helvetica Neue', sans-serif;
+      font-weight: 900; font-size: 11px;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: #C8501A; margin-bottom: 14px;
+    }
+    .popup-c1-corpo {
+      font-family: 'Clother', 'Helvetica Neue', sans-serif;
+      font-size: 0.86rem; line-height: 1.75;
+      color: rgba(13,13,11,0.68); margin-bottom: 10px;
+    }
+    .popup-c1-corpo strong { color: #0D0D0B; font-weight: 700; }
+    .popup-c1-urgencia {
+      font-family: 'Clother', 'Helvetica Neue', sans-serif;
+      font-weight: 700; font-size: 0.82rem;
+      color: #0D0D0B; line-height: 1.5; margin-bottom: 20px;
+    }
+    .popup-c1-btn {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 11px 18px; margin-top: auto;
+      background: #C8501A; color: #0D0D0B;
+      font-family: 'Clother', 'Helvetica Neue', sans-serif;
+      font-weight: 900; font-size: 11px;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      border: 1.5px solid #0D0D0B;
+      box-shadow: 3px 3px 0 0 #0D0D0B;
+      text-decoration: none; align-self: flex-start;
+      transition: all 0.15s ease;
+    }
+    .popup-c1-btn:hover { box-shadow: 1px 1px 0 0 #0D0D0B; transform: translate(2px,2px); }
+    .popup-c1-btn:active { box-shadow: none; transform: translate(3px,3px); }
+    @media (max-width: 560px) {
+      .popup-c1-box { grid-template-columns: 1fr; }
+      .popup-c1-fotos { min-height: 200px; }
+      .popup-c1-texto { padding: 22px 18px 22px; }
+    }
   </style>
   <link rel="stylesheet" href="components/radio/radio.css?v=7">
 </head>
 <body>
+
+  <!-- POPUP COLEÇÃO 1 — 30 e 31 de maio, Shopping Jardins -->
+  <div id="popup-c1" class="popup-c1-overlay" role="dialog" aria-modal="true" aria-label="Lançamento Coleção 1 MARATU">
+    <div class="popup-c1-box">
+      <button class="popup-c1-close" id="popup-c1-fechar" aria-label="Fechar popup">✕</button>
+      <div class="popup-c1-fotos">
+        <img src="colecao1-tee-maratu.jpg" class="popup-c1-foto ativo" alt="Blusa MARATU Coleção 1" loading="eager">
+        <img src="colecao1-azulejos.jpg"    class="popup-c1-foto"       alt="Estampa Azulejos" loading="lazy">
+        <img src="colecao1-tee-destrua.jpg" class="popup-c1-foto"       alt="Blusa Destrua o Império" loading="lazy">
+      </div>
+      <div class="popup-c1-texto">
+        <p class="popup-c1-tag">Coleção 1 — Lançamento</p>
+        <h2 class="popup-c1-titulo">As estampas chegaram.</h2>
+        <p class="popup-c1-data">30 e 31 de maio · Shopping Jardins</p>
+        <p class="popup-c1-corpo">As três estampas exclusivas da primeira coleção MARATU estarão disponíveis nos dias <strong>30 e 31 de maio</strong>, no <strong>Shopping Jardins</strong>, no brechó da Marina e Amanda.</p>
+        <p class="popup-c1-urgencia">Pouquíssimas unidades. Passa lá pra garantir o seu antes que acabe.</p>
+        <p class="popup-c1-corpo">Mais informações no nosso Instagram.</p>
+        <a href="https://instagram.com/maratuestudio" target="_blank" rel="noopener" class="popup-c1-btn">@maratuestudio ↗</a>
+      </div>
+    </div>
+  </div>
 
   <header class="header">
     <a href="index.html" class="header__logo">maratu</a>
@@ -907,5 +1021,26 @@
     <div class="mr-drop-inner" id="mr-drop-inner"></div>
   </div>
   <script src="components/radio/radio.js?v=5"  defer></script>
+
+  <script>
+  (function() {
+    var ov = document.getElementById('popup-c1');
+    if (!ov) return;
+    if (!sessionStorage.getItem('popup-c1')) {
+      setTimeout(function() { ov.classList.add('ativo'); }, 1200);
+    }
+    function fechar() { ov.classList.remove('ativo'); sessionStorage.setItem('popup-c1','1'); }
+    document.getElementById('popup-c1-fechar').addEventListener('click', fechar);
+    ov.addEventListener('click', function(e) { if (e.target === ov) fechar(); });
+    document.addEventListener('keydown', function(e) { if (e.key === 'Escape' && ov.classList.contains('ativo')) fechar(); });
+    var fotos = ov.querySelectorAll('.popup-c1-foto'), cur = 0;
+    if (fotos.length > 1) setInterval(function() {
+      fotos[cur].classList.remove('ativo');
+      cur = (cur + 1) % fotos.length;
+      fotos[cur].classList.add('ativo');
+    }, 2800);
+  })();
+  </script>
+
 </body>
 </html>

@@ -481,12 +481,14 @@
     }
     .popup-c1-tag::before { content: ''; display: block; width: 18px; height: 1px; background: currentColor; }
     .popup-c1-titulo {
-      font-family: 'Jack', 'Arial Black', sans-serif;
+      font-family: 'Clother', 'Helvetica Neue', sans-serif;
       font-size: clamp(1.5rem, 3.2vw, 2.4rem);
-      line-height: 0.88; text-transform: uppercase;
-      letter-spacing: -0.02em; color: #0D0D0B;
+      line-height: 1.0; text-transform: uppercase;
+      letter-spacing: -0.01em; color: #0D0D0B;
       margin-bottom: 16px;
     }
+    .popup-c1-titulo-light { font-weight: 400; display: block; }
+    .popup-c1-titulo-bold  { font-weight: 900; display: block; }
     .popup-c1-data {
       font-family: 'Clother', 'Helvetica Neue', sans-serif;
       font-weight: 900; font-size: 11px;
@@ -506,11 +508,12 @@
     }
     .popup-c1-btn {
       display: inline-flex; align-items: center; gap: 10px;
-      padding: 11px 18px; margin-top: auto;
+      padding: 10px 16px 10px 20px; margin-top: auto;
       background: #C8501A; color: #0D0D0B;
       font-family: 'Clother', 'Helvetica Neue', sans-serif;
       font-weight: 900; font-size: 11px;
       letter-spacing: 0.08em; text-transform: uppercase;
+      border-radius: 999px;
       border: 1.5px solid #0D0D0B;
       box-shadow: 3px 3px 0 0 #0D0D0B;
       text-decoration: none; align-self: flex-start;
@@ -538,8 +541,8 @@
         <img src="colecao1-tee-destrua.jpg" class="popup-c1-foto"       alt="Blusa Destrua o Império" loading="lazy">
       </div>
       <div class="popup-c1-texto">
-        <p class="popup-c1-tag">Coleção 1 — Lançamento</p>
-        <h2 class="popup-c1-titulo">As estampas chegaram.</h2>
+        <p class="popup-c1-tag">DROP 0 — LANÇAMENTO</p>
+        <h2 class="popup-c1-titulo"><span class="popup-c1-titulo-light">as estampas</span><br><span class="popup-c1-titulo-bold">chegaram!</span></h2>
         <p class="popup-c1-data">30 e 31 de maio · Shopping Jardins</p>
         <p class="popup-c1-corpo">As três estampas exclusivas da primeira coleção MARATU estarão disponíveis nos dias <strong>30 e 31 de maio</strong>, no <strong>Shopping Jardins</strong>, no brechó da Marina e Amanda.</p>
         <p class="popup-c1-urgencia">Pouquíssimas unidades. Passa lá pra garantir o seu antes que acabe.</p>

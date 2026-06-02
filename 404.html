@@ -24,12 +24,12 @@
 
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
     html, body { height: 100%; }
-    body { font-family: 'Clother', sans-serif; background: var(--preto); overflow: hidden; }
+    body { font-family: 'Clother', sans-serif; background: var(--areia); color: var(--preto); overflow: hidden; }
 
     .bg {
       position: fixed; inset: 0; z-index: 0;
       background: url('/mangue.jpg') center center / cover no-repeat;
-      opacity: 0.12;
+      opacity: 0.14;
     }
 
     .container {
@@ -41,7 +41,7 @@
     }
 
     .logo { margin-bottom: 48px; }
-    .logo img { height: 48px; width: 48px; border-radius: 50%; mix-blend-mode: screen; }
+    .logo img { height: 48px; width: 48px; border-radius: 50%; }
 
     .tag {
       font-family: 'Space Mono', monospace; font-size: 0.55rem;
@@ -55,7 +55,7 @@
       font-family: 'Jack', sans-serif;
       font-size: clamp(6rem, 20vw, 16rem);
       color: var(--laranja); line-height: 0.85;
-      opacity: 0.15;
+      opacity: 0.12;
       position: absolute;
       left: 50%; transform: translateX(-50%);
       white-space: nowrap; pointer-events: none;
@@ -65,12 +65,12 @@
     .titulo {
       font-family: 'Clother', sans-serif; font-weight: 900;
       font-size: clamp(1.4rem, 4vw, 2.4rem);
-      color: var(--areia); line-height: 1.1; margin-bottom: 12px;
+      color: var(--preto); line-height: 1.1; margin-bottom: 12px;
       position: relative; z-index: 3;
     }
 
     .sub {
-      font-size: 1rem; color: rgba(240,236,228,0.45);
+      font-size: 1rem; color: rgba(13,13,11,0.55);
       line-height: 1.7; margin-bottom: 48px; max-width: 400px;
       position: relative; z-index: 3;
     }
@@ -84,36 +84,36 @@
       display: inline-flex; align-items: center; gap: 10px;
       padding: 15px 28px;
       background: var(--laranja);
-      border: 1.5px solid var(--areia);
-      border-radius: 4px;
-      box-shadow: 4px 4px 0 var(--areia);
+      border: 1.5px solid var(--preto);
+      border-radius: 999px;
+      box-shadow: 4px 4px 0 var(--preto);
       font-family: 'Clother', sans-serif; font-weight: 900;
       font-size: 0.9rem; letter-spacing: 0.06em; text-transform: uppercase;
       color: var(--areia); text-decoration: none;
       transition: transform 0.12s ease, box-shadow 0.12s ease;
     }
-    .btn-home:hover { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 var(--areia); }
-    .btn-home:active { transform: translate(2px,2px); box-shadow: 1px 1px 0 var(--areia); }
+    .btn-home:hover { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 var(--preto); }
+    .btn-home:active { transform: translate(2px,2px); box-shadow: 1px 1px 0 var(--preto); }
 
     .btn-loja {
       display: inline-flex; align-items: center; gap: 10px;
       padding: 15px 28px;
       background: transparent;
-      border: 1.5px solid var(--areia);
-      border-radius: 4px;
-      box-shadow: 4px 4px 0 var(--areia);
+      border: 1.5px solid var(--preto);
+      border-radius: 999px;
+      box-shadow: 4px 4px 0 var(--preto);
       font-family: 'Clother', sans-serif; font-weight: 900;
       font-size: 0.9rem; letter-spacing: 0.06em; text-transform: uppercase;
-      color: var(--areia); text-decoration: none;
+      color: var(--preto); text-decoration: none;
       transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
     }
-    .btn-loja:hover { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 var(--areia); background: rgba(240,236,228,0.08); }
-    .btn-loja:active { transform: translate(2px,2px); box-shadow: 1px 1px 0 var(--areia); }
+    .btn-loja:hover { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 var(--preto); background: rgba(13,13,11,0.06); }
+    .btn-loja:active { transform: translate(2px,2px); box-shadow: 1px 1px 0 var(--preto); }
 
     .rodape {
       position: absolute; bottom: 28px;
       font-family: 'Space Mono', monospace; font-size: 0.48rem;
-      color: rgba(240,236,228,0.15); letter-spacing: 0.1em; text-transform: uppercase;
+      color: rgba(13,13,11,0.3); letter-spacing: 0.1em; text-transform: uppercase;
     }
 
     @media (max-width: 480px) {

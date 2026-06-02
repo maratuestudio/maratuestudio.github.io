@@ -19,7 +19,6 @@
       --preto-mangue: #0D0D0B;
       --areia-orla: #F0ECE4;
       --azul-sergipe: #0E3272;
-      --azul-atalaia: #2E6FC4;
       --dourado-sol: #D4960A;
       --font-display: "Jack", "Clother", "Helvetica Neue", sans-serif;
       --font-body: "Clother", "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -28,56 +27,60 @@
       --shadow-hard-sm: 3px 3px 0 var(--preto-mangue);
       --shadow-hard-lg: 6px 6px 0 var(--preto-mangue);
     }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
+
     body {
       background:
-        linear-gradient(rgba(13,13,11,0.62), rgba(13,13,11,0.72)),
+        linear-gradient(rgba(240,236,228,0.90), rgba(240,236,228,0.94)),
         url('/mangue.jpg') center center / cover no-repeat fixed,
-        var(--preto-mangue);
-      color: var(--areia-orla);
+        var(--areia-orla);
+      color: var(--preto-mangue);
       font-family: var(--font-body);
       font-size: 17px;
       line-height: 1.55;
       min-height: 100vh;
       padding: 32px 20px 80px;
     }
+
     .container { max-width: 640px; margin: 0 auto; }
+
     .topbar {
       display: flex; justify-content: space-between; align-items: center;
       margin-bottom: 56px; padding-bottom: 16px;
-      border-bottom: 1.5px solid rgba(240,236,228,0.3);
+      border-bottom: 1.5px solid rgba(13,13,11,0.18);
     }
     .topbar a {
-      color: var(--areia-orla); text-decoration: none;
+      color: var(--preto-mangue); text-decoration: none;
       font-family: var(--font-display); font-weight: 700;
       font-size: 22px; letter-spacing: 0.02em;
     }
     .topbar .tag {
       font-family: var(--font-mono); font-size: 11px;
       text-transform: uppercase; letter-spacing: 0.12em;
-      padding: 6px 12px; border: 1.5px solid var(--areia-orla);
-      border-radius: 999px; background: transparent; color: var(--areia-orla);
+      padding: 6px 12px; border: 1.5px solid var(--preto-mangue);
+      border-radius: 999px; background: transparent; color: var(--preto-mangue);
     }
+
     .hero { margin-bottom: 48px; }
     .hero h1 {
       font-family: var(--font-display); font-weight: 800;
       font-size: clamp(48px, 10vw, 88px); line-height: 0.95;
       letter-spacing: -0.02em; margin-bottom: 24px;
-      text-transform: uppercase; color: var(--areia-orla);
-      text-shadow: 0 2px 0 rgba(13,13,11,0.4);
+      text-transform: uppercase; color: var(--preto-mangue);
     }
-    .hero h1 .accent { color: var(--dourado-sol); }
-    .hero p { font-size: 17px; max-width: 520px; color: var(--areia-orla); opacity: 0.92; }
-    .hero p strong { font-weight: 700; }
+    .hero h1 .accent { color: var(--laranja-caju); }
+    .hero p { font-size: 17px; max-width: 520px; color: var(--preto-mangue); opacity: 0.75; }
     .meta {
       font-family: var(--font-mono); font-size: 12px;
       text-transform: uppercase; letter-spacing: 0.1em;
-      color: var(--areia-orla); opacity: 0.6;
+      color: var(--preto-mangue); opacity: 0.45;
       margin-top: 20px; display: flex; gap: 16px; flex-wrap: wrap;
     }
+
     .pergunta {
-      background: var(--areia-orla); border: 1.5px solid var(--preto-mangue);
+      background: #fff; border: 1.5px solid var(--preto-mangue);
       border-radius: 4px; padding: 28px 24px; margin-bottom: 24px;
       box-shadow: var(--shadow-hard-lg); color: var(--preto-mangue);
     }
@@ -89,13 +92,14 @@
       font-family: var(--font-body); font-weight: 700;
       font-size: 19px; line-height: 1.3; margin-bottom: 6px;
     }
-    .pergunta .sub { font-size: 14px; opacity: 0.7; margin-bottom: 20px; }
+    .pergunta .sub { font-size: 14px; opacity: 0.6; margin-bottom: 20px; }
     .pergunta .opcional {
       font-family: var(--font-mono); font-size: 10px;
       text-transform: uppercase; letter-spacing: 0.1em;
       background: var(--preto-mangue); color: var(--areia-orla);
       padding: 3px 8px; border-radius: 999px; vertical-align: middle; margin-left: 8px;
     }
+
     .pills { display: flex; flex-wrap: wrap; gap: 8px; }
     .pill {
       cursor: pointer; padding: 10px 16px;
@@ -118,8 +122,9 @@
     .escala-legenda {
       display: flex; justify-content: space-between; margin-top: 10px;
       font-family: var(--font-mono); font-size: 11px;
-      letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.6;
+      letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.5;
     }
+
     textarea {
       width: 100%; min-height: 100px; padding: 14px 16px;
       border: 1.5px solid var(--preto-mangue); border-radius: 4px;
@@ -130,11 +135,12 @@
     .char-count {
       font-family: var(--font-mono); font-size: 11px;
       letter-spacing: 0.08em; text-transform: uppercase;
-      opacity: 0.5; margin-top: 6px; text-align: right;
+      opacity: 0.4; margin-top: 6px; text-align: right;
     }
+
     .submit-bar { margin-top: 40px; text-align: center; }
     .btn-enviar {
-      background: var(--dourado-sol); color: var(--preto-mangue);
+      background: var(--laranja-caju); color: var(--areia-orla);
       border: 1.5px solid var(--preto-mangue); border-radius: 999px;
       padding: 18px 48px; font-family: var(--font-display);
       font-size: 18px; font-weight: 800; letter-spacing: 0.04em;
@@ -144,6 +150,7 @@
     .btn-enviar:hover:not(:disabled) { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 var(--preto-mangue); }
     .btn-enviar:active:not(:disabled) { transform: translate(2px,2px); box-shadow: 1px 1px 0 var(--preto-mangue); }
     .btn-enviar:disabled { opacity: 0.5; cursor: not-allowed; }
+
     .erro {
       background: var(--laranja-caju); color: var(--areia-orla);
       padding: 14px 18px; border-radius: 4px;
@@ -151,6 +158,7 @@
       margin-bottom: 24px; font-weight: 700; display: none;
     }
     .erro.show { display: block; }
+
     .obrigado { display: none; text-align: center; padding: 80px 20px; }
     .obrigado.show { display: block; }
     .obrigado.show + .form-wrap { display: none; }
@@ -158,21 +166,23 @@
       font-family: var(--font-display); font-weight: 800;
       font-size: clamp(40px, 8vw, 72px); line-height: 0.95;
       text-transform: uppercase; margin-bottom: 20px;
-      color: var(--dourado-sol); text-shadow: 0 2px 0 rgba(13,13,11,0.4);
+      color: var(--laranja-caju);
     }
-    .obrigado p { color: var(--areia-orla); font-size: 18px; max-width: 480px; margin: 0 auto 12px; }
+    .obrigado p { color: var(--preto-mangue); font-size: 18px; max-width: 480px; margin: 0 auto 12px; opacity: 0.8; }
     .obrigado .mono {
       font-family: var(--font-mono); font-size: 12px;
       letter-spacing: 0.1em; text-transform: uppercase;
-      color: var(--areia-orla); opacity: 0.7; margin-top: 32px;
+      color: var(--preto-mangue); opacity: 0.45; margin-top: 32px;
     }
+
     .rodape {
       text-align: center; margin-top: 64px; padding-top: 24px;
-      border-top: 1px solid rgba(240,236,228,0.2);
+      border-top: 1px solid rgba(13,13,11,0.15);
       font-family: var(--font-mono); font-size: 10px;
       letter-spacing: 0.18em; text-transform: uppercase;
-      color: var(--areia-orla); opacity: 0.55;
+      color: var(--preto-mangue); opacity: 0.35;
     }
+
     @media (max-width: 520px) {
       body { padding: 24px 16px 60px; background-attachment: scroll; }
       .pergunta { padding: 22px 18px; }

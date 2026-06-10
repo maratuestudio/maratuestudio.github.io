@@ -293,6 +293,13 @@
       text-decoration: line-through;
       pointer-events: none;
     }
+    .cor-btn {
+      width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid rgba(13,13,11,0.2);
+      cursor: pointer; padding: 0; flex-shrink: 0;
+      transition: all 0.12s ease; -webkit-tap-highlight-color: transparent;
+    }
+    .cor-btn:hover:not(.selected) { box-shadow: 0 0 0 2px var(--areia), 0 0 0 3.5px rgba(13,13,11,0.5); }
+    .cor-btn.selected { box-shadow: 0 0 0 2.5px var(--areia), 0 0 0 4.5px var(--preto); transform: scale(1.12); }
     .tam-info-btn {
       background: none; border: none; font-family: 'Space Mono', monospace; font-size: 8px;
       color: rgba(13,13,11,0.25); letter-spacing: 0.08em; cursor: pointer;
@@ -727,6 +734,14 @@
             <p class="produto-tipo">Dispon&iacute;vel em v&aacute;rias cores. Consulte disponibilidade.</p>
           </div>
         </div>
+        <div class="tam-selector" style="gap:6px;margin-bottom:8px;">
+          <button class="cor-btn selected" style="background:#090909;" onclick="selecionarCor(this,'interruptor-slide',0)" title="Preto"></button>
+          <button class="cor-btn" style="background:#969799;" onclick="selecionarCor(this,'interruptor-slide',1)" title="Cinza"></button>
+          <button class="cor-btn" style="background:#F9E069;" onclick="selecionarCor(this,'interruptor-slide',2)" title="Amarelo"></button>
+          <button class="cor-btn" style="background:#0A2989;" onclick="selecionarCor(this,'interruptor-slide',3)" title="Azul"></button>
+          <button class="cor-btn" style="background:#FD7C18;" onclick="selecionarCor(this,'interruptor-slide',4)" title="Laranja"></button>
+          <button class="cor-btn" style="background:#708238;" onclick="selecionarCor(this,'interruptor-slide',5)" title="Verde"></button>
+        </div>
         <a href="https://wa.me/c/557991957415" target="_blank" rel="noopener" class="btn-encomendar">Encomendar &#x2197;</a>
       </div>
           </div>
@@ -970,10 +985,17 @@
         if (e.key === 'ArrowLeft')  ir(current - 1);
       });
 
+      slideshows[id] = { ir: ir, iniciar: iniciar };
       iniciar();
     }
 
 
+    var slideshows = {};
+    function selecionarCor(btn, id, idx) {
+      btn.parentElement.querySelectorAll('.cor-btn').forEach(function(b) { b.classList.remove('selected'); });
+      btn.classList.add('selected');
+      if (slideshows[id]) { slideshows[id].ir(idx); slideshows[id].iniciar(); }
+    }
     function initSlideshow(id) {
       var el = document.getElementById(id);
       if (!el) return;

@@ -566,7 +566,7 @@
       <div class="produtos-grid" id="grid-blusas">
       <div class="produto-card" data-tipo="blusa" data-faixa="blusas">
         <div class="produto-img-wrap quadrado" onclick="abrirLightbox('blusa-azulejo-frente.jpg?v=4','Azulejo Português')">
-          <div class="tag-badge"></div>
+          <div class="tag-badge"><div class="tag-novo"><span>NOVO</span></div><span class="pill-colecao pill-origens">Origens</span></div>
           <img class="img-principal com-hover" src="blusa-azulejo-frente.jpg?v=4" alt="Azulejo Português Blusa Preta" loading="lazy">
           <img class="img-hover" src="blusa-azulejo-costas.jpg?v=4" alt="Azulejo Português costas" loading="lazy">
           <div class="preco-selo"><span class="preco-valor"><span class="preco-cifrao">R$</span>229</span></div>
@@ -710,8 +710,12 @@
           <div>
             <p class="produto-nome">Pind&aacute;</p>
             <p class="produto-tipo">Vaso &middot; 12cm &middot; com pratinho</p>
-            <p class="produto-tipo">Dispon&iacute;vel em v&aacute;rias cores. Consulte disponibilidade.</p>
           </div>
+        </div>
+        <div class="tam-selector" style="gap:6px;margin-bottom:8px;">
+          <button class="cor-btn selected" style="background:#969799;" onclick="selecionarCor(this,'vaso-pinda-slide',0)" title="Cinza"></button>
+          <button class="cor-btn" style="background:#CC2B2B;" onclick="selecionarCor(this,'vaso-pinda-slide',1)" title="Vermelho"></button>
+          <button class="cor-btn" style="background:#0A2989;" onclick="selecionarCor(this,'vaso-pinda-slide',2)" title="Azul"></button>
         </div>
         <a href="https://wa.me/p/26850936251232418/557991957415" target="_blank" rel="noopener" class="btn-encomendar">Encomendar &#x2197;</a>
       </div>
@@ -731,7 +735,6 @@
           <div>
             <p class="produto-nome">Interruptor</p>
             <p class="produto-tipo">Decor &middot; 7 cores</p>
-            <p class="produto-tipo">Dispon&iacute;vel em v&aacute;rias cores. Consulte disponibilidade.</p>
           </div>
         </div>
         <div class="tam-selector" style="gap:6px;margin-bottom:8px;">
@@ -1024,7 +1027,7 @@
 
     buildPosters();
     applyVisibility();
-    initVasoSlideshow();
+    initSlideshow('vaso-pinda-slide');
     initSlideshow('interruptor-slide');
   </script>
 

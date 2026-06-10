@@ -454,9 +454,12 @@
   <div class="filtros-wrap">
     <div class="filtros">
       <button class="filtro-btn active" data-filtro="todos" onclick="filtrar('todos')">Todos <span class="filtro-count">25</span></button>
-      <button class="filtro-btn" data-filtro="poster" onclick="filtrar('poster')">Pôsteres <span class="filtro-count">10</span></button>
+      <button class="filtro-btn" data-filtro="usemaratu" onclick="filtrar('usemaratu')">Use MARATU <span class="filtro-count">8</span></button>
+      <button class="filtro-btn" data-filtro="casamaratu" onclick="filtrar('casamaratu')">Casa MARATU <span class="filtro-count">17</span></button>
+      <button class="filtro-btn" data-filtro="chaveiro" onclick="filtrar('chaveiro')">Chaveiros <span class="filtro-count">5</span></button>
       <button class="filtro-btn" data-filtro="adesivo" onclick="filtrar('adesivo')">Adesivos <span class="filtro-count">1</span></button>
-      <button class="filtro-btn" data-filtro="chaveiro" onclick="filtrar('chaveiro')">Use MARATU <span class="filtro-count">8</span></button>
+      <button class="filtro-btn" data-filtro="blusa" onclick="filtrar('blusa')">Blusas <span class="filtro-count">2</span></button>
+      <button class="filtro-btn" data-filtro="poster" onclick="filtrar('poster')">Pôsteres <span class="filtro-count">10</span></button>
       <button class="filtro-btn" data-filtro="essenciais" onclick="filtrar('essenciais')">Decor <span class="filtro-count">7</span></button>
     </div>
   </div>
@@ -871,7 +874,11 @@
       var f = state.filtro;
       var filtrando = f !== 'todos';
       document.querySelectorAll('.produto-card').forEach(function(c) {
-        var tipoOk = filtrando ? (c.dataset.tipo === f || (f === 'chaveiro' && c.dataset.tipo === 'blusa')) : true;
+        var tipoOk;
+      if (!filtrando) { tipoOk = true; }
+      else if (f === 'usemaratu')  { tipoOk = ['chaveiro','adesivo','blusa'].indexOf(c.dataset.tipo) !== -1; }
+      else if (f === 'casamaratu') { tipoOk = ['poster','essenciais'].indexOf(c.dataset.tipo) !== -1; }
+      else { tipoOk = c.dataset.tipo === f; }
         var isExtra = c.dataset.extra === '1';
         var expanded = state[c.dataset.faixa];
         var bloqueadoPorExtra = !filtrando && isExtra && !expanded;

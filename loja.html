@@ -453,11 +453,11 @@
 
   <div class="filtros-wrap">
     <div class="filtros">
-      <button class="filtro-btn active" data-filtro="todos" onclick="filtrar('todos')">Todos <span class="filtro-count">24</span></button>
+      <button class="filtro-btn active" data-filtro="todos" onclick="filtrar('todos')">Todos <span class="filtro-count">25</span></button>
       <button class="filtro-btn" data-filtro="poster" onclick="filtrar('poster')">Pôsteres <span class="filtro-count">10</span></button>
       <button class="filtro-btn" data-filtro="adesivo" onclick="filtrar('adesivo')">Adesivos <span class="filtro-count">1</span></button>
-      <button class="filtro-btn" data-filtro="chaveiro" onclick="filtrar('chaveiro')">Use MARATU <span class="filtro-count">6</span></button>
-      <button class="filtro-btn" data-filtro="essenciais" onclick="filtrar('essenciais')">Decor <span class="filtro-count">6</span></button>
+      <button class="filtro-btn" data-filtro="chaveiro" onclick="filtrar('chaveiro')">Use MARATU <span class="filtro-count">8</span></button>
+      <button class="filtro-btn" data-filtro="essenciais" onclick="filtrar('essenciais')">Decor <span class="filtro-count">7</span></button>
     </div>
   </div>
 
@@ -705,6 +705,27 @@
         </div>
         <a href="https://wa.me/p/26850936251232418/557991957415" target="_blank" rel="noopener" class="btn-encomendar">Encomendar &#x2197;</a>
       </div>
+      <div class="produto-card" data-tipo="essenciais" data-faixa="essenciais">
+        <figure class="vaso-slideshow" id="interruptor-slide" tabindex="0" aria-label="Interruptor — deslize para ver cores">
+          <div class="tag-badge"><div class="tag-novo"><span>NOVO</span></div><span class="pill-colecao pill-essenciais">Decor</span></div>
+          <img class="vaso-slide ativo" src="interruptor-preto.png" alt="Interruptor preto" loading="lazy">
+          <img class="vaso-slide" src="interruptor-cinza.png" alt="Interruptor cinza" loading="lazy">
+          <img class="vaso-slide" src="interruptor-amarelo.png" alt="Interruptor amarelo" loading="lazy">
+          <img class="vaso-slide" src="interruptor-azul.png" alt="Interruptor azul" loading="lazy">
+          <img class="vaso-slide" src="interruptor-laranja.png" alt="Interruptor laranja" loading="lazy">
+          <img class="vaso-slide" src="interruptor-verde.png" alt="Interruptor verde" loading="lazy">
+          <img class="vaso-slide" src="interruptor-vermelho.png" alt="Interruptor vermelho" loading="lazy">
+          <div class="preco-selo"><span class="preco-valor"><span class="preco-cifrao">R$</span>69</span></div>
+        </figure>
+        <div class="produto-info">
+          <div>
+            <p class="produto-nome">Interruptor</p>
+            <p class="produto-tipo">Decor &middot; 7 cores</p>
+            <p class="produto-tipo">Dispon&iacute;vel em v&aacute;rias cores. Consulte disponibilidade.</p>
+          </div>
+        </div>
+        <a href="https://wa.me/c/557991957415" target="_blank" rel="noopener" class="btn-encomendar">Encomendar &#x2197;</a>
+      </div>
           </div>
     </div>
   </section>
@@ -850,7 +871,7 @@
       var f = state.filtro;
       var filtrando = f !== 'todos';
       document.querySelectorAll('.produto-card').forEach(function(c) {
-        var tipoOk = filtrando ? c.dataset.tipo === f : true;
+        var tipoOk = filtrando ? (c.dataset.tipo === f || (f === 'chaveiro' && c.dataset.tipo === 'blusa')) : true;
         var isExtra = c.dataset.extra === '1';
         var expanded = state[c.dataset.faixa];
         var bloqueadoPorExtra = !filtrando && isExtra && !expanded;
@@ -945,9 +966,37 @@
       iniciar();
     }
 
+
+    function initSlideshow(id) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      var slides = Array.from(el.querySelectorAll('.vaso-slide'));
+      var current = 0, timer = null, touchStartX = 0;
+      function ir(idx) {
+        slides[current].classList.remove('ativo');
+        current = ((idx % slides.length) + slides.length) % slides.length;
+        slides[current].classList.add('ativo');
+      }
+      function iniciar() { clearInterval(timer); timer = setInterval(function() { ir(current + 1); }, 2200); }
+      el.addEventListener('mouseenter', function() { clearInterval(timer); });
+      el.addEventListener('mouseleave', iniciar);
+      el.addEventListener('click', function() { ir(current + 1); iniciar(); });
+      el.addEventListener('touchstart', function(e) { touchStartX = e.touches[0].clientX; }, { passive: true });
+      el.addEventListener('touchend', function(e) {
+        var dx = e.changedTouches[0].clientX - touchStartX;
+        if (Math.abs(dx) > 40) ir(current + (dx < 0 ? 1 : -1));
+      });
+      el.addEventListener('keydown', function(e) {
+        if (e.key === 'ArrowRight') ir(current + 1);
+        if (e.key === 'ArrowLeft')  ir(current - 1);
+      });
+      iniciar();
+    }
+
     buildPosters();
     applyVisibility();
     initVasoSlideshow();
+    initSlideshow('interruptor-slide');
   </script>
 
   <div class="mr-drop" id="mr-drop">

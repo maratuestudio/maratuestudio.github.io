@@ -55,9 +55,14 @@
       display: grid; grid-template-columns: 1fr auto 1fr;
       align-items: center;
       transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      background: rgba(240, 236, 228, 0.45);
+    }
+    .header::before {
+      content: ''; position: absolute; inset: 0; z-index: -1;
       backdrop-filter: saturate(180%) blur(24px);
       -webkit-backdrop-filter: saturate(180%) blur(24px);
+      background: rgba(240, 236, 228, 0.5);
+      mask-image: linear-gradient(to bottom, black 30%, transparent 100%);
+      -webkit-mask-image: linear-gradient(to bottom, black 30%, transparent 100%);
     }
     .header.hidden { transform: translateY(-100%); }
     .header__logo {

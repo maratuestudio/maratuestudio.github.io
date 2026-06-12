@@ -94,6 +94,9 @@
       align-items: center;
       color: var(--areia);
       transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s ease;
+      background: rgba(128, 128, 128, 0.12);
+      backdrop-filter: saturate(180%) blur(24px);
+      -webkit-backdrop-filter: saturate(180%) blur(24px);
     }
     .header.hidden { transform: translateY(-100%); }
     .header__logo { transition: color 0.3s ease; }

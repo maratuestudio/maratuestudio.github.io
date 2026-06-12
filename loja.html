@@ -55,6 +55,9 @@
       display: grid; grid-template-columns: 1fr auto 1fr;
       align-items: center;
       transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      background: rgba(240, 236, 228, 0.72);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
     }
     .header.hidden { transform: translateY(-100%); }
     .header__logo {
@@ -142,6 +145,7 @@
       box-shadow: 3px 3px 0 0 var(--preto);
       overflow: hidden;
       padding: 0 10px 10px;
+      display: flex; flex-direction: column;
     }
     .produto-img-wrap {
       position: relative; overflow: hidden;
@@ -311,7 +315,7 @@
 
     /* BOTÃO ENCOMENDAR */
     .btn-encomendar {
-      display: block; width: 100%; text-align: center;
+      display: block; width: 100%; text-align: center; margin-top: auto;
       font-family: 'Space Mono', monospace; font-weight: 700;
       font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
       color: var(--preto); background: var(--dourado);
@@ -327,7 +331,7 @@
     .wa-banner {
       padding: 24px;
       background: transparent;
-      border: 1.5px solid #2E6FC4;
+      border: 1.5px solid var(--preto);
       border-radius: 16px;
       box-shadow: 3px 3px 0 0 #2E6FC4;
       display: flex; align-items: flex-start; gap: 14px;

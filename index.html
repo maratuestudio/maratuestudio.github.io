@@ -620,36 +620,71 @@
       border-left: 1px solid rgba(13,13,11,0.12);
       padding-left: clamp(32px, 5vw, 64px);
     }
+    .footer__indica-head {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: clamp(20px, 3vw, 36px);
+      align-items: start;
+    }
     .footer__indica-titulo {
       font-family: var(--jack);
-      font-size: clamp(1.3rem, 2.2vw, 2rem);
-      line-height: 1; letter-spacing: -0.02em;
+      font-size: clamp(1.6rem, 2.8vw, 2.4rem);
+      line-height: 0.95; letter-spacing: -0.02em;
       text-transform: uppercase; color: var(--preto);
     }
     .footer__indica-titulo span {
       display: block;
       font-family: var(--clother); font-weight: 400;
-      font-size: 0.42em; letter-spacing: 0.28em;
-      text-transform: uppercase; opacity: 0.5; margin-top: 4px;
+      font-size: 0.32em; letter-spacing: 0.28em;
+      text-transform: uppercase; opacity: 0.55; margin-top: 4px;
     }
     .footer__indica-sub {
       font-family: var(--clother);
       font-size: clamp(0.78rem, 1vw, 0.9rem);
-      line-height: 1.5; color: rgba(13,13,11,0.55);
-      margin-top: 14px; max-width: 38ch;
+      line-height: 1.55; color: rgba(13,13,11,0.55);
+      max-width: 42ch; padding-left: clamp(20px, 3vw, 36px);
+      border-left: 1px solid rgba(13,13,11,0.12);
+    }
+    .footer__indica-divider {
+      border: 0; height: 1px; background: rgba(13,13,11,0.12);
+      margin: 24px 0 22px;
     }
     .footer__indica-marcas {
-      display: flex; flex-wrap: wrap; gap: 16px 28px;
-      margin-top: 24px; align-items: center;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+      gap: 18px 12px; align-items: start;
     }
     .footer__indica-marca {
-      display: inline-flex; align-items: center;
-      opacity: 0.75; transition: opacity 0.2s ease;
+      display: flex; flex-direction: column; align-items: center;
+      text-align: center; gap: 8px; text-decoration: none;
+      transition: transform 0.15s ease;
     }
-    .footer__indica-marca:hover { opacity: 1; }
-    .footer__indica-marca img {
-      height: 32px; width: auto; display: block;
-      object-fit: contain;
+    .footer__indica-marca:hover { transform: translateY(-2px); }
+    .footer__indica-marca-circulo {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: rgba(13,13,11,0.08);
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+    .footer__indica-marca-circulo img {
+      max-width: 60%; max-height: 60%; object-fit: contain; display: block;
+    }
+    .footer__indica-marca-circulo .marca-iniciais {
+      font-family: var(--clother); font-weight: 900;
+      font-size: 13px; color: var(--preto); letter-spacing: 0.04em;
+    }
+    .footer__indica-marca-nome {
+      font-family: var(--clother); font-weight: 700;
+      font-size: 13px; color: var(--preto); line-height: 1.2;
+    }
+    .footer__indica-marca-cat {
+      font-family: var(--clother); font-weight: 400;
+      font-size: 11px; color: rgba(13,13,11,0.45);
+      line-height: 1.2;
+    }
+    @media (max-width: 600px) {
+      .footer__indica-head { grid-template-columns: 1fr; }
+      .footer__indica-sub { padding-left: 0; border-left: none; padding-top: 12px; border-top: 1px solid rgba(13,13,11,0.12); }
     }
     @media (max-width: 768px) {
       .footer__baseline { flex-direction: column; }
@@ -975,7 +1010,7 @@
     }
 
     /* POLÍTICA */
-    .politica { padding: clamp(48px,7vh,96px) var(--margem); border-top: 0.5px solid rgba(13,13,11,0.1); }
+    .politica { padding: clamp(48px,7vh,96px) var(--margem); background: var(--areia); color: var(--preto); border-top: 0.5px solid rgba(13,13,11,0.1); }
     .politica-lbl {
       font-family: 'Clother', sans-serif; font-size: 0.55rem; color: var(--laranja);
       letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 8px;
@@ -1607,11 +1642,16 @@
     <div class="footer__topo">
       <div class="footer__logo">MARATU<span>Estúdio</span></div>
       <div class="footer__indica">
-        <h3 class="footer__indica-titulo">MARATU<span>Indica</span></h3>
-        <p class="footer__indica-sub">Marcas, projetos e pessoas de Sergipe que caminham com a gente.</p>
+        <div class="footer__indica-head">
+          <h3 class="footer__indica-titulo">MARATU<span>Indica</span></h3>
+          <p class="footer__indica-sub">Marcas, projetos e pessoas de Sergipe que caminham com a gente. Tudo que a gente usa, confia e indica de olho fechado.</p>
+        </div>
+        <hr class="footer__indica-divider">
         <div class="footer__indica-marcas">
           <a href="https://www.qabrand.com.br" target="_blank" rel="noopener" class="footer__indica-marca" aria-label="QA">
-            <img src="logo-qa.png" alt="QA">
+            <div class="footer__indica-marca-circulo"><img src="logo-qa.png" alt="QA"></div>
+            <span class="footer__indica-marca-nome">QA</span>
+            <span class="footer__indica-marca-cat">moda</span>
           </a>
         </div>
       </div>

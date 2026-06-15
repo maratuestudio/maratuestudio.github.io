@@ -611,8 +611,40 @@
       letter-spacing: 0.12em; text-transform: uppercase;
       color: rgba(13,13,11,0.2);
     }
+    .footer__topo {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(32px, 5vw, 64px);
+      margin-bottom: 32px;
+      align-items: center;
+    }
+    .footer__topo .footer__logo { margin-bottom: 0; }
+    .footer__indica {
+      border-left: 1px solid rgba(13,13,11,0.12);
+      padding-left: clamp(32px, 5vw, 64px);
+    }
+    .footer__indica-titulo {
+      font-family: var(--jack);
+      font-size: clamp(2rem, 4vw, 4.5rem);
+      line-height: 1; letter-spacing: -0.02em;
+      text-transform: uppercase; color: var(--preto);
+    }
+    .footer__indica-titulo span {
+      display: block;
+      font-family: var(--clother); font-weight: 400;
+      font-size: 0.28em; letter-spacing: 0.28em;
+      text-transform: uppercase; opacity: 0.5; margin-top: 2px;
+    }
+    .footer__indica-sub {
+      font-family: var(--clother);
+      font-size: clamp(0.85rem, 1.1vw, 0.95rem);
+      line-height: 1.6; color: rgba(13,13,11,0.55);
+      margin-top: 16px; max-width: 38ch;
+    }
     @media (max-width: 768px) {
       .footer__baseline { flex-direction: column; }
+      .footer__topo { grid-template-columns: 1fr; gap: 24px; }
+      .footer__indica { border-left: none; padding-left: 0; padding-top: 24px; border-top: 1px solid rgba(13,13,11,0.12); }
     }
 
 
@@ -807,7 +839,13 @@
 
   <!-- FOOTER -->
   <footer class="footer">
-    <div class="footer__logo">MARATU<span>Estúdio</span></div>
+    <div class="footer__topo">
+      <div class="footer__logo">MARATU<span>Estúdio</span></div>
+      <div class="footer__indica">
+        <h3 class="footer__indica-titulo">MARATU<span>Indica</span></h3>
+        <p class="footer__indica-sub">Marcas, projetos e pessoas de Sergipe que caminham com a gente.</p>
+      </div>
+    </div>
     <div class="footer__baseline">
       <p>© 2026 MARATU Estúdio · feito em Aracaju · Projeta o Mangue!</p>
       <p>Impressão 3D · Design · Arte</p>

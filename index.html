@@ -668,6 +668,395 @@
     @media (max-width: 600px) {
       .t2 { font-size: clamp(2.2rem, 11vw, 3.6rem); }
     }
+
+    /* ── LOJA (seção embutida) ── */
+    .loja-secao {
+      background: var(--areia);
+      color: var(--preto);
+      padding-top: clamp(40px, 6vh, 80px);
+      position: relative;
+    }
+
+    /* FILTROS */
+    .filtros-wrap { padding-top: 72px; border-bottom: 0.5px solid rgba(13,13,11,0.1); }
+    .filtros { display: flex; flex-wrap: wrap; gap: 8px; padding: 16px var(--margem); }
+    .filtro-btn {
+      font-family: 'Clother', sans-serif; font-weight: 700;
+      font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 6px 12px; border-radius: 999px;
+      border: 1px solid rgba(13,13,11,0.25);
+      background: transparent; color: var(--preto);
+      cursor: pointer; transition: all 0.15s ease;
+      display: inline-flex; align-items: center; gap: 5px;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .filtro-btn:hover:not(.active) { border-color: rgba(13,13,11,0.5); }
+    .filtro-btn.active {
+      background: var(--dourado); color: var(--preto);
+      border: 1.5px solid var(--preto); box-shadow: 2px 2px 0 0 var(--preto);
+    }
+    .filtro-count { font-family: 'Clother', sans-serif; font-size: 8px; opacity: 0.55; }
+
+    /* FAIXAS */
+    .faixa { padding: 48px var(--margem); border-bottom: 0.5px solid rgba(13,13,11,0.1); }
+    .faixa-header {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      margin-bottom: 28px; gap: 16px; flex-wrap: wrap;
+    }
+    .faixa-tag {
+      font-family: 'Clother', sans-serif; font-size: 9px;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--laranja); margin-bottom: 6px;
+    }
+    .faixa-nome {
+      font-family: 'Jack', sans-serif; font-weight: 400;
+      font-size: 15px; color: var(--preto); text-transform: uppercase; line-height: 1;
+    }
+    .faixa-ver-todos {
+      font-family: 'Clother', sans-serif; font-weight: 900;
+      font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--areia); background: var(--preto);
+      padding: 8px 16px; border-radius: 999px;
+      border: 1.5px solid var(--preto); box-shadow: 2px 2px 0 0 var(--preto);
+      cursor: pointer; white-space: nowrap; align-self: center;
+      transition: all 0.15s ease; -webkit-tap-highlight-color: transparent;
+    }
+    .faixa-ver-todos:hover { box-shadow: 1px 1px 0 0 var(--preto); transform: translate(1px, 1px); }
+
+    /* GRID */
+    .produtos-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px 16px; }
+    @media (min-width: 600px) { .produtos-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (min-width: 960px) { .produtos-grid { grid-template-columns: repeat(4, 1fr); } }
+
+    /* CARD */
+    .produto-card {
+      cursor: pointer;
+      border-radius: 8px;
+      border: 1.5px solid var(--preto);
+      box-shadow: 3px 3px 0 0 var(--preto);
+      overflow: hidden;
+      padding: 0 10px 10px;
+      display: flex; flex-direction: column;
+    }
+    .produto-img-wrap {
+      position: relative; overflow: hidden;
+      border-radius: 0; margin: 0 -10px 8px; background: #e4dfd6;
+    }
+    .produto-img-wrap.poster { aspect-ratio: 3 / 4; }
+    .produto-img-wrap.quadrado { aspect-ratio: 1 / 1; }
+    .produto-img-wrap img {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      object-fit: cover; display: block;
+      transition: transform 0.2s ease, opacity 0.4s ease;
+    }
+    .produto-card:hover .img-principal:not(.com-hover) { transform: scale(1.02); }
+    .produto-card:hover .img-principal.com-hover { opacity: 0; }
+    .img-hover { opacity: 0; }
+    .produto-card:hover .img-hover { opacity: 1; }
+
+    .tag-badge {
+      position: absolute; top: 8px; left: 8px; z-index: 2;
+      display: flex; gap: 4px; flex-wrap: wrap; align-items: center;
+    }
+    .tag-novo {
+      position: relative;
+      padding: 2px;
+      border-radius: 999px;
+      background: linear-gradient(
+        90deg,
+        #0D0D0B, #D4960A, #F4C055, #D4960A, #0D0D0B,
+        #D4960A, #F4C055, #D4960A, #0D0D0B
+      );
+      background-size: 300% 100%;
+      animation: chrome-slide 4s linear infinite;
+      display: inline-flex; align-items: center;
+      border: none;
+      box-shadow: 2px 2px 0 0 var(--preto);
+    }
+    .tag-novo > span {
+      display: block;
+      background: var(--areia);
+      color: var(--preto);
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-family: 'Clother', sans-serif;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      line-height: 1;
+    }
+    @keyframes chrome-slide {
+      0%   { background-position: 0% 50%; }
+      100% { background-position: 300% 50%; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .tag-novo { animation: none; }
+    }
+    /* VINTAGE BADGE SYSTEM */
+    .vintage-badge,
+    .pill-colecao {
+      font-family: 'Clother', sans-serif; font-weight: 700;
+      font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 999px;
+      border: 1.5px solid var(--preto);
+      box-shadow: 2px 2px 0 0 var(--preto);
+      display: inline-flex; align-items: center; line-height: 1;
+    }
+    .pill-origens {
+      background: #2E6FC4; color: var(--areia);
+    }
+    .pill-manguehaus {
+      background: #C8501A; color: var(--areia);
+    }
+    .pill-essenciais {
+      background: var(--dourado); color: var(--preto);
+    }
+    .pill-kit {
+      background: var(--preto); color: var(--areia);
+    }
+
+    .produto-info {
+      margin-bottom: 8px;
+    }
+    .produto-nome {
+      font-family: 'Clother', sans-serif; font-weight: 700;
+      font-size: 12px; color: var(--preto); text-transform: uppercase;
+      line-height: 1.2; margin-bottom: 2px;
+    }
+    .produto-tipo {
+      font-family: 'Clother', sans-serif; font-size: 9px;
+      color: rgba(13,13,11,0.5); letter-spacing: 0.1em; text-transform: uppercase;
+    }
+    /* SELO DE PREÇO */
+    .preco-selo {
+      position: absolute; bottom: 12px; right: 12px;
+      width: 72px; height: 72px;
+      background: var(--areia); color: var(--preto);
+      border: 1.5px solid var(--preto);
+      border-radius: 50%;
+      box-shadow: 2px 2px 0 0 var(--preto);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Clother', sans-serif; font-weight: 900;
+      transform: rotate(-8deg);
+      z-index: 2;
+    }
+    .preco-selo .preco-valor {
+      font-size: 22px; line-height: 1;
+      display: flex; align-items: baseline; gap: 1px;
+    }
+    .preco-selo .preco-cifrao {
+      font-family: 'Clother', sans-serif; font-weight: 700;
+      font-size: 11px;
+    }
+    .preco-selo .preco-riscado {
+      position: absolute; top: -6px; right: -4px;
+      background: var(--preto); color: var(--areia);
+      border-radius: 999px;
+      padding: 2px 8px;
+      font-family: 'Clother', sans-serif; font-weight: 700;
+      font-size: 9px;
+      border: 1.5px solid var(--preto);
+      text-decoration: line-through;
+      text-decoration-color: var(--areia);
+    }
+
+    /* TAMANHOS */
+    .tam-selector { display: flex; gap: 4px; margin-bottom: 6px; flex-wrap: wrap; }
+    .tam-btn {
+      font-family: 'Clother', sans-serif; font-size: 9px; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      padding: 3px 10px; border-radius: 999px;
+      border: 1.5px solid rgba(13,13,11,0.3);
+      background: transparent; color: rgba(13,13,11,0.55);
+      cursor: pointer; transition: all 0.12s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .tam-btn.selected {
+      background: var(--dourado); color: var(--preto);
+      border-color: var(--preto);
+      box-shadow: 2px 2px 0 0 var(--preto);
+    }
+    .tam-btn:hover:not(.selected) {
+      border-color: var(--preto);
+      color: var(--preto);
+    }
+    .tam-btn.tam-esgotado {
+      opacity: 0.28;
+      cursor: not-allowed;
+      text-decoration: line-through;
+      pointer-events: none;
+    }
+    .cor-btn {
+      width: 28px; height: 28px; border-radius: 50%;
+      border: 1.5px solid rgba(13,13,11,0.3);
+      cursor: pointer; padding: 0; flex-shrink: 0;
+      transition: all 0.12s ease; -webkit-tap-highlight-color: transparent;
+    }
+    .cor-btn:hover:not(.selected) { border-color: var(--preto); }
+    .cor-btn.selected { border-color: var(--preto); box-shadow: 2px 2px 0 0 var(--preto); }
+    .tam-info-btn {
+      background: none; border: none; font-family: 'Clother', sans-serif; font-size: 8px;
+      color: rgba(13,13,11,0.25); letter-spacing: 0.08em; cursor: pointer;
+      text-decoration: underline; padding: 2px 0 6px; display: block;
+      transition: color 0.2s; -webkit-tap-highlight-color: transparent;
+    }
+    .tam-info-btn:hover { color: rgba(13,13,11,0.5); }
+
+    /* BOTÃO ENCOMENDAR */
+    .btn-encomendar {
+      display: block; width: 100%; text-align: center; margin-top: auto;
+      font-family: 'Clother', sans-serif; font-weight: 700;
+      font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--preto); background: var(--dourado);
+      padding: 10px 16px; border-radius: 999px;
+      border: 1.5px solid var(--preto); box-shadow: 3px 3px 0 0 var(--preto);
+      text-decoration: none; transition: all 0.15s ease; cursor: pointer;
+    }
+    .btn-encomendar:hover { box-shadow: 1px 1px 0 0 var(--preto); transform: translate(2px, 2px); }
+    .btn-encomendar:active { box-shadow: 0 0 0 0 var(--preto); transform: translate(3px, 3px); }
+
+    /* BOTÃO DISPONÍVEL NA QA */
+    .btn-disponivel { display: flex; align-items: center; justify-content: center; gap: 8px; background: var(--areia); font-family: 'Clother', sans-serif; font-weight: 700; }
+    .btn-disponivel img { height: 16px; width: auto; display: block; }
+
+    /* POPUP QA */
+    #qa-popup-overlay .tam-popup {
+      border-radius: 8px;
+      border: 1.5px solid var(--preto);
+      box-shadow: 3px 3px 0 0 var(--preto);
+    }
+    .qa-popup-actions { display: flex; flex-direction: column; gap: 12px; margin-top: 4px; }
+    .qa-action-btn {
+      display: block; width: 100%; text-align: center;
+      font-family: 'Clother', sans-serif; font-weight: 700;
+      font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--preto); background: var(--dourado);
+      padding: 12px 18px; border-radius: 999px;
+      border: 1.5px solid var(--preto); box-shadow: 3px 3px 0 0 var(--preto);
+      text-decoration: none; transition: all 0.15s ease; cursor: pointer;
+    }
+    .qa-action-btn:hover { box-shadow: 1px 1px 0 0 var(--preto); transform: translate(2px, 2px); }
+    .qa-action-btn:active { box-shadow: 0 0 0 0 var(--preto); transform: translate(3px, 3px); }
+    .qa-action-btn.secundario { background: var(--areia); }
+
+    /* WA BANNER */
+    .wa-wrap { padding: 40px var(--margem) 0; }
+    .wa-banner {
+      padding: 24px;
+      background: transparent;
+      border: 1.5px solid var(--preto);
+      border-radius: 16px;
+      box-shadow: 3px 3px 0 0 var(--preto);
+      display: flex; align-items: flex-start; gap: 14px;
+    }
+    .wa-dot { display: none; }
+    .wa-title { font-family: 'Clother', sans-serif; font-weight: 900; font-size: 18px; color: var(--preto); margin-bottom: 5px; }
+    .wa-desc { font-family: 'Clother', sans-serif; font-weight: 400; font-size: 14px; color: rgba(13,13,11,0.8); line-height: 1.6; margin-bottom: 8px; }
+    .wa-msg-preview {
+      display: inline-block; padding: 5px 10px;
+      background: transparent; border: 1px solid rgba(13,13,11,0.3);
+      font-family: 'Clother', sans-serif; font-size: 0.55rem;
+      color: rgba(13,13,11,0.6); border-radius: 0 5px 0 0; line-height: 1.5;
+    }
+
+    /* POLÍTICA */
+    .politica { padding: clamp(48px,7vh,96px) var(--margem); border-top: 0.5px solid rgba(13,13,11,0.1); }
+    .politica-lbl {
+      font-family: 'Clother', sans-serif; font-size: 0.55rem; color: var(--laranja);
+      letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 8px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .politica-lbl::before { content: ''; display: block; width: 18px; height: 1px; background: var(--laranja); }
+    .politica-titulo { font-family: 'Clother', sans-serif; font-weight: 700; font-size: clamp(1.1rem,2vw,1.6rem); color: var(--preto); margin-bottom: 28px; margin-top: 8px; }
+    .politica-titulo span { color: var(--laranja); }
+    .politica-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
+    .pol-item {
+      padding: 24px;
+      background: transparent;
+      border: 1.5px solid #0D0D0B;
+      border-radius: 16px;
+      box-shadow: 3px 3px 0 0 #0D0D0B;
+      transition: box-shadow 0.15s ease, transform 0.15s ease;
+    }
+    .pol-item:hover { box-shadow: 1px 1px 0 0 #0D0D0B; transform: translate(2px, 2px); }
+    .pol-icon { display: none; }
+    .pol-tag {
+      font-family: 'Clother', sans-serif; font-size: 9px;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--laranja); display: block; margin-bottom: 10px;
+    }
+    .pol-titulo { font-family: 'Clother', sans-serif; font-weight: 900; font-size: 14px; color: var(--preto); text-transform: uppercase; margin-bottom: 8px; }
+    .pol-texto { font-family: 'Clother', sans-serif; font-weight: 400; font-size: 13px; line-height: 1.6; color: rgba(13,13,11,0.7); }
+    .pol-texto strong { color: rgba(13,13,11,0.9); font-weight: 700; }
+    @media (max-width: 768px) { .politica-grid { grid-template-columns: 1fr; } }
+
+
+    /* POPUP TAMANHOS */
+    .tam-popup-overlay { display: none; position: fixed; inset: 0; z-index: 9998; background: rgba(13,13,11,0.85); align-items: center; justify-content: center; padding: 20px; }
+    .tam-popup-overlay.open { display: flex; }
+    .tam-popup { background: var(--areia); border: 1px solid rgba(13,13,11,0.12); padding: 32px; max-width: 480px; width: 100%; border-radius: 0 16px 0 0; position: relative; }
+    .tam-popup-close { position: absolute; top: 16px; right: 16px; background: none; border: 1px solid rgba(13,13,11,0.15); color: rgba(13,13,11,0.5); font-family: 'Clother', sans-serif; font-size: 0.65rem; letter-spacing: 0.1em; padding: 6px 12px; cursor: pointer; border-radius: 999px; transition: all 0.2s; }
+    .tam-popup-close:hover { background: rgba(13,13,11,0.08); }
+    .tam-popup-title { font-family: 'Clother', sans-serif; font-weight: 900; font-size: 1.1rem; color: var(--preto); text-transform: uppercase; margin-bottom: 6px; }
+    .tam-popup-sub { font-family: 'Clother', sans-serif; font-size: 0.58rem; color: rgba(13,13,11,0.35); letter-spacing: 0.1em; margin-bottom: 24px; }
+    .tam-tabela { width: 100%; border-collapse: collapse; }
+    .tam-tabela th { font-family: 'Clother', sans-serif; font-size: 0.5rem; color: var(--laranja); letter-spacing: 0.18em; text-transform: uppercase; text-align: left; padding: 0 0 10px; border-bottom: 1px solid rgba(13,13,11,0.08); }
+    .tam-tabela td { padding: 12px 0; border-bottom: 1px solid rgba(13,13,11,0.05); vertical-align: middle; }
+    .tam-tabela tr:last-child td { border-bottom: none; }
+    .tam-tam { font-family: 'Clother', sans-serif; font-weight: 900; font-size: 1rem; color: var(--preto); width: 48px; }
+    .tam-cm { font-family: 'Clother', sans-serif; font-size: 0.6rem; color: rgba(13,13,11,0.45); width: 120px; }
+    .tam-ref { font-size: 0.82rem; color: rgba(13,13,11,0.55); line-height: 1.4; }
+
+    /* LIGHTBOX */
+    .lightbox { display: none; position: fixed; inset: 0; z-index: 9999; background: rgba(13,13,11,0.96); align-items: center; justify-content: center; padding: 16px; }
+    .lightbox.open { display: flex; }
+    .lightbox-img { max-height: 88vh; max-width: 92vw; object-fit: contain; border-radius: 14px; }
+    .lightbox-close { position: absolute; top: 20px; right: 20px; background: none; border: 1.5px solid var(--areia); color: var(--areia); font-family: 'Clother', sans-serif; font-weight: 900; font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase; padding: 10px 20px; cursor: pointer; border-radius: 999px; box-shadow: 2px 2px 0 0 var(--areia); transition: all 0.15s ease; }
+    .lightbox-close:hover { box-shadow: 1px 1px 0 0 var(--areia); transform: translate(1px, 1px); }
+    .lightbox-nome { position: absolute; top: 18px; left: 18px; font-family: 'Clother', sans-serif; font-weight: 900; font-size: 0.8rem; color: rgba(13,13,11,0.5); letter-spacing: 0.12em; text-transform: uppercase; }
+
+    /* HIERARQUIA MARCA / SUB-FAIXA */
+    .marca-bloco { border-bottom: 0.5px solid rgba(13,13,11,0.1); }
+    .marca-titulo {
+      font-family: 'Jack', sans-serif; font-weight: 400;
+      font-size: clamp(0.95rem, 1.7vw, 1.35rem);
+      color: var(--preto); line-height: 1;
+      letter-spacing: 0.04em; text-transform: uppercase;
+      padding: 40px var(--margem) 24px;
+      border-bottom: 0.5px solid rgba(13,13,11,0.1);
+    }
+    .sub-faixa {
+      padding: 32px var(--margem) 40px;
+      border-bottom: 0.5px solid rgba(13,13,11,0.07);
+    }
+    .sub-faixa:last-child { border-bottom: none; }
+    .sub-faixa-header {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px; gap: 16px; flex-wrap: wrap;
+    }
+    .sub-faixa-nome {
+      font-family: 'Clother', sans-serif; font-weight: 900;
+      font-size: 12px; color: rgba(13,13,11,0.4);
+      text-transform: uppercase; letter-spacing: 0.16em;
+    }
+
+    /* VASO PINDÁ SLIDESHOW */
+    .vaso-slideshow {
+      position: relative; overflow: hidden;
+      border-radius: 0; background: #e4dfd6;
+      aspect-ratio: 1 / 1; margin: 0 -10px 8px;
+      outline: none; cursor: grab;
+    }
+    .vaso-slide {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      object-fit: cover; display: block;
+      opacity: 0; transition: opacity 150ms ease;
+    }
+    @media (prefers-reduced-motion: reduce) { .vaso-slide { transition: none; } }
+    .vaso-slide.ativo { opacity: 1; }
   </style>
   <meta name="theme-color" content="#C8501A">
   <link rel="stylesheet" href="aratu-mascote.css?v=7">
@@ -688,12 +1077,12 @@
     <nav class="header__nav">
       <a href="index.html" class="active">início</a>
       <a href="index.html#sobre">estúdio</a>
+      <a href="index.html#loja">loja</a>
       <a href="index.html#origem">origem</a>
       <a href="index.html#contato">contato</a>
     </nav>
     <div class="header__actions">
       <button class="btn-radio" id="mr-btn" aria-label="Radio MARATU" aria-expanded="false"><div class="mr-btn-speaker"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div><div class="mr-btn-display" id="mr-display">88.5 FM</div><span class="mr-btn-led"></span></button>
-      <a href="loja.html" class="btn-loja"><span>LOJA</span><span class="botao-loja-divisor"></span><span class="botao-loja-seta">↗</span></a>
     </div>
     <button class="header__menu-toggle" aria-label="abrir menu" aria-expanded="false">MENU</button>
   </header>
@@ -706,7 +1095,7 @@
       <a href="index.html">início</a>
       <a href="index.html#sobre">estúdio</a>
       <a href="index.html#origem">origem</a>
-      <a href="loja.html">loja</a>
+      <a href="index.html#loja">loja</a>
       <a href="index.html#contato">contato</a>
     </nav>
     <div class="mobile-menu__footer">
@@ -744,6 +1133,335 @@
       <span class="mono">scroll</span>
       <div class="hero__scroll-line"></div>
     </div>
+  </section>
+
+  <!-- ② LOJA -->
+  <section id="loja" class="loja-secao reveal">
+  <div class="filtros-wrap">
+    <div class="filtros">
+      <button class="filtro-btn active" data-filtro="todos" onclick="filtrar('todos')">Todos <span class="filtro-count">25</span></button>
+      <button class="filtro-btn" data-filtro="usemaratu" onclick="filtrar('usemaratu')">Use MARATU <span class="filtro-count">8</span></button>
+      <button class="filtro-btn" data-filtro="casamaratu" onclick="filtrar('casamaratu')">Casa MARATU <span class="filtro-count">17</span></button>
+      <button class="filtro-btn" data-filtro="chaveiro" onclick="filtrar('chaveiro')">Chaveiros <span class="filtro-count">5</span></button>
+      <button class="filtro-btn" data-filtro="adesivo" onclick="filtrar('adesivo')">Adesivos <span class="filtro-count">1</span></button>
+      <button class="filtro-btn" data-filtro="blusa" onclick="filtrar('blusa')">Blusas <span class="filtro-count">2</span></button>
+      <button class="filtro-btn" data-filtro="poster" onclick="filtrar('poster')">Pôsteres <span class="filtro-count">10</span></button>
+      <button class="filtro-btn" data-filtro="essenciais" onclick="filtrar('essenciais')">Decor <span class="filtro-count">7</span></button>
+    </div>
+  </div>
+
+
+  <!-- USE MARATU -->
+  <section class="marca-bloco" id="marca-usemaratu">
+    <h2 class="marca-titulo">USE MARATU</h2>
+
+    <div class="sub-faixa" id="faixa-chaveiros">
+      <div class="sub-faixa-header">
+        <h3 class="sub-faixa-nome">CHAVEIROS</h3>
+        <button class="faixa-ver-todos" id="btn-ver-chaveiros" onclick="verTodos('chaveiros')">VER TODOS (5) ↗</button>
+      </div>
+      <div class="produtos-grid" id="grid-chaveiros">
+      <div class="produto-card" data-tipo="chaveiro" data-faixa="chaveiros">
+        <div class="produto-img-wrap quadrado" onclick="abrirLightbox('carranca-chaveiro.png','Carranca — Chaveiro')">
+          <div class="tag-badge"><span class="pill-colecao pill-origens">Origens</span></div>
+          <img class="img-principal" src="carranca-chaveiro.png" alt="Carranca Chaveiro" loading="lazy">
+          <div class="preco-selo"><span class="preco-valor"><span class="preco-cifrao">R$</span>19</span></div>
+        </div>
+        <div class="produto-info">
+          <div><p class="produto-nome">Carranca</p><p class="produto-tipo">Chaveiro · 3D</p></div>
+        </div>
+        <a href="https://wa.me/p/27103886605916169/557991957415" target="_blank" rel="noopener" class="btn-encomendar">Encomendar ↗</a>
+      </div>
+      <div class="produto-card" data-tipo="chaveiro" data-faixa="chaveiros">
+        <div class="produto-img-wrap quadrado" onclick="abrirLightbox('arcos-chaveiro.png','Arcos da Orla — Chaveiro')">
+          <div class="tag-badge"><span class="pill-colecao pill-origens">Origens</span></div>
+          <img class="img-principal" src="arcos-chaveiro.png" alt="Arcos da Orla Chaveiro" loading="lazy">
+          <div class="preco-selo"><span class="preco-valor"><span class="preco-cifrao">R$</span>19</span></div>
+        </div>
+        <div class="produto-info">
+          <div><p class="produto-nome">Arcos da Orla</p><p class="produto-tipo">Chaveiro · 3D</p></div>
+        </div>
+        <a href="https://wa.me/p/26504697162562680/557991957415" target="_blank" rel="noopener" class="btn-encomendar">Encomendar ↗</a>
+      </div>
+      <div class="produto-card" data-tipo="chaveiro" data-faixa="chaveiros">
+        <div class="produto-img-wrap quadrado" onclick="abrirLightbox('relogio-chaveiro.png','Relógio do Mercado — Chaveiro')">
+          <div class="tag-badge"><span class="pill-colecao pill-origens">Origens</span></div>
+          <img class="img-principal" src="relogio-chaveiro.png" alt="Relógio do Mercado Chaveiro" loading="lazy">
+          <div class="preco-selo"><span class="preco-valor"><span class="preco-cifrao">R$</span>19</span></div>
+        </div>
+        <div class="produto-info">
+          <div><p class="produto-nome">Rel&oacute;gio do Mercado</p><p class="produto-tipo">Chaveiro · 3D</p></div>
+        </div>
+        <a href="https://wa.me/p/26868708122796741/557991957415" target="_blank" rel="noopener" class="btn-encomendar">Encomendar ↗</a>
+      </div>
+      <div class="produto-card" data-tipo="chaveiro" data-faixa="chaveiros">
+        <div class="produto-img-wrap quadrado" onclick="abrirLightbox('kit-aracaju-chaveiro.png','Kit Aracaju — Coleção Completa')">
+          <div class="tag-badge"><span class="pill-colecao pill-kit">Kit</span><span class="pill-colecao pill-origens">Origens</span></div>
+          <img class="img-principal" src="kit-aracaju-chaveiro.png" alt="Kit Aracaju Chaveiro" loading="lazy">
+          <div class="preco-selo"><span class="preco-riscado">R$79</span><span class="preco-valor"><span class="preco-cifrao">R$</span>69</span></div>
+        </div>
+        <div class="produto-info">
+          <div><p class="produto-nome">Kit Aracaju</p><p class="produto-tipo">Kit · 4 Chaveiros</p></div>
+        </div>
+        <a href="https://wa.me/p/27524535217132720/557991957415" target="_blank" rel="noopener" class="btn-encomendar">Encomendar ↗</a>
+      </div>
+      <div class="produto-card" data-tipo="chaveiro" data-faixa="chaveiros" data-extra="1">
+        <div class="produto-img-wrap quadrado" onclick="abrirLightbox('maratu-chaveiro-tag.jpg','Chaveiro MARATU')">
+          <div class="tag-badge"><span class="pill-colecao pill-origens">Origens</span></div>
+          <img class="img-principal" src="maratu-chaveiro-tag.jpg" alt="Chaveiro MARATU" loading="lazy">
+          <div class="preco-selo"><span class="preco-valor"><span class="preco-cifrao">R$</span>19</span></div>
+        </div>
+        <div class="produto-info">
+          <div><p class="produto-nome">Chaveiro MARATU</p><p class="produto-tipo">Chaveiro · 3D</p></div>
+        </div>
+        <a href="https://wa.me/p/26944524715199428/557991957415" target="_blank" rel="noopener" class="btn-encomendar">Encomendar ↗</a>
+      </div>
+      </div>
+    </div>
+
+    <div class="sub-faixa" id="faixa-adesivos">
+      <div class="sub-faixa-header">
+        <h3 class="sub-faixa-nome">ADESIVOS</h3>
+      </div>
+      <div class="produtos-grid" id="grid-adesivos">
+      <div class="produto-card" data-tipo="adesivo" data-faixa="adesivos">
+        <div class="produto-img-wrap" style="aspect-ratio: 875 / 1241;" onclick="abrirLightbox('adesivos-origens.png','Coleção de Adesivos Origens')">
+          <div class="tag-badge"><span class="pill-colecao pill-origens">Origens</span></div>
+          <img class="img-principal" src="adesivos-origens.png" alt="Coleção de Adesivos Origens" loading="lazy" style="object-fit:cover;">
+          <div class="preco-selo"><span class="preco-riscado">R$29</span><span class="preco-valor"><span class="preco-cifrao">R$</span>19</span></div>
+        </div>
+        <div class="produto-info">
+          <div><p class="produto-nome">Origens — 1&ordf; Edi&ccedil;&atilde;o</p><p class="produto-tipo">Adesivos · 12 un</p></div>
+        </div>
+        <a href="https://wa.me/p/26349957548016505/557991957415" target="_blank" rel="noopener" class="btn-encomendar">Encomendar ↗</a>
+      </div>
+      </div>
+    </div>
+
+    <div class="sub-faixa" id="faixa-blusas">
+      <div class="sub-faixa-header">
+        <h3 class="sub-faixa-nome">BLUSAS</h3>
+      </div>
+      <div class="produtos-grid" id="grid-blusas">
+      <div class="produto-card" data-tipo="blusa" data-faixa="blusas">
+        <div class="produto-img-wrap quadrado" onclick="abrirLightbox('blusa-azulejo-frente.jpg?v=6','Azulejo Português')">
+          <div class="tag-badge"><div class="tag-novo"><span>NOVO</span></div><span class="pill-colecao pill-origens">Origens</span></div>
+          <img class="img-principal com-hover" src="blusa-azulejo-frente.jpg?v=6" alt="Azulejo Português Blusa Preta" loading="lazy">
+          <img class="img-hover" src="blusa-azulejo-costas.jpg?v=6" alt="Azulejo Português costas" loading="lazy">
+          <div class="preco-selo"><span class="preco-valor"><span class="preco-cifrao">R$</span>229</span></div>
+        </div>
+        <div class="produto-info">
+          <div><p class="produto-nome">Azulejo Portugu&ecirc;s</p><p class="produto-tipo">Blusa &middot; Preta</p></div>
+        </div>
+        <div class="tam-selector">
+          <button class="tam-btn tam-esgotado" disabled>PP</button>
+          <button class="tam-btn tam-esgotado" disabled>P</button>
+          <button class="tam-btn selected">M</button>
+          <button class="tam-btn tam-esgotado" disabled>G</button>
+          <button class="tam-btn tam-esgotado" disabled>GG</button>
+        </div>
+        <button type="button" onclick="abrirQaPopup()" class="btn-encomendar btn-disponivel">Disponível na <img src="logo-qa.png" alt="QA"></button>
+      </div>
+      <div class="produto-card" data-tipo="blusa" data-faixa="blusas">
+        <div class="produto-img-wrap quadrado" onclick="abrirLightbox('blusa-maratu-frente.jpg?v=6','Maratu')">
+          <div class="tag-badge"><div class="tag-novo"><span>NOVO</span></div><span class="pill-colecao pill-origens">Origens</span></div>
+          <img class="img-principal com-hover" src="blusa-maratu-frente.jpg?v=6" alt="Maratu Blusa Branca" loading="lazy">
+          <img class="img-hover" src="blusa-maratu-costas.jpg?v=6" alt="Maratu costas" loading="lazy">
+          <div class="preco-selo"><span class="preco-valor"><span class="preco-cifrao">R$</span>229</span></div>
+        </div>
+        <div class="produto-info">
+          <div><p class="produto-nome">Maratu</p><p class="produto-tipo">Blusa &middot; Branca</p></div>
+        </div>
+        <div class="tam-selector">
+          <button class="tam-btn tam-esgotado" disabled>PP</button>
+          <button class="tam-btn tam-esgotado" disabled>P</button>
+          <button class="tam-btn selected">M</button>
+          <button class="tam-btn tam-esgotado" disabled>G</button>
+          <button class="tam-btn tam-esgotado" disabled>GG</button>
+        </div>
+        <button type="button" onclick="abrirQaPopup()" class="btn-encomendar btn-disponivel">Disponível na <img src="logo-qa.png" alt="QA"></button>
+      </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CASA MARATU -->
+  <section class="marca-bloco" id="marca-casamaratu">
+    <h2 class="marca-titulo">CASA MARATU</h2>
+
+    <div class="sub-faixa" id="faixa-posteres">
+      <div class="sub-faixa-header">
+        <h3 class="sub-faixa-nome">PÔSTERES</h3>
+        <button class="faixa-ver-todos" id="btn-ver-posteres" onclick="verTodos('posteres')">VER TODOS (10) ↗</button>
+      </div>
+      <div class="produtos-grid" id="grid-posteres"></div>
+    </div>
+
+    <div class="sub-faixa" id="faixa-essenciais">
+      <div class="sub-faixa-header">
+        <h3 class="sub-faixa-nome">DECOR</h3>
+      </div>
+      <div class="produtos-grid" id="grid-essenciais">
+      <div class="produto-card" data-tipo="essenciais" data-faixa="essenciais">
+        <div class="produto-img-wrap quadrado" onclick="abrirLightbox('kit-cobogo-praia.png?v=2','Kit Cobogó Praia')">
+          <div class="tag-badge"><span class="pill-colecao pill-kit">Kit</span><span class="pill-colecao pill-manguehaus">Manguehaus</span></div>
+          <img class="img-principal" src="kit-cobogo-praia.png?v=2" alt="Kit Cobogó Praia com 4 peças" loading="lazy">
+          <div class="preco-selo"><span class="preco-riscado">R$239</span><span class="preco-valor"><span class="preco-cifrao">R$</span>179</span></div>
+        </div>
+        <div class="produto-info">
+          <div>
+            <p class="produto-nome">Kit Cob&oacute;g&oacute; Praia</p>
+            <p class="produto-tipo">Kit · 4 Cob&oacute;g&oacute;s · 15&times;15cm</p>
+            <p class="produto-tipo">Monte sua combina&ccedil;&atilde;o de cores.</p>
+          </div>
+        </div>
+        <a href="https://wa.me/p/27079818394990107/557991957415" target="_blank" rel="noopener" class="btn-encomendar">Encomendar &#x2197;</a>
+      </div>
+      <div class="produto-card" data-tipo="essenciais" data-faixa="essenciais">
+        <div class="produto-img-wrap quadrado" onclick="abrirLightbox('cobogo-por-do-sol.png?v=2','Cobogó Pôr do Sol')">
+          <div class="tag-badge"><span class="pill-colecao pill-manguehaus">Manguehaus</span></div>
+          <img class="img-principal" src="cobogo-por-do-sol.png?v=2" alt="Cobogó Pôr do Sol em vermelho fosco" loading="lazy">
+          <div class="preco-selo"><span class="preco-riscado">R$69</span><span class="preco-valor"><span class="preco-cifrao">R$</span>49</span></div>
+        </div>
+        <div class="produto-info">
+          <div>
+            <p class="produto-nome">Cob&oacute;g&oacute; P&ocirc;r do Sol</p>
+            <p class="produto-tipo">Cob&oacute;g&oacute; · 15&times;15cm</p>
+          <p class="produto-tipo">Dispon&iacute;vel em v&aacute;rias cores. Consulte disponibilidade.</p>
+          </div>
+        </div>
+        <a href="https://wa.me/p/37040232088909700/557991957415" target="_blank" rel="noopener" class="btn-encomendar">Encomendar &#x2197;</a>
+      </div>
+      <div class="produto-card" data-tipo="essenciais" data-faixa="essenciais">
+        <div class="produto-img-wrap quadrado" onclick="abrirLightbox('cobogo-chico.png?v=2','Cobogó Chico')">
+          <div class="tag-badge"><span class="pill-colecao pill-manguehaus">Manguehaus</span></div>
+          <img class="img-principal" src="cobogo-chico.png?v=2" alt="Cobogó Chico em azul fosco" loading="lazy">
+          <div class="preco-selo"><span class="preco-riscado">R$69</span><span class="preco-valor"><span class="preco-cifrao">R$</span>49</span></div>
+        </div>
+        <div class="produto-info">
+          <div>
+            <p class="produto-nome">Cob&oacute;g&oacute; Chico</p>
+            <p class="produto-tipo">Cob&oacute;g&oacute; · 15&times;15cm</p>
+          <p class="produto-tipo">Dispon&iacute;vel em v&aacute;rias cores. Consulte disponibilidade.</p>
+          </div>
+        </div>
+        <a href="https://wa.me/p/26572140059135445/557991957415" target="_blank" rel="noopener" class="btn-encomendar">Encomendar &#x2197;</a>
+      </div>
+      <div class="produto-card" data-tipo="essenciais" data-faixa="essenciais">
+        <div class="produto-img-wrap quadrado" onclick="abrirLightbox('cobogo-arcos.png?v=2','Cobogó Arcos')">
+          <div class="tag-badge"><span class="pill-colecao pill-manguehaus">Manguehaus</span></div>
+          <img class="img-principal" src="cobogo-arcos.png?v=2" alt="Cobogó Arcos em amarelo fosco" loading="lazy">
+          <div class="preco-selo"><span class="preco-riscado">R$69</span><span class="preco-valor"><span class="preco-cifrao">R$</span>49</span></div>
+        </div>
+        <div class="produto-info">
+          <div>
+            <p class="produto-nome">Cob&oacute;g&oacute; Arcos</p>
+            <p class="produto-tipo">Cob&oacute;g&oacute; · 15&times;15cm</p>
+          <p class="produto-tipo">Dispon&iacute;vel em v&aacute;rias cores. Consulte disponibilidade.</p>
+          </div>
+        </div>
+        <a href="https://wa.me/p/27075646032068360/557991957415" target="_blank" rel="noopener" class="btn-encomendar">Encomendar &#x2197;</a>
+      </div>
+      <div class="produto-card" data-tipo="essenciais" data-faixa="essenciais">
+        <div class="produto-img-wrap quadrado" onclick="abrirLightbox('cobogo-ondas.png?v=2','Cobogó Ondas')">
+          <div class="tag-badge"><span class="pill-colecao pill-manguehaus">Manguehaus</span></div>
+          <img class="img-principal" src="cobogo-ondas.png?v=2" alt="Cobogó Ondas em cinza fosco" loading="lazy">
+          <div class="preco-selo"><span class="preco-riscado">R$69</span><span class="preco-valor"><span class="preco-cifrao">R$</span>49</span></div>
+        </div>
+        <div class="produto-info">
+          <div>
+            <p class="produto-nome">Cob&oacute;g&oacute; Ondas</p>
+            <p class="produto-tipo">Cob&oacute;g&oacute; · 15&times;15cm</p>
+          <p class="produto-tipo">Dispon&iacute;vel em v&aacute;rias cores. Consulte disponibilidade.</p>
+          </div>
+        </div>
+        <a href="https://wa.me/p/26975791948749829/557991957415" target="_blank" rel="noopener" class="btn-encomendar">Encomendar &#x2197;</a>
+      </div>
+      <div class="produto-card" data-tipo="essenciais" data-faixa="essenciais">
+        <figure class="vaso-slideshow" id="vaso-pinda-slide" tabindex="0" aria-label="Vaso Pindá — deslize para ver cores">
+          <div class="tag-badge"><span class="pill-colecao pill-manguehaus">Manguehaus</span></div>
+          <img class="vaso-slide ativo" src="vaso-pinda-cinza.png?v=2" alt="Vaso Pindá na cor cinza" loading="lazy">
+          <img class="vaso-slide" src="vaso-pinda-vermelho.png" alt="Vaso Pindá na cor vermelha" loading="lazy">
+          <img class="vaso-slide" src="vaso-pinda-azul.png" alt="Vaso Pindá na cor azul" loading="lazy">
+          <div class="preco-selo"><span class="preco-valor"><span class="preco-cifrao">R$</span>59</span></div>
+        </figure>
+        <div class="produto-info">
+          <div>
+            <p class="produto-nome">Vaso Pind&aacute;</p>
+            <p class="produto-tipo">Vaso &middot; 12cm &middot; com pratinho</p>
+          </div>
+        </div>
+        <div class="tam-selector" style="gap:8px;margin-bottom:8px;justify-content:center;">
+          <button class="cor-btn selected" style="background:#969799;" onclick="selecionarCor(this,'vaso-pinda-slide',0)" title="Cinza"></button>
+          <button class="cor-btn" style="background:#CC2B2B;" onclick="selecionarCor(this,'vaso-pinda-slide',1)" title="Vermelho"></button>
+          <button class="cor-btn" style="background:#0A2989;" onclick="selecionarCor(this,'vaso-pinda-slide',2)" title="Azul"></button>
+        </div>
+        <a href="https://wa.me/p/26850936251232418/557991957415" target="_blank" rel="noopener" class="btn-encomendar">Encomendar &#x2197;</a>
+      </div>
+      <div class="produto-card" data-tipo="essenciais" data-faixa="essenciais">
+        <figure class="vaso-slideshow" id="interruptor-slide" tabindex="0" aria-label="Interruptor — deslize para ver cores">
+          <div class="tag-badge"><div class="tag-novo"><span>NOVO</span></div><span class="pill-colecao pill-manguehaus">Manguehaus</span></div>
+          <img class="vaso-slide ativo" src="interruptor-preto.png" alt="Interruptor preto" loading="lazy">
+          <img class="vaso-slide" src="interruptor-cinza.png" alt="Interruptor cinza" loading="lazy">
+          <img class="vaso-slide" src="interruptor-amarelo.png" alt="Interruptor amarelo" loading="lazy">
+          <img class="vaso-slide" src="interruptor-azul.png" alt="Interruptor azul" loading="lazy">
+          <img class="vaso-slide" src="interruptor-laranja.png" alt="Interruptor laranja" loading="lazy">
+          <img class="vaso-slide" src="interruptor-verde.png" alt="Interruptor verde" loading="lazy">
+          <img class="vaso-slide" src="interruptor-vermelho.png" alt="Interruptor vermelho" loading="lazy">
+          <div class="preco-selo"><span class="preco-valor"><span class="preco-cifrao">R$</span>69</span></div>
+        </figure>
+        <div class="produto-info">
+          <div>
+            <p class="produto-nome">Interruptor</p>
+            <p class="produto-tipo">Decor &middot; 7 cores</p>
+          </div>
+        </div>
+        <div class="tam-selector" style="gap:8px;margin-bottom:8px;justify-content:center;">
+          <button class="cor-btn selected" style="background:#090909;" onclick="selecionarCor(this,'interruptor-slide',0)" title="Preto"></button>
+          <button class="cor-btn" style="background:#969799;" onclick="selecionarCor(this,'interruptor-slide',1)" title="Cinza"></button>
+          <button class="cor-btn" style="background:#F9E069;" onclick="selecionarCor(this,'interruptor-slide',2)" title="Amarelo"></button>
+          <button class="cor-btn" style="background:#0A2989;" onclick="selecionarCor(this,'interruptor-slide',3)" title="Azul"></button>
+          <button class="cor-btn" style="background:#FD7C18;" onclick="selecionarCor(this,'interruptor-slide',4)" title="Laranja"></button>
+          <button class="cor-btn" style="background:#708238;" onclick="selecionarCor(this,'interruptor-slide',5)" title="Verde"></button>
+        </div>
+        <a href="https://wa.me/c/557991957415" target="_blank" rel="noopener" class="btn-encomendar">Encomendar &#x2197;</a>
+      </div>
+          </div>
+    </div>
+  </section>
+
+  <div class="wa-wrap">
+    <div class="wa-banner">
+      <div>
+        <p class="wa-title">Como funciona a encomenda</p>
+        <p class="wa-desc">Clique em "Encomendar" e você vai direto pro WhatsApp com a mensagem já preenchida. A gente confirma disponibilidade, prazo e frete.</p>
+        <span class="wa-msg-preview">Olá! Tenho interesse: Por do Sol - A3 - R$ 80</span>
+        <p style="font-size:0.7rem;color:rgba(13,13,11,0.35);margin-top:10px;">Dúvidas sobre troca ou devolução? <a href="#politica" style="font-family:'Clother',sans-serif;font-weight:700;color:var(--areia);text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:3px;">Veja nossa política abaixo</a>.</p>
+      </div>
+    </div>
+  </div>
+
+  <section class="politica" id="politica">
+    <p class="politica-lbl">POLÍTICA</p>
+    <p class="politica-titulo">Troca e <span>Devolução</span></p>
+    <div class="politica-grid">
+      <div class="pol-item">
+        <span class="pol-tag">01 / DEFEITO</span>
+        <p class="pol-titulo">Produto com defeito</p>
+        <p class="pol-texto">Se o produto chegou com defeito de fabricação ou foi danificado no transporte, entre em contato pelo WhatsApp em até <strong>7 dias corridos</strong> após o recebimento. Vamos resolver com troca ou reembolso integral, sem custo pra você.</p>
+      </div>
+      <div class="pol-item">
+        <span class="pol-tag">02 / TROCA</span>
+        <p class="pol-titulo">Troca de tamanho ou modelo</p>
+        <p class="pol-texto">Pedidos de pôsteres são produzidos sob encomenda, então <strong>não aceitamos troca por arrependimento</strong> de tamanho ou modelo. Escolha com atenção antes de encomendar. Em caso de dúvida, fale com a gente antes de pedir.</p>
+      </div>
+      <div class="pol-item">
+        <span class="pol-tag">03 / CONTATO</span>
+        <p class="pol-titulo">Como entrar em contato</p>
+        <p class="pol-texto">Toda solicitação de troca ou devolução deve ser feita pelo <strong>WhatsApp</strong>, com foto do produto e número do pedido. Respondemos em até 48 horas úteis. Nosso objetivo é que você fique satisfeito com cada peça.</p>
+      </div>
+    </div>
+  </section>
   </section>
 
   <!-- ③ SOBRE — foto de fundo + overlay -->
@@ -833,6 +1551,41 @@
       <p class="nl-vintage__success" id="nl-contato-success">Inscrito! Bem-vindo à MARATU.</p>
     </div>
   </section>
+
+  <div class="tam-popup-overlay" id="tam-popup-overlay" onclick="fecharTamPopup(event)">
+    <div class="tam-popup">
+      <button class="tam-popup-close" onclick="fecharTamPopup()">fechar ✕</button>
+      <p class="tam-popup-title">Guia de tamanhos</p>
+      <p class="tam-popup-sub">Todos os pôsteres são impressos em papel 200g</p>
+      <table class="tam-tabela">
+        <thead><tr><th>Tam.</th><th>Dimensões</th><th>Referência</th></tr></thead>
+        <tbody>
+          <tr><td class="tam-tam">A4</td><td class="tam-cm">21 × 29,7 cm</td><td class="tam-ref">Tamanho de uma folha de caderno</td></tr>
+          <tr><td class="tam-tam">A3</td><td class="tam-cm">29,7 × 42 cm</td><td class="tam-ref">Tamanho de uma revista aberta</td></tr>
+          <tr><td class="tam-tam">A2</td><td class="tam-cm">42 × 59,4 cm</td><td class="tam-ref">Tamanho de um quadro médio</td></tr>
+          <tr><td class="tam-tam">A1</td><td class="tam-cm">59,4 × 84,1 cm</td><td class="tam-ref">Tamanho de um pôster de cinema</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="tam-popup-overlay" id="qa-popup-overlay" onclick="fecharQaPopup(event)">
+    <div class="tam-popup">
+      <button class="tam-popup-close" onclick="fecharQaPopup()">fechar ✕</button>
+      <p class="tam-popup-title">Disponível na QA</p>
+      <p class="tam-popup-sub">Nossas blusas da coleção Origens estão à venda exclusivamente na QA</p>
+      <div class="qa-popup-actions">
+        <a href="https://maps.app.goo.gl/MSGGBod1mLj3pwCs6" target="_blank" rel="noopener" class="qa-action-btn">Como chegar ↗</a>
+        <a href="https://www.qabrand.com.br" target="_blank" rel="noopener" class="qa-action-btn secundario">Conheça a QA ↗</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="lightbox" id="lightbox" onclick="fecharLightbox(event)">
+    <button class="lightbox-close" onclick="fecharLightbox()">fechar ✕</button>
+    <span class="lightbox-nome" id="lightbox-nome"></span>
+    <img class="lightbox-img" id="lightbox-img" src="" alt="">
+  </div>
 
   <!-- FOOTER -->
   <footer class="footer">
@@ -996,6 +1749,157 @@
     document.addEventListener('keydown', function(e) {
       if (e.key === 'g' || e.key === 'G') document.body.classList.toggle('grid-visible');
     });
+
+    var PRECOS_BASE = { 'A4': 49, 'A3': 79, 'A2': 119, 'A1': 179 };
+
+    var POSTERES = [
+      { id: 'pordosol',  nome: 'Pôr do Sol',        img: 'poster-pordosol.png',  mockup: 'mockup-pordosol.png',  desconto: false, colecao: 'manguehaus' },
+      { id: 'atalaia',   nome: 'Sol de Atalaia',     img: 'poster-atalaia.png',   mockup: 'mockup-atalaia.png',   desconto: false, colecao: 'origens' },
+      { id: 'destrua',   nome: 'Destrua o Império!', img: 'poster-destrua.png',   mockup: 'mockup-destrua.png',   desconto: false, colecao: 'origens' },
+      { id: 'origens',   nome: 'Origens',            img: 'poster-origens.png',   mockup: 'mockup-origens.png',   desconto: false, colecao: 'origens' },
+      { id: 'matapua',   nome: 'Matapuã',            img: 'poster-matapua.png',   mockup: 'mockup-matapua.png',   desconto: false, colecao: 'origens' },
+      { id: 'linguagem', nome: 'Linguagem',          img: 'poster-linguagem.png', mockup: 'mockup-linguagem.png', desconto: false, colecao: 'manguehaus' },
+      { id: 'camadas',   nome: 'Camadas',            img: 'poster-camadas.png',   mockup: 'mockup-camadas.png',   desconto: true,  colecao: 'manguehaus' },
+      { id: 'areias',    nome: 'Areias',             img: 'poster-areias.png',    mockup: 'mockup-areias.png',    desconto: false, colecao: 'manguehaus' },
+      { id: 'luzes',     nome: 'Luzes',              img: 'poster-luzes.png',     mockup: 'mockup-luzes.png',     desconto: true,  colecao: 'manguehaus' },
+      { id: 'ritmo',     nome: 'Ritmo',              img: 'poster-ritmo.png',     mockup: 'mockup-ritmo.png',     desconto: false, colecao: 'manguehaus' }
+    ];
+
+    var state = { filtro: 'todos', chaveiros: false, posteres: false };
+
+    function calcPreco(base, desconto) { return desconto ? Math.round(base * 0.8) : base; }
+
+    function buildPosters() {
+      var grid = document.getElementById('grid-posteres');
+      POSTERES.forEach(function(p, i) {
+        var precoA4 = calcPreco(PRECOS_BASE['A4'], p.desconto);
+        var card = document.createElement('div');
+        card.className = 'produto-card';
+        card.dataset.tipo = 'poster';
+        card.dataset.faixa = 'posteres';
+        if (i >= 4) card.dataset.extra = '1';
+        card.innerHTML =
+          '<div class="produto-img-wrap poster" onclick="abrirLightbox(\'' + p.img + '\',\'' + p.nome.replace(/'/g, '&#39;') + '\')">' +
+          '<div class="tag-badge"><span class="pill-colecao pill-' + p.colecao + '">' + p.colecao.charAt(0).toUpperCase() + p.colecao.slice(1) + '</span></div>' +
+          '<img class="img-principal com-hover" src="' + p.img + '" alt="' + p.nome + '" loading="lazy">' +
+          '<img class="img-hover" src="' + p.mockup + '" alt="' + p.nome + ' mockup" loading="lazy">' +
+          '<div class="preco-selo">' +
+          (p.desconto ? '<span class="preco-riscado">R$' + PRECOS_BASE['A4'] + '</span>' : '') +
+          '<span class="preco-valor"><span class="preco-cifrao">R$</span><span id="preco-' + p.id + '">' + precoA4 + '</span></span>' +
+          '</div>' +
+          '</div>' +
+          '<div class="produto-info">' +
+          '<div><p class="produto-nome">' + p.nome + '</p><p class="produto-tipo">Pôster · A4–A1</p></div>' +
+          '</div>' +
+          '<div class="tam-selector" id="tam-' + p.id + '">' +
+          ['A4','A3','A2','A1'].map(function(t) {
+            return '<button class="tam-btn' + (t === 'A4' ? ' selected' : '') + '" data-tam="' + t + '" data-poster="' + p.id + '" onclick="selecionarTam(this)">' + t + '</button>';
+          }).join('') +
+          '</div>' +
+          '<button class="tam-info-btn" onclick="abrirTamPopup()">Ficou na dúvida do tamanho? Ver tabela</button>' +
+          '<a href="#" id="btn-' + p.id + '" class="btn-encomendar" target="_blank" rel="noopener">Encomendar ↗</a>';
+        grid.appendChild(card);
+        atualizarLink(p.id, 'A4');
+      });
+    }
+
+    function selecionarTam(btn) {
+      var pid = btn.dataset.poster;
+      var tam = btn.dataset.tam;
+      var poster = POSTERES.find(function(p) { return p.id === pid; });
+      document.getElementById('tam-' + pid).querySelectorAll('.tam-btn').forEach(function(b) { b.classList.remove('selected'); });
+      btn.classList.add('selected');
+      var precoEl = document.getElementById('preco-' + pid);
+      if (precoEl) precoEl.textContent = calcPreco(PRECOS_BASE[tam], poster.desconto);
+      atualizarLink(pid, tam);
+    }
+
+    function atualizarLink(pid, tam) {
+      var poster = POSTERES.find(function(p) { return p.id === pid; });
+      var preco = calcPreco(PRECOS_BASE[tam], poster.desconto);
+      var msg = encodeURIComponent('Olá! Tenho interesse no produto: ' + poster.nome + ' - ' + tam + ' - R$ ' + preco);
+      var btn = document.getElementById('btn-' + pid);
+      if (btn) btn.href = 'https://wa.me/c/557991957415';
+    }
+
+    function applyVisibility() {
+      var f = state.filtro;
+      var filtrando = f !== 'todos';
+      document.querySelectorAll('.produto-card').forEach(function(c) {
+        var tipoOk;
+      if (!filtrando) { tipoOk = true; }
+      else if (f === 'usemaratu')  { tipoOk = ['chaveiro','adesivo','blusa'].indexOf(c.dataset.tipo) !== -1; }
+      else if (f === 'casamaratu') { tipoOk = ['poster','essenciais'].indexOf(c.dataset.tipo) !== -1; }
+      else { tipoOk = c.dataset.tipo === f; }
+        var isExtra = c.dataset.extra === '1';
+        var expanded = state[c.dataset.faixa];
+        var bloqueadoPorExtra = !filtrando && isExtra && !expanded;
+        c.style.display = (tipoOk && !bloqueadoPorExtra) ? '' : 'none';
+      });
+      ['chaveiros', 'adesivos', 'blusas', 'posteres', 'essenciais'].forEach(function(faixa) {
+        var subfaixa = document.getElementById('faixa-' + faixa);
+        if (!subfaixa) return;
+        var cards = Array.from(subfaixa.querySelectorAll('.produto-card'));
+        var hasVisible = cards.some(function(c) { return c.style.display !== 'none'; });
+        subfaixa.style.display = hasVisible ? '' : 'none';
+        var btn = document.getElementById('btn-ver-' + faixa);
+        if (btn) {
+          var hasExtra = !filtrando && !state[faixa] && cards.some(function(c) { return c.dataset.extra === '1'; });
+          btn.style.display = hasExtra ? '' : 'none';
+        }
+      });
+      ['usemaratu', 'casamaratu'].forEach(function(marca) {
+        var bloco = document.getElementById('marca-' + marca);
+        if (!bloco) return;
+        var subs = Array.from(bloco.querySelectorAll('.sub-faixa'));
+        bloco.style.display = subs.some(function(s) { return s.style.display !== 'none'; }) ? '' : 'none';
+      });
+      document.querySelectorAll('.filtro-btn').forEach(function(b) {
+        b.classList.toggle('active', b.dataset.filtro === f);
+      });
+    }
+
+    function filtrar(tipo) { state.filtro = tipo; applyVisibility(); }
+    function verTodos(faixa) { state[faixa] = true; applyVisibility(); }
+
+    function abrirTamPopup() { document.getElementById('tam-popup-overlay').classList.add('open'); document.body.style.overflow = 'hidden'; }
+    function fecharTamPopup(e) {
+      if (!e || e.target === document.getElementById('tam-popup-overlay') || (e.currentTarget && e.currentTarget.classList.contains('tam-popup-close'))) {
+        document.getElementById('tam-popup-overlay').classList.remove('open'); document.body.style.overflow = '';
+      }
+    }
+    function abrirQaPopup() { document.getElementById('qa-popup-overlay').classList.add('open'); document.body.style.overflow = 'hidden'; }
+    function fecharQaPopup(e) {
+      if (!e || e.target === document.getElementById('qa-popup-overlay') || (e.currentTarget && e.currentTarget.classList.contains('tam-popup-close'))) {
+        document.getElementById('qa-popup-overlay').classList.remove('open'); document.body.style.overflow = '';
+      }
+    }
+    function abrirLightbox(img, nome) { document.getElementById('lightbox-img').src = img; document.getElementById('lightbox-nome').textContent = nome; document.getElementById('lightbox').classList.add('open'); document.body.style.overflow = 'hidden'; }
+    function fecharLightbox(e) {
+      if (!e || e.target === document.getElementById('lightbox') || (e.currentTarget && e.currentTarget.classList.contains('lightbox-close'))) {
+        document.getElementById('lightbox').classList.remove('open'); document.body.style.overflow = '';
+      }
+    }
+    document.addEventListener('keydown', function(e) { if (e.key === 'Escape') { fecharLightbox(); fecharTamPopup(); } });
+
+    var header = document.querySelector('.header');
+    var lastScroll = 0;
+    window.addEventListener('scroll', function() {
+      var current = window.pageYOffset;
+      header.classList.toggle('hidden', current > 80 && current > lastScroll);
+      lastScroll = current <= 0 ? 0 : current;
+    });
+
+
+    function selecionarCor(btn, id, idx) {
+      btn.parentElement.querySelectorAll('.cor-btn').forEach(function(b) { b.classList.remove('selected'); });
+      btn.classList.add('selected');
+      var slides = document.getElementById(id).querySelectorAll('.vaso-slide');
+      slides.forEach(function(s, i) { s.classList.toggle('ativo', i === idx); });
+    }
+
+    buildPosters();
+    applyVisibility();
   </script>
 
   <script src="aratu-mascote.js?v=8" defer></script>

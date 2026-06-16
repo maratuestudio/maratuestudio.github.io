@@ -226,14 +226,14 @@
 
     /* ── HERO ── */
     .hero {
-      min-height: 78vh;
+      min-height: 100vh;
       padding: 0 var(--margem);
       display: grid;
       grid-template-columns: repeat(12, 1fr);
-      grid-template-rows: auto 1fr auto;
+      grid-template-rows: 1fr auto;
       gap: var(--gutter);
       padding-top: 120px;
-      padding-bottom: 28px;
+      padding-bottom: 32px;
       position: relative;
       overflow: hidden;
     }
@@ -294,11 +294,11 @@
       position: relative; z-index: 2;
     }
     .hero__scroll {
-      grid-column: 11 / span 2; grid-row: 3;
-      text-align: right; align-self: end;
+      position: absolute; right: var(--margem); bottom: 32px;
+      text-align: right;
       display: flex; flex-direction: column;
       align-items: flex-end; gap: 12px;
-      position: relative; z-index: 2;
+      z-index: 2;
     }
     .hero__scroll-line {
       width: 1px; height: 56px;

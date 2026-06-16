@@ -273,15 +273,16 @@
       position: relative; z-index: 2;
     }
     .hero__title .offset {
-      display: inline-block;
-      transform: translateY(0.06em) translateX(0.02em);
+      display: block;
+      margin-top: -0.18em;
+      transform: translateX(0.02em);
       color: var(--areia);
-      font-size: 0.55em;
+      font-size: 0.42em;
       font-family: var(--clother);
       font-weight: 700;
       letter-spacing: 0.04em;
       text-transform: uppercase;
-      vertical-align: middle;
+      line-height: 1;
     }
     .hero__subtitle {
       grid-column: 1 / span 7; grid-row: 3;
@@ -720,13 +721,13 @@
     .loja-secao {
       background: var(--areia);
       color: var(--preto);
-      padding-top: clamp(40px, 6vh, 80px);
+      padding-top: 0;
       padding-bottom: clamp(48px, 7vh, 96px);
       position: relative;
     }
 
     /* FILTROS */
-    .filtros-wrap { padding-top: 72px; border-bottom: 0.5px solid rgba(13,13,11,0.1); }
+    .filtros-wrap { padding-top: 24px; border-bottom: 0.5px solid rgba(13,13,11,0.1); }
     .filtros { display: flex; flex-wrap: wrap; gap: 8px; padding: 16px var(--margem); }
     .filtro-btn {
       font-family: 'Clother', sans-serif; font-weight: 700;

@@ -613,12 +613,16 @@
       display: block;
       margin-bottom: 32px;
     }
-    .footer__indica { }
+    .footer__indica { text-align: center; }
     .footer__indica-head {
       display: grid;
       grid-template-columns: auto 1fr;
       gap: clamp(20px, 3vw, 36px);
-      align-items: start;
+      align-items: center;
+      justify-content: center;
+      max-width: 880px;
+      margin: 0 auto;
+      text-align: left;
     }
     .footer__indica-titulo {
       font-family: var(--jack);
@@ -644,8 +648,19 @@
       margin: 24px 0 22px;
     }
     .footer__indica-marcas {
-      display: flex; flex-wrap: wrap;
-      gap: 18px 12px; align-items: start;
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 24px 16px;
+      align-items: start;
+      justify-items: center;
+      max-width: 880px;
+      margin: 0 auto;
+    }
+    @media (max-width: 900px) {
+      .footer__indica-marcas { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 480px) {
+      .footer__indica-marcas { grid-template-columns: repeat(2, 1fr); }
     }
     .footer__indica-marca {
       display: flex; flex-direction: column; align-items: center;

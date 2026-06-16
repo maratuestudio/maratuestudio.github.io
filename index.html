@@ -610,17 +610,10 @@
       color: rgba(13,13,11,0.2);
     }
     .footer__topo {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: clamp(32px, 5vw, 64px);
+      display: block;
       margin-bottom: 32px;
-      align-items: center;
     }
-    .footer__topo .footer__logo { margin-bottom: 0; }
-    .footer__indica {
-      border-left: 1px solid rgba(13,13,11,0.12);
-      padding-left: clamp(32px, 5vw, 64px);
-    }
+    .footer__indica { }
     .footer__indica-head {
       display: grid;
       grid-template-columns: auto 1fr;
@@ -688,8 +681,6 @@
     }
     @media (max-width: 768px) {
       .footer__baseline { flex-direction: column; }
-      .footer__topo { grid-template-columns: 1fr; gap: 24px; }
-      .footer__indica { border-left: none; padding-left: 0; padding-top: 24px; border-top: 1px solid rgba(13,13,11,0.12); }
     }
 
 
@@ -1129,6 +1120,7 @@
       <a href="index.html#sobre">estúdio</a>
       <a href="index.html#origem">origem</a>
       <a href="index.html#contato">contato</a>
+      <a href="index.html#parceiros">parceiros</a>
     </nav>
     <div class="header__actions">
       <button class="btn-radio" id="mr-btn" aria-label="Radio MARATU" aria-expanded="false"><div class="mr-btn-speaker"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div><div class="mr-btn-display" id="mr-display">88.5 FM</div><span class="mr-btn-led"></span></button>
@@ -1146,6 +1138,7 @@
       <a href="index.html#sobre">estúdio</a>
       <a href="index.html#origem">origem</a>
       <a href="index.html#contato">contato</a>
+      <a href="index.html#parceiros">parceiros</a>
     </nav>
     <div class="mobile-menu__footer">
       maratu · aracaju / se · 2026
@@ -1636,8 +1629,7 @@
   <!-- FOOTER -->
   <footer class="footer">
     <div class="footer__topo">
-      <div class="footer__logo">MARATU<span>Estúdio</span></div>
-      <div class="footer__indica">
+      <div class="footer__indica" id="parceiros">
         <div class="footer__indica-head">
           <h3 class="footer__indica-titulo">MARATU<span>Indica</span></h3>
           <p class="footer__indica-sub">Marcas, projetos e pessoas de Sergipe que caminham com a gente. Tudo que a gente usa, confia e indica de olho fechado.</p>
@@ -1668,6 +1660,11 @@
             <div class="footer__indica-marca-circulo"><img src="logo-wbc.png?v=2" alt="Wine Barbell Club"></div>
             <span class="footer__indica-marca-nome">WBC</span>
             <span class="footer__indica-marca-cat">academia · LPO</span>
+          </a>
+          <a href="https://www.instagram.com/robertoqueirozfotografia/" target="_blank" rel="noopener" class="footer__indica-marca" aria-label="Roberto Queiroz Fotografia">
+            <div class="footer__indica-marca-circulo"><img src="logo-roberto.png" alt="Roberto Queiroz Fotografia"></div>
+            <span class="footer__indica-marca-nome">Roberto Queiroz</span>
+            <span class="footer__indica-marca-cat">fotografia</span>
           </a>
         </div>
       </div>

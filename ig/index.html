@@ -1,19 +1,146 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8">
-<meta name="robots" content="noindex">
-<!-- Pra criar outro link: copie esta pasta, renomeie, e troque os UTMs abaixo
-     (utm_source, utm_medium, utm_campaign) nos 3 lugares -->
-<meta http-equiv="refresh" content="0; url=/?utm_source=instagram&utm_medium=social&utm_campaign=bio">
-<title>Redirecionando…</title>
-<script>
-  window.location.replace("/?utm_source=instagram&utm_medium=social&utm_campaign=bio");
-</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex">
+  <title>Contato — MARATU Estúdio</title>
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="apple-touch-icon" href="/favicon.png">
+  <style>
+    @font-face { font-family: 'Jack'; src: url('/TRYJackAlpha-Regular.ttf') format('truetype'); font-weight: 400; }
+    @font-face { font-family: 'Clother'; src: url('/TRYClother-Regular.ttf') format('truetype'); font-weight: 400; }
+    @font-face { font-family: 'Clother'; src: url('/TRYClother-Bold.ttf') format('truetype'); font-weight: 700; }
+    @font-face { font-family: 'Clother'; src: url('/TRYClother-Black.ttf') format('truetype'); font-weight: 900; }
+
+    :root {
+      --laranja: #C8501A;
+      --azul: #0E3272;
+      --areia: #F0ECE4;
+      --preto: #0D0D0B;
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; }
+    body { font-family: 'Clother', sans-serif; background: var(--areia); color: var(--preto); overflow: hidden; }
+
+    .bg {
+      position: fixed; inset: 0; z-index: 0;
+      background: url('/mangue.jpg') center center / cover no-repeat;
+      opacity: 0.14;
+    }
+
+    .container {
+      position: relative; z-index: 2;
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 24px; text-align: center;
+    }
+
+    .logo { margin-bottom: 48px; }
+    .logo img { height: 48px; width: 48px; border-radius: 50%; }
+
+    .tag {
+      font-family: 'Clother', sans-serif; font-size: 0.55rem;
+      color: var(--laranja); letter-spacing: 0.25em; text-transform: uppercase;
+      margin-bottom: 16px; display: flex; align-items: center; gap: 10px;
+      justify-content: center;
+    }
+    .tag::before, .tag::after { content: ''; display: block; width: 20px; height: 1px; background: var(--laranja); }
+
+    .titulo {
+      font-family: 'Clother', sans-serif; font-weight: 900;
+      font-size: clamp(1.4rem, 4vw, 2.4rem);
+      color: var(--preto); line-height: 1.1; margin-bottom: 12px;
+      position: relative; z-index: 3;
+    }
+
+    .sub {
+      font-size: 1rem; color: rgba(13,13,11,0.55);
+      line-height: 1.7; margin-bottom: 48px; max-width: 420px;
+      position: relative; z-index: 3;
+    }
+
+    .acoes {
+      display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;
+      position: relative; z-index: 3;
+    }
+
+    .btn-primario {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 15px 28px;
+      background: var(--laranja);
+      border: 1.5px solid var(--preto);
+      border-radius: 999px;
+      box-shadow: 4px 4px 0 var(--preto);
+      font-family: 'Clother', sans-serif; font-weight: 900;
+      font-size: 0.9rem; letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--areia); text-decoration: none;
+      transition: transform 0.12s ease, box-shadow 0.12s ease;
+    }
+    .btn-primario:hover { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 var(--preto); }
+    .btn-primario:active { transform: translate(2px,2px); box-shadow: 1px 1px 0 var(--preto); }
+
+    .btn-secundario {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 15px 28px;
+      background: transparent;
+      border: 1.5px solid var(--preto);
+      border-radius: 999px;
+      box-shadow: 4px 4px 0 var(--preto);
+      font-family: 'Clother', sans-serif; font-weight: 900;
+      font-size: 0.9rem; letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--preto); text-decoration: none;
+      transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+    }
+    .btn-secundario:hover { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 var(--preto); background: rgba(13,13,11,0.06); }
+    .btn-secundario:active { transform: translate(2px,2px); box-shadow: 1px 1px 0 var(--preto); }
+
+    .btn-secundario img { height: 18px; width: 18px; }
+
+    .rodape {
+      position: absolute; bottom: 28px;
+      font-family: 'Clother', sans-serif; font-size: 0.48rem;
+      color: rgba(13,13,11,0.3); letter-spacing: 0.1em; text-transform: uppercase;
+    }
+
+    @media (max-width: 480px) {
+      .acoes { flex-direction: column; width: 100%; max-width: 280px; }
+      .btn-primario, .btn-secundario { justify-content: center; }
+    }
+  </style>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-HCJ291HL72"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    // Atribui a sessão à bio do Instagram (in-app browser não envia referrer)
+    gtag('config', 'G-HCJ291HL72', {
+      campaign_source: 'instagram',
+      campaign_medium: 'social',
+      campaign_name: 'bio'
+    });
+  </script>
 </head>
 <body>
-<p>Redirecionando para o MARATU…
-<a href="/?utm_source=instagram&utm_medium=social&utm_campaign=bio">clique aqui</a>
-se não for automático.</p>
+  <div class="bg"></div>
+  <div class="container">
+    <div class="logo">
+      <a href="/?utm_source=instagram&utm_medium=social&utm_campaign=bio"><img src="/logo-redondo.png" alt="MARATU Estúdio"></a>
+    </div>
+    <p class="tag">Contato</p>
+    <h1 class="titulo">Oi, Maratuzinho!<br>Por onde a gente conversa?</h1>
+    <p class="sub">Dá pra dar uma passada no site, ou puxar papo direto pelo WhatsApp. Você escolhe.</p>
+    <div class="acoes">
+      <a href="/?utm_source=instagram&utm_medium=social&utm_campaign=bio" class="btn-primario">Conhecer o site →</a>
+      <a href="https://wa.me/5579991957415" target="_blank" rel="noopener" class="btn-secundario" data-produto="contato_bio_instagram">
+        <img src="/icon-whatsapp.png" alt="">Falar no WhatsApp ↗
+      </a>
+    </div>
+    <p class="rodape">MARATU Estúdio · Aracaju, SE · EST. 2026</p>
+  </div>
+  <script src="/js/tracking.js"></script>
 </body>
 </html>

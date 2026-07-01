@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#0D0D0B" />
+<title>MARATU, admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --mangue:#0D0D0B;
+    --areia:#F0ECE4;
+    --caju:#C8501A;
+    --sergipe:#0E3272;
+    --atalaia:#2E6FC4;
+    --sol:#D4960A;
+    --surface:#17170F;
+    --surface2:#1F1F16;
+    --line:rgba(240,236,228,0.12);
+    --muted:rgba(240,236,228,0.55);
+    --mono:'Space Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+    --sans:-apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;
+  }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    background:var(--mangue); color:var(--areia); font-family:var(--sans);
+    -webkit-font-smoothing:antialiased; line-height:1.45;
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+  .wrap{ max-width:960px; margin:0 auto; padding:0 16px 48px; }
+  .mono{ font-family:var(--mono); }
+
+  /* header */
+  .head{ display:flex; align-items:center; justify-content:space-between; padding:18px 0 14px; }
+  .mark{ display:flex; align-items:center; gap:10px; }
+  .mark svg{ display:block; }
+  .word{ font-weight:700; letter-spacing:0.14em; font-size:18px; }
+  .sub{ font-family:var(--mono); font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:0.12em; }
+
+  /* tabs */
+  .tabs{ display:flex; gap:8px; margin-bottom:20px; }
+  .tab{
+    flex:1; background:transparent; border:1px solid var(--line); color:var(--muted);
+    padding:11px 8px; border-radius:12px; font-size:14px; cursor:pointer; transition:all .15s;
+    font-family:var(--sans);
+  }
+  .tab:hover{ color:var(--areia); }
+  .tab[aria-selected="true"]{ background:var(--caju); border-color:var(--caju); color:#fff; font-weight:700; }
+  .tab:focus-visible{ outline:2px solid var(--atalaia); outline-offset:2px; }
+
+  .panel{ display:none; }
+  .panel.on{ display:block; }
+
+  h2.title{ font-size:15px; letter-spacing:0.02em; margin:0 0 12px; font-weight:700; }
+  .hint{ color:var(--muted); font-size:13px; margin:0 0 14px; }
+
+  .card{ background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:16px; }
+  .grid2{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  @media (max-width:640px){ .grid2{ grid-template-columns:1fr; } }
+
+  /* generic inputs */
+  input, select, textarea{
+    background:var(--surface2); border:1px solid var(--line); color:var(--areia);
+    border-radius:10px; padding:11px 12px; font-size:15px; width:100%; font-family:var(--sans);
+  }
+  input::placeholder, textarea::placeholder{ color:rgba(240,236,228,0.35); }
+  input:focus, select:focus, textarea:focus{ outline:none; border-color:var(--atalaia); }
+  label.f{ display:block; margin-bottom:12px; }
+  label.f > span{ display:block; font-size:13px; color:var(--muted); margin-bottom:6px; }
+  .btn{
+    background:var(--caju); color:#fff; border:none; border-radius:10px; padding:12px 16px;
+    font-size:15px; font-weight:700; cursor:pointer; font-family:var(--sans);
+  }
+  .btn:hover{ filter:brightness(1.08); }
+  .btn.ghost{ background:transparent; border:1px solid var(--line); color:var(--areia); font-weight:400; }
+  .btn.blue{ background:var(--sergipe); }
+  .btn.blue:hover{ background:var(--atalaia); }
+  .btn:disabled{ opacity:0.4; cursor:not-allowed; }
+  .row-actions{ display:flex; gap:10px; flex-wrap:wrap; }
+
+  /* PAINEL */
+  .meta-num{ font-family:var(--mono); font-size:40px; font-weight:700; color:var(--sol); line-height:1; }
+  .meta-cap{ font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:6px; }
+  .bar{ height:10px; background:var(--surface2); border-radius:6px; overflow:hidden; margin:14px 0 8px; }
+  .bar > i{ display:block; height:100%; background:linear-gradient(90deg,var(--sergipe),var(--atalaia)); }
+  .refline{ display:flex; justify-content:space-between; font-size:12px; color:var(--muted); }
+  .list{ list-style:none; margin:0; padding:0; }
+  .list li{ display:flex; justify-content:space-between; align-items:center; gap:10px; padding:11px 0; border-bottom:1px solid var(--line); font-size:14px; }
+  .list li:last-child{ border-bottom:none; }
+  .pill{ font-family:var(--mono); font-size:10px; text-transform:uppercase; letter-spacing:0.06em; padding:2px 8px; border-radius:20px; border:1px solid var(--line); color:var(--muted); }
+  .pill.entrega{ color:var(--caju); border-color:var(--caju); }
+  .pill.evento{ color:var(--atalaia); border-color:var(--atalaia); }
+  .empty{ color:var(--muted); font-size:13px; padding:8px 0; }
+  .lil{ color:var(--muted); font-size:12px; }
+  .val{ font-family:var(--mono); }
+
+  /* ORCAMENTO subtabs */
+  .seg{ display:flex; gap:6px; margin-bottom:16px; }
+  .seg button{ flex:1; background:transparent; border:1px solid var(--line); color:var(--muted); padding:9px 6px; border-radius:10px; font-size:13px; cursor:pointer; font-family:var(--sans); }
+  .seg button[aria-selected="true"]{ background:var(--surface2); border-color:var(--sol); color:var(--areia); font-weight:700; }
+  .sub-on{ display:block; } .sub-off{ display:none; }
+
+  .cat-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  @media (max-width:640px){ .cat-grid{ grid-template-columns:1fr 1fr; } }
+  .cat{ position:relative; text-align:left; background:var(--surface2); border:1px solid var(--line); border-radius:12px; padding:14px 12px; cursor:pointer; display:flex; flex-direction:column; gap:6px; transition:all .15s; }
+  .cat:hover{ border-color:var(--muted); }
+  .cat.sel{ border-color:var(--sol); box-shadow:0 0 0 1px var(--sol); }
+  .cat .n{ font-size:14px; }
+  .cat .p{ font-family:var(--mono); font-size:18px; font-weight:700; color:var(--sol); }
+  .cat .p.def{ color:var(--muted); font-size:13px; }
+  .cat .x{ position:absolute; top:6px; right:9px; color:var(--muted); font-size:16px; line-height:1; padding:2px; }
+  .cat .x:hover{ color:var(--caju); }
+
+  .breakdown{ background:var(--surface2); border:1px solid var(--line); border-radius:12px; padding:4px 14px; margin:16px 0; }
+  .brow{ display:flex; justify-content:space-between; align-items:center; padding:9px 0; font-size:14px; color:var(--muted); }
+  .brow .val{ color:var(--areia); }
+  .brow.strong{ color:var(--areia); font-weight:700; }
+  .brule{ height:1px; background:var(--line); }
+  .preco{ border-top:2px solid var(--sol); padding-top:16px; margin-top:4px; }
+  .preco .cap{ font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:0.1em; }
+  .preco .v{ font-family:var(--mono); font-size:44px; font-weight:700; color:var(--sol); line-height:1; display:block; margin:2px 0; }
+  .preco .m{ font-size:12px; color:var(--muted); }
+
+  .ptag{ font-family:var(--mono); font-size:10px; text-transform:uppercase; letter-spacing:0.08em; padding:2px 7px; border-radius:20px; float:right; }
+  .t-real{ color:var(--atalaia); border:1px solid var(--atalaia); }
+  .t-cal{ color:var(--sol); border:1px solid var(--sol); }
+  .t-ref{ color:var(--muted); border:1px solid var(--line); }
+
+  /* AGENDA */
+  .cal-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+  .cal-nav{ display:flex; gap:8px; align-items:center; }
+  .cal-nav button{ background:var(--surface2); border:1px solid var(--line); color:var(--areia); border-radius:8px; width:36px; height:36px; font-size:18px; cursor:pointer; }
+  .cal-nav button:hover{ border-color:var(--muted); }
+  .cal-month{ font-weight:700; font-size:15px; }
+  .cal{ display:grid; grid-template-columns:repeat(7,1fr); gap:6px; }
+  .cal .dow{ text-align:center; font-family:var(--mono); font-size:10px; color:var(--muted); text-transform:uppercase; padding-bottom:4px; }
+  .cell{ aspect-ratio:1/1; background:var(--surface2); border:1px solid var(--line); border-radius:9px; padding:6px; cursor:pointer; display:flex; flex-direction:column; gap:3px; transition:all .12s; min-height:0; }
+  .cell.blank{ background:transparent; border:none; cursor:default; }
+  .cell:hover:not(.blank){ border-color:var(--muted); }
+  .cell.today{ border-color:var(--sol); }
+  .cell.sel{ box-shadow:0 0 0 1px var(--atalaia); border-color:var(--atalaia); }
+  .cell .d{ font-family:var(--mono); font-size:12px; color:var(--areia); }
+  .cell.today .d{ color:var(--sol); font-weight:700; }
+  .dots{ display:flex; gap:3px; flex-wrap:wrap; margin-top:auto; }
+  .dot{ width:6px; height:6px; border-radius:50%; }
+  .dot.entrega{ background:var(--caju); }
+  .dot.evento{ background:var(--atalaia); }
+
+  .daypanel{ margin-top:18px; }
+  .daypanel h3{ font-size:14px; margin:0 0 10px; }
+  .ev{ display:flex; justify-content:space-between; align-items:flex-start; gap:10px; padding:11px 0; border-bottom:1px solid var(--line); }
+  .ev:last-child{ border-bottom:none; }
+  .ev .t{ font-size:14px; }
+  .ev .meta{ font-size:12px; color:var(--muted); margin-top:2px; }
+  .ev .acts{ display:flex; gap:8px; flex-shrink:0; }
+  .ev .acts button{ background:transparent; border:1px solid var(--line); color:var(--areia); border-radius:8px; padding:5px 9px; font-size:12px; cursor:pointer; font-family:var(--sans); }
+  .ev .acts button:hover{ border-color:var(--muted); }
+  .ev .acts button.del:hover{ border-color:var(--caju); color:var(--caju); }
+
+  .divlbl{ font-family:var(--mono); font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:0.1em; margin:22px 0 10px; padding-top:16px; border-top:1px solid var(--line); }
+
+  .apple{ background:var(--surface); border:1px dashed var(--line); border-radius:12px; padding:14px; margin-top:18px; }
+  .apple .t{ font-size:14px; font-weight:700; margin-bottom:6px; }
+  .apple .d{ font-size:13px; color:var(--muted); line-height:1.5; }
+
+  .foot{ font-family:var(--mono); font-size:10px; color:rgba(240,236,228,0.4); text-align:center; padding:24px 0 0; }
+
+  .spacer{ height:16px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="head">
+    <div class="mark">
+      <svg width="26" height="15" viewBox="0 0 24 13" aria-hidden="true">
+        <path d="M1 12 A11 11 0 0 1 23 12 Z" fill="#C8501A"/>
+      </svg>
+      <span class="word">MARATU</span>
+    </div>
+    <span class="sub">admin</span>
+  </header>
+
+  <nav class="tabs" role="tablist" id="tabs">
+    <button class="tab" role="tab" data-tab="painel" aria-selected="true">Painel</button>
+    <button class="tab" role="tab" data-tab="orcamento" aria-selected="false">Orçamento</button>
+    <button class="tab" role="tab" data-tab="agenda" aria-selected="false">Agenda</button>
+  </nav>
+
+  <!-- ================= PAINEL ================= -->
+  <section class="panel on" id="panel-painel">
+    <div class="grid2">
+      <div class="card">
+        <div class="meta-cap">Faturamento do mês</div>
+        <div class="meta-num" id="fatNum">R$ 0,00</div>
+        <div class="bar"><i id="fatBar" style="width:0%"></i></div>
+        <div class="refline">
+          <span id="fatRef">meta do mês</span>
+          <span id="fatPct" class="val">0%</span>
+        </div>
+        <div class="spacer"></div>
+        <div class="row-actions">
+          <input id="lancLabel" placeholder="Ex: kit vendido" style="flex:1; min-width:120px;" />
+          <input id="lancValor" inputmode="decimal" placeholder="Valor" style="width:100px;" />
+          <button class="btn blue" id="lancAdd">Lançar</button>
+        </div>
+        <div class="lil" style="margin-top:8px;">Meta do mês = fixo + retirada (ajuste em Orçamento, Ajustes).</div>
+      </div>
+
+      <div class="card">
+        <h2 class="title">Próximos 7 dias</h2>
+        <ul class="list" id="proxLista"></ul>
+      </div>
+    </div>
+
+    <div class="spacer"></div>
+
+    <div class="card">
+      <h2 class="title">Últimos orçamentos</h2>
+      <ul class="list" id="orcLista"></ul>
+    </div>
+  </section>
+
+  <!-- ================= ORCAMENTO ================= -->
+  <section class="panel" id="panel-orcamento">
+    <div class="seg" role="tablist" id="orcSeg">
+      <button role="tab" data-sub="catalogo" aria-selected="true">Catálogo</button>
+      <button role="tab" data-sub="medida" aria-selected="false">Sob medida</button>
+      <button role="tab" data-sub="ajustes" aria-selected="false">Ajustes</button>
+    </div>
+
+    <!-- catalogo -->
+    <div class="sub-on" id="sub-catalogo">
+      <p class="hint">Toque numa peça pra consultar o preço. Peça sem preço, toque pra definir.</p>
+      <div id="catSel"></div>
+      <div class="cat-grid" id="catGrid"></div>
+      <div class="spacer"></div>
+      <div class="row-actions">
+        <input id="catNome" placeholder="Nome da peça" style="flex:1; min-width:130px;" />
+        <input id="catPreco" inputmode="decimal" placeholder="Preço" style="width:100px;" />
+        <button class="btn blue" id="catAdd">+</button>
+      </div>
+    </div>
+
+    <!-- medida -->
+    <div class="sub-off" id="sub-medida">
+      <label class="f"><span>Material</span>
+        <div class="card" style="padding:11px 12px; font-size:14px;" id="matLine">PLA Matte Elegoo</div>
+      </label>
+      <label class="f"><span>Gramas usados</span><input id="inGramas" inputmode="decimal" placeholder="0" /></label>
+      <label class="f"><span>Horas de impressão</span><input id="inHoras" inputmode="decimal" placeholder="0" /></label>
+      <label class="f"><span>Pós-processamento (min)</span><input id="inPos" inputmode="decimal" placeholder="0" /></label>
+
+      <div class="breakdown">
+        <div class="brow"><span>Custo do material</span><span class="val" id="cMat">R$ 0,00</span></div>
+        <div class="brow"><span>Custo de máquina</span><span class="val" id="cMaq">R$ 0,00</span></div>
+        <div class="brow"><span>Mão de obra</span><span class="val" id="cMao">R$ 0,00</span></div>
+        <div class="brule"></div>
+        <div class="brow strong"><span>Piso de custo</span><span class="val" id="cPiso">R$ 0,00</span></div>
+      </div>
+
+      <div class="preco">
+        <span class="cap">Preço</span>
+        <span class="v" id="cPreco">R$ 0,00</span>
+        <span class="m" id="cMargem">margem 2x sobre o piso</span>
+      </div>
+
+      <div class="spacer"></div>
+      <div class="row-actions">
+        <input id="orcCliente" placeholder="Cliente (opcional)" style="flex:1; min-width:130px;" />
+        <button class="btn" id="orcSalvar">Salvar orçamento</button>
+      </div>
+    </div>
+
+    <!-- ajustes -->
+    <div class="sub-off" id="sub-ajustes">
+      <p class="hint">Estes valores definem a conta. Calibre os marcados como "calibrar" até o preço bater com o que você já cobra.</p>
+      <label class="f"><span>Filamento (R$/kg) <em class="ptag t-real">real</em></span><input class="mono" id="pFil" inputmode="decimal" /></label>
+      <label class="f"><span>Máquina (R$/h) <em class="ptag t-cal">calibrar</em></span><input class="mono" id="pMaq" inputmode="decimal" /></label>
+      <label class="f"><span>Mão de obra (R$/h) <em class="ptag t-cal">calibrar</em></span><input class="mono" id="pMao" inputmode="decimal" /></label>
+      <label class="f"><span>Margem (multiplicador) <em class="ptag t-cal">calibrar</em></span><input class="mono" id="pMar" inputmode="decimal" /></label>
+      <label class="f"><span>Fixo mensal (R$) <em class="ptag t-real">real</em></span><input class="mono" id="pFix" inputmode="decimal" /></label>
+      <label class="f"><span>Meta de retirada (R$/mês) <em class="ptag t-ref">meta</em></span><input class="mono" id="pRet" inputmode="decimal" /></label>
+      <button class="btn blue" id="pSave">Salvar ajustes</button>
+    </div>
+  </section>
+
+  <!-- ================= AGENDA ================= -->
+  <section class="panel" id="panel-agenda">
+    <div class="cal-head">
+      <div class="cal-month" id="calMonth">mês</div>
+      <div class="cal-nav">
+        <button id="calPrev" aria-label="mês anterior">‹</button>
+        <button id="calToday" style="width:auto; padding:0 12px; font-size:13px;">hoje</button>
+        <button id="calNext" aria-label="próximo mês">›</button>
+      </div>
+    </div>
+    <div class="cal" id="calGrid"></div>
+
+    <div class="daypanel card" id="dayPanel" style="margin-top:18px;">
+      <h3 id="dayTitle">Selecione um dia</h3>
+      <div id="dayEvents"></div>
+      <div class="spacer"></div>
+      <div id="addForm" style="display:none;">
+        <label class="f"><span>Título</span><input id="evTitulo" placeholder="Ex: entregar kit cobogó" /></label>
+        <div class="grid2">
+          <label class="f"><span>Tipo</span>
+            <select id="evTipo"><option value="entrega">Entrega</option><option value="evento">Evento</option></select>
+          </label>
+          <label class="f"><span>Hora (vazio = dia inteiro)</span><input id="evHora" type="time" /></label>
+        </div>
+        <label class="f"><span>Cliente (opcional)</span><input id="evCliente" placeholder="Nome" /></label>
+        <label class="f"><span>Notas (opcional)</span><textarea id="evNotas" rows="2" placeholder="Detalhes"></textarea></label>
+        <button class="btn" id="evSalvar">Adicionar ao dia</button>
+      </div>
+    </div>
+
+    <div class="divlbl">Próximas entregas e eventos</div>
+    <ul class="list" id="upcoming"></ul>
+
+    <div class="apple">
+      <div class="t">Sincronizar com Apple Calendar</div>
+      <div class="d" id="appleBox">
+        Cada evento já tem o botão ".ics" (baixa e abre no Calendário, adiciona na hora).
+        A assinatura automática (você adiciona aqui, aparece sozinho no iPhone e no Mac) fica disponível
+        depois do passo do Worker no tutorial. É via um só caminho (admin para Apple Calendar, atualiza sozinho).
+      </div>
+      <div class="spacer"></div>
+      <a id="appleSub" class="btn ghost" style="display:inline-block; text-decoration:none;">Assinar no Apple Calendar</a>
+    </div>
+  </section>
+
+  <div class="foot" id="foot">prototipo local, salva no navegador. persistencia real e sync via D1 no proximo passo</div>
+</div>
+
+<script>
+/* =====================================================================
+   MARATU ADMIN
+   ---------------------------------------------------------------------
+   Frontend estatico. Roda no GitHub Pages, funciona no iPhone, no Mac
+   e no navegador (mesmo endereco, aparencia de app quando "adicionado a
+   tela inicial" no iOS ou "a Dock" no Mac).
+
+   Sem travessoes em nenhum texto.
+   ===================================================================== */
+
+/* ---------- valores padrao (dados reais do Rapha + chutes marcados) ---------- */
+const DEFAULT_PARAMS = {
+  filamento: 140,   // real: PLA Matte Elegoo R$/kg
+  maquina: 5,       // CALIBRAR: R$/h de maquina (chute)
+  maodeobra: 30,    // CALIBRAR: R$/h de trabalho (chute)
+  margem: 2,        // CALIBRAR: multiplicador sobre o piso (chute)
+  fixo: 267,        // real: custo fixo mensal
+  retirada: 3000    // meta: retirada mensal alvo
+};
+const DEFAULT_CATALOGO = [
+  { id:'p1', nome:'Interruptor', preco:69 },   // real
+  { id:'p2', nome:'Kit cobogó', preco:179 },   // real
+  { id:'p3', nome:'Cobogó Arcos', preco:null },
+  { id:'p4', nome:'Relógio Farol', preco:null },
+  { id:'p5', nome:'Relógio Thales (chaveiro)', preco:null },
+  { id:'p6', nome:'Chaveiro carranca', preco:null },
+  { id:'p7', nome:'Chaveiro Arcos', preco:null }
+];
+
+/* ---------- CONFIG do feed Apple Calendar ----------
+   Vazio agora. O Claude Code, no passo do Worker, coloca aqui a URL
+   https do endpoint /feed/<token>.ics . O front converte pra webcal.  */
+const WEBCAL_FEED_URL = "";
+
+/* =====================================================================
+   CAMADA DE DADOS (MaratuStore)
+   ---------------------------------------------------------------------
+   AGORA: carrega tudo do localStorage pra um cache em memoria; getters
+   leem o cache (sincrono), setters gravam no cache e persistem.
+   Se localStorage falhar (ex: preview), cai pra memoria pura.
+
+   DEPOIS (tarefa do Claude Code): trocar SO o objeto "backend" abaixo.
+   backend.load() vira um fetch que puxa tudo do Worker/D1.
+   backend.persist(chave) vira um POST/PUT pro Worker.
+   Os getters/setters publicos NAO mudam. Ver tutorial, passo 6.
+   ===================================================================== */
+const MaratuStore = (function(){
+  const cache = { params:null, catalogo:null, orcamentos:null, eventos:null, lancamentos:null };
+
+  const API = "https://maratu-api.raphaelnascimento.workers.dev";
+  let TOKEN = "";
+  try { TOKEN = localStorage.getItem("maratu.token") || ""; } catch (e) {}
+
+  async function ensureToken(){
+    if(!TOKEN){
+      TOKEN = prompt("Senha do admin MARATU:") || "";
+      try { localStorage.setItem("maratu.token", TOKEN); } catch (e) {}
+    }
+  }
+
+  const backend = {
+    async load(){
+      await ensureToken();
+      let r = await fetch(API + "/api/state", { headers: { Authorization: "Bearer " + TOKEN } });
+      if(r.status === 401){
+        try { localStorage.removeItem("maratu.token"); } catch (e) {}
+        TOKEN = "";
+        alert("Senha incorreta.");
+        return backend.load();
+      }
+      const s = await r.json();
+      cache.params      = Object.assign({}, DEFAULT_PARAMS, s.params || {});
+      cache.catalogo    = (s.catalogo && s.catalogo.length) ? s.catalogo : DEFAULT_CATALOGO;
+      cache.orcamentos  = s.orcamentos || [];
+      cache.eventos     = s.eventos || [];
+      cache.lancamentos = s.lancamentos || [];
+      try{
+        const c = await fetch(API + "/api/config", { headers: { Authorization: "Bearer " + TOKEN } });
+        if(c.ok){ const cfg = await c.json(); window.__MARATU_FEED = cfg.feedUrl || ""; }
+      }catch(e){}
+    },
+    persist(chave){
+      const path = chave === "params" ? "/api/settings/params" : "/api/" + chave;
+      return fetch(API + path, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", Authorization: "Bearer " + TOKEN },
+        body: JSON.stringify(cache[chave]),
+      }).catch((e)=> console.error("persist falhou", e));
+    },
+  };
+
+  let _res;
+  const ready = new Promise(r=>{ _res=r; });
+  backend.load().then(()=>_res());
+
+  return {
+    ready,
+    getParams(){ return cache.params; },
+    setParams(v){ cache.params=v; backend.persist('params'); },
+    getCatalogo(){ return cache.catalogo; },
+    setCatalogo(v){ cache.catalogo=v; backend.persist('catalogo'); },
+    getOrcamentos(){ return cache.orcamentos; },
+    setOrcamentos(v){ cache.orcamentos=v; backend.persist('orcamentos'); },
+    getEventos(){ return cache.eventos; },
+    setEventos(v){ cache.eventos=v; backend.persist('eventos'); },
+    getLancamentos(){ return cache.lancamentos; },
+    setLancamentos(v){ cache.lancamentos=v; backend.persist('lancamentos'); }
+  };
+})();
+
+/* ---------- helpers ---------- */
+const $ = (id)=>document.getElementById(id);
+const num = (v)=>{ const n=parseFloat(String(v==null?'':v).replace(',','.')); return isNaN(n)?0:n; };
+const brl = (n)=> (Number(n)||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+const uid = ()=> 'x'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const esc = (s)=> String(s==null?'':s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const MESES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+const DOW = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+function pad2(n){ return String(n).padStart(2,'0'); }
+function dateStr(y,m,d){ return y+'-'+pad2(m+1)+'-'+pad2(d); }        // m: 0-11
+function todayStr(){ const t=new Date(); return dateStr(t.getFullYear(), t.getMonth(), t.getDate()); }
+function fmtDia(iso){ const [y,m,d]=iso.split('-').map(Number); return pad2(d)+'/'+pad2(m); }
+
+/* =====================================================================
+   TABS
+   ===================================================================== */
+document.querySelectorAll('#tabs .tab').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('#tabs .tab').forEach(b=>b.setAttribute('aria-selected', b===btn ? 'true':'false'));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
+    $('panel-'+btn.dataset.tab).classList.add('on');
+  });
+});
+
+/* =====================================================================
+   ORCAMENTO
+   ===================================================================== */
+let selCat = null;
+
+// subtabs
+document.querySelectorAll('#orcSeg button').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('#orcSeg button').forEach(b=>b.setAttribute('aria-selected', b===btn?'true':'false'));
+    ['catalogo','medida','ajustes'].forEach(k=>{
+      $('sub-'+k).className = (k===btn.dataset.sub) ? 'sub-on' : 'sub-off';
+    });
+    if(btn.dataset.sub==='medida') recalc();
+    if(btn.dataset.sub==='ajustes') fillAjustes();
+  });
+});
+
+function renderCatalogo(){
+  const cat = MaratuStore.getCatalogo();
+  const g = $('catGrid');
+  g.innerHTML = cat.map(p=>`
+    <button class="cat ${selCat===p.id?'sel':''}" data-id="${p.id}">
+      <span class="x" data-x="${p.id}" aria-label="remover">×</span>
+      <span class="n">${esc(p.nome)}</span>
+      <span class="p ${p.preco==null?'def':''}">${p.preco==null?'definir preço':brl(p.preco)}</span>
+    </button>`).join('');
+
+  g.querySelectorAll('.cat').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      const id = el.dataset.id;
+      const item = MaratuStore.getCatalogo().find(x=>x.id===id);
+      if(item.preco==null){
+        const v = prompt('Preço de '+item.nome+' (R$):');
+        if(v!=null && num(v)>0){
+          const list = MaratuStore.getCatalogo().map(x=> x.id===id ? {...x, preco:num(v)} : x);
+          MaratuStore.setCatalogo(list); renderCatalogo();
+        }
+        return;
+      }
+      selCat = (selCat===id)? null : id;
+      renderCatalogo(); renderCatSel();
+    });
+  });
+  g.querySelectorAll('.x').forEach(x=>{
+    x.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      const id = x.dataset.x;
+      const list = MaratuStore.getCatalogo().filter(p=>p.id!==id);
+      MaratuStore.setCatalogo(list);
+      if(selCat===id) selCat=null;
+      renderCatalogo(); renderCatSel();
+    });
+  });
+}
+function renderCatSel(){
+  const box = $('catSel');
+  const item = MaratuStore.getCatalogo().find(x=>x.id===selCat);
+  if(!item || item.preco==null){ box.innerHTML=''; return; }
+  box.innerHTML = `<div class="card" style="border-color:var(--sol); display:flex; justify-content:space-between; align-items:baseline; margin-bottom:14px;">
+    <span style="font-size:15px;">${esc(item.nome)}</span>
+    <span class="mono" style="font-size:26px; font-weight:700; color:var(--sol);">${brl(item.preco)}</span>
+  </div>`;
+}
+$('catAdd').addEventListener('click', ()=>{
+  const nome = $('catNome').value.trim();
+  const preco = num($('catPreco').value);
+  if(!nome || preco<=0) return;
+  const list = MaratuStore.getCatalogo().concat([{ id:uid(), nome, preco }]);
+  MaratuStore.setCatalogo(list);
+  $('catNome').value=''; $('catPreco').value='';
+  renderCatalogo();
+});
+
+// sob medida
+['inGramas','inHoras','inPos'].forEach(id=> $(id).addEventListener('input', recalc));
+function recalc(){
+  const p = MaratuStore.getParams();
+  const cMat = (num($('inGramas').value)/1000)*num(p.filamento);
+  const cMaq = num($('inHoras').value)*num(p.maquina);
+  const cMao = (num($('inPos').value)/60)*num(p.maodeobra);
+  const piso = cMat+cMaq+cMao;
+  const preco = piso*num(p.margem);
+  $('cMat').textContent = brl(cMat);
+  $('cMaq').textContent = brl(cMaq);
+  $('cMao').textContent = brl(cMao);
+  $('cPiso').textContent = brl(piso);
+  $('cPreco').textContent = brl(preco);
+  $('cMargem').textContent = 'margem '+(num(p.margem).toLocaleString('pt-BR'))+'x sobre o piso';
+  $('matLine').textContent = 'PLA Matte Elegoo, '+brl(num(p.filamento))+'/kg';
+}
+$('orcSalvar').addEventListener('click', ()=>{
+  const p = MaratuStore.getParams();
+  const g = num($('inGramas').value), h = num($('inHoras').value), pos = num($('inPos').value);
+  const piso = (g/1000)*num(p.filamento) + h*num(p.maquina) + (pos/60)*num(p.maodeobra);
+  const total = piso*num(p.margem);
+  if(total<=0){ alert('Preencha gramas e horas primeiro.'); return; }
+  const list = MaratuStore.getOrcamentos().concat([{
+    id: uid(), data: todayStr(),
+    cliente: $('orcCliente').value.trim() || 'Sem nome',
+    tipo:'medida', gramas:g, horas:h, pos, total
+  }]);
+  MaratuStore.setOrcamentos(list);
+  $('orcCliente').value='';
+  renderOrcLista();
+  alert('Orçamento salvo: '+brl(total));
+});
+
+// ajustes
+function fillAjustes(){
+  const p = MaratuStore.getParams();
+  $('pFil').value=p.filamento; $('pMaq').value=p.maquina; $('pMao').value=p.maodeobra;
+  $('pMar').value=p.margem; $('pFix').value=p.fixo; $('pRet').value=p.retirada;
+}
+$('pSave').addEventListener('click', ()=>{
+  MaratuStore.setParams({
+    filamento:num($('pFil').value), maquina:num($('pMaq').value), maodeobra:num($('pMao').value),
+    margem:num($('pMar').value), fixo:num($('pFix').value), retirada:num($('pRet').value)
+  });
+  recalc(); renderPainel();
+  alert('Ajustes salvos.');
+});
+
+/* =====================================================================
+   PAINEL
+   ===================================================================== */
+$('lancAdd').addEventListener('click', ()=>{
+  const label = $('lancLabel').value.trim();
+  const valor = num($('lancValor').value);
+  if(!label || valor<=0) return;
+  const list = MaratuStore.getLancamentos().concat([{ id:uid(), data:todayStr(), label, valor }]);
+  MaratuStore.setLancamentos(list);
+  $('lancLabel').value=''; $('lancValor').value='';
+  renderPainel();
+});
+function renderPainel(){
+  const p = MaratuStore.getParams();
+  const metaMes = num(p.fixo)+num(p.retirada);
+  const mesAtual = todayStr().slice(0,7);
+  const fat = MaratuStore.getLancamentos().filter(l=>l.data.slice(0,7)===mesAtual).reduce((s,l)=>s+num(l.valor),0);
+  const pct = metaMes>0 ? Math.min(100, Math.round(fat/metaMes*100)) : 0;
+  $('fatNum').textContent = brl(fat);
+  $('fatBar').style.width = pct+'%';
+  $('fatRef').textContent = 'meta do mês '+brl(metaMes);
+  $('fatPct').textContent = pct+'%';
+
+  // proximos 7 dias
+  const hoje = todayStr();
+  const lim = (function(){ const t=new Date(); t.setDate(t.getDate()+7); return dateStr(t.getFullYear(),t.getMonth(),t.getDate()); })();
+  const prox = MaratuStore.getEventos()
+    .filter(e=> e.data>=hoje && e.data<=lim)
+    .sort((a,b)=> a.data.localeCompare(b.data) || (a.hora||'').localeCompare(b.hora||''));
+  $('proxLista').innerHTML = prox.length ? prox.map(e=>`
+    <li>
+      <span><span class="pill ${e.tipo}">${e.tipo}</span> ${esc(e.titulo)}</span>
+      <span class="lil val">${fmtDia(e.data)}${e.hora?(' '+e.hora):''}</span>
+    </li>`).join('') : '<li class="empty">Nada nos próximos 7 dias.</li>';
+
+  renderOrcLista();
+}
+function renderOrcLista(){
+  const list = MaratuStore.getOrcamentos().slice().sort((a,b)=>b.id.localeCompare(a.id)).slice(0,6);
+  $('orcLista').innerHTML = list.length ? list.map(o=>`
+    <li>
+      <span>${esc(o.cliente)} <span class="lil">(${fmtDia(o.data)})</span></span>
+      <span class="val" style="color:var(--sol);">${brl(o.total)}</span>
+    </li>`).join('') : '<li class="empty">Nenhum orçamento salvo ainda.</li>';
+}
+
+/* =====================================================================
+   AGENDA
+   ===================================================================== */
+let viewY, viewM, selDay=null;
+(function initCalDate(){ const t=new Date(); viewY=t.getFullYear(); viewM=t.getMonth(); })();
+
+$('calPrev').addEventListener('click', ()=>{ viewM--; if(viewM<0){viewM=11;viewY--;} renderCal(); });
+$('calNext').addEventListener('click', ()=>{ viewM++; if(viewM>11){viewM=0;viewY++;} renderCal(); });
+$('calToday').addEventListener('click', ()=>{ const t=new Date(); viewY=t.getFullYear(); viewM=t.getMonth(); selDay=todayStr(); renderCal(); renderDay(); });
+
+function eventsByDay(){
+  const map={};
+  MaratuStore.getEventos().forEach(e=>{ (map[e.data]=map[e.data]||[]).push(e); });
+  return map;
+}
+function renderCal(){
+  $('calMonth').textContent = MESES[viewM]+' '+viewY;
+  const first = new Date(viewY, viewM, 1).getDay();
+  const days = new Date(viewY, viewM+1, 0).getDate();
+  const map = eventsByDay();
+  const t = todayStr();
+  let html = DOW.map(d=>`<div class="dow">${d}</div>`).join('');
+  for(let i=0;i<first;i++) html += `<div class="cell blank"></div>`;
+  for(let d=1; d<=days; d++){
+    const iso = dateStr(viewY, viewM, d);
+    const evs = map[iso]||[];
+    const dots = evs.slice(0,4).map(e=>`<span class="dot ${e.tipo}"></span>`).join('');
+    html += `<div class="cell ${iso===t?'today':''} ${iso===selDay?'sel':''}" data-iso="${iso}">
+      <span class="d">${d}</span><span class="dots">${dots}</span>
+    </div>`;
+  }
+  const rem = (first+days)%7; if(rem) for(let i=0;i<7-rem;i++) html += `<div class="cell blank"></div>`;
+  $('calGrid').innerHTML = html;
+  $('calGrid').querySelectorAll('.cell[data-iso]').forEach(c=>{
+    c.addEventListener('click', ()=>{ selDay=c.dataset.iso; renderCal(); renderDay(); });
+  });
+}
+function renderDay(){
+  if(!selDay){ $('dayTitle').textContent='Selecione um dia'; $('dayEvents').innerHTML=''; $('addForm').style.display='none'; return; }
+  const [y,m,d]=selDay.split('-').map(Number);
+  $('dayTitle').textContent = pad2(d)+' de '+MESES[m-1]+' de '+y;
+  $('addForm').style.display='block';
+  const evs = (eventsByDay()[selDay]||[]).sort((a,b)=>(a.hora||'').localeCompare(b.hora||''));
+  $('dayEvents').innerHTML = evs.length ? evs.map(e=>`
+    <div class="ev">
+      <div>
+        <div class="t"><span class="pill ${e.tipo}">${e.tipo}</span> ${esc(e.titulo)}</div>
+        <div class="meta">${e.hora?('às '+e.hora):'dia inteiro'}${e.cliente?(' · '+esc(e.cliente)):''}${e.notas?(' · '+esc(e.notas)):''}</div>
+      </div>
+      <div class="acts">
+        <button data-ics="${e.id}">.ics</button>
+        <button class="del" data-del="${e.id}">apagar</button>
+      </div>
+    </div>`).join('') : '<div class="empty">Nada neste dia ainda.</div>';
+
+  $('dayEvents').querySelectorAll('[data-ics]').forEach(b=> b.addEventListener('click', ()=> baixarICS(b.dataset.ics)));
+  $('dayEvents').querySelectorAll('[data-del]').forEach(b=> b.addEventListener('click', ()=>{
+    const list = MaratuStore.getEventos().filter(x=>x.id!==b.dataset.del);
+    MaratuStore.setEventos(list); renderCal(); renderDay(); renderPainel(); renderUpcoming();
+  }));
+}
+$('evSalvar').addEventListener('click', ()=>{
+  const titulo = $('evTitulo').value.trim();
+  if(!titulo || !selDay){ alert('Título e um dia selecionado.'); return; }
+  const ev = {
+    id: uid(), titulo, tipo: $('evTipo').value, data: selDay,
+    hora: $('evHora').value || '', diaInteiro: !$('evHora').value,
+    cliente: $('evCliente').value.trim(), notas: $('evNotas').value.trim()
+  };
+  MaratuStore.setEventos(MaratuStore.getEventos().concat([ev]));
+  $('evTitulo').value=''; $('evHora').value=''; $('evCliente').value=''; $('evNotas').value='';
+  renderCal(); renderDay(); renderPainel(); renderUpcoming();
+});
+function renderUpcoming(){
+  const hoje = todayStr();
+  const up = MaratuStore.getEventos().filter(e=>e.data>=hoje)
+    .sort((a,b)=> a.data.localeCompare(b.data) || (a.hora||'').localeCompare(b.hora||'')).slice(0,10);
+  $('upcoming').innerHTML = up.length ? up.map(e=>`
+    <li>
+      <span><span class="pill ${e.tipo}">${e.tipo}</span> ${esc(e.titulo)}${e.cliente?(' <span class="lil">('+esc(e.cliente)+')</span>'):''}</span>
+      <span class="lil val">${fmtDia(e.data)}${e.hora?(' '+e.hora):''}</span>
+    </li>`).join('') : '<li class="empty">Sem eventos futuros.</li>';
+}
+
+/* ---------- ICS (Apple Calendar, client side) ---------- */
+function icsEscape(s){ return String(s||'').replace(/\\/g,'\\\\').replace(/;/g,'\\;').replace(/,/g,'\\,').replace(/\n/g,'\\n'); }
+function addDayISO(iso){ const [y,m,d]=iso.split('-').map(Number); const dt=new Date(y,m-1,d+1); return dateStr(dt.getFullYear(),dt.getMonth(),dt.getDate()); }
+function buildICS(ev){
+  const stamp = new Date().toISOString().replace(/[-:]/g,'').split('.')[0]+'Z';
+  const datePart = ev.data.replace(/-/g,'');
+  let dtstart, dtend;
+  if(ev.hora){
+    const t = ev.hora.replace(':','')+'00';
+    dtstart = 'DTSTART:'+datePart+'T'+t;
+    // fim = +1h
+    let [hh,mm] = ev.hora.split(':').map(Number); hh=(hh+1)%24;
+    dtend = 'DTEND:'+datePart+'T'+pad2(hh)+pad2(mm)+'00';
+  } else {
+    dtstart = 'DTSTART;VALUE=DATE:'+datePart;
+    dtend = 'DTEND;VALUE=DATE:'+addDayISO(ev.data).replace(/-/g,'');
+  }
+  const lines = [
+    'BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//MARATU//Admin//PT','CALSCALE:GREGORIAN',
+    'BEGIN:VEVENT','UID:'+ev.id+'@maratu.com.br','DTSTAMP:'+stamp,
+    dtstart, dtend, 'SUMMARY:'+icsEscape(ev.titulo)
+  ];
+  const desc = [ev.cliente?('Cliente: '+ev.cliente):'', ev.notas||''].filter(Boolean).join(' | ');
+  if(desc) lines.push('DESCRIPTION:'+icsEscape(desc));
+  lines.push('END:VEVENT','END:VCALENDAR');
+  return lines.join('\r\n');
+}
+function baixarICS(id){
+  const ev = MaratuStore.getEventos().find(x=>x.id===id);
+  if(!ev) return;
+  const blob = new Blob([buildICS(ev)], {type:'text/calendar;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = ev.titulo.replace(/[^\w\u00C0-\u017F -]/g,'').slice(0,40).trim().replace(/\s+/g,'-')+'.ics';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(a.href), 2000);
+}
+
+/* ---------- botao assinar (webcal) ---------- */
+function setupApple(){
+  const feed = window.__MARATU_FEED || WEBCAL_FEED_URL;
+  const a = $('appleSub');
+  if(feed){
+    a.href = feed.replace(/^https?:/, 'webcal:');
+    a.style.opacity='1'; a.style.pointerEvents='auto';
+  } else {
+    a.removeAttribute('href');
+    a.style.opacity='0.4'; a.style.pointerEvents='none';
+  }
+}
+
+/* =====================================================================
+   START
+   ===================================================================== */
+MaratuStore.ready.then(()=>{
+  renderCatalogo(); renderCatSel();
+  fillAjustes(); recalc();
+  renderPainel();
+  renderCal(); renderDay(); renderUpcoming();
+  setupApple();
+});
+</script>
+</body>
+</html>

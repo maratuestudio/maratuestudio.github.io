@@ -97,6 +97,14 @@
   }
   .head .status{ text-align:right; font-family:var(--clother); font-size:0.62rem; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; color:var(--muted); }
   .head .status .dot{ display:inline-block; width:7px; height:7px; border-radius:50%; background:var(--laranja); margin-right:6px; vertical-align:middle; animation:pulse 2.2s ease-in-out infinite; }
+  .head .right{ display:flex; align-items:center; gap:14px; }
+  .head .sair{
+    background:transparent; border:1px solid var(--linha); color:var(--preto);
+    padding:8px 14px; font-family:var(--clother); font-weight:700;
+    font-size:0.62rem; letter-spacing:0.2em; text-transform:uppercase;
+    cursor:pointer; transition:all .15s;
+  }
+  .head .sair:hover{ background:var(--preto); color:var(--areia); border-color:var(--preto); }
   @keyframes pulse{ 0%,100%{opacity:1} 50%{opacity:0.35} }
 
   /* ── TABS ── */
@@ -409,7 +417,10 @@
       <span class="word">MARATU</span>
       <span class="sub">painel operacional</span>
     </div>
-    <div class="status"><span class="dot"></span>em atividade</div>
+    <div class="right">
+      <div class="status"><span class="dot"></span>em atividade</div>
+      <button class="sair" id="btnSair" type="button">Sair</button>
+    </div>
   </header>
 
   <nav class="tabs" role="tablist" id="tabs">
@@ -802,6 +813,14 @@ document.querySelectorAll('#tabs .tab').forEach(btn=>{
     document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
     $('panel-'+btn.dataset.tab).classList.add('on');
   });
+});
+
+/* =====================================================================
+   SAIR
+   ===================================================================== */
+$('btnSair').addEventListener('click', ()=>{
+  try { localStorage.removeItem('maratu.token'); } catch (e) {}
+  location.reload();
 });
 
 /* =====================================================================

@@ -308,20 +308,15 @@
 
   #login .box{ max-width:420px; width:100%; display:flex; flex-direction:column; align-items:center; gap:22px; }
 
-  #login .caranguejo{ width:min(58vw, 240px); height:auto; display:block; }
+  #login .caranguejo{ width:min(22vw, 96px); height:auto; display:block; opacity:0.9; }
   #login .caranguejo path{ fill:var(--laranja); }
 
   #login .lbl{ justify-content:center; color:var(--muted); }
   #login .lbl::before{ background:var(--muted); }
 
   #login .t1{
-    font-family:var(--clother); font-weight:700;
-    font-size:clamp(0.9rem, 1.4vw, 1.05rem);
-    margin:0; line-height:1.2;
-  }
-  #login .t2{
     font-family:var(--jack); color:var(--laranja);
-    font-size:clamp(3rem, 8vw, 5rem); line-height:0.82;
+    font-size:clamp(3rem, 8.5vw, 5.4rem); line-height:0.85;
     text-transform:uppercase; letter-spacing:-0.02em;
     margin:0;
   }
@@ -377,8 +372,7 @@
     </svg>
 
     <div class="lbl">000 &mdash; Admin</div>
-    <h1 class="t1" style="margin:0;">seja bem-vindo</h1>
-    <div class="t2">Raphael</div>
+    <h1 class="t1">seja bem-vindo!</h1>
 
     <form id="loginForm" autocomplete="off">
       <div class="senha-wrap">

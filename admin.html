@@ -375,13 +375,17 @@
   }
   #login .erro.on{ opacity:1; }
   #login button[type="submit"]{
-    background:var(--preto); color:var(--areia); border:none;
-    padding:14px; font-family:var(--clother); font-weight:700;
+    background:var(--areia); color:var(--preto);
+    border:1.5px solid var(--preto); border-radius:999px;
+    box-shadow:3px 3px 0 0 var(--preto);
+    padding:14px 28px; font-family:var(--clother); font-weight:700;
     font-size:0.72rem; letter-spacing:0.24em; text-transform:uppercase;
-    cursor:pointer; transition:all .18s;
+    cursor:pointer; align-self:center;
+    transition:transform .12s, box-shadow .12s, background .18s, color .18s;
   }
-  #login button[type="submit"]:hover{ background:var(--areia); color:var(--preto); }
-  #login button[type="submit"]:disabled{ opacity:0.4; cursor:wait; }
+  #login button[type="submit"]:hover{ background:var(--preto); color:var(--areia); }
+  #login button[type="submit"]:active{ transform:translate(3px,3px); box-shadow:0 0 0 0 var(--preto); }
+  #login button[type="submit"]:disabled{ opacity:0.4; cursor:wait; box-shadow:none; }
   #login .foot{ margin-top:8px; padding-top:14px; border-top:1px solid rgba(13,13,11,0.2); font-size:0.55rem; letter-spacing:0.22em; color:rgba(13,13,11,0.7); }
 </style>
 </head>

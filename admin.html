@@ -116,9 +116,9 @@
   .panel.on{ display:block; }
 
   h2.title{
-    font-family:var(--jack); font-size:1.6rem; text-transform:uppercase;
-    letter-spacing:-0.01em; margin:0 0 14px; font-weight:400; color:var(--preto);
-    line-height:0.9;
+    font-family:var(--clother); font-weight:900; font-size:1.15rem;
+    letter-spacing:-0.005em; margin:0 0 14px; color:var(--preto);
+    line-height:1.1;
   }
   .hint{ color:var(--muted); font-size:0.88rem; margin:0 0 16px; line-height:1.6; }
 
@@ -164,9 +164,17 @@
     letter-spacing:0.2em; text-transform:uppercase; color:var(--muted); margin-bottom:10px;
   }
   .meta-num{
-    font-family:var(--jack); font-size:2.8rem; font-weight:400;
-    color:var(--laranja); line-height:0.9; letter-spacing:-0.01em;
+    font-family:var(--clother); font-weight:900; font-size:2.2rem;
+    color:var(--laranja); line-height:1; letter-spacing:-0.01em;
+    display:flex; align-items:center; gap:12px;
   }
+  .meta-num .val{ font-family:inherit; font-weight:900; }
+  .meta-num .eye{
+    background:transparent; border:none; cursor:pointer; padding:6px;
+    color:var(--muted); display:inline-flex; align-items:center;
+  }
+  .meta-num .eye:hover{ color:var(--preto); }
+  .meta-num .eye svg{ width:22px; height:22px; display:block; }
   .bar{ height:6px; background:var(--areia); border:1px solid var(--linha); border-radius:0; overflow:hidden; margin:16px 0 8px; }
   .bar > i{ display:block; height:100%; background:var(--laranja); transition:width .3s; }
   .refline{ display:flex; justify-content:space-between; font-size:0.78rem; color:var(--muted); font-weight:700; letter-spacing:0.06em; text-transform:uppercase; }
@@ -204,7 +212,7 @@
   .cat:hover{ border-color:var(--preto); }
   .cat.sel{ border-color:var(--laranja); background:var(--areia-sombra); box-shadow:inset 0 0 0 1px var(--laranja); }
   .cat .n{ font-size:0.92rem; font-weight:700; }
-  .cat .p{ font-family:var(--jack); font-size:1.35rem; color:var(--laranja); line-height:1; }
+  .cat .p{ font-family:var(--clother); font-weight:900; font-size:1.1rem; color:var(--laranja); line-height:1.1; letter-spacing:-0.005em; }
   .cat .p.def{ color:var(--muted); font-size:0.85rem; font-family:var(--clother); font-weight:400; font-style:italic; }
   .cat .x{ position:absolute; top:6px; right:9px; color:var(--muted); font-size:16px; line-height:1; padding:2px; background:none; border:none; cursor:pointer; }
   .cat .x:hover{ color:var(--laranja); }
@@ -216,7 +224,7 @@
   .brule{ height:1px; background:var(--linha); }
   .preco{ border-top:2px solid var(--laranja); padding-top:18px; margin-top:6px; }
   .preco .cap{ font-family:var(--clother); font-weight:700; font-size:0.62rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.2em; }
-  .preco .v{ font-family:var(--jack); font-size:3.5rem; color:var(--laranja); line-height:0.9; display:block; margin:4px 0; letter-spacing:-0.01em; }
+  .preco .v{ font-family:var(--clother); font-weight:900; font-size:2.6rem; color:var(--laranja); line-height:1; display:block; margin:6px 0; letter-spacing:-0.01em; }
   .preco .m{ font-size:0.8rem; color:var(--muted); font-style:italic; }
 
   .ptag{
@@ -237,7 +245,7 @@
     font-family:var(--clother);
   }
   .cal-nav button:hover{ background:var(--preto); color:var(--areia); border-color:var(--preto); }
-  .cal-month{ font-family:var(--jack); font-size:1.4rem; letter-spacing:-0.01em; text-transform:uppercase; }
+  .cal-month{ font-family:var(--clother); font-weight:900; font-size:1.05rem; letter-spacing:-0.005em; text-transform:capitalize; }
   .cal{ display:grid; grid-template-columns:repeat(7,1fr); gap:4px; }
   .cal .dow{
     text-align:center; font-family:var(--clother); font-weight:700; font-size:0.6rem;
@@ -261,7 +269,7 @@
   .dot.evento{ background:var(--azul-claro); }
 
   .daypanel{ margin-top:20px; }
-  .daypanel h3{ font-family:var(--jack); font-size:1.2rem; text-transform:uppercase; margin:0 0 12px; font-weight:400; letter-spacing:-0.01em; }
+  .daypanel h3{ font-family:var(--clother); font-weight:900; font-size:1rem; margin:0 0 12px; letter-spacing:-0.005em; }
   .ev{ display:flex; justify-content:space-between; align-items:flex-start; gap:10px; padding:12px 0; border-bottom:1px solid var(--linha); }
   .ev:last-child{ border-bottom:none; }
   .ev .t{ font-size:0.95rem; font-weight:700; }
@@ -282,7 +290,7 @@
   }
 
   .apple{ background:var(--areia-sombra); border:1px solid var(--linha-forte); padding:18px; margin-top:22px; }
-  .apple .t{ font-family:var(--jack); font-size:1.1rem; text-transform:uppercase; margin-bottom:8px; letter-spacing:-0.01em; }
+  .apple .t{ font-family:var(--clother); font-weight:900; font-size:0.95rem; margin-bottom:8px; letter-spacing:-0.005em; }
   .apple .d{ font-size:0.85rem; color:var(--muted); line-height:1.6; }
 
   .foot{
@@ -294,25 +302,32 @@
   .spacer{ height:16px; }
 
   /* ======================================================
-     LOGIN OVERLAY — caranguejo estatico piscando os olhos
+     LOGIN OVERLAY — fundo laranja, caranguejo preto, canto SVG
      ====================================================== */
   #login{
     position:fixed; inset:0; z-index:2000;
-    background:var(--areia);
+    background:var(--laranja);
     display:flex; align-items:center; justify-content:center;
     padding:24px; text-align:center;
     animation:loginIn .4s ease-out;
+    overflow:hidden;
   }
   #login.gone{ display:none; }
   @keyframes loginIn{ from{opacity:0} to{opacity:1} }
 
-  #login .box{ max-width:420px; width:100%; display:flex; flex-direction:column; align-items:center; gap:22px; }
+  #login .canto{
+    position:absolute; left:0; bottom:0; margin:0; padding:0;
+    width:clamp(140px, 22vw, 240px); height:auto; display:block;
+    pointer-events:none;
+  }
 
-  #login .caranguejo{ width:min(22vw, 96px); height:auto; display:block; opacity:0.9; }
-  #login .caranguejo path{ fill:var(--laranja); }
+  #login .box{ max-width:460px; width:100%; display:flex; flex-direction:column; align-items:center; gap:22px; position:relative; z-index:1; }
 
-  #login .lbl{ justify-content:center; color:var(--muted); }
-  #login .lbl::before{ background:var(--muted); }
+  #login .caranguejo{ width:min(22vw, 96px); height:auto; display:block; opacity:0.95; }
+  #login .caranguejo path{ fill:var(--preto); }
+
+  #login .lbl{ justify-content:center; color:rgba(13,13,11,0.65); }
+  #login .lbl::before{ background:currentColor; }
 
   #login .t1{
     font-family:var(--clother); font-weight:900; color:var(--preto);
@@ -324,17 +339,17 @@
   #login form{ width:100%; display:flex; flex-direction:column; align-items:stretch; gap:14px; margin-top:8px; }
   #login .senha-wrap{ position:relative; }
   #login input[type="password"]{
-    background:transparent; border:none; border-bottom:1px solid var(--linha-forte);
+    background:transparent; border:none; border-bottom:1px solid rgba(13,13,11,0.35);
     border-radius:0; padding:14px 4px; text-align:center;
     font-family:var(--clother); font-size:1.05rem; letter-spacing:0.14em;
     color:var(--preto);
   }
-  #login input[type="password"]::placeholder{ letter-spacing:0.24em; text-transform:uppercase; font-size:0.75rem; color:var(--muted); font-weight:700; }
-  #login input[type="password"]:focus{ outline:none; border-bottom-color:var(--laranja); box-shadow:none; }
+  #login input[type="password"]::placeholder{ letter-spacing:0.24em; text-transform:uppercase; font-size:0.75rem; color:rgba(13,13,11,0.55); font-weight:700; }
+  #login input[type="password"]:focus{ outline:none; border-bottom-color:var(--preto); box-shadow:none; }
   #login .erro{
     min-height:1em; font-family:var(--clother); font-weight:700;
     font-size:0.7rem; letter-spacing:0.18em; text-transform:uppercase;
-    color:var(--laranja); opacity:0; transition:opacity .2s;
+    color:var(--preto); opacity:0; transition:opacity .2s;
   }
   #login .erro.on{ opacity:1; }
   #login button[type="submit"]{
@@ -343,15 +358,16 @@
     font-size:0.72rem; letter-spacing:0.24em; text-transform:uppercase;
     cursor:pointer; transition:all .18s;
   }
-  #login button[type="submit"]:hover{ background:var(--laranja); }
+  #login button[type="submit"]:hover{ background:var(--areia); color:var(--preto); }
   #login button[type="submit"]:disabled{ opacity:0.4; cursor:wait; }
-  #login .foot{ margin-top:8px; padding-top:14px; border-top:1px solid var(--linha); font-size:0.55rem; letter-spacing:0.22em; }
+  #login .foot{ margin-top:8px; padding-top:14px; border-top:1px solid rgba(13,13,11,0.2); font-size:0.55rem; letter-spacing:0.22em; color:rgba(13,13,11,0.7); }
 </style>
 </head>
 <body>
 
 <!-- ================= LOGIN OVERLAY ================= -->
 <div id="login" aria-hidden="false">
+  <img class="canto" src="admin-corner.svg" alt="" aria-hidden="true" />
   <div class="box">
     <svg class="caranguejo" viewBox="0 0 318.24 152.9" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
       <g data-aratu="claw-left">
@@ -372,7 +388,7 @@
     </svg>
 
     <div class="lbl">000 &mdash; Admin</div>
-    <h1 class="t1">seja bem-vindo!</h1>
+    <h1 class="t1">Seja bem-vindo!</h1>
 
     <form id="loginForm" autocomplete="off">
       <div class="senha-wrap">
@@ -407,7 +423,16 @@
     <div class="grid2">
       <div class="card">
         <div class="meta-cap">Faturamento do mês</div>
-        <div class="meta-num" id="fatNum">R$ 0,00</div>
+        <div class="meta-num">
+          <span class="val" id="fatNum">R$ 0,00</span>
+          <button class="eye" id="fatEye" type="button" aria-label="Mostrar/ocultar valor" aria-pressed="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path class="eye-open"   d="M1.5 12S5.5 5 12 5s10.5 7 10.5 7-4 7-10.5 7S1.5 12 1.5 12Z"/>
+              <circle class="eye-open" cx="12" cy="12" r="3"/>
+              <path class="eye-closed" d="M2 12s3-4 6-5.5M22 12s-3 4-6 5.5M9 18l1.5-3M15 18l-1.5-3M4 5l16 14" style="display:none"/>
+            </svg>
+          </button>
+        </div>
         <div class="bar"><i id="fatBar" style="width:0%"></i></div>
         <div class="refline">
           <span id="fatRef">meta do mês</span>
@@ -913,16 +938,32 @@ $('lancAdd').addEventListener('click', ()=>{
   $('lancLabel').value=''; $('lancValor').value='';
   renderPainel();
 });
+let fatHidden = false;
+try { fatHidden = localStorage.getItem('maratu.fatHidden') === '1'; } catch (e) {}
+function maskBRL(){ return 'R$ ' + '\u2022\u2022\u2022\u2022\u2022'; }
+function applyFatEye(){
+  const svg = $('fatEye').querySelector('svg');
+  svg.querySelectorAll('.eye-open').forEach(el=> el.style.display = fatHidden ? 'none' : '');
+  svg.querySelectorAll('.eye-closed').forEach(el=> el.style.display = fatHidden ? '' : 'none');
+  $('fatEye').setAttribute('aria-pressed', fatHidden ? 'true' : 'false');
+}
+$('fatEye').addEventListener('click', ()=>{
+  fatHidden = !fatHidden;
+  try { localStorage.setItem('maratu.fatHidden', fatHidden ? '1' : '0'); } catch (e) {}
+  renderPainel();
+});
+
 function renderPainel(){
   const p = MaratuStore.getParams();
   const metaMes = num(p.fixo)+num(p.retirada);
   const mesAtual = todayStr().slice(0,7);
   const fat = MaratuStore.getLancamentos().filter(l=>l.data.slice(0,7)===mesAtual).reduce((s,l)=>s+num(l.valor),0);
   const pct = metaMes>0 ? Math.min(100, Math.round(fat/metaMes*100)) : 0;
-  $('fatNum').textContent = brl(fat);
+  $('fatNum').textContent = fatHidden ? maskBRL() : brl(fat);
   $('fatBar').style.width = pct+'%';
-  $('fatRef').textContent = 'meta do mês '+brl(metaMes);
+  $('fatRef').textContent = 'meta do mês '+(fatHidden ? maskBRL() : brl(metaMes));
   $('fatPct').textContent = pct+'%';
+  applyFatEye();
 
   // proximos 7 dias
   const hoje = todayStr();

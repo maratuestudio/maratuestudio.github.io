@@ -630,70 +630,97 @@ const MaratuStore = (function(){
   let TOKEN = "";
   try { TOKEN = localStorage.getItem("maratu.token") || ""; } catch (e) {}
 
-  /* Login overlay: promise que resolve quando a senha bate no /api/state */
+  function hideLogin(){
+    const overlay = document.getElementById('login');
+    if(!overlay) return;
+    overlay.classList.add('gone');
+    overlay.style.display = 'none';
+    overlay.setAttribute('aria-hidden','true');
+  }
+  function showLogin(){
+    const overlay = document.getElementById('login');
+    if(!overlay) return;
+    overlay.classList.remove('gone');
+    overlay.style.display = '';
+    overlay.setAttribute('aria-hidden','false');
+    setTimeout(()=>{ const i = document.getElementById('loginSenha'); if(i) i.focus(); }, 60);
+  }
+
+  /* fetch /api/state com um token e devolve {status, data} */
+  async function tryState(tk){
+    const r = await fetch(API + "/api/state", { headers:{ Authorization:"Bearer "+tk } });
+    if(r.status === 401) return { status:401 };
+    if(!r.ok) return { status:r.status };
+    const data = await r.json();
+    return { status:200, data };
+  }
+
+  /* Login overlay: promise que resolve quando a senha bate. Devolve o state. */
   function askToken(){
     return new Promise((resolve)=>{
-      const overlay = document.getElementById('login');
-      const form    = document.getElementById('loginForm');
-      const input   = document.getElementById('loginSenha');
-      const erro    = document.getElementById('loginErro');
-      const btn     = document.getElementById('loginBtn');
-      overlay.classList.remove('gone');
-      overlay.setAttribute('aria-hidden','false');
-      setTimeout(()=> input.focus(), 60);
-
-      async function tryLogin(pw){
+      const form  = document.getElementById('loginForm');
+      const input = document.getElementById('loginSenha');
+      const erro  = document.getElementById('loginErro');
+      const btn   = document.getElementById('loginBtn');
+      showLogin();
+      form.onsubmit = async (e)=>{
+        e.preventDefault();
+        const pw = (input.value || '').trim();
+        if(!pw) return;
         btn.disabled = true; erro.classList.remove('on');
         try{
-          const r = await fetch(API + "/api/state", { headers:{ Authorization:"Bearer "+pw } });
-          if(r.status === 401){
+          const res = await tryState(pw);
+          if(res.status === 401){
             btn.disabled = false;
             erro.textContent = 'senha incorreta';
             erro.classList.add('on');
             input.value = ''; input.focus();
             return;
           }
+          if(res.status !== 200){
+            btn.disabled = false;
+            erro.textContent = 'erro ' + res.status;
+            erro.classList.add('on');
+            return;
+          }
           try { localStorage.setItem("maratu.token", pw); } catch (e) {}
           TOKEN = pw;
-          overlay.classList.add('gone');
-          overlay.setAttribute('aria-hidden','true');
-          resolve();
+          hideLogin();
+          resolve(res.data);
         }catch(e){
           btn.disabled = false;
           erro.textContent = 'sem conexão';
           erro.classList.add('on');
         }
-      }
-
-      form.onsubmit = (e)=>{ e.preventDefault(); const pw = input.value.trim(); if(pw) tryLogin(pw); };
+      };
     });
+  }
+
+  function fill(s){
+    cache.params      = Object.assign({}, DEFAULT_PARAMS, s.params || {});
+    cache.catalogo    = (s.catalogo && s.catalogo.length) ? s.catalogo : DEFAULT_CATALOGO;
+    cache.orcamentos  = s.orcamentos || [];
+    cache.eventos     = s.eventos || [];
+    cache.lancamentos = s.lancamentos || [];
   }
 
   const backend = {
     async load(){
-      if(!TOKEN){
-        await askToken();
-      } else {
-        // token salvo — testa; se 401, cai no overlay
-        const r = await fetch(API + "/api/state", { headers:{ Authorization:"Bearer "+TOKEN } });
-        if(r.status === 401){
+      let data = null;
+      if(TOKEN){
+        const res = await tryState(TOKEN);
+        if(res.status === 200){
+          data = res.data;
+          hideLogin();
+        } else {
           try { localStorage.removeItem("maratu.token"); } catch (e) {}
           TOKEN = "";
-          await askToken();
         }
       }
-      let r = await fetch(API + "/api/state", { headers: { Authorization: "Bearer " + TOKEN } });
-      if(r.status === 401){
-        try { localStorage.removeItem("maratu.token"); } catch (e) {}
-        TOKEN = "";
-        return backend.load();
+      if(!data){
+        data = await askToken();
       }
-      const s = await r.json();
-      cache.params      = Object.assign({}, DEFAULT_PARAMS, s.params || {});
-      cache.catalogo    = (s.catalogo && s.catalogo.length) ? s.catalogo : DEFAULT_CATALOGO;
-      cache.orcamentos  = s.orcamentos || [];
-      cache.eventos     = s.eventos || [];
-      cache.lancamentos = s.lancamentos || [];
+      fill(data);
       try{
         const c = await fetch(API + "/api/config", { headers: { Authorization: "Bearer " + TOKEN } });
         if(c.ok){ const cfg = await c.json(); window.__MARATU_FEED = cfg.feedUrl || ""; }

@@ -1279,6 +1279,23 @@
   .prod-toolbar{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin:14px 0 18px; }
   .prod-toolbar .prod-filter{ flex:1; min-width:180px; }
   .prod-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:14px; }
+  .ga4-range{ display:flex; gap:6px; }
+  .ga4-r{ background:transparent; border:1px solid var(--preto); border-radius:999px; padding:4px 10px; font-family:var(--clother); font-size:0.65rem; letter-spacing:0.14em; text-transform:uppercase; font-weight:700; cursor:pointer; }
+  .ga4-r.on{ background:var(--preto); color:var(--areia); }
+  .ga4-kpis{ display:grid; grid-template-columns:repeat(4, 1fr); gap:12px; margin-top:14px; }
+  @media (max-width:640px){ .ga4-kpis{ grid-template-columns:repeat(2, 1fr); } }
+  .ga4-kpi{ display:flex; flex-direction:column; gap:4px; padding:12px; background:rgba(13,13,11,0.03); border-radius:10px; }
+  .ga4-kpi .k-cap{ font-size:0.6rem; letter-spacing:0.18em; text-transform:uppercase; opacity:0.7; }
+  .ga4-kpi .k-val{ font-size:1.4rem; font-weight:900; font-family:var(--clother); }
+  .ga4-cols{ display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:18px; }
+  @media (max-width:640px){ .ga4-cols{ grid-template-columns:1fr; } }
+  .ga4-col-title{ font-size:0.7rem; letter-spacing:0.18em; text-transform:uppercase; opacity:0.7; margin-bottom:8px; font-weight:700; }
+  .ga4-list{ list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:6px; }
+  .ga4-list li{ display:flex; justify-content:space-between; gap:12px; font-size:0.85rem; padding:6px 0; border-bottom:1px dashed rgba(13,13,11,0.12); }
+  .ga4-list li:last-child{ border-bottom:none; }
+  .ga4-list .g-name{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .ga4-list .g-val{ font-weight:700; opacity:0.9; }
+  .ga4-foot{ margin-top:12px; font-size:0.65rem; letter-spacing:0.12em; opacity:0.55; text-align:right; }
   .precos-base-card{ background:var(--areia); border:1.5px solid var(--preto); box-shadow:3px 3px 0 0 var(--preto); border-radius:12px; padding:14px 16px; margin:0 0 18px; }
   .precos-base-card > summary{ font-weight:700; letter-spacing:0.06em; text-transform:uppercase; font-size:0.78rem; cursor:pointer; user-select:none; }
   .precos-base-card[open] > summary{ margin-bottom:8px; }
@@ -1574,6 +1591,38 @@
         <div class="sc-title">Últimos orçamentos</div>
         <ul class="list" id="orcLista"></ul>
       </div>
+    </div>
+
+    <div class="spacer"></div>
+
+    <!-- GA4 — tráfego do site -->
+    <div class="chart-card" id="ga4Card">
+      <div class="ch-head">
+        <div class="ch-title">Site — Google Analytics</div>
+        <div class="ga4-range" id="ga4Range">
+          <button type="button" class="ga4-r" data-r="1d">Ontem</button>
+          <button type="button" class="ga4-r on" data-r="7d">7d</button>
+          <button type="button" class="ga4-r" data-r="28d">28d</button>
+          <button type="button" class="ga4-r" data-r="90d">90d</button>
+        </div>
+      </div>
+      <div class="ga4-kpis" id="ga4Kpis">
+        <div class="ga4-kpi"><span class="k-cap">Sessões</span><span class="k-val" id="ga4Sess">—</span></div>
+        <div class="ga4-kpi"><span class="k-cap">Usuários</span><span class="k-val" id="ga4Users">—</span></div>
+        <div class="ga4-kpi"><span class="k-cap">Páginas</span><span class="k-val" id="ga4Views">—</span></div>
+        <div class="ga4-kpi"><span class="k-cap">Engajamento</span><span class="k-val" id="ga4Eng">—</span></div>
+      </div>
+      <div class="ga4-cols">
+        <div class="ga4-col">
+          <div class="ga4-col-title">Páginas mais vistas</div>
+          <ul class="ga4-list" id="ga4Top"></ul>
+        </div>
+        <div class="ga4-col">
+          <div class="ga4-col-title">De onde vieram</div>
+          <ul class="ga4-list" id="ga4Src"></ul>
+        </div>
+      </div>
+      <div class="ga4-foot"><span id="ga4Meta">carregando…</span></div>
     </div>
 
     <div class="spacer"></div>
@@ -4137,6 +4186,91 @@ MaratuStore.ready.then(()=>{
     lastBlink = Date.now() - 5000; // força piscada imediata
     // TODO agente: abrir chat/painel do aratu aqui
   });
+})();
+
+/* =====================================================================
+   GA4 — puxa métricas do Worker /api/analytics/ga4 (cacheado 20min em D1)
+   ===================================================================== */
+(function ga4Panel(){
+  const API = "https://maratu-api.raphaelnascimento.workers.dev";
+  let TOKEN = "";
+  try { TOKEN = localStorage.getItem("maratu.token") || ""; } catch(e){}
+  if(!TOKEN) return;
+
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) => String(s==null?'':s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const fmt = (n) => Number(n||0).toLocaleString('pt-BR');
+  const pct = (n) => (Number(n||0)*100).toFixed(1).replace('.',',') + '%';
+  const sumMetric = (rows, idx) => rows.reduce((a,r)=> a + Number(r.metricValues?.[idx]?.value||0), 0);
+  const avgMetric = (rows, idx) => rows.length ? sumMetric(rows,idx)/rows.length : 0;
+
+  function fmtDur(sec){
+    sec = Math.round(Number(sec)||0);
+    const m = Math.floor(sec/60), s = sec%60;
+    return m ? (m+'m'+String(s).padStart(2,'0')+'s') : (s+'s');
+  }
+  function shortPage(p){
+    if(!p) return '/';
+    return p.length > 32 ? p.slice(0,30)+'…' : p;
+  }
+  function shortSrc(s){
+    if(!s || s==='(direct)') return 'direto';
+    return s;
+  }
+
+  let CURRENT_RANGE = '7d';
+
+  function render(data){
+    if(data.error){
+      $('ga4Meta').textContent = 'erro: ' + data.error;
+      return;
+    }
+    const rows = (data.main?.rows) || [];
+    $('ga4Sess').textContent  = fmt(sumMetric(rows, 0));
+    $('ga4Users').textContent = fmt(sumMetric(rows, 1));
+    $('ga4Views').textContent = fmt(sumMetric(rows, 2));
+    $('ga4Eng').textContent   = pct(avgMetric(rows, 3));
+
+    const topRows = (data.top?.rows) || [];
+    $('ga4Top').innerHTML = topRows.length
+      ? topRows.slice(0,7).map(r=>`<li><span class="g-name">${esc(shortPage(r.dimensionValues[0].value))}</span><span class="g-val">${fmt(r.metricValues[0].value)}</span></li>`).join('')
+      : '<li><span class="g-name" style="opacity:0.5">sem dados</span></li>';
+
+    const srcRows = (data.src?.rows) || [];
+    $('ga4Src').innerHTML = srcRows.length
+      ? srcRows.slice(0,7).map(r=>`<li><span class="g-name">${esc(shortSrc(r.dimensionValues[0].value))}</span><span class="g-val">${fmt(r.metricValues[0].value)}</span></li>`).join('')
+      : '<li><span class="g-name" style="opacity:0.5">sem dados</span></li>';
+
+    const when = new Date((data.cached_at||data.fetched_at||0)*1000);
+    const hh = String(when.getHours()).padStart(2,'0'), mm = String(when.getMinutes()).padStart(2,'0');
+    const label = data.cached ? ('cache ' + hh+':'+mm + (data.stale?' (stale)':'')) : ('atualizado ' + hh+':'+mm);
+    $('ga4Meta').textContent = label + ' · duração média sessão ' + fmtDur(avgMetric(rows, 4));
+  }
+
+  function load(){
+    $('ga4Meta').textContent = 'carregando…';
+    fetch(API + "/api/analytics/ga4?range=" + CURRENT_RANGE, {
+      headers: { Authorization: "Bearer " + TOKEN }
+    })
+    .then(r=>r.json().then(j=>({ok:r.ok,j})))
+    .then(({ok,j})=>{
+      if(!ok){ $('ga4Meta').textContent = 'erro: ' + (j.error||'HTTP'); return; }
+      render(j);
+    })
+    .catch(err=>{ $('ga4Meta').textContent = 'sem conexão'; });
+  }
+
+  document.querySelectorAll('#ga4Range .ga4-r').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('#ga4Range .ga4-r').forEach(b=>b.classList.remove('on'));
+      btn.classList.add('on');
+      CURRENT_RANGE = btn.dataset.r;
+      load();
+    });
+  });
+
+  load();
 })();
 
 /* Redimensionamento — mantém sparkline com aspect-ratio correto em rotações/resize */

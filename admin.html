@@ -1339,6 +1339,20 @@
 
     <div class="spacer"></div>
 
+    <!-- Notas pendentes + Eventos de hoje -->
+    <div class="pn-grid">
+      <div class="side-card">
+        <div class="sc-title">Notas</div>
+        <ul class="list" id="pnNotasLista"></ul>
+      </div>
+      <div class="side-card">
+        <div class="sc-title">Hoje</div>
+        <ul class="list" id="pnHojeLista"></ul>
+      </div>
+    </div>
+
+    <div class="spacer"></div>
+
     <!-- Weekly bars -->
     <div class="chart-card">
       <div class="ch-head">
@@ -2246,6 +2260,36 @@ function renderPainel(){
       <span><span class="pill ${e.tipo}">${e.tipo}</span> ${esc(e.titulo)}</span>
       <span class="lil val">${fmtDia(e.data)}${e.hora?(' '+e.hora):''}</span>
     </li>`).join('') : '<li class="empty">Nada nos próximos 7 dias.</li>';
+
+  // notas pendentes (top 6)
+  const pnNotas = MaratuStore.getNotas()
+    .filter(n=> !n.feito)
+    .sort((a,b)=>{
+      const da = a.data||'9999-99-99', db = b.data||'9999-99-99';
+      return da.localeCompare(db) || (b.criado||'').localeCompare(a.criado||'');
+    })
+    .slice(0,6);
+  const pnNL = $('pnNotasLista');
+  if(pnNL){
+    pnNL.innerHTML = pnNotas.length ? pnNotas.map(n=>`
+      <li>
+        <span>${esc(n.titulo)}</span>
+        ${n.data?`<span class="lil val">${fmtDia(n.data)}${n.hora?(' '+n.hora):''}</span>`:(n.categoria?`<span class="lil val">${esc(n.categoria)}</span>`:'')}
+      </li>`).join('') : '<li class="empty">Nenhuma nota pendente.</li>';
+  }
+
+  // eventos de hoje
+  const hojeEvts = MaratuStore.getEventos()
+    .filter(e=> e.data===hoje)
+    .sort((a,b)=> (a.hora||'').localeCompare(b.hora||''));
+  const pnHL = $('pnHojeLista');
+  if(pnHL){
+    pnHL.innerHTML = hojeEvts.length ? hojeEvts.map(e=>`
+      <li>
+        <span><span class="pill ${e.tipo}">${e.tipo}</span> ${esc(e.titulo)}</span>
+        ${e.hora?`<span class="lil val">${e.hora}</span>`:'<span class="lil val">dia todo</span>'}
+      </li>`).join('') : '<li class="empty">Sem eventos hoje.</li>';
+  }
 
   renderOrcLista();
 }
@@ -3162,7 +3206,7 @@ function wireNotRows(){
       const id = b.dataset.check;
       const arr = MaratuStore.getNotas().map(x=> x.id===id ? {...x, feito: !x.feito} : x);
       MaratuStore.setNotas(arr);
-      renderNotas(); renderCal(); renderDay(); renderUpcoming();
+      renderNotas(); renderCal(); renderDay(); renderUpcoming(); renderPainel();
     });
   });
   $('notLista').querySelectorAll('[data-del]').forEach(b=>{
@@ -3171,7 +3215,7 @@ function wireNotRows(){
       if(!confirm('Apagar essa nota?')) return;
       const arr = MaratuStore.getNotas().filter(x=> x.id!==id);
       MaratuStore.setNotas(arr);
-      renderNotas(); renderCal(); renderDay(); renderUpcoming();
+      renderNotas(); renderCal(); renderDay(); renderUpcoming(); renderPainel();
     });
   });
   $('notLista').querySelectorAll('[data-tag-jump]').forEach(el=>{
@@ -3202,7 +3246,7 @@ function openWhenPop(id, anchor){
     const arr = MaratuStore.getNotas().map(x=> x.id===id ? {...x, data: iso || null} : x);
     MaratuStore.setNotas(arr);
     pop.remove();
-    renderNotas(); renderCal(); renderDay(); renderUpcoming();
+    renderNotas(); renderCal(); renderDay(); renderUpcoming(); renderPainel();
   };
   pop.querySelectorAll('[data-set]').forEach(b=>{
     b.addEventListener('click', (ev)=>{
@@ -3253,7 +3297,7 @@ $('notQuick').addEventListener('keydown', (ev)=>{
   };
   MaratuStore.setNotas(MaratuStore.getNotas().concat([item]));
   $('notQuick').value='';
-  renderNotas(); renderCal(); renderDay(); renderUpcoming();
+  renderNotas(); renderCal(); renderDay(); renderUpcoming(); renderPainel();
 });
 
 /* ---------- botao assinar (webcal) ---------- */

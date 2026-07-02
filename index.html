@@ -1791,7 +1791,7 @@
       if (e.key === 'g' || e.key === 'G') document.body.classList.toggle('grid-visible');
     });
 
-    var PRECOS_BASE = { 'A4': 49, 'A3': 79, 'A2': 119, 'A1': 179 };
+    var PRECOS_BASE = { 'A4': 49, 'A3': 79, 'A2': 119, 'A1': 179 }; // fallback; hydrateCatalog sobrescreve com /api/catalog.precos_base
 
     var POSTERES = [
       { id: 'pordosol',  nome: 'Pôr do Sol',        img: 'poster-pordosol.png',  mockup: 'mockup-pordosol.png',  desconto: false, colecao: 'manguehaus' },
@@ -2078,6 +2078,12 @@
       fetch(API, { cache: 'no-store' })
         .then(function(r) { return r.ok ? r.json() : Promise.reject(new Error('HTTP ' + r.status)); })
         .then(function(data) {
+          if (data.precos_base) {
+            ['A4','A3','A2','A1'].forEach(function(t){
+              var v = Number(data.precos_base[t]);
+              if (isFinite(v) && v > 0) PRECOS_BASE[t] = Math.round(v / 100);
+            });
+          }
           var produtos = (data.produtos || []).filter(function(p) { return p.ativo && !p.oculto; });
           Object.keys(GRIDS).forEach(function(sub) {
             var cfg = GRIDS[sub];

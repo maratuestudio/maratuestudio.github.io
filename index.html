@@ -2021,6 +2021,97 @@
 
     buildPosters();
     applyVisibility();
+
+    // Hidrata catálogo do D1 (chaveiros, adesivos, blusas). Se fetch falhar, HTML hardcoded fica.
+    (function hydrateCatalog() {
+      var R2 = 'https://pub-33d995a6b2b8438fac0996c2196c8416.r2.dev/';
+      var API = 'https://maratu-api.raphaelnascimento.workers.dev/api/catalog';
+      var GRIDS = {
+        chaveiros: { el: 'grid-chaveiros', tipo: 'chaveiro', btnLabel: 'Peça agora ↗', extraFrom: 4 },
+        adesivos:  { el: 'grid-adesivos',  tipo: 'adesivo',  btnLabel: 'Peça agora ↗', extraFrom: Infinity },
+        blusas:    { el: 'grid-blusas',    tipo: 'blusa',    btnLabel: null,            extraFrom: Infinity }
+      };
+      function esc(s) {
+        return String(s == null ? '' : s)
+          .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+      }
+      function jsStr(s) { return String(s == null ? '' : s).replace(/\\/g, '\\\\').replace(/'/g, "\\'"); }
+      function pill(c) {
+        var label = c.charAt(0).toUpperCase() + c.slice(1);
+        return '<span class="pill-colecao pill-' + esc(c) + '">' + esc(label) + '</span>';
+      }
+      function waHref(sku) {
+        return sku ? 'https://wa.me/p/' + encodeURIComponent(sku) + '/557991957415' : 'https://wa.me/557991957415';
+      }
+      function cardHTML(p, cfg, isExtra) {
+        var img = R2 + p.imagem_principal;
+        var hoverImg = p.imagem_hover ? R2 + p.imagem_hover : null;
+        var nomeAttr = esc(p.nome);
+        var precoReais = Math.round(p.preco / 100);
+        var precoCheioReais = p.preco_cheio ? Math.round(p.preco_cheio / 100) : null;
+
+        var badges = '<div class="tag-badge">';
+        if (p.novo) badges += '<div class="tag-novo"><span>NOVO</span></div>';
+        (p.colecoes || []).forEach(function(c) { badges += pill(c); });
+        badges += '</div>';
+
+        var precoSelo = '<div class="preco-selo">';
+        if (precoCheioReais) precoSelo += '<span class="preco-riscado">R$' + precoCheioReais + '</span>';
+        precoSelo += '<span class="preco-valor"><span class="preco-cifrao">R$</span>' + precoReais + '</span></div>';
+
+        var imgTag = '<img class="img-principal' + (hoverImg ? ' com-hover' : '') + '" src="' + esc(img) + '" alt="' + nomeAttr + '" loading="lazy">';
+        if (hoverImg) imgTag += '<img class="img-hover" src="' + esc(hoverImg) + '" alt="' + nomeAttr + ' hover" loading="lazy">';
+
+        var wrapClass = 'produto-img-wrap' + (cfg.tipo === 'adesivo' ? '' : ' quadrado');
+        var wrapStyle = cfg.tipo === 'adesivo' ? ' style="aspect-ratio: 875 / 1241;"' : '';
+        var wrapOnclick = " onclick=\"abrirLightbox('" + jsStr(img) + "','" + jsStr(p.nome) + "')\"";
+
+        var info = '<div class="produto-info"><div><p class="produto-nome">' + nomeAttr + '</p>' +
+          '<p class="produto-tipo">' + esc(p.subtitulo || '') + '</p></div></div>';
+
+        var extraBlock = '', btn;
+        if (cfg.tipo === 'blusa') {
+          var tams = p.tamanhos || [];
+          var selIdx = -1;
+          for (var i = 0; i < tams.length; i++) { if (!tams[i].esgotado) { selIdx = i; break; } }
+          extraBlock = '<div class="tam-selector">' + tams.map(function(t, i) {
+            var cls = 'tam-btn' + (t.esgotado ? ' tam-esgotado' : (i === selIdx ? ' selected' : ''));
+            var dis = t.esgotado ? ' disabled' : '';
+            return '<button class="' + cls + '"' + dis + '>' + esc(t.t) + '</button>';
+          }).join('') + '</div>';
+          btn = '<button type="button" onclick="abrirQaPopup()" class="btn-encomendar btn-disponivel" data-produto="' + nomeAttr + '">Disponível na <img src="logo-qa.png" alt="QA"></button>';
+        } else {
+          btn = '<a href="' + esc(waHref(p.sku_whatsapp)) + '" target="_blank" rel="noopener" class="btn-encomendar" data-produto="' + nomeAttr + '">' + cfg.btnLabel + '</a>';
+        }
+
+        var extraAttr = isExtra ? ' data-extra="1"' : '';
+        return '<div class="produto-card" data-tipo="' + cfg.tipo + '" data-faixa="' + esc(p.subcategoria) + '"' + extraAttr + '>' +
+          '<div class="' + wrapClass + '"' + wrapStyle + wrapOnclick + '>' +
+            badges + imgTag + precoSelo +
+          '</div>' +
+          info + extraBlock + btn +
+        '</div>';
+      }
+
+      fetch(API, { cache: 'no-store' })
+        .then(function(r) { return r.ok ? r.json() : Promise.reject(new Error('HTTP ' + r.status)); })
+        .then(function(data) {
+          var produtos = (data.produtos || []).filter(function(p) { return p.ativo && !p.oculto; });
+          Object.keys(GRIDS).forEach(function(sub) {
+            var cfg = GRIDS[sub];
+            var grid = document.getElementById(cfg.el);
+            if (!grid) return;
+            var items = produtos
+              .filter(function(p) { return p.subcategoria === sub; })
+              .sort(function(a, b) { return (a.ordem || 0) - (b.ordem || 0); });
+            if (!items.length) return;
+            grid.innerHTML = items.map(function(p, i) { return cardHTML(p, cfg, i >= cfg.extraFrom); }).join('');
+          });
+          if (typeof applyVisibility === 'function') applyVisibility();
+        })
+        .catch(function(err) { console.warn('[catalog] fetch falhou, mantendo HTML hardcoded:', err); });
+    })();
   </script>
 
   <script src="aratu-mascote.js?v=8" defer></script>

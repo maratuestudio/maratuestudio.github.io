@@ -1283,7 +1283,7 @@
   .prod-card .pc-thumb.no-img{ font-size:0.55rem; letter-spacing:0.2em; color:var(--muted); text-transform:uppercase; }
   .prod-card .pc-nome{ font-family:var(--clother); font-weight:700; font-size:0.85rem; color:var(--preto); line-height:1.15; }
   .prod-card .pc-meta{ display:flex; gap:6px; flex-wrap:wrap; align-items:center; }
-  .prod-card .pc-preco{ font-family:var(--jack); font-size:0.95rem; color:var(--laranja); }
+  .prod-card .pc-preco{ font-family:var(--clother); font-weight:700; font-size:0.9rem; color:var(--laranja); }
   .prod-card .pc-tag{
     font-family:var(--clother); font-size:0.55rem; letter-spacing:0.14em; text-transform:uppercase;
     background:var(--preto); color:var(--areia); padding:3px 7px; border-radius:999px;
@@ -1308,7 +1308,7 @@
     padding:24px; position:relative; margin:auto 0;
   }
   .modal-head{ display:flex; align-items:center; justify-content:space-between; gap:14px; margin-bottom:18px; padding-bottom:14px; border-bottom:1px solid var(--linha); }
-  .modal-head h3{ font-family:var(--jack); font-size:1.1rem; margin:0; color:var(--preto); }
+  .modal-head h3{ font-family:var(--clother); font-weight:700; font-size:1rem; margin:0; color:var(--preto); letter-spacing:0.02em; }
   .modal-close{
     background:transparent; border:1.5px solid var(--preto); border-radius:999px;
     width:34px; height:34px; cursor:pointer; font-size:1rem; font-weight:700;
@@ -1542,26 +1542,9 @@
 
     <!-- Subtabs (Conta Azul vibe: nomes de MEI) -->
     <div class="seg" role="tablist" id="orcSeg">
-      <button role="tab" data-sub="catalogo" aria-selected="true">Preços prontos</button>
+      <button role="tab" data-sub="produtos" aria-selected="true">Produtos do site</button>
       <button role="tab" data-sub="medida" aria-selected="false">Precificar peça</button>
       <button role="tab" data-sub="ajustes" aria-selected="false">Parâmetros</button>
-      <button role="tab" data-sub="produtos" aria-selected="false">Produtos do site</button>
-    </div>
-
-    <!-- catalogo -->
-    <div class="sub-on" id="sub-catalogo">
-      <p class="hint">Toque numa peça pra consultar o preço. Peça sem preço, toque pra definir.</p>
-      <div id="catSel"></div>
-      <div class="cat-grid orc-cat-grid" id="catGrid"></div>
-
-      <div class="orc-add-card">
-        <div class="oa-cap">Nova peça</div>
-        <div class="orc-add-row">
-          <input id="catNome" class="oa-nome" placeholder="Nome da peça" />
-          <input id="catPreco" class="oa-preco" inputmode="decimal" placeholder="Preço R$" />
-          <button class="btn blue" id="catAdd">Adicionar</button>
-        </div>
-      </div>
     </div>
 
     <!-- medida -->
@@ -1641,7 +1624,7 @@
     </div>
 
     <!-- produtos (D1 catalog CRUD, alimenta o site) -->
-    <div class="sub-off" id="sub-produtos">
+    <div class="sub-on" id="sub-produtos">
       <p class="hint">Produtos publicados no maratu.com. Toque num card pra editar, ou crie um novo.</p>
       <div class="prod-toolbar">
         <input id="prodFilter" class="prod-filter" placeholder="Filtrar por nome, marca ou SKU" />
@@ -2170,7 +2153,7 @@ let selCat = null;
 document.querySelectorAll('#orcSeg button').forEach(btn=>{
   btn.addEventListener('click', ()=>{
     document.querySelectorAll('#orcSeg button').forEach(b=>b.setAttribute('aria-selected', b===btn?'true':'false'));
-    ['catalogo','medida','ajustes','produtos'].forEach(k=>{
+    ['medida','ajustes','produtos'].forEach(k=>{
       $('sub-'+k).className = (k===btn.dataset.sub) ? 'sub-on' : 'sub-off';
     });
     if(btn.dataset.sub==='medida') recalc();
@@ -2180,8 +2163,9 @@ document.querySelectorAll('#orcSeg button').forEach(btn=>{
 });
 
 function renderCatalogo(){
-  const cat = MaratuStore.getCatalogo();
   const g = $('catGrid');
+  if(!g){ renderOrcKpis(); return; } // subtab removida — só atualiza KPIs
+  const cat = MaratuStore.getCatalogo();
   g.innerHTML = cat.map(p=>`
     <button class="cat ${selCat===p.id?'sel':''}" data-id="${p.id}">
       <span class="x" data-x="${p.id}" aria-label="remover">×</span>
@@ -2219,6 +2203,7 @@ function renderCatalogo(){
 }
 function renderCatSel(){
   const box = $('catSel');
+  if(!box) return; // subtab removida
   const item = MaratuStore.getCatalogo().find(x=>x.id===selCat);
   if(!item || item.preco==null){ box.innerHTML=''; return; }
   box.innerHTML = `<div class="card" style="border-color:var(--sol); display:flex; justify-content:space-between; align-items:baseline; margin-bottom:14px;">
@@ -2238,15 +2223,17 @@ function renderOrcKpis(){
   $('kpiTicketSub').textContent = withPrice.length ? 'média do catálogo' : 'sem preços ainda';
   $('kpiHora').textContent = brl(hourly);
 }
-$('catAdd').addEventListener('click', ()=>{
-  const nome = $('catNome').value.trim();
-  const preco = num($('catPreco').value);
-  if(!nome || preco<=0) return;
-  const list = MaratuStore.getCatalogo().concat([{ id:uid(), nome, preco }]);
-  MaratuStore.setCatalogo(list);
-  $('catNome').value=''; $('catPreco').value='';
-  renderCatalogo();
-});
+if($('catAdd')){
+  $('catAdd').addEventListener('click', ()=>{
+    const nome = $('catNome').value.trim();
+    const preco = num($('catPreco').value);
+    if(!nome || preco<=0) return;
+    const list = MaratuStore.getCatalogo().concat([{ id:uid(), nome, preco }]);
+    MaratuStore.setCatalogo(list);
+    $('catNome').value=''; $('catPreco').value='';
+    renderCatalogo();
+  });
+}
 
 // sob medida
 ['inGramas','inHoras','inPos'].forEach(id=> $(id).addEventListener('input', recalc));
@@ -3890,6 +3877,7 @@ function setupApple(){
    ===================================================================== */
 MaratuStore.ready.then(()=>{
   renderCatalogo(); renderCatSel();
+  renderProdutos();
   fillAjustes(); recalc();
   renderPainel();
   renderCal(); renderDay(); renderUpcoming();

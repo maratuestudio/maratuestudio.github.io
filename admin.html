@@ -1708,7 +1708,7 @@
         <div class="chip-row" id="fFlags">
           <button type="button" class="chip" data-flag="ativo" aria-pressed="true">Ativo</button>
           <button type="button" class="chip" data-flag="novo" aria-pressed="false">Novo</button>
-          <button type="button" class="chip" data-flag="oculto" aria-pressed="false">Oculto</button>
+          <button type="button" class="chip" data-flag="oculto" aria-pressed="false">Sem destaque</button>
         </div>
 
         <div class="form-actions">
@@ -3578,7 +3578,7 @@ function setupApple(){
       const img = p.imagem_principal ? (API + "/img/" + encodeURIComponent(p.imagem_principal)) : '';
       const tags = [];
       if(p.novo) tags.push('<span class="pc-tag novo">novo</span>');
-      if(p.oculto) tags.push('<span class="pc-tag oculto">oculto</span>');
+      if(p.oculto) tags.push('<span class="pc-tag oculto">sem destaque</span>');
       if(p.ativo===0 || p.ativo===false) tags.push('<span class="pc-tag inativo">inativo</span>');
       return `
         <div class="prod-card" data-id="${esc(p.id)}">

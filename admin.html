@@ -1296,9 +1296,15 @@
   .ga4-list .g-name{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .ga4-list .g-val{ font-weight:700; opacity:0.9; }
   .ga4-foot{ margin-top:12px; font-size:0.65rem; letter-spacing:0.12em; opacity:0.55; text-align:right; }
-  .precos-base-card{ background:var(--areia); border:1.5px solid var(--preto); box-shadow:3px 3px 0 0 var(--preto); border-radius:12px; padding:14px 16px; margin:0 0 18px; }
-  .precos-base-card > summary{ font-weight:700; letter-spacing:0.06em; text-transform:uppercase; font-size:0.78rem; cursor:pointer; user-select:none; }
-  .precos-base-card[open] > summary{ margin-bottom:8px; }
+  .opt-box{ border:1.5px solid var(--preto); border-radius:12px; padding:14px 16px; margin:14px 0 4px; background:rgba(13,13,11,0.02); }
+  .opt-box.on{ background:var(--areia); box-shadow:3px 3px 0 0 var(--preto); }
+  .opt-toggle{ display:flex; gap:12px; align-items:flex-start; cursor:pointer; user-select:none; }
+  .opt-toggle input[type=checkbox]{ margin-top:3px; width:18px; height:18px; accent-color:var(--preto); cursor:pointer; }
+  .opt-toggle-lbl{ display:flex; flex-direction:column; gap:2px; }
+  .opt-toggle-lbl b{ font-weight:700; font-size:0.9rem; letter-spacing:0.02em; }
+  .opt-toggle-lbl em{ font-style:normal; font-size:0.72rem; opacity:0.6; }
+  .opt-body{ display:none; margin-top:14px; padding-top:14px; border-top:1px dashed rgba(13,13,11,0.2); }
+  .opt-box.on .opt-body{ display:block; }
   .grid4{ display:grid; grid-template-columns:repeat(4, 1fr); gap:12px; }
   @media (max-width:640px){ .grid4{ grid-template-columns:repeat(2, 1fr); } }
   .msg-inline{ font-size:0.75rem; letter-spacing:0.06em; }
@@ -1739,19 +1745,11 @@
         </div>
       </div>
 
-      <button class="btn blue" id="pSave">Salvar parâmetros</button>
-    </div>
-
-    <!-- produtos (D1 catalog CRUD, alimenta o site) -->
-    <div class="sub-on" id="sub-produtos">
-      <p class="hint">Produtos publicados no maratu.com. Toque num card pra editar, ou crie um novo.</p>
-      <div class="prod-toolbar">
-        <input id="prodFilter" class="prod-filter" placeholder="Filtrar por nome, marca ou SKU" />
-        <button class="btn blue" id="prodNovo">+ Novo produto</button>
-      </div>
-      <details class="precos-base-card">
-        <summary>Preços base pôster (A4/A3/A2/A1)</summary>
-        <p class="hint" style="margin:6px 0 12px">Tabela padrão usada quando um pôster não tem override. Alterar aqui reflete no site.</p>
+      <div class="orc-group card">
+        <div class="og-head">
+          <div class="og-title">Preços base pôster</div>
+          <div class="og-sub">Tabela padrão usada quando um pôster não tem preço próprio</div>
+        </div>
         <div class="grid4">
           <label class="f"><span>A4 (R$)</span><input class="mono" id="pbA4" inputmode="decimal" placeholder="49" /></label>
           <label class="f"><span>A3 (R$)</span><input class="mono" id="pbA3" inputmode="decimal" placeholder="79" /></label>
@@ -1762,7 +1760,18 @@
           <button class="btn blue" id="pbSave" type="button">Salvar preços base</button>
           <span class="msg-inline" id="pbMsg"></span>
         </div>
-      </details>
+      </div>
+
+      <button class="btn blue" id="pSave">Salvar parâmetros</button>
+    </div>
+
+    <!-- produtos (D1 catalog CRUD, alimenta o site) -->
+    <div class="sub-on" id="sub-produtos">
+      <p class="hint">Produtos publicados no maratu.com. Toque num card pra editar, ou crie um novo.</p>
+      <div class="prod-toolbar">
+        <input id="prodFilter" class="prod-filter" placeholder="Filtrar por nome, marca ou SKU" />
+        <button class="btn blue" id="prodNovo">+ Novo produto</button>
+      </div>
       <div class="prod-grid" id="prodGrid"></div>
     </div>
   </section>
@@ -1805,19 +1814,27 @@
           <label class="f"><span>Preço cheio (opcional, pra riscar)</span><input id="fPrecoCheio" inputmode="decimal" placeholder="0,00" /></label>
         </div>
 
-        <!-- Preços por tamanho (só pôsteres) — vazio herda tabela global -->
-        <div id="fPrecosPoster" style="display:none;">
-          <div class="form-section-title">Preços por tamanho (pôster)</div>
-          <div style="font-family:var(--clother); font-size:0.72rem; color:var(--muted); margin:-4px 0 10px;">
-            Deixe vazio pra usar o preço padrão. Preencha só se quiser <b>sobrescrever</b> um tamanho pra este pôster.
-          </div>
-          <div class="grid2">
-            <label class="f"><span>A4 (R$)</span><input id="fPrecoA4" inputmode="decimal" data-tam="A4" /></label>
-            <label class="f"><span>A3 (R$)</span><input id="fPrecoA3" inputmode="decimal" data-tam="A3" /></label>
-          </div>
-          <div class="grid2" style="margin-top:8px;">
-            <label class="f"><span>A2 (R$)</span><input id="fPrecoA2" inputmode="decimal" data-tam="A2" /></label>
-            <label class="f"><span>A1 (R$)</span><input id="fPrecoA1" inputmode="decimal" data-tam="A1" /></label>
+        <!-- Preço por opção — expansível. Hoje só suporta pôster (A4/A3/A2/A1). -->
+        <div id="fPrecoOpcao" class="opt-box" style="display:none;">
+          <label class="opt-toggle">
+            <input type="checkbox" id="fPrecoOpcaoChk" />
+            <span class="opt-toggle-lbl">
+              <b>Esse produto tem preço por opção?</b>
+              <em id="fPrecoOpcaoHint">Ex: pôster A4/A3/A2/A1</em>
+            </span>
+          </label>
+          <div class="opt-body" id="fPrecoOpcaoBody">
+            <div style="font-family:var(--clother); font-size:0.72rem; color:var(--muted); margin:0 0 10px;">
+              Deixe vazio pra usar o preço padrão da tabela global. Preencha só o que quer <b>sobrescrever</b>.
+            </div>
+            <div class="grid2">
+              <label class="f"><span>A4 (R$)</span><input id="fPrecoA4" inputmode="decimal" data-tam="A4" /></label>
+              <label class="f"><span>A3 (R$)</span><input id="fPrecoA3" inputmode="decimal" data-tam="A3" /></label>
+            </div>
+            <div class="grid2" style="margin-top:8px;">
+              <label class="f"><span>A2 (R$)</span><input id="fPrecoA2" inputmode="decimal" data-tam="A2" /></label>
+              <label class="f"><span>A1 (R$)</span><input id="fPrecoA1" inputmode="decimal" data-tam="A1" /></label>
+            </div>
           </div>
         </div>
 
@@ -3823,10 +3840,25 @@ function setupApple(){
     });
   });
 
-  function togglePrecosPoster(){
+  function togglePrecoOpcao(){
     const sub = getChipGroup('fSubcat','subcat',true);
-    $('fPrecosPoster').style.display = (sub === 'posteres') ? 'block' : 'none';
+    // Hoje só pôster tem preço por opção (A4/A3/A2/A1). Blusa/essencial → esconde a caixa toda.
+    const supports = (sub === 'posteres');
+    $('fPrecoOpcao').style.display = supports ? 'block' : 'none';
+    if(!supports){
+      $('fPrecoOpcaoChk').checked = false;
+      $('fPrecoOpcao').classList.remove('on');
+      ['A4','A3','A2','A1'].forEach(t => { const el = $('fPreco'+t); if(el) el.value = ''; });
+    }
   }
+  document.addEventListener('change', (ev)=>{
+    if(ev.target && ev.target.id === 'fPrecoOpcaoChk'){
+      $('fPrecoOpcao').classList.toggle('on', ev.target.checked);
+      if(!ev.target.checked){
+        ['A4','A3','A2','A1'].forEach(t => { const el = $('fPreco'+t); if(el) el.value = ''; });
+      }
+    }
+  });
 
   /* ---------- FORM ---------- */
   function openProdutoForm(id){
@@ -3855,15 +3887,18 @@ function setupApple(){
     setChipGroup('fMarca', 'marca', [p?.marca || 'use']);
     setChipGroup('fSubcat', 'subcat', [p?.subcategoria || 'chaveiros']);
     setChipGroup('fColecoes', 'col', Array.isArray(p?.colecoes) ? p.colecoes : []);
-    // Preços por tamanho (só pôsteres). Vazio = herda PRECOS_BASE global.
+    // Preço por opção (só pôsteres hoje). Vazio = herda PRECOS_BASE global.
     const pc = (p && p.precos_custom && typeof p.precos_custom === 'object') ? p.precos_custom : {};
+    const hasCustom = Object.keys(pc).length > 0;
     ['A4','A3','A2','A1'].forEach(tam=>{
       const inp = $('fPreco'+tam);
       const v = pc[tam];
       inp.value = (v != null) ? cents2num(v) : '';
       inp.placeholder = 'R$' + String(PRECOS_BASE_POSTER[tam]) + ' — padrão';
     });
-    togglePrecosPoster();
+    $('fPrecoOpcaoChk').checked = hasCustom;
+    $('fPrecoOpcao').classList.toggle('on', hasCustom);
+    togglePrecoOpcao();
     const flags = [];
     if(p?.ativo!==0 && p?.ativo!==false) flags.push('ativo');
     if(!p) flags.push('ativo');
@@ -3905,7 +3940,7 @@ function setupApple(){
       ch.addEventListener('click', ()=>{
         document.querySelectorAll('#'+id+' .chip').forEach(x=>x.setAttribute('aria-pressed','false'));
         ch.setAttribute('aria-pressed','true');
-        if(id === 'fSubcat') togglePrecosPoster();
+        if(id === 'fSubcat') togglePrecoOpcao();
       });
     });
   });

@@ -1262,6 +1262,122 @@
 
   .spacer{ height:16px; }
 
+  /* ===================================================================
+     PRODUTOS (D1 catalog CRUD)
+     =================================================================== */
+  .prod-toolbar{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin:14px 0 18px; }
+  .prod-toolbar .prod-filter{ flex:1; min-width:180px; }
+  .prod-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:14px; }
+  .prod-card{
+    background:var(--areia); border:1.5px solid var(--preto); border-radius:8px;
+    box-shadow:3px 3px 0 0 var(--preto); padding:12px; display:flex; flex-direction:column; gap:8px;
+    position:relative; cursor:pointer; transition:transform .12s ease;
+  }
+  .prod-card:hover{ transform:translate(-1px,-1px); box-shadow:4px 4px 0 0 var(--preto); }
+  .prod-card:active{ transform:translate(2px,2px); box-shadow:1px 1px 0 0 var(--preto); }
+  .prod-card .pc-thumb{
+    aspect-ratio:1/1; background:var(--areia-sombra); border:1px solid var(--linha);
+    border-radius:6px; overflow:hidden; display:flex; align-items:center; justify-content:center;
+  }
+  .prod-card .pc-thumb img{ width:100%; height:100%; object-fit:cover; }
+  .prod-card .pc-thumb.no-img{ font-size:0.55rem; letter-spacing:0.2em; color:var(--muted); text-transform:uppercase; }
+  .prod-card .pc-nome{ font-family:var(--clother); font-weight:700; font-size:0.85rem; color:var(--preto); line-height:1.15; }
+  .prod-card .pc-meta{ display:flex; gap:6px; flex-wrap:wrap; align-items:center; }
+  .prod-card .pc-preco{ font-family:var(--jack); font-size:0.95rem; color:var(--laranja); }
+  .prod-card .pc-tag{
+    font-family:var(--clother); font-size:0.55rem; letter-spacing:0.14em; text-transform:uppercase;
+    background:var(--preto); color:var(--areia); padding:3px 7px; border-radius:999px;
+  }
+  .prod-card .pc-tag.oculto{ background:var(--muted); }
+  .prod-card .pc-tag.novo{ background:var(--laranja); }
+  .prod-card .pc-tag.inativo{ background:transparent; color:var(--muted); border:1px solid var(--linha-forte); }
+  .prod-empty{
+    padding:40px 20px; text-align:center; color:var(--muted);
+    font-family:var(--clother); font-size:0.85rem;
+  }
+
+  /* Modal overlay */
+  .modal-back{
+    position:fixed; inset:0; background:rgba(13,13,11,0.55); z-index:9998;
+    display:none; align-items:flex-start; justify-content:center; padding:40px 16px; overflow-y:auto;
+  }
+  .modal-back.on{ display:flex; }
+  .modal-back .modal-card{
+    background:var(--areia); border:1.5px solid var(--preto); border-radius:10px;
+    box-shadow:6px 6px 0 0 var(--preto); width:100%; max-width:720px;
+    padding:24px; position:relative; margin:auto 0;
+  }
+  .modal-head{ display:flex; align-items:center; justify-content:space-between; gap:14px; margin-bottom:18px; padding-bottom:14px; border-bottom:1px solid var(--linha); }
+  .modal-head h3{ font-family:var(--jack); font-size:1.1rem; margin:0; color:var(--preto); }
+  .modal-close{
+    background:transparent; border:1.5px solid var(--preto); border-radius:999px;
+    width:34px; height:34px; cursor:pointer; font-size:1rem; font-weight:700;
+    color:var(--preto); display:flex; align-items:center; justify-content:center;
+    box-shadow:2px 2px 0 0 var(--preto);
+  }
+  .modal-close:hover{ background:var(--preto); color:var(--areia); }
+  .modal-close:active{ transform:translate(2px,2px); box-shadow:0 0 0 0 var(--preto); }
+
+  /* Chips (subcategoria, marca, coleções, flags) */
+  .chip-row{ display:flex; gap:8px; flex-wrap:wrap; }
+  .chip{
+    background:var(--areia); border:1.5px solid var(--preto); border-radius:999px;
+    padding:8px 14px; font-family:var(--clother); font-size:0.62rem; font-weight:700;
+    letter-spacing:0.16em; text-transform:uppercase; color:var(--preto);
+    cursor:pointer; box-shadow:2px 2px 0 0 var(--preto);
+  }
+  .chip[aria-pressed="true"]{ background:var(--laranja); color:var(--areia); }
+  .chip:active{ transform:translate(2px,2px); box-shadow:0 0 0 0 var(--preto); }
+
+  /* Upload */
+  .up-slot{
+    border:1.5px dashed var(--preto); border-radius:8px; padding:14px; background:var(--areia-sombra);
+    display:flex; gap:12px; align-items:center; cursor:pointer; min-height:88px;
+  }
+  .up-slot input[type="file"]{ display:none; }
+  .up-slot:hover{ background:var(--areia-fundo); }
+  .up-preview{
+    width:64px; height:64px; border-radius:6px; overflow:hidden; background:var(--areia);
+    border:1px solid var(--linha-forte); flex-shrink:0; display:flex; align-items:center; justify-content:center;
+  }
+  .up-preview img{ width:100%; height:100%; object-fit:cover; }
+  .up-preview.empty{ font-size:0.5rem; letter-spacing:0.2em; color:var(--muted); text-transform:uppercase; }
+  .up-info{ flex:1; font-family:var(--clother); font-size:0.75rem; color:var(--preto); word-break:break-all; }
+  .up-info .up-hint{ color:var(--muted); font-size:0.65rem; }
+
+  /* Cores dinâmicas */
+  .cores-list{ display:flex; flex-direction:column; gap:10px; }
+  .cor-row{
+    display:grid; grid-template-columns:1fr 1fr auto; gap:8px; align-items:center;
+    background:var(--areia-sombra); border:1px solid var(--linha-forte); border-radius:8px; padding:10px;
+  }
+  @media (max-width:640px){ .cor-row{ grid-template-columns:1fr; } }
+  .cor-row input[type="text"]{ padding:8px 10px; font-size:0.8rem; }
+  .cor-row .cor-del{
+    background:transparent; border:1.5px solid var(--preto); border-radius:999px;
+    width:32px; height:32px; cursor:pointer; font-size:0.9rem; color:var(--preto);
+  }
+  .cor-row .cor-del:hover{ background:var(--preto); color:var(--areia); }
+  .cor-row .cor-file-btn{
+    padding:8px 12px; font-size:0.55rem; background:var(--areia);
+    border:1.5px solid var(--preto); border-radius:6px; cursor:pointer;
+    font-family:var(--clother); font-weight:700; letter-spacing:0.14em; text-transform:uppercase;
+    box-shadow:2px 2px 0 0 var(--preto);
+  }
+  .cor-row .cor-file-btn.has-img{ background:var(--laranja); color:var(--areia); }
+
+  .form-section-title{
+    font-family:var(--clother); font-weight:700; font-size:0.6rem; letter-spacing:0.2em;
+    text-transform:uppercase; color:var(--preto); margin:18px 0 10px; opacity:0.7;
+  }
+  .form-actions{
+    display:flex; gap:10px; justify-content:space-between; margin-top:22px;
+    padding-top:18px; border-top:1px solid var(--linha); flex-wrap:wrap;
+  }
+  .form-actions .actions-right{ display:flex; gap:10px; flex-wrap:wrap; }
+  .btn.danger{ background:transparent; color:var(--preto); border-color:var(--linha-forte); box-shadow:none; }
+  .btn.danger:hover{ background:#a11; color:#fff; border-color:#a11; }
+
 </style>
 </head>
 <body>
@@ -1429,6 +1545,7 @@
       <button role="tab" data-sub="catalogo" aria-selected="true">Preços prontos</button>
       <button role="tab" data-sub="medida" aria-selected="false">Precificar peça</button>
       <button role="tab" data-sub="ajustes" aria-selected="false">Parâmetros</button>
+      <button role="tab" data-sub="produtos" aria-selected="false">Produtos do site</button>
     </div>
 
     <!-- catalogo -->
@@ -1522,7 +1639,105 @@
 
       <button class="btn blue" id="pSave">Salvar parâmetros</button>
     </div>
+
+    <!-- produtos (D1 catalog CRUD, alimenta o site) -->
+    <div class="sub-off" id="sub-produtos">
+      <p class="hint">Produtos publicados no maratu.com. Toque num card pra editar, ou crie um novo.</p>
+      <div class="prod-toolbar">
+        <input id="prodFilter" class="prod-filter" placeholder="Filtrar por nome, marca ou SKU" />
+        <button class="btn blue" id="prodNovo">+ Novo produto</button>
+      </div>
+      <div class="prod-grid" id="prodGrid"></div>
+    </div>
   </section>
+
+  <!-- Modal overlay pro form de produto -->
+  <div class="modal-back" id="prodModal" role="dialog" aria-modal="true" aria-labelledby="prodModalTitle">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3 id="prodModalTitle">Novo produto</h3>
+        <button type="button" class="modal-close" id="prodModalClose" aria-label="Fechar">×</button>
+      </div>
+      <form id="prodForm" autocomplete="off">
+        <input type="hidden" id="fId" />
+
+        <div class="form-section-title">Identificação</div>
+        <div class="grid2">
+          <label class="f"><span>Nome</span><input id="fNome" required placeholder="Ex: Chaveiro Ancoreta" /></label>
+          <label class="f"><span>SKU WhatsApp</span><input id="fSku" placeholder="Ex: ANC-001" /></label>
+        </div>
+        <label class="f"><span>Subtítulo</span><input id="fSubtitulo" placeholder="Ex: Chaveiro · 6cm" /></label>
+
+        <div class="form-section-title">Marca</div>
+        <div class="chip-row" id="fMarca">
+          <button type="button" class="chip" data-marca="use" aria-pressed="true">USE</button>
+          <button type="button" class="chip" data-marca="casa" aria-pressed="false">CASA</button>
+        </div>
+
+        <div class="form-section-title">Subcategoria</div>
+        <div class="chip-row" id="fSubcat">
+          <button type="button" class="chip" data-subcat="chaveiros" aria-pressed="true">Chaveiros</button>
+          <button type="button" class="chip" data-subcat="adesivos" aria-pressed="false">Adesivos</button>
+          <button type="button" class="chip" data-subcat="blusas" aria-pressed="false">Blusas</button>
+          <button type="button" class="chip" data-subcat="posteres" aria-pressed="false">Pôsteres</button>
+          <button type="button" class="chip" data-subcat="essenciais" aria-pressed="false">Essenciais</button>
+        </div>
+
+        <div class="form-section-title">Preço</div>
+        <div class="grid2">
+          <label class="f"><span>Preço (R$)</span><input id="fPreco" inputmode="decimal" placeholder="0,00" /></label>
+          <label class="f"><span>Preço cheio (opcional, pra riscar)</span><input id="fPrecoCheio" inputmode="decimal" placeholder="0,00" /></label>
+        </div>
+
+        <div class="form-section-title">Coleções</div>
+        <div class="chip-row" id="fColecoes">
+          <button type="button" class="chip" data-col="origens" aria-pressed="false">Origens</button>
+          <button type="button" class="chip" data-col="manguehaus" aria-pressed="false">Manguehaus</button>
+          <button type="button" class="chip" data-col="kit" aria-pressed="false">Kit</button>
+        </div>
+
+        <div class="form-section-title">Imagens</div>
+        <label class="up-slot" for="fImgPrincipal">
+          <div class="up-preview empty" id="fImgPrincipalPreview">img</div>
+          <div class="up-info">
+            <div><b>Imagem principal</b></div>
+            <div class="up-hint" id="fImgPrincipalHint">Clique para escolher (.png, .jpg, .webp)</div>
+          </div>
+          <input type="file" id="fImgPrincipal" accept="image/*" />
+        </label>
+        <label class="up-slot" for="fImgHover" style="margin-top:10px;">
+          <div class="up-preview empty" id="fImgHoverPreview">img</div>
+          <div class="up-info">
+            <div><b>Imagem hover (opcional)</b></div>
+            <div class="up-hint" id="fImgHoverHint">Aparece no mouseover. Ex: mockup do pôster no ambiente.</div>
+          </div>
+          <input type="file" id="fImgHover" accept="image/*" />
+        </label>
+
+        <div class="form-section-title">Tamanhos (opcional)</div>
+        <label class="f"><span>Lista separada por vírgula</span><input id="fTamanhos" placeholder="P, M, G, GG" /></label>
+
+        <div class="form-section-title">Cores (opcional)</div>
+        <div class="cores-list" id="fCoresList"></div>
+        <button type="button" class="btn ghost" id="fCorAdd" style="margin-top:8px;">+ Adicionar cor</button>
+
+        <div class="form-section-title">Flags</div>
+        <div class="chip-row" id="fFlags">
+          <button type="button" class="chip" data-flag="ativo" aria-pressed="true">Ativo</button>
+          <button type="button" class="chip" data-flag="novo" aria-pressed="false">Novo</button>
+          <button type="button" class="chip" data-flag="oculto" aria-pressed="false">Oculto</button>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn danger" id="fDelete" style="display:none;">Excluir produto</button>
+          <div class="actions-right">
+            <button type="button" class="btn ghost" id="fCancel">Cancelar</button>
+            <button type="submit" class="btn blue" id="fSalvar">Salvar produto</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <!-- ================= AGENDA (Fantastical + Amie) ================= -->
   <section class="panel" id="panel-agenda">
@@ -1955,11 +2170,12 @@ let selCat = null;
 document.querySelectorAll('#orcSeg button').forEach(btn=>{
   btn.addEventListener('click', ()=>{
     document.querySelectorAll('#orcSeg button').forEach(b=>b.setAttribute('aria-selected', b===btn?'true':'false'));
-    ['catalogo','medida','ajustes'].forEach(k=>{
+    ['catalogo','medida','ajustes','produtos'].forEach(k=>{
       $('sub-'+k).className = (k===btn.dataset.sub) ? 'sub-on' : 'sub-off';
     });
     if(btn.dataset.sub==='medida') recalc();
     if(btn.dataset.sub==='ajustes') fillAjustes();
+    if(btn.dataset.sub==='produtos') renderProdutos();
   });
 });
 
@@ -3312,6 +3528,362 @@ function setupApple(){
     a.style.opacity='0.4'; a.style.pointerEvents='none';
   }
 }
+
+/* =====================================================================
+   PRODUTOS (D1 catalog CRUD — alimenta o site maratu.com)
+   ===================================================================== */
+(function(){
+  const API = "https://maratu-api.raphaelnascimento.workers.dev";
+  let TOKEN = "";
+  try { TOKEN = localStorage.getItem("maratu.token") || ""; } catch(e){}
+
+  const authHeaders = (extra) => Object.assign({ Authorization: "Bearer " + TOKEN }, extra||{});
+  const brlFmt = (n) => (Number(n)/100).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+
+  const num2cents = (v) => {
+    if(v==null || v==='') return null;
+    const s = String(v).replace(/\./g,'').replace(',', '.').replace(/[^0-9.]/g,'');
+    const f = parseFloat(s);
+    if(!isFinite(f)) return null;
+    return Math.round(f*100);
+  };
+  const cents2num = (c) => {
+    if(c==null) return '';
+    return (Number(c)/100).toFixed(2).replace('.', ',');
+  };
+  const slugify = (s) => (s||'').toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,60);
+
+  let PRODUTOS = [];
+  let EDITING_ID = null;
+  let coresBuf = []; // [{nome, hex, img, key, file}]
+  let pendingUploads = { principal:null, hover:null }; // File objects a subir
+
+  /* ---------- LIST ---------- */
+  function renderProdutos(){
+    const g = $('prodGrid');
+    g.innerHTML = '<div class="prod-empty">Carregando...</div>';
+    fetch(API + "/api/catalog/all", { headers: authHeaders() })
+      .then(r=>{ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
+      .then(list=>{
+        PRODUTOS = Array.isArray(list) ? list : (list.items||list.produtos||[]);
+        drawProdutosGrid();
+      })
+      .catch(err=>{
+        g.innerHTML = '<div class="prod-empty">Falha ao carregar produtos: '+esc(err.message)+'</div>';
+      });
+  }
+
+  function drawProdutosGrid(){
+    const g = $('prodGrid');
+    const q = ($('prodFilter').value||'').toLowerCase().trim();
+    const filtered = PRODUTOS.filter(p=>{
+      if(!q) return true;
+      return [p.nome, p.marca, p.subcategoria, p.sku_whatsapp].filter(Boolean)
+        .some(v=>String(v).toLowerCase().includes(q));
+    });
+    if(!filtered.length){
+      g.innerHTML = '<div class="prod-empty">'+(q?'Nenhum produto bate no filtro.':'Nenhum produto ainda. Toque em "+ Novo produto".')+'</div>';
+      return;
+    }
+    g.innerHTML = filtered.map(p=>{
+      const img = p.imagem_principal ? (API + "/img/" + encodeURIComponent(p.imagem_principal)) : '';
+      const tags = [];
+      if(p.novo) tags.push('<span class="pc-tag novo">novo</span>');
+      if(p.oculto) tags.push('<span class="pc-tag oculto">oculto</span>');
+      if(p.ativo===0 || p.ativo===false) tags.push('<span class="pc-tag inativo">inativo</span>');
+      return `
+        <div class="prod-card" data-id="${esc(p.id)}">
+          <div class="pc-thumb ${img?'':'no-img'}">${img?`<img src="${esc(img)}" alt="">`:'sem imagem'}</div>
+          <div class="pc-nome">${esc(p.nome||'(sem nome)')}</div>
+          <div class="pc-meta">
+            <span class="pc-preco">${p.preco!=null?brlFmt(p.preco):'—'}</span>
+            ${tags.join('')}
+          </div>
+        </div>`;
+    }).join('');
+    g.querySelectorAll('.prod-card').forEach(el=>{
+      el.addEventListener('click', ()=> openProdutoForm(el.dataset.id));
+    });
+  }
+
+  $('prodFilter').addEventListener('input', drawProdutosGrid);
+  $('prodNovo').addEventListener('click', ()=> openProdutoForm(null));
+
+  /* ---------- FORM ---------- */
+  function openProdutoForm(id){
+    EDITING_ID = id;
+    pendingUploads = { principal:null, hover:null };
+    coresBuf = [];
+
+    const p = id ? PRODUTOS.find(x=>String(x.id)===String(id)) : null;
+    $('prodModalTitle').textContent = p ? 'Editar produto' : 'Novo produto';
+    $('fDelete').style.display = p ? 'inline-flex' : 'none';
+
+    $('fId').value = p ? p.id : '';
+    $('fNome').value = p?.nome || '';
+    $('fSku').value = p?.sku_whatsapp || '';
+    $('fSubtitulo').value = p?.subtitulo || '';
+    $('fPreco').value = p ? cents2num(p.preco) : '';
+    $('fPrecoCheio').value = p ? cents2num(p.preco_cheio) : '';
+    $('fTamanhos').value = Array.isArray(p?.tamanhos) ? p.tamanhos.join(', ') : (p?.tamanhos||'');
+
+    setChipGroup('fMarca', 'marca', [p?.marca || 'use']);
+    setChipGroup('fSubcat', 'subcat', [p?.subcategoria || 'chaveiros']);
+    setChipGroup('fColecoes', 'col', Array.isArray(p?.colecoes) ? p.colecoes : []);
+    const flags = [];
+    if(p?.ativo!==0 && p?.ativo!==false) flags.push('ativo');
+    if(!p) flags.push('ativo');
+    if(p?.novo) flags.push('novo');
+    if(p?.oculto) flags.push('oculto');
+    setChipGroup('fFlags', 'flag', flags);
+
+    setImgPreview('principal', p?.imagem_principal);
+    setImgPreview('hover', p?.imagem_hover);
+
+    coresBuf = Array.isArray(p?.cores) ? p.cores.map(c=>({ nome:c.nome||'', hex:c.hex||'', key:c.img||c.key||'', file:null })) : [];
+    renderCoresList();
+
+    $('prodModal').classList.add('on');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeProdutoForm(){
+    $('prodModal').classList.remove('on');
+    document.body.style.overflow = '';
+  }
+
+  function setChipGroup(containerId, dataAttr, values){
+    document.querySelectorAll('#'+containerId+' .chip').forEach(ch=>{
+      const v = ch.dataset[dataAttr];
+      ch.setAttribute('aria-pressed', values.includes(v) ? 'true' : 'false');
+    });
+  }
+  function getChipGroup(containerId, dataAttr, single){
+    const on = [];
+    document.querySelectorAll('#'+containerId+' .chip[aria-pressed="true"]').forEach(ch=>{
+      on.push(ch.dataset[dataAttr]);
+    });
+    return single ? (on[0] || null) : on;
+  }
+  // Wire chip toggle behavior (single-select for marca/subcat, multi for coleções/flags)
+  ['fMarca','fSubcat'].forEach(id=>{
+    document.querySelectorAll('#'+id+' .chip').forEach(ch=>{
+      ch.addEventListener('click', ()=>{
+        document.querySelectorAll('#'+id+' .chip').forEach(x=>x.setAttribute('aria-pressed','false'));
+        ch.setAttribute('aria-pressed','true');
+      });
+    });
+  });
+  ['fColecoes','fFlags'].forEach(id=>{
+    document.querySelectorAll('#'+id+' .chip').forEach(ch=>{
+      ch.addEventListener('click', ()=>{
+        const cur = ch.getAttribute('aria-pressed')==='true';
+        ch.setAttribute('aria-pressed', cur?'false':'true');
+      });
+    });
+  });
+
+  /* Uploads */
+  function setImgPreview(slot, key){
+    const prev = $('fImg'+slot.charAt(0).toUpperCase()+slot.slice(1)+'Preview');
+    const hint = $('fImg'+slot.charAt(0).toUpperCase()+slot.slice(1)+'Hint');
+    if(key){
+      prev.classList.remove('empty');
+      prev.innerHTML = '<img src="'+esc(API + "/img/" + encodeURIComponent(key))+'" alt="">';
+      hint.textContent = key;
+    } else {
+      prev.classList.add('empty');
+      prev.innerHTML = 'img';
+      hint.textContent = 'Clique para escolher (.png, .jpg, .webp)';
+    }
+  }
+  function wireImgSlot(slot){
+    const input = $('fImg'+slot.charAt(0).toUpperCase()+slot.slice(1));
+    input.addEventListener('change', ()=>{
+      const f = input.files && input.files[0];
+      if(!f) return;
+      pendingUploads[slot] = f;
+      const prev = $('fImg'+slot.charAt(0).toUpperCase()+slot.slice(1)+'Preview');
+      const hint = $('fImg'+slot.charAt(0).toUpperCase()+slot.slice(1)+'Hint');
+      const url = URL.createObjectURL(f);
+      prev.classList.remove('empty');
+      prev.innerHTML = '<img src="'+url+'" alt="">';
+      hint.textContent = f.name + ' (subir ao salvar)';
+    });
+  }
+  wireImgSlot('principal');
+  wireImgSlot('hover');
+
+  /* Cores */
+  function renderCoresList(){
+    const box = $('fCoresList');
+    if(!coresBuf.length){
+      box.innerHTML = '<div class="up-hint" style="opacity:0.6;font-family:var(--clother);font-size:0.7rem;">Nenhuma cor. Toque em "+ Adicionar cor" pra criar variações.</div>';
+      return;
+    }
+    box.innerHTML = coresBuf.map((c,i)=>`
+      <div class="cor-row" data-i="${i}">
+        <input type="text" placeholder="Nome (ex: Cinza)" value="${esc(c.nome||'')}" data-fld="nome" />
+        <input type="text" placeholder="#hex (opcional)" value="${esc(c.hex||'')}" data-fld="hex" />
+        <button type="button" class="cor-file-btn ${(c.key||c.file)?'has-img':''}" data-i="${i}">${(c.file?c.file.name.slice(0,10):(c.key?'img ✓':'+ img'))}</button>
+        <button type="button" class="cor-del" data-i="${i}" aria-label="remover">×</button>
+      </div>
+    `).join('');
+    box.querySelectorAll('input').forEach(inp=>{
+      inp.addEventListener('input', ()=>{
+        const i = +inp.closest('.cor-row').dataset.i;
+        coresBuf[i][inp.dataset.fld] = inp.value;
+      });
+    });
+    box.querySelectorAll('.cor-del').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        coresBuf.splice(+btn.dataset.i, 1);
+        renderCoresList();
+      });
+    });
+    box.querySelectorAll('.cor-file-btn').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const i = +btn.dataset.i;
+        const inp = document.createElement('input');
+        inp.type = 'file'; inp.accept = 'image/*';
+        inp.onchange = ()=>{
+          const f = inp.files && inp.files[0];
+          if(!f) return;
+          coresBuf[i].file = f;
+          renderCoresList();
+        };
+        inp.click();
+      });
+    });
+  }
+  $('fCorAdd').addEventListener('click', ()=>{
+    coresBuf.push({ nome:'', hex:'', key:'', file:null });
+    renderCoresList();
+  });
+
+  /* Upload helper */
+  async function uploadImg(file, slug, hint){
+    const filename = (hint || file.name).replace(/[^a-zA-Z0-9._-]+/g,'-');
+    const url = API + "/api/catalog/upload?slug=" + encodeURIComponent(slug) + "&filename=" + encodeURIComponent(filename);
+    const r = await fetch(url, {
+      method:'POST',
+      headers: authHeaders({ 'Content-Type': file.type || 'application/octet-stream' }),
+      body: file
+    });
+    if(!r.ok) throw new Error('upload falhou ('+r.status+')');
+    const j = await r.json();
+    return j.key;
+  }
+
+  /* Save */
+  $('prodForm').addEventListener('submit', async (ev)=>{
+    ev.preventDefault();
+    const nome = $('fNome').value.trim();
+    if(!nome){ alert('Nome é obrigatório.'); return; }
+    const slug = slugify(nome);
+    const saveBtn = $('fSalvar');
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Salvando...';
+    try{
+      let imgPrincipal = null, imgHover = null;
+      const p = EDITING_ID ? PRODUTOS.find(x=>String(x.id)===String(EDITING_ID)) : null;
+      if(pendingUploads.principal){
+        imgPrincipal = await uploadImg(pendingUploads.principal, slug, 'principal-'+pendingUploads.principal.name);
+      } else if(p) {
+        imgPrincipal = p.imagem_principal || null;
+      }
+      if(pendingUploads.hover){
+        imgHover = await uploadImg(pendingUploads.hover, slug, 'hover-'+pendingUploads.hover.name);
+      } else if(p) {
+        imgHover = p.imagem_hover || null;
+      }
+
+      const coresOut = [];
+      for(let i=0;i<coresBuf.length;i++){
+        const c = coresBuf[i];
+        let key = c.key || '';
+        if(c.file){
+          key = await uploadImg(c.file, slug, 'cor-'+(c.nome||i)+'-'+c.file.name);
+        }
+        if(c.nome || key){
+          coresOut.push({ nome:c.nome||'', hex:c.hex||'', img:key });
+        }
+      }
+
+      const flags = getChipGroup('fFlags','flag');
+      const body = {
+        nome,
+        subtitulo: $('fSubtitulo').value.trim() || null,
+        sku_whatsapp: $('fSku').value.trim() || null,
+        marca: getChipGroup('fMarca','marca',true) || 'use',
+        subcategoria: getChipGroup('fSubcat','subcat',true) || 'chaveiros',
+        preco: num2cents($('fPreco').value),
+        preco_cheio: num2cents($('fPrecoCheio').value),
+        colecoes: getChipGroup('fColecoes','col'),
+        tamanhos: ($('fTamanhos').value||'').split(',').map(s=>s.trim()).filter(Boolean),
+        cores: coresOut,
+        imagem_principal: imgPrincipal,
+        imagem_hover: imgHover,
+        ativo: flags.includes('ativo') ? 1 : 0,
+        novo: flags.includes('novo') ? 1 : 0,
+        oculto: flags.includes('oculto') ? 1 : 0,
+      };
+
+      let r;
+      if(EDITING_ID){
+        r = await fetch(API + "/api/catalog/" + encodeURIComponent(EDITING_ID), {
+          method:'PUT',
+          headers: authHeaders({ 'Content-Type':'application/json' }),
+          body: JSON.stringify(body)
+        });
+      } else {
+        r = await fetch(API + "/api/catalog", {
+          method:'POST',
+          headers: authHeaders({ 'Content-Type':'application/json' }),
+          body: JSON.stringify(body)
+        });
+      }
+      if(!r.ok) throw new Error('HTTP '+r.status+' — '+await r.text());
+      closeProdutoForm();
+      renderProdutos();
+    } catch(err){
+      alert('Falha ao salvar: '+err.message);
+    } finally {
+      saveBtn.disabled = false;
+      saveBtn.textContent = 'Salvar produto';
+    }
+  });
+
+  /* Delete */
+  $('fDelete').addEventListener('click', async ()=>{
+    if(!EDITING_ID) return;
+    const p = PRODUTOS.find(x=>String(x.id)===String(EDITING_ID));
+    if(!confirm('Excluir "'+(p?.nome||EDITING_ID)+'" definitivamente?')) return;
+    try{
+      const r = await fetch(API + "/api/catalog/" + encodeURIComponent(EDITING_ID), {
+        method:'DELETE', headers: authHeaders()
+      });
+      if(!r.ok) throw new Error('HTTP '+r.status);
+      closeProdutoForm();
+      renderProdutos();
+    } catch(err){
+      alert('Falha ao excluir: '+err.message);
+    }
+  });
+
+  $('fCancel').addEventListener('click', closeProdutoForm);
+  $('prodModalClose').addEventListener('click', closeProdutoForm);
+  $('prodModal').addEventListener('click', (ev)=>{
+    if(ev.target.id === 'prodModal') closeProdutoForm();
+  });
+  document.addEventListener('keydown', (ev)=>{
+    if(ev.key==='Escape' && $('prodModal').classList.contains('on')) closeProdutoForm();
+  });
+
+  window.renderProdutos = renderProdutos;
+})();
 
 /* =====================================================================
    START

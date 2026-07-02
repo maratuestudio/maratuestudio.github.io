@@ -280,7 +280,7 @@
     border-radius:8px; padding:12px 14px; font-size:0.95rem; width:100%;
     font-family:var(--clother);
   }
-  input::placeholder, textarea::placeholder{ color:rgba(13,13,11,0.35); }
+  input::placeholder, textarea::placeholder{ color:var(--muted); opacity:0.7; }
   input:focus, select:focus, textarea:focus{ outline:none; border-color:var(--laranja); box-shadow:0 0 0 3px rgba(200,80,26,0.12); }
   label.f{ display:block; margin-bottom:14px; }
   label.f > span{
@@ -1405,8 +1405,12 @@
     border-color:var(--selected-fg);
     box-shadow:0 0 0 2px rgba(255,255,255,0.35) inset;
   }
-  /* Logo MARATU em azul no noite (texto branco em outros lugares) */
-  :root[data-theme="noite"] .mark .word{ color:var(--azul); }
+  /* Logo MARATU continua em cor de texto (branco no noite) — contraste do azul escuro é ruim */
+  /* Botões com bg colorido: texto FORÇADO branco no noite (senão vira dark-on-dark
+     porque --areia no noite é #1F1F1B). */
+  :root[data-theme="noite"] .btn.blue{ color:#fff; }
+  :root[data-theme="noite"] .btn.blue:hover{ background:var(--azul); color:#fff; border-color:var(--azul); }
+  :root[data-theme="noite"] .cor-row .cor-file-btn.has-img{ color:#fff; }
   /* Hover states que ficavam invertendo pra "preto" (que no noite é claro) —
      ficava muito berrante. Suaviza. */
   :root[data-theme="noite"] .btn:hover{ background:var(--selected-bg); color:var(--selected-fg); border-color:var(--selected-bg); }

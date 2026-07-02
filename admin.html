@@ -227,6 +227,22 @@
   .tab:active{ transform:translate(2px,2px); box-shadow:0 0 0 0 var(--preto); }
   .tab:focus-visible{ outline:2px solid var(--azul-claro); outline-offset:2px; }
 
+  /* Tabs viram carrossel arrastável no mobile (todos visíveis via scroll) */
+  @media (max-width:720px){
+    .tabs{
+      overflow-x:auto; -webkit-overflow-scrolling:touch;
+      scroll-snap-type:x proximity;
+      margin-left:-14px; margin-right:-14px;
+      padding:4px 14px 10px;
+      scrollbar-width:none;
+      /* fade nas bordas indicando conteúdo pra rolar */
+      -webkit-mask-image:linear-gradient(90deg, transparent 0, #000 14px, #000 calc(100% - 14px), transparent 100%);
+              mask-image:linear-gradient(90deg, transparent 0, #000 14px, #000 calc(100% - 14px), transparent 100%);
+    }
+    .tabs::-webkit-scrollbar{ display:none; }
+    .tab{ flex:0 0 auto; scroll-snap-align:start; padding:11px 20px; white-space:nowrap; }
+  }
+
   .panel{ display:none; }
   .panel.on{ display:block; }
 
@@ -319,35 +335,40 @@
   .wellbeing{
     background:var(--areia); border:1.5px solid var(--preto); border-radius:12px;
     box-shadow:3px 3px 0 0 var(--preto); color:var(--preto);
-    padding:22px 24px; position:relative;
+    padding:28px 32px; position:relative;
+    display:grid; grid-template-columns:1fr auto; align-items:center; gap:32px;
   }
+  .wellbeing .wb-left{ display:flex; flex-direction:column; gap:6px; min-width:0; }
   .wellbeing .wb-greet{
-    font-family:var(--clother); font-weight:900; font-size:1.35rem; line-height:1.15;
-    letter-spacing:-0.01em; color:var(--preto); margin-bottom:18px;
+    font-family:var(--clother); font-weight:900; font-size:2.2rem; line-height:1.02;
+    letter-spacing:-0.015em; color:var(--preto); margin:0 0 18px;
   }
-  .wellbeing .wb-body{
-    display:flex; align-items:center; gap:24px; flex-wrap:wrap;
-  }
-  .wellbeing .wb-info{ flex:1; min-width:0; }
   .wellbeing .wb-cap{
     font-family:var(--clother); font-weight:700; font-size:0.6rem;
-    letter-spacing:0.24em; text-transform:uppercase; color:var(--muted); margin-bottom:6px;
+    letter-spacing:0.24em; text-transform:uppercase; color:var(--muted); margin:0 0 4px;
   }
   .wellbeing .wb-num{
-    font-family:var(--clother); font-weight:900; font-size:1.9rem; line-height:1; letter-spacing:-0.01em;
-    display:flex; align-items:baseline; gap:12px; color:var(--preto); flex-wrap:wrap;
+    font-family:var(--clother); font-weight:900; font-size:2rem; line-height:1; letter-spacing:-0.01em;
+    display:flex; align-items:baseline; gap:12px; color:var(--preto); flex-wrap:wrap; margin:0;
   }
   .wellbeing .wb-num .eye{ background:transparent; border:none; color:var(--muted); cursor:pointer; padding:6px; display:inline-flex; align-items:center; }
   .wellbeing .wb-num .eye:hover{ color:var(--preto); }
   .wellbeing .wb-num .eye svg{ width:20px; height:20px; display:block; }
   .wellbeing .wb-sub{
-    font-family:var(--clother); font-size:0.82rem; color:var(--muted); margin-top:10px;
+    font-family:var(--clother); font-size:0.82rem; color:var(--muted); margin:6px 0 0;
   }
-  @media (max-width:560px){
-    .wellbeing{ padding:20px; }
-    .wellbeing .wb-body{ gap:16px; }
-    .wellbeing .ring{ width:100px; height:100px; }
-    .wellbeing .wb-num{ font-size:1.55rem; }
+  .wellbeing .ring{ width:150px; height:150px; }
+
+  @media (max-width:720px){
+    .wellbeing{ padding:22px 22px; gap:20px; }
+    .wellbeing .wb-greet{ font-size:1.7rem; margin-bottom:12px; }
+    .wellbeing .wb-num{ font-size:1.65rem; }
+    .wellbeing .ring{ width:110px; height:110px; }
+  }
+  @media (max-width:480px){
+    .wellbeing{ grid-template-columns:1fr; gap:14px; padding:20px 18px; text-align:left; }
+    .wellbeing .wb-greet{ font-size:1.6rem; margin-bottom:8px; }
+    .wellbeing .ring{ width:110px; height:110px; justify-self:start; margin-top:4px; }
   }
 
   .ring{ width:130px; height:130px; flex-shrink:0; }
@@ -1266,29 +1287,27 @@
 
     <!-- Wellbeing hero -->
     <div class="wellbeing">
-      <div class="wb-greet" id="pnGreet">Bom dia, Raphael</div>
-      <div class="wb-body">
-        <svg class="ring" id="pnRing" viewBox="0 0 120 120" aria-hidden="true">
-          <circle class="track" cx="60" cy="60" r="48"/>
-          <circle class="fill"  cx="60" cy="60" r="48" stroke-dasharray="301.6" stroke-dashoffset="301.6"/>
-          <text class="pct-lbl" x="60" y="52" text-anchor="middle">DO MÊS</text>
-          <text class="pct-num" x="60" y="72" text-anchor="middle" id="pnRingPct">0%</text>
-        </svg>
-        <div class="wb-info">
-          <div class="wb-cap" id="pnMonthCap">Faturamento — mês</div>
-          <div class="wb-num">
-            <span id="fatNum">R$ 0,00</span>
-            <button class="eye" id="fatEye" type="button" aria-label="Mostrar/ocultar valor" aria-pressed="false">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path class="eye-open"   d="M1.5 12S5.5 5 12 5s10.5 7 10.5 7-4 7-10.5 7S1.5 12 1.5 12Z"/>
-                <circle class="eye-open" cx="12" cy="12" r="3"/>
-                <path class="eye-closed" d="M3 11 Q 12 18 21 11" stroke-linecap="round" style="display:none"/>
-              </svg>
-            </button>
-          </div>
-          <div class="wb-sub" id="fatRef">meta do mês</div>
+      <div class="wb-left">
+        <div class="wb-greet" id="pnGreet">Bom dia, Raphael</div>
+        <div class="wb-cap" id="pnMonthCap">Faturamento — mês</div>
+        <div class="wb-num">
+          <span id="fatNum">R$ 0,00</span>
+          <button class="eye" id="fatEye" type="button" aria-label="Mostrar/ocultar valor" aria-pressed="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path class="eye-open"   d="M1.5 12S5.5 5 12 5s10.5 7 10.5 7-4 7-10.5 7S1.5 12 1.5 12Z"/>
+              <circle class="eye-open" cx="12" cy="12" r="3"/>
+              <path class="eye-closed" d="M3 11 Q 12 18 21 11" stroke-linecap="round" style="display:none"/>
+            </svg>
+          </button>
         </div>
+        <div class="wb-sub" id="fatRef">meta do mês</div>
       </div>
+      <svg class="ring" id="pnRing" viewBox="0 0 120 120" aria-hidden="true">
+        <circle class="track" cx="60" cy="60" r="48"/>
+        <circle class="fill"  cx="60" cy="60" r="48" stroke-dasharray="301.6" stroke-dashoffset="301.6"/>
+        <text class="pct-lbl" x="60" y="52" text-anchor="middle">DO MÊS</text>
+        <text class="pct-num" x="60" y="72" text-anchor="middle" id="pnRingPct">0%</text>
+      </svg>
     </div>
 
     <!-- Metric cards row -->
@@ -1795,6 +1814,8 @@ document.querySelectorAll('#tabs .tab').forEach(btn=>{
     document.querySelectorAll('#tabs .tab').forEach(b=>b.setAttribute('aria-selected', b===btn ? 'true':'false'));
     document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
     $('panel-'+btn.dataset.tab).classList.add('on');
+    /* No mobile a aba pode estar parcialmente fora do scroll — traz pro centro */
+    try { btn.scrollIntoView({behavior:'smooth', inline:'center', block:'nearest'}); } catch(e){}
   });
 });
 

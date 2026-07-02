@@ -3546,6 +3546,7 @@ function setupApple(){
   let EDITING_ID = null;
   let coresBuf = []; // [{nome, hex, img, key, file}]
   let pendingUploads = { principal:null, hover:null }; // File objects a subir
+  let originalTamanhos = null; // pra preservar {t, esgotado} se user não mexer no campo
 
   /* ---------- LIST ---------- */
   function renderProdutos(){
@@ -3614,7 +3615,13 @@ function setupApple(){
     $('fSubtitulo').value = p?.subtitulo || '';
     $('fPreco').value = p ? cents2num(p.preco) : '';
     $('fPrecoCheio').value = p ? cents2num(p.preco_cheio) : '';
-    $('fTamanhos').value = Array.isArray(p?.tamanhos) ? p.tamanhos.join(', ') : (p?.tamanhos||'');
+    // Tamanhos podem vir como ["P","M"] ou [{t:"P",esgotado:0},...] — normaliza pra display
+    originalTamanhos = Array.isArray(p?.tamanhos) ? p.tamanhos : null;
+    const tamStr = Array.isArray(p?.tamanhos)
+      ? p.tamanhos.map(t => (t && typeof t==='object') ? (t.t || '') : String(t)).filter(Boolean).join(', ')
+      : (p?.tamanhos || '');
+    $('fTamanhos').value = tamStr;
+    $('fTamanhos').dataset.original = tamStr; // pra detectar edição
 
     setChipGroup('fMarca', 'marca', [p?.marca || 'use']);
     setChipGroup('fSubcat', 'subcat', [p?.subcategoria || 'chaveiros']);
@@ -3809,7 +3816,13 @@ function setupApple(){
         preco: num2cents($('fPreco').value),
         preco_cheio: num2cents($('fPrecoCheio').value),
         colecoes: getChipGroup('fColecoes','col'),
-        tamanhos: ($('fTamanhos').value||'').split(',').map(s=>s.trim()).filter(Boolean),
+        tamanhos: (() => {
+          // Se user não mexeu no campo e original tinha estrutura {t,esgotado}, preserva
+          const cur = ($('fTamanhos').value||'').trim();
+          const orig = $('fTamanhos').dataset.original || '';
+          if(cur === orig && Array.isArray(originalTamanhos)) return originalTamanhos;
+          return cur.split(',').map(s=>s.trim()).filter(Boolean);
+        })(),
         cores: coresOut,
         imagem_principal: imgPrincipal,
         imagem_hover: imgHover,

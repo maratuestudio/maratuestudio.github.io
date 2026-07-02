@@ -222,6 +222,151 @@
   .lil{ color:var(--muted); font-size:0.78rem; }
   .val{ font-family:var(--clother); font-weight:700; }
 
+  /* ── PAINEL — Gentler Streak vibe ── */
+  .pn-grid{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  @media (max-width:720px){ .pn-grid{ grid-template-columns:1fr; } }
+
+  .wellbeing{
+    background:linear-gradient(135deg, var(--laranja) 0%, #E27340 55%, var(--dourado) 100%);
+    border:1.5px solid var(--preto); border-radius:14px; box-shadow:4px 4px 0 0 var(--preto);
+    color:var(--areia); padding:26px; position:relative; overflow:hidden;
+  }
+  .wellbeing::after{
+    content:''; position:absolute; right:-40px; top:-40px; width:160px; height:160px;
+    border:1.5px solid rgba(240,236,228,0.18); border-radius:50%; pointer-events:none;
+  }
+  .wellbeing .wb-inner{ display:grid; grid-template-columns:auto 1fr; gap:24px; align-items:center; position:relative; }
+  @media (max-width:560px){ .wellbeing .wb-inner{ grid-template-columns:1fr; text-align:left; justify-items:start; } }
+  .wellbeing .wb-cap{
+    font-family:var(--clother); font-weight:700; font-size:0.6rem;
+    letter-spacing:0.24em; text-transform:uppercase; opacity:0.75; margin-bottom:8px;
+  }
+  .wellbeing .wb-mood{
+    font-family:var(--jack); font-size:2rem; letter-spacing:-0.02em; line-height:0.95;
+    text-transform:uppercase; margin-bottom:14px; color:var(--areia);
+  }
+  .wellbeing .wb-num{
+    font-family:var(--clother); font-weight:900; font-size:1.9rem; line-height:1; letter-spacing:-0.01em;
+    display:flex; align-items:baseline; gap:12px;
+  }
+  .wellbeing .wb-num .eye{ background:transparent; border:none; color:var(--areia); opacity:0.75; cursor:pointer; padding:6px; display:inline-flex; align-items:center; }
+  .wellbeing .wb-num .eye:hover{ opacity:1; }
+  .wellbeing .wb-num .eye svg{ width:20px; height:20px; display:block; }
+  .wellbeing .wb-sub{
+    font-family:var(--clother); font-size:0.82rem; opacity:0.85; margin-top:8px;
+  }
+
+  .ring{ width:130px; height:130px; flex-shrink:0; }
+  .ring circle{ fill:none; }
+  .ring .track{ stroke:rgba(240,236,228,0.28); stroke-width:11; }
+  .ring .fill{
+    stroke:var(--areia); stroke-width:11; stroke-linecap:round;
+    transform:rotate(-90deg); transform-origin:60px 60px;
+    transition:stroke-dashoffset 0.6s cubic-bezier(0.33, 1, 0.68, 1);
+  }
+  .ring text{
+    fill:var(--areia); font-family:var(--clother); font-weight:900; font-size:22px;
+    text-anchor:middle; letter-spacing:-0.02em;
+  }
+  .ring text.pct-lbl{ font-size:9px; letter-spacing:0.24em; font-weight:700; opacity:0.75; }
+
+  .metric-card{
+    background:var(--areia-sombra); border:1.5px solid var(--preto); border-radius:12px;
+    box-shadow:3px 3px 0 0 var(--preto); padding:18px 20px; min-width:0;
+  }
+  .metric-card .mc-cap{
+    font-family:var(--clother); font-weight:700; font-size:0.58rem;
+    letter-spacing:0.22em; text-transform:uppercase; color:var(--muted); margin-bottom:8px;
+  }
+  .metric-card .mc-val{
+    font-family:var(--clother); font-weight:900; font-size:1.8rem;
+    line-height:1; letter-spacing:-0.01em; color:var(--preto); margin-bottom:4px;
+  }
+  .metric-card .mc-val small{ font-size:0.55em; font-weight:700; color:var(--muted); margin-left:6px; letter-spacing:0.06em; }
+  .metric-card .mc-sub{ font-family:var(--clother); font-size:0.78rem; color:var(--muted); }
+  .metric-card.up .mc-val{ color:var(--laranja); }
+  .metric-card.down .mc-val{ color:var(--azul); }
+
+  .streak-dots{ display:flex; gap:3px; margin-top:14px; }
+  .streak-dots span{
+    flex:1; height:10px; background:var(--areia); border:1px solid var(--linha-forte);
+    border-radius:3px;
+  }
+  .streak-dots span.on{ background:var(--laranja); border-color:var(--preto); }
+  .streak-dots span.today{ box-shadow:0 0 0 2px var(--dourado) inset; }
+
+  .chart-card{
+    background:var(--areia); border:1.5px solid var(--preto); border-radius:12px;
+    box-shadow:3px 3px 0 0 var(--preto); padding:20px 22px;
+  }
+  .chart-card .ch-head{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom:16px; gap:10px; }
+  .chart-card .ch-title{
+    font-family:var(--clother); font-weight:900; font-size:1rem;
+    letter-spacing:-0.005em; color:var(--preto);
+  }
+  .chart-card .ch-sub{
+    font-family:var(--clother); font-weight:700; font-size:0.62rem;
+    letter-spacing:0.2em; text-transform:uppercase; color:var(--muted); white-space:nowrap;
+  }
+
+  .week-bars{ display:grid; grid-template-columns:repeat(7,1fr); gap:6px; height:160px; align-items:end; }
+  .week-bars .wb-col{ display:flex; flex-direction:column; align-items:center; justify-content:flex-end; height:100%; gap:6px; min-width:0; }
+  .week-bars .wb-val{
+    font-family:var(--clother); font-weight:700; font-size:0.58rem;
+    color:var(--preto); opacity:0; height:0;
+    letter-spacing:-0.01em;
+  }
+  .week-bars .wb-col.on .wb-val{ opacity:1; height:auto; }
+  .week-bars .wb-bar-track{ width:100%; flex:1; display:flex; align-items:flex-end; min-height:0; }
+  .week-bars .wb-bar{
+    width:100%; background:var(--laranja); border:1.5px solid var(--preto);
+    border-radius:8px 8px 3px 3px; min-height:4px;
+    transition:height 0.4s cubic-bezier(0.33, 1, 0.68, 1);
+  }
+  .week-bars .wb-col.today .wb-bar{ background:var(--dourado); }
+  .week-bars .wb-col.empty .wb-bar{ background:var(--areia-sombra); border-style:dashed; }
+  .week-bars .wb-day{
+    font-family:var(--clother); font-weight:700; font-size:0.65rem;
+    letter-spacing:0.12em; text-transform:uppercase; color:var(--muted);
+  }
+  .week-bars .wb-col.today .wb-day{ color:var(--preto); }
+
+  .spark-wrap{ height:120px; position:relative; }
+  .spark-wrap svg{ width:100%; height:100%; display:block; overflow:visible; }
+  .spark-wrap .spark-area{ fill:var(--laranja); opacity:0.16; }
+  .spark-wrap .spark-line{ fill:none; stroke:var(--laranja); stroke-width:2.5; stroke-linejoin:round; stroke-linecap:round; }
+  .spark-wrap .spark-dot{ fill:var(--areia); stroke:var(--laranja); stroke-width:2; }
+  .spark-wrap .spark-dot.last{ fill:var(--preto); stroke:var(--laranja); stroke-width:2.5; }
+  .spark-labels{ display:grid; grid-template-columns:repeat(6, 1fr); gap:4px; margin-top:8px; }
+  .spark-labels span{
+    font-family:var(--clother); font-weight:700; font-size:0.6rem;
+    letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); text-align:center;
+  }
+  .spark-labels span.now{ color:var(--preto); }
+
+  .side-card{
+    background:var(--areia-sombra); border:1.5px solid var(--preto); border-radius:12px;
+    box-shadow:3px 3px 0 0 var(--preto); padding:18px 20px; min-width:0;
+  }
+  .side-card .sc-title{
+    font-family:var(--clother); font-weight:900; font-size:0.95rem;
+    letter-spacing:-0.005em; color:var(--preto); margin-bottom:12px;
+  }
+
+  .quick-lanc{
+    background:var(--areia); border:1.5px dashed var(--linha-forte); border-radius:10px;
+    padding:14px 16px; margin-top:14px;
+  }
+  .quick-lanc .ql-cap{
+    font-family:var(--clother); font-weight:700; font-size:0.58rem;
+    letter-spacing:0.22em; text-transform:uppercase; color:var(--muted); margin-bottom:10px;
+  }
+  .quick-lanc .ql-row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+  .quick-lanc .ql-row input{ margin:0; }
+  .quick-lanc .ql-row input.ql-label{ flex:1; min-width:140px; }
+  .quick-lanc .ql-row input.ql-valor{ flex:0 0 130px; }
+  @media (max-width:640px){ .quick-lanc .ql-row input.ql-valor{ flex:1; } }
+
   /* ── ORCAMENTO subtabs ── */
   .seg{ display:flex; gap:0; margin-bottom:20px; border:1.5px solid var(--preto); border-radius:999px; overflow:hidden; box-shadow:2px 2px 0 0 var(--preto); }
   .seg button{
@@ -905,44 +1050,98 @@
 
   <!-- ================= PAINEL ================= -->
   <section class="panel on" id="panel-painel">
-    <div class="grid2">
-      <div class="card">
-        <div class="meta-cap">Faturamento do mês</div>
-        <div class="meta-num">
-          <span class="val" id="fatNum">R$ 0,00</span>
-          <button class="eye" id="fatEye" type="button" aria-label="Mostrar/ocultar valor" aria-pressed="false">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path class="eye-open"   d="M1.5 12S5.5 5 12 5s10.5 7 10.5 7-4 7-10.5 7S1.5 12 1.5 12Z"/>
-              <circle class="eye-open" cx="12" cy="12" r="3"/>
-              <path class="eye-closed" d="M3 11 Q 12 18 21 11" stroke-linecap="round" style="display:none"/>
-            </svg>
-          </button>
-        </div>
-        <div class="bar"><i id="fatBar" style="width:0%"></i></div>
-        <div class="refline">
-          <span id="fatRef">meta do mês</span>
-          <span id="fatPct" class="val">0%</span>
-        </div>
-        <div class="spacer"></div>
-        <div class="row-actions">
-          <input id="lancLabel" placeholder="Ex: kit vendido" style="flex:1; min-width:120px;" />
-          <input id="lancValor" inputmode="decimal" placeholder="Valor" style="width:100px;" />
-          <button class="btn blue" id="lancAdd">Lançar</button>
-        </div>
-        <div class="lil" style="margin-top:8px;">Meta do mês = fixo + retirada (ajuste em Orçamento, Ajustes).</div>
-      </div>
 
-      <div class="card">
-        <h2 class="title">Próximos 7 dias</h2>
-        <ul class="list" id="proxLista"></ul>
+    <!-- Wellbeing hero (Gentler Streak vibe) -->
+    <div class="wellbeing">
+      <div class="wb-inner">
+        <svg class="ring" id="pnRing" viewBox="0 0 120 120" aria-hidden="true">
+          <circle class="track" cx="60" cy="60" r="48"/>
+          <circle class="fill"  cx="60" cy="60" r="48" stroke-dasharray="301.6" stroke-dashoffset="301.6"/>
+          <text class="pct-lbl" x="60" y="52" text-anchor="middle">DO MÊS</text>
+          <text class="pct-num" x="60" y="72" text-anchor="middle" id="pnRingPct">0%</text>
+        </svg>
+        <div>
+          <div class="wb-cap" id="pnMonthCap">Faturamento — mês</div>
+          <div class="wb-mood" id="pnMood">COMEÇA</div>
+          <div class="wb-num">
+            <span id="fatNum">R$ 0,00</span>
+            <button class="eye" id="fatEye" type="button" aria-label="Mostrar/ocultar valor" aria-pressed="false">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path class="eye-open"   d="M1.5 12S5.5 5 12 5s10.5 7 10.5 7-4 7-10.5 7S1.5 12 1.5 12Z"/>
+                <circle class="eye-open" cx="12" cy="12" r="3"/>
+                <path class="eye-closed" d="M3 11 Q 12 18 21 11" stroke-linecap="round" style="display:none"/>
+              </svg>
+            </button>
+          </div>
+          <div class="wb-sub" id="fatRef">meta do mês</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Metric cards row -->
+    <div class="pn-grid">
+      <div class="metric-card" id="pnStreakCard">
+        <div class="mc-cap">Dias ativos</div>
+        <div class="mc-val"><span id="pnStreak">0</span><small>de <span id="pnStreakOf">30</span></small></div>
+        <div class="mc-sub" id="pnStreakSub">com lançamento no mês</div>
+        <div class="streak-dots" id="pnStreakDots"></div>
+      </div>
+      <div class="metric-card" id="pnTrendCard">
+        <div class="mc-cap">Vs. mês anterior</div>
+        <div class="mc-val" id="pnTrend">—</div>
+        <div class="mc-sub" id="pnTrendSub">nenhuma comparação ainda</div>
       </div>
     </div>
 
     <div class="spacer"></div>
 
-    <div class="card">
-      <h2 class="title">Últimos orçamentos</h2>
-      <ul class="list" id="orcLista"></ul>
+    <!-- Weekly bars -->
+    <div class="chart-card">
+      <div class="ch-head">
+        <div class="ch-title">Últimos 7 dias</div>
+        <div class="ch-sub"><span id="pnWeekTotal">R$ 0</span> na semana</div>
+      </div>
+      <div class="week-bars" id="pnWeekBars"></div>
+    </div>
+
+    <div class="spacer"></div>
+
+    <!-- Sparkline 6 months -->
+    <div class="chart-card">
+      <div class="ch-head">
+        <div class="ch-title">Últimos 6 meses</div>
+        <div class="ch-sub"><span id="pnSixTotal">R$ 0</span> no total</div>
+      </div>
+      <div class="spark-wrap">
+        <svg id="pnSparkSvg" viewBox="0 0 300 100" preserveAspectRatio="none" aria-hidden="true"></svg>
+      </div>
+      <div class="spark-labels" id="pnSparkLabels"></div>
+    </div>
+
+    <div class="spacer"></div>
+
+    <!-- Side cards + quick lançamento -->
+    <div class="pn-grid">
+      <div class="side-card">
+        <div class="sc-title">Próximos 7 dias</div>
+        <ul class="list" id="proxLista"></ul>
+      </div>
+      <div class="side-card">
+        <div class="sc-title">Últimos orçamentos</div>
+        <ul class="list" id="orcLista"></ul>
+      </div>
+    </div>
+
+    <div class="spacer"></div>
+
+    <div class="quick-lanc">
+      <div class="ql-cap">Lançamento rápido</div>
+      <div class="row-actions">
+        <input id="lancLabel" placeholder="Ex: kit vendido" style="flex:1; min-width:120px;" />
+        <input id="lancValor" inputmode="decimal" placeholder="Valor" style="width:100px;" />
+        <button class="btn blue" id="lancAdd">Lançar</button>
+      </div>
+      <div class="lil" style="margin-top:8px;">Meta do mês = fixo + retirada (ajuste em Orçamento, Parâmetros).</div>
     </div>
   </section>
 
@@ -1636,17 +1835,141 @@ $('fatEye').addEventListener('click', ()=>{
 function renderPainel(){
   const p = MaratuStore.getParams();
   const metaMes = num(p.fixo)+num(p.retirada);
-  const mesAtual = todayStr().slice(0,7);
-  const fat = MaratuStore.getLancamentos().filter(l=>l.data.slice(0,7)===mesAtual).reduce((s,l)=>s+num(l.valor),0);
-  const pct = metaMes>0 ? Math.min(100, Math.round(fat/metaMes*100)) : 0;
+  const hoje = todayStr();
+  const mesAtual = hoje.slice(0,7);
+  const lancs = MaratuStore.getLancamentos();
+  const fat = lancs.filter(l=>l.data.slice(0,7)===mesAtual).reduce((s,l)=>s+num(l.valor),0);
+  const pctRaw = metaMes>0 ? (fat/metaMes*100) : 0;
+  const pct = Math.round(pctRaw);
+  const pctCap = Math.min(100, Math.max(0, pct));
+
+  // Hero: ring + mood
+  const CIRC = 301.6; // 2π × 48
+  const dashOffset = CIRC - (CIRC * pctCap / 100);
+  const ringFill = document.querySelector('#pnRing .fill');
+  if(ringFill) ringFill.setAttribute('stroke-dashoffset', dashOffset.toFixed(1));
+  $('pnRingPct').textContent = pct+'%';
+  const mesesNm = ['JANEIRO','FEVEREIRO','MARÇO','ABRIL','MAIO','JUNHO','JULHO','AGOSTO','SETEMBRO','OUTUBRO','NOVEMBRO','DEZEMBRO'];
+  const mIdx = parseInt(mesAtual.slice(5,7),10)-1;
+  $('pnMonthCap').textContent = (mesesNm[mIdx]||'MÊS')+' — faturamento';
+
+  let mood = 'COMEÇA';
+  if(fat<=0) mood = 'COMEÇA';
+  else if(pctRaw<25) mood = 'OXE VEM';
+  else if(pctRaw<50) mood = 'TÁ INDO';
+  else if(pctRaw<75) mood = 'SEGUINDO';
+  else if(pctRaw<100) mood = 'TÁ VOANDO';
+  else mood = 'ARRETADO';
+  $('pnMood').textContent = mood;
+
   $('fatNum').textContent = fatHidden ? maskBRL() : brl(fat);
-  $('fatBar').style.width = pct+'%';
   $('fatRef').textContent = 'meta do mês '+(fatHidden ? maskBRL() : brl(metaMes));
-  $('fatPct').textContent = pct+'%';
   applyFatEye();
 
+  // Streak dots: dias do mês com lançamento
+  const [ay, am] = mesAtual.split('-').map(x=>parseInt(x,10));
+  const diasNoMes = new Date(ay, am, 0).getDate();
+  const diasAtivos = new Set(lancs.filter(l=>l.data.slice(0,7)===mesAtual).map(l=>l.data.slice(8,10)));
+  const hojeDia = parseInt(hoje.slice(8,10),10);
+  $('pnStreak').textContent = diasAtivos.size;
+  $('pnStreakOf').textContent = diasNoMes;
+  $('pnStreakSub').textContent = diasAtivos.size>0
+    ? `de ${diasNoMes} dias do mês`
+    : 'nenhum lançamento ainda no mês';
+  let dotsHtml = '';
+  for(let d=1; d<=diasNoMes; d++){
+    const key = String(d).padStart(2,'0');
+    const cls = [];
+    if(diasAtivos.has(key)) cls.push('on');
+    if(d===hojeDia && mesAtual===hoje.slice(0,7)) cls.push('today');
+    dotsHtml += `<span class="${cls.join(' ')}"></span>`;
+  }
+  $('pnStreakDots').innerHTML = dotsHtml;
+
+  // Trend vs mês anterior
+  const prevDate = new Date(ay, am-2, 1);
+  const prevKey = prevDate.getFullYear()+'-'+String(prevDate.getMonth()+1).padStart(2,'0');
+  const prevFat = lancs.filter(l=>l.data.slice(0,7)===prevKey).reduce((s,l)=>s+num(l.valor),0);
+  const trendCard = $('pnTrendCard');
+  trendCard.classList.remove('up','down');
+  if(prevFat<=0 && fat<=0){
+    $('pnTrend').textContent = '—';
+    $('pnTrendSub').textContent = 'sem histórico ainda';
+  } else if(prevFat<=0){
+    $('pnTrend').textContent = 'PRIMEIRO';
+    $('pnTrendSub').textContent = 'mês inaugural com faturamento';
+    trendCard.classList.add('up');
+  } else {
+    const diff = fat - prevFat;
+    const diffPct = Math.round(diff/prevFat*100);
+    const sinal = diff>=0 ? '+' : '−';
+    $('pnTrend').textContent = sinal + Math.abs(diffPct) + '%';
+    $('pnTrendSub').textContent = (fatHidden ? maskBRL() : (sinal+brl(Math.abs(diff)))) + ' vs. mês anterior';
+    trendCard.classList.add(diff>=0 ? 'up' : 'down');
+  }
+
+  // Weekly bars — últimos 7 dias
+  const dowLbl = ['D','S','T','Q','Q','S','S'];
+  const days7 = [];
+  for(let i=6; i>=0; i--){
+    const t = new Date();
+    t.setDate(t.getDate()-i);
+    const iso = dateStr(t.getFullYear(), t.getMonth(), t.getDate());
+    const total = lancs.filter(l=>l.data===iso).reduce((s,l)=>s+num(l.valor),0);
+    days7.push({ iso, total, dow: dowLbl[t.getDay()], isToday: iso===hoje });
+  }
+  const max7 = Math.max(1, ...days7.map(d=>d.total));
+  const total7 = days7.reduce((s,d)=>s+d.total,0);
+  $('pnWeekTotal').textContent = fatHidden ? maskBRL() : brl(total7);
+  $('pnWeekBars').innerHTML = days7.map(d=>{
+    const h = d.total>0 ? Math.max(10, Math.round(d.total/max7*100)) : 6;
+    const cls = ['wb-col'];
+    if(d.total>0) cls.push('on');
+    if(d.isToday) cls.push('today');
+    if(d.total<=0) cls.push('empty');
+    const valTxt = d.total>0 ? (fatHidden ? '•••' : brl(d.total).replace('R$ ','')) : '';
+    return `<div class="${cls.join(' ')}">
+      <div class="wb-val">${valTxt}</div>
+      <div class="wb-bar-track"><div class="wb-bar" style="height:${h}%"></div></div>
+      <div class="wb-day">${d.dow}</div>
+    </div>`;
+  }).join('');
+
+  // Sparkline — últimos 6 meses
+  const mesesShort = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+  const six = [];
+  for(let i=5; i>=0; i--){
+    const t = new Date(ay, am-1-i, 1);
+    const key = t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0');
+    const total = lancs.filter(l=>l.data.slice(0,7)===key).reduce((s,l)=>s+num(l.valor),0);
+    six.push({ key, total, lbl: mesesShort[t.getMonth()] });
+  }
+  const total6 = six.reduce((s,d)=>s+d.total,0);
+  $('pnSixTotal').textContent = fatHidden ? maskBRL() : brl(total6);
+  const maxS = Math.max(1, ...six.map(d=>d.total));
+  const W = 300, H = 100, padY = 12;
+  const pts = six.map((d,i)=>{
+    const x = (six.length===1) ? W/2 : (i/(six.length-1))*W;
+    const y = H - padY - (d.total/maxS)*(H - padY*2);
+    return { x, y, total:d.total };
+  });
+  const linePath = pts.map((p,i)=> (i===0?'M':'L')+p.x.toFixed(1)+' '+p.y.toFixed(1)).join(' ');
+  const areaPath = linePath + ` L ${W} ${H} L 0 ${H} Z`;
+  const dots = pts.map((p,i)=>{
+    const isLast = i===pts.length-1;
+    return `<circle class="spark-dot${isLast?' last':''}" cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${isLast?4:3}"/>`;
+  }).join('');
+  $('pnSparkSvg').innerHTML = `
+    <path class="spark-area" d="${areaPath}"/>
+    <path class="spark-line" d="${linePath}"/>
+    ${dots}
+  `;
+  $('pnSparkLabels').innerHTML = six.map((d,i)=>{
+    const isNow = i===six.length-1;
+    return `<span class="${isNow?'now':''}">${d.lbl}</span>`;
+  }).join('');
+
   // proximos 7 dias
-  const hoje = todayStr();
   const lim = (function(){ const t=new Date(); t.setDate(t.getDate()+7); return dateStr(t.getFullYear(),t.getMonth(),t.getDate()); })();
   const prox = MaratuStore.getEventos()
     .filter(e=> e.data>=hoje && e.data<=lim)

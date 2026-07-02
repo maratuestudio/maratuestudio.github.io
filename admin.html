@@ -268,6 +268,100 @@
   .t-cal{ color:var(--dourado); border:1px solid var(--dourado); }
   .t-ref{ color:var(--muted); border:1px solid var(--linha-forte); }
 
+  /* ── ORCAMENTO — hero + grupos (YNAB/Copilot Money vibe) ── */
+  .orc-hero{ display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; margin-bottom:20px; }
+  @media (max-width:640px){ .orc-hero{ grid-template-columns:1fr; } }
+  .orc-hero .kpi{
+    background:var(--areia-sombra); border:1.5px solid var(--preto); border-radius:10px;
+    box-shadow:3px 3px 0 0 var(--preto); padding:14px 16px;
+    display:flex; flex-direction:column; gap:4px; min-width:0;
+  }
+  .orc-hero .kpi-cap{
+    font-family:var(--clother); font-weight:700; font-size:0.55rem;
+    letter-spacing:0.22em; text-transform:uppercase; color:var(--muted);
+  }
+  .orc-hero .kpi-val{
+    font-family:var(--clother); font-weight:900; font-size:1.65rem;
+    line-height:1; letter-spacing:-0.01em; color:var(--preto);
+    word-break:break-all;
+  }
+  .orc-hero .kpi-sub{
+    font-family:var(--clother); font-size:0.72rem; color:var(--muted);
+  }
+  .orc-hero .kpi.accent .kpi-val{ color:var(--laranja); }
+
+  .orc-cat-grid{ grid-template-columns:repeat(auto-fill, minmax(150px, 1fr)); }
+
+  .orc-add-card{
+    background:var(--areia); border:1.5px dashed var(--linha-forte); border-radius:10px;
+    padding:14px 16px; margin-top:18px;
+  }
+  .orc-add-card .oa-cap{
+    font-family:var(--clother); font-weight:700; font-size:0.58rem;
+    letter-spacing:0.22em; text-transform:uppercase; color:var(--muted); margin-bottom:10px;
+  }
+  .orc-add-row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+  .orc-add-row input{ margin:0; }
+  .orc-add-row input.oa-nome{ flex:1; min-width:140px; }
+  .orc-add-row input.oa-preco{ flex:0 0 130px; }
+  @media (max-width:640px){ .orc-add-row input.oa-preco{ flex:1; } }
+
+  .orc-calc{ display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:16px; }
+  @media (max-width:720px){ .orc-calc{ grid-template-columns:1fr; } }
+  .orc-calc .card{ padding:18px 20px; }
+  .orc-calc-out{ background:var(--areia-sombra); display:flex; flex-direction:column; }
+  .orc-calc-out .brow{ padding:9px 0; }
+  .orc-calc-out .brow.strong{ font-size:0.98rem; }
+
+  .orc-section-title{
+    font-family:var(--clother); font-weight:700; font-size:0.58rem;
+    letter-spacing:0.22em; text-transform:uppercase; color:var(--muted);
+    margin-bottom:12px; padding-bottom:8px; border-bottom:1px solid var(--linha);
+  }
+  .orc-mat{
+    background:var(--areia-fundo); border:1px solid var(--linha-forte); border-radius:6px;
+    padding:10px 12px; font-family:var(--clother); font-size:0.85rem;
+  }
+
+  .orc-total{
+    background:var(--preto); border:1.5px solid var(--preto); border-radius:10px;
+    color:var(--areia); padding:22px 24px; margin-top:4px;
+    display:grid; grid-template-columns:1fr auto; gap:20px; align-items:center;
+    box-shadow:4px 4px 0 0 var(--laranja);
+  }
+  @media (max-width:640px){ .orc-total{ grid-template-columns:1fr; gap:16px; } }
+  .orc-total .ot-cap{
+    font-family:var(--clother); font-weight:700; font-size:0.6rem;
+    letter-spacing:0.22em; text-transform:uppercase; color:var(--areia); opacity:0.55;
+  }
+  .orc-total .ot-val{
+    display:block; font-family:var(--clother); font-weight:900; font-size:2.8rem;
+    color:var(--laranja); line-height:1; letter-spacing:-0.01em; margin:8px 0 6px;
+  }
+  .orc-total .ot-sub{
+    font-family:var(--clother); font-size:0.78rem; color:var(--areia); opacity:0.65; font-style:italic;
+  }
+  .orc-total .ot-right{ display:flex; flex-direction:column; gap:8px; min-width:220px; }
+  .orc-total .ot-right input{
+    background:var(--areia); border:1.5px solid var(--areia); color:var(--preto); box-shadow:none; margin:0;
+  }
+  .orc-total .ot-right .btn{
+    background:var(--laranja); border-color:var(--areia); color:var(--areia);
+    box-shadow:2px 2px 0 0 var(--areia);
+  }
+  .orc-total .ot-right .btn:hover{ background:var(--areia); color:var(--preto); border-color:var(--areia); }
+  .orc-total .ot-right .btn:active{ transform:translate(2px,2px); box-shadow:0 0 0 0 var(--areia); }
+
+  .orc-group{ margin-bottom:14px; padding:18px 20px; }
+  .orc-group .og-head{ margin-bottom:14px; padding-bottom:12px; border-bottom:1px solid var(--linha); }
+  .orc-group .og-title{
+    font-family:var(--clother); font-weight:900; font-size:1rem;
+    letter-spacing:-0.005em; color:var(--preto); margin-bottom:2px;
+  }
+  .orc-group .og-sub{
+    font-family:var(--clother); font-size:0.78rem; color:var(--muted);
+  }
+
   /* ── AGENDA ── */
   .cal-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
   .cal-nav{ display:flex; gap:8px; align-items:center; }
@@ -854,65 +948,122 @@
 
   <!-- ================= ORCAMENTO ================= -->
   <section class="panel" id="panel-orcamento">
+    <!-- HERO KPIs (Copilot Money vibe) -->
+    <div class="orc-hero">
+      <div class="kpi">
+        <span class="kpi-cap">Catálogo</span>
+        <div class="kpi-val" id="kpiCatN">0</div>
+        <div class="kpi-sub" id="kpiCatSub">0 com preço</div>
+      </div>
+      <div class="kpi accent">
+        <span class="kpi-cap">Ticket médio</span>
+        <div class="kpi-val" id="kpiTicket">R$ 0</div>
+        <div class="kpi-sub" id="kpiTicketSub">média do catálogo</div>
+      </div>
+      <div class="kpi">
+        <span class="kpi-cap">Custo/hora</span>
+        <div class="kpi-val" id="kpiHora">R$ 0</div>
+        <div class="kpi-sub">máquina + mão de obra</div>
+      </div>
+    </div>
+
+    <!-- Subtabs (Conta Azul vibe: nomes de MEI) -->
     <div class="seg" role="tablist" id="orcSeg">
-      <button role="tab" data-sub="catalogo" aria-selected="true">Catálogo</button>
-      <button role="tab" data-sub="medida" aria-selected="false">Sob medida</button>
-      <button role="tab" data-sub="ajustes" aria-selected="false">Ajustes</button>
+      <button role="tab" data-sub="catalogo" aria-selected="true">Preços prontos</button>
+      <button role="tab" data-sub="medida" aria-selected="false">Precificar peça</button>
+      <button role="tab" data-sub="ajustes" aria-selected="false">Parâmetros</button>
     </div>
 
     <!-- catalogo -->
     <div class="sub-on" id="sub-catalogo">
       <p class="hint">Toque numa peça pra consultar o preço. Peça sem preço, toque pra definir.</p>
       <div id="catSel"></div>
-      <div class="cat-grid" id="catGrid"></div>
-      <div class="spacer"></div>
-      <div class="row-actions">
-        <input id="catNome" placeholder="Nome da peça" style="flex:1; min-width:130px;" />
-        <input id="catPreco" inputmode="decimal" placeholder="Preço" style="width:100px;" />
-        <button class="btn blue" id="catAdd">+</button>
+      <div class="cat-grid orc-cat-grid" id="catGrid"></div>
+
+      <div class="orc-add-card">
+        <div class="oa-cap">Nova peça</div>
+        <div class="orc-add-row">
+          <input id="catNome" class="oa-nome" placeholder="Nome da peça" />
+          <input id="catPreco" class="oa-preco" inputmode="decimal" placeholder="Preço R$" />
+          <button class="btn blue" id="catAdd">Adicionar</button>
+        </div>
       </div>
     </div>
 
     <!-- medida -->
     <div class="sub-off" id="sub-medida">
-      <label class="f"><span>Material</span>
-        <div class="card" style="padding:11px 12px; font-size:14px;" id="matLine">PLA Matte Elegoo</div>
-      </label>
-      <label class="f"><span>Gramas usados</span><input id="inGramas" inputmode="decimal" placeholder="0" /></label>
-      <label class="f"><span>Horas de impressão</span><input id="inHoras" inputmode="decimal" placeholder="0" /></label>
-      <label class="f"><span>Pós-processamento (min)</span><input id="inPos" inputmode="decimal" placeholder="0" /></label>
+      <div class="orc-calc">
+        <div class="orc-calc-inputs card">
+          <div class="orc-section-title">Peça</div>
+          <label class="f"><span>Material</span>
+            <div class="orc-mat" id="matLine">PLA Matte Elegoo</div>
+          </label>
+          <div class="grid2">
+            <label class="f"><span>Gramas</span><input id="inGramas" inputmode="decimal" placeholder="0" /></label>
+            <label class="f"><span>Horas de impressão</span><input id="inHoras" inputmode="decimal" placeholder="0" /></label>
+          </div>
+          <label class="f"><span>Pós-processamento (min)</span><input id="inPos" inputmode="decimal" placeholder="0" /></label>
+        </div>
 
-      <div class="breakdown">
-        <div class="brow"><span>Custo do material</span><span class="val" id="cMat">R$ 0,00</span></div>
-        <div class="brow"><span>Custo de máquina</span><span class="val" id="cMaq">R$ 0,00</span></div>
-        <div class="brow"><span>Mão de obra</span><span class="val" id="cMao">R$ 0,00</span></div>
-        <div class="brule"></div>
-        <div class="brow strong"><span>Piso de custo</span><span class="val" id="cPiso">R$ 0,00</span></div>
+        <div class="orc-calc-out card">
+          <div class="orc-section-title">Composição do custo</div>
+          <div class="brow"><span>Material</span><span class="val" id="cMat">R$ 0,00</span></div>
+          <div class="brow"><span>Máquina</span><span class="val" id="cMaq">R$ 0,00</span></div>
+          <div class="brow"><span>Mão de obra</span><span class="val" id="cMao">R$ 0,00</span></div>
+          <div class="brule"></div>
+          <div class="brow strong"><span>Piso de custo</span><span class="val" id="cPiso">R$ 0,00</span></div>
+        </div>
       </div>
 
-      <div class="preco">
-        <span class="cap">Preço</span>
-        <span class="v" id="cPreco">R$ 0,00</span>
-        <span class="m" id="cMargem">margem 2x sobre o piso</span>
-      </div>
-
-      <div class="spacer"></div>
-      <div class="row-actions">
-        <input id="orcCliente" placeholder="Cliente (opcional)" style="flex:1; min-width:130px;" />
-        <button class="btn" id="orcSalvar">Salvar orçamento</button>
+      <div class="orc-total">
+        <div class="ot-left">
+          <span class="ot-cap">Preço sugerido</span>
+          <span class="ot-val" id="cPreco">R$ 0,00</span>
+          <span class="ot-sub" id="cMargem">margem 2x sobre o piso</span>
+        </div>
+        <div class="ot-right">
+          <input id="orcCliente" placeholder="Cliente (opcional)" />
+          <button class="btn" id="orcSalvar">Salvar orçamento</button>
+        </div>
       </div>
     </div>
 
-    <!-- ajustes -->
+    <!-- ajustes / parâmetros -->
     <div class="sub-off" id="sub-ajustes">
-      <p class="hint">Estes valores definem a conta. Calibre os marcados como "calibrar" até o preço bater com o que você já cobra.</p>
-      <label class="f"><span>Filamento (R$/kg) <em class="ptag t-real">real</em></span><input class="mono" id="pFil" inputmode="decimal" /></label>
-      <label class="f"><span>Máquina (R$/h) <em class="ptag t-cal">calibrar</em></span><input class="mono" id="pMaq" inputmode="decimal" /></label>
-      <label class="f"><span>Mão de obra (R$/h) <em class="ptag t-cal">calibrar</em></span><input class="mono" id="pMao" inputmode="decimal" /></label>
-      <label class="f"><span>Margem (multiplicador) <em class="ptag t-cal">calibrar</em></span><input class="mono" id="pMar" inputmode="decimal" /></label>
-      <label class="f"><span>Fixo mensal (R$) <em class="ptag t-real">real</em></span><input class="mono" id="pFix" inputmode="decimal" /></label>
-      <label class="f"><span>Meta de retirada (R$/mês) <em class="ptag t-ref">meta</em></span><input class="mono" id="pRet" inputmode="decimal" /></label>
-      <button class="btn blue" id="pSave">Salvar ajustes</button>
+      <p class="hint">Esses valores definem a conta. Calibre os marcados como "calibrar" até o preço bater com o que você já cobra.</p>
+
+      <div class="orc-group card">
+        <div class="og-head">
+          <div class="og-title">Material</div>
+          <div class="og-sub">O que sai do estoque em cada peça</div>
+        </div>
+        <label class="f"><span>Filamento (R$/kg) <em class="ptag t-real">real</em></span><input class="mono" id="pFil" inputmode="decimal" /></label>
+      </div>
+
+      <div class="orc-group card">
+        <div class="og-head">
+          <div class="og-title">Trabalho</div>
+          <div class="og-sub">A hora da máquina e a sua hora</div>
+        </div>
+        <div class="grid2">
+          <label class="f"><span>Máquina (R$/h) <em class="ptag t-cal">calibrar</em></span><input class="mono" id="pMaq" inputmode="decimal" /></label>
+          <label class="f"><span>Mão de obra (R$/h) <em class="ptag t-cal">calibrar</em></span><input class="mono" id="pMao" inputmode="decimal" /></label>
+        </div>
+        <label class="f"><span>Margem (multiplicador) <em class="ptag t-cal">calibrar</em></span><input class="mono" id="pMar" inputmode="decimal" /></label>
+      </div>
+
+      <div class="orc-group card">
+        <div class="og-head">
+          <div class="og-title">Negócio</div>
+          <div class="og-sub">Custo fixo do estúdio e a retirada do MEI</div>
+        </div>
+        <div class="grid2">
+          <label class="f"><span>Fixo mensal (R$) <em class="ptag t-real">real</em></span><input class="mono" id="pFix" inputmode="decimal" /></label>
+          <label class="f"><span>Meta retirada (R$/mês) <em class="ptag t-ref">meta</em></span><input class="mono" id="pRet" inputmode="decimal" /></label>
+        </div>
+      </div>
+
+      <button class="btn blue" id="pSave">Salvar parâmetros</button>
     </div>
   </section>
 
@@ -1372,6 +1523,7 @@ function renderCatalogo(){
       renderCatalogo(); renderCatSel();
     });
   });
+  renderOrcKpis();
 }
 function renderCatSel(){
   const box = $('catSel');
@@ -1381,6 +1533,18 @@ function renderCatSel(){
     <span style="font-size:15px;">${esc(item.nome)}</span>
     <span class="mono" style="font-size:26px; font-weight:700; color:var(--sol);">${brl(item.preco)}</span>
   </div>`;
+}
+function renderOrcKpis(){
+  const cat = MaratuStore.getCatalogo();
+  const p = MaratuStore.getParams();
+  const withPrice = cat.filter(x=> x.preco!=null && x.preco>0);
+  const avg = withPrice.length ? (withPrice.reduce((s,x)=>s+x.preco,0)/withPrice.length) : 0;
+  const hourly = num(p.maquina) + num(p.maodeobra);
+  $('kpiCatN').textContent = cat.length;
+  $('kpiCatSub').textContent = (withPrice.length===1?'1 com preço':withPrice.length+' com preço');
+  $('kpiTicket').textContent = withPrice.length ? brl(avg) : 'R$ —';
+  $('kpiTicketSub').textContent = withPrice.length ? 'média do catálogo' : 'sem preços ainda';
+  $('kpiHora').textContent = brl(hourly);
 }
 $('catAdd').addEventListener('click', ()=>{
   const nome = $('catNome').value.trim();
@@ -1408,6 +1572,7 @@ function recalc(){
   $('cPreco').textContent = brl(preco);
   $('cMargem').textContent = 'margem '+(num(p.margem).toLocaleString('pt-BR'))+'x sobre o piso';
   $('matLine').textContent = 'PLA Matte Elegoo, '+brl(num(p.filamento))+'/kg';
+  renderOrcKpis();
 }
 $('orcSalvar').addEventListener('click', ()=>{
   const p = MaratuStore.getParams();

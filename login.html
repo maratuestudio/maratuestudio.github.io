@@ -39,6 +39,16 @@
     background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
     pointer-events:none; z-index:0; opacity:0.35;
   }
+  /* Papel de sketch — grid fino em preto mangue sobre laranja */
+  body::after{
+    content:''; position:fixed; inset:0;
+    background-image:
+      linear-gradient(to right, rgba(13,13,11,0.12) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(13,13,11,0.12) 1px, transparent 1px);
+    background-size: 28px 28px;
+    background-position: -1px -1px;
+    pointer-events:none; z-index:0;
+  }
 
   .canto{
     position:fixed; left:0; bottom:0; margin:0; padding:0;

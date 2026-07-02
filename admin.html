@@ -13,6 +13,35 @@
 <meta name="mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <meta name="apple-mobile-web-app-title" content="MARATU" />
+
+<script>
+/* GUARD DE SESSÃO — roda antes de qualquer render pra evitar flash do conteúdo. */
+(function(){
+  let tk = null, last = 0;
+  try { tk = localStorage.getItem('maratu.token'); } catch(e){}
+  try { last = parseInt(localStorage.getItem('maratu.lastActivity') || '0', 10); } catch(e){}
+  const IDLE_MS = 20 * 60 * 1000;
+  if(!tk){ location.replace('/login.html'); return; }
+  if(last && (Date.now() - last) > IDLE_MS){
+    try { localStorage.removeItem('maratu.token'); } catch(e){}
+    location.replace('/login.html?expired=1');
+    return;
+  }
+  try { localStorage.setItem('maratu.lastActivity', String(Date.now())); } catch(e){}
+  /* Aplica tema salvo o mais cedo possível (evita flash de cor) */
+  try {
+    const th = localStorage.getItem('maratu.theme') || '';
+    if(th) document.documentElement.setAttribute('data-theme', th);
+  } catch(e){}
+})();
+</script>
+
+<style>
+  /* Esconde o body até MaratuStore.ready confirmar sessão — evita qualquer flash de dados */
+  body{ visibility:hidden; }
+  html.mrt-ready body{ visibility:visible; }
+</style>
+
 <style>
   /* ── FONTES (self-hosted no root do site, mesma origem) ── */
   @font-face { font-family:'Jack';    src:url('TRYJackAlpha-Regular.ttf') format('truetype'); font-weight:400; font-display:swap; }
@@ -22,6 +51,12 @@
   @font-face { font-family:'Clother'; src:url('TRYClother-Italic.ttf')     format('truetype'); font-weight:400; font-style:italic; font-display:swap; }
 
   :root{
+    /* Paleta base da marca — nunca muda por tema */
+    --brand-laranja:#C8501A;
+    --brand-azul-claro:#2E6FC4;
+    --brand-preto:#0D0D0B;
+    --brand-areia:#F0ECE4;
+
     --laranja:#C8501A;
     --azul:#0E3272;
     --azul-claro:#2E6FC4;
@@ -36,6 +71,12 @@
     --jack:'Jack','Arial Black',sans-serif;
     --clother:'Clother','Helvetica Neue',sans-serif;
 
+    /* Cor de fundo da página — trocada por tema */
+    --bg-page:var(--brand-laranja);
+    --scroll-thumb:rgba(200,80,26,0.55);
+    --scroll-thumb-hover:rgba(200,80,26,0.9);
+    --texture-opacity:0.35;
+
     /* aliases pro codigo antigo (nao mexer) */
     --mangue:var(--areia);
     --caju:var(--laranja);
@@ -49,30 +90,55 @@
     --sans:var(--clother);
   }
 
+  /* TEMA DIA — fundo azul-atalaia, cards/texto seguem original */
+  :root[data-theme="dia"]{
+    --bg-page:var(--brand-azul-claro);
+    --scroll-thumb:rgba(13,13,11,0.35);
+    --scroll-thumb-hover:rgba(13,13,11,0.6);
+    --texture-opacity:0.28;
+  }
+
+  /* TEMA NOITE — fundo preto mangue, cards escuros, texto claro */
+  :root[data-theme="noite"]{
+    --bg-page:var(--brand-preto);
+    --areia:#1F1F1B;
+    --areia-sombra:#292923;
+    --areia-fundo:#14140F;
+    --preto:#F0ECE4;
+    --linha:rgba(240,236,228,0.14);
+    --linha-forte:rgba(240,236,228,0.30);
+    --muted:rgba(240,236,228,0.58);
+    --scroll-thumb:rgba(240,236,228,0.28);
+    --scroll-thumb-hover:rgba(240,236,228,0.5);
+    --texture-opacity:0.22;
+  }
+
   *{ box-sizing:border-box; }
   html,body{ margin:0; padding:0; }
   html{
-    background:var(--laranja);
+    background:var(--bg-page);
     -webkit-font-smoothing:antialiased;
-    scrollbar-color:rgba(13,13,11,0.55) transparent;
+    scrollbar-color:var(--scroll-thumb) transparent;
     scrollbar-width:thin;
+    transition:background .28s ease;
   }
   body{
-    background:var(--laranja); color:var(--preto); font-family:var(--clother);
+    background:var(--bg-page); color:var(--preto); font-family:var(--clother);
     line-height:1.5; padding-bottom:env(safe-area-inset-bottom);
+    transition:background .28s ease, color .28s ease;
   }
   ::-webkit-scrollbar{ width:12px; height:12px; background:transparent; }
   ::-webkit-scrollbar-thumb{
-    background-color:rgba(200,80,26,0.55); border-radius:10px;
+    background-color:var(--scroll-thumb); border-radius:10px;
     border:3px solid transparent; background-clip:padding-box;
   }
-  ::-webkit-scrollbar-thumb:hover{ background-color:rgba(200,80,26,0.9); }
+  ::-webkit-scrollbar-thumb:hover{ background-color:var(--scroll-thumb-hover); }
 
   /* Textura ruido (papel/vintage) — copiada da home */
   body::before{
     content:''; position:fixed; inset:0;
     background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-    pointer-events:none; z-index:1000; opacity:0.35;
+    pointer-events:none; z-index:1000; opacity:var(--texture-opacity);
   }
 
   .wrap{
@@ -111,9 +177,7 @@
     letter-spacing:0.18em; text-transform:uppercase; color:var(--preto);
     margin-top:2px;
   }
-  .head .status{ text-align:right; font-family:var(--clother); font-size:0.62rem; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; color:var(--preto); white-space:nowrap; }
-  .head .status .dot{ display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--preto); margin-right:6px; vertical-align:middle; animation:pulse 2.2s ease-in-out infinite; }
-  .head .right{ display:flex; align-items:center; gap:14px; }
+  .head .right{ display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
   .head .sair{
     background:var(--areia); border:1.5px solid var(--preto); color:var(--preto);
     padding:8px 16px; font-family:var(--clother); font-weight:700;
@@ -123,8 +187,31 @@
   }
   .head .sair:hover{ background:var(--preto); color:var(--areia); }
   .head .sair:active{ transform:translate(2px,2px); box-shadow:0 0 0 0 var(--preto); }
-  @media (max-width:640px){ .head .status{ display:none; } }
   @keyframes pulse{ 0%,100%{opacity:1} 50%{opacity:0.35} }
+
+  /* Menu de temas — 3 chips lado a lado (segmentado circular) */
+  .theme-seg{
+    display:inline-flex; align-items:center; gap:4px; padding:3px;
+    background:var(--areia); border:1.5px solid var(--preto);
+    border-radius:999px; box-shadow:2px 2px 0 0 var(--preto);
+  }
+  .theme-seg button{
+    background:transparent; border:none; cursor:pointer; padding:0;
+    width:22px; height:22px; border-radius:50%;
+    display:inline-flex; align-items:center; justify-content:center;
+    position:relative; transition:transform .12s;
+  }
+  .theme-seg button:hover{ transform:scale(1.08); }
+  .theme-seg button .sw{
+    width:16px; height:16px; border-radius:50%;
+    border:1.5px solid var(--preto); box-sizing:border-box; display:block;
+  }
+  .theme-seg button[data-theme=""] .sw{ background:var(--brand-laranja); }
+  .theme-seg button[data-theme="dia"] .sw{ background:var(--brand-azul-claro); }
+  .theme-seg button[data-theme="noite"] .sw{ background:var(--brand-preto); }
+  .theme-seg button[aria-pressed="true"]{ background:var(--preto); }
+  .theme-seg button[aria-pressed="true"] .sw{ border-color:var(--areia); box-shadow:0 0 0 2px var(--preto) inset; }
+  .theme-seg button:focus-visible{ outline:2px solid var(--laranja); outline-offset:2px; }
 
   /* ── TABS ── */
   .tabs{ display:flex; gap:8px; margin-bottom:28px; }
@@ -1144,109 +1231,9 @@
 
   .spacer{ height:16px; }
 
-  /* ======================================================
-     LOGIN OVERLAY — fundo laranja, caranguejo preto, canto SVG
-     ====================================================== */
-  #login{
-    position:fixed; inset:0; z-index:2000;
-    background:var(--laranja);
-    display:flex; align-items:center; justify-content:center;
-    padding:24px; text-align:center;
-    animation:loginIn .4s ease-out;
-    overflow:hidden;
-  }
-  #login.gone{ display:none; }
-  @keyframes loginIn{ from{opacity:0} to{opacity:1} }
-
-  #login .canto{
-    position:absolute; left:0; bottom:0; margin:0; padding:0;
-    width:clamp(140px, 22vw, 240px); height:auto; display:block;
-    pointer-events:none;
-  }
-
-  #login .box{ max-width:460px; width:100%; display:flex; flex-direction:column; align-items:center; gap:22px; position:relative; z-index:1; }
-
-  #login .caranguejo{ width:min(22vw, 96px); height:auto; display:block; opacity:0.95; }
-  #login .caranguejo path{ fill:var(--preto); }
-
-  #login .lbl{ justify-content:center; color:rgba(13,13,11,0.65); }
-  #login .lbl::before{ background:currentColor; }
-
-  #login .t1{
-    font-family:var(--clother); font-weight:900; color:var(--preto);
-    font-size:clamp(2.2rem, 6.2vw, 3.6rem); line-height:1;
-    letter-spacing:-0.01em;
-    margin:0;
-  }
-
-  #login form{ width:100%; display:flex; flex-direction:column; align-items:stretch; gap:14px; margin-top:8px; }
-  #login .senha-wrap{ position:relative; }
-  #login input[type="password"]{
-    background:transparent; border:none; border-bottom:1px solid rgba(13,13,11,0.35);
-    border-radius:0; padding:14px 4px; text-align:center;
-    font-family:var(--clother); font-size:1.05rem; letter-spacing:0.14em;
-    color:var(--preto);
-  }
-  #login input[type="password"]::placeholder{ letter-spacing:0.24em; text-transform:uppercase; font-size:0.75rem; color:rgba(13,13,11,0.55); font-weight:700; }
-  #login input[type="password"]:focus{ outline:none; border-bottom-color:var(--preto); box-shadow:none; }
-  #login .erro{
-    min-height:1em; font-family:var(--clother); font-weight:700;
-    font-size:0.7rem; letter-spacing:0.18em; text-transform:uppercase;
-    color:var(--preto); opacity:0; transition:opacity .2s;
-  }
-  #login .erro.on{ opacity:1; }
-  #login button[type="submit"]{
-    background:var(--preto); color:var(--areia);
-    border:1.5px solid var(--preto); border-radius:999px;
-    box-shadow:3px 3px 0 0 var(--preto);
-    padding:14px 28px; font-family:var(--clother); font-weight:700;
-    font-size:0.72rem; letter-spacing:0.24em; text-transform:uppercase;
-    cursor:pointer; align-self:center;
-    transition:transform .12s, box-shadow .12s, background .18s, color .18s;
-  }
-  #login button[type="submit"]:hover{ background:var(--areia); color:var(--preto); }
-  #login button[type="submit"]:active{ transform:translate(3px,3px); box-shadow:0 0 0 0 var(--preto); }
-  #login button[type="submit"]:disabled{ opacity:0.4; cursor:wait; box-shadow:none; }
-  #login .foot{ margin-top:8px; padding-top:14px; border-top:1px solid rgba(13,13,11,0.2); font-size:0.55rem; letter-spacing:0.22em; color:rgba(13,13,11,0.7); }
 </style>
 </head>
 <body>
-
-<!-- ================= LOGIN OVERLAY ================= -->
-<div id="login" aria-hidden="false">
-  <img class="canto" src="admin-corner.svg" alt="" aria-hidden="true" />
-  <div class="box">
-    <svg class="caranguejo" viewBox="0 0 318.24 152.9" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <g data-aratu="claw-left">
-        <path d="M0,104.77c0,26.58,21.55,48.13,48.13,48.13V56.65C21.55,56.65,0,78.19,0,104.77Z"/>
-      </g>
-      <g data-aratu="claw-right">
-        <path d="M270.11,56.65v96.26c26.58,0,48.13-21.55,48.13-48.13s-21.55-48.13-48.13-48.13Z"/>
-      </g>
-      <g data-aratu="body">
-        <path d="M159.12,152.9c53.16,0,96.26-43.1,96.26-96.26H62.86c0,53.16,43.1,96.26,96.26,96.26Z"/>
-      </g>
-      <g data-aratu="eye-right">
-        <path d="M224.82,24.08c0-13.3-10.78-24.08-24.08-24.08v48.16c13.3,0,24.08-10.78,24.08-24.08Z"/>
-      </g>
-      <g data-aratu="eye-left">
-        <path d="M117.49,48.16V0c-13.3,0-24.08,10.78-24.08,24.08s10.78,24.08,24.08,24.08Z"/>
-      </g>
-    </svg>
-
-    <div class="lbl">000 &mdash; Admin</div>
-    <h1 class="t1">Seja bem-vindo!</h1>
-
-    <form id="loginForm" autocomplete="off">
-      <div class="senha-wrap">
-        <input id="loginSenha" type="password" placeholder="insira sua senha" autocomplete="current-password" autofocus />
-      </div>
-      <div class="erro" id="loginErro">senha incorreta</div>
-      <button type="submit" id="loginBtn">Entrar</button>
-      <div class="foot">MARATU &middot; est. 2026 &middot; Aracaju</div>
-    </form>
-  </div>
-</div>
 
 <div class="wrap">
 
@@ -1257,7 +1244,11 @@
       <span class="sub">painel operacional</span>
     </div>
     <div class="right">
-      <div class="status"><span class="dot"></span>em atividade</div>
+      <div class="theme-seg" role="group" aria-label="modo de cor" id="themeSeg">
+        <button type="button" data-theme=""      aria-pressed="true"  title="Original — laranja"><span class="sw"></span></button>
+        <button type="button" data-theme="dia"   aria-pressed="false" title="Dia — azul atalaia"><span class="sw"></span></button>
+        <button type="button" data-theme="noite" aria-pressed="false" title="Noite — preto mangue"><span class="sw"></span></button>
+      </div>
       <button class="sair" id="btnSair" type="button">Sair</button>
     </div>
   </header>
@@ -1704,34 +1695,6 @@ const WEBCAL_FEED_URL = "";
    backend.persist(chave) vira um POST/PUT pro Worker.
    Os getters/setters publicos NAO mudam. Ver tutorial, passo 6.
    ===================================================================== */
-/* ---------- caranguejo: piscar os olhos (JS puro, static crab) ---------- */
-(function blinkAratu(){
-  const el = document.querySelector('#login .caranguejo');
-  if(!el) return;
-  const eyeL = el.querySelector('[data-aratu="eye-left"]');
-  const eyeR = el.querySelector('[data-aratu="eye-right"]');
-  let last = Date.now() + 1200;
-  let blinking = false, start = 0;
-  function frame(){
-    const now = Date.now();
-    if(!blinking && now - last > 2500 + Math.random()*2000){ blinking = true; start = now; }
-    if(blinking){
-      const p = (now - start) / 180;
-      if(p >= 1){
-        blinking = false; last = now;
-        eyeL.setAttribute('transform','translate(105.5 24.08) scale(1 1) translate(-105.5 -24.08)');
-        eyeR.setAttribute('transform','translate(212.74 24.08) scale(1 1) translate(-212.74 -24.08)');
-      } else {
-        const s = p < 0.5 ? 1 - p*2*0.9 : 0.1 + (p-0.5)*2*0.9;
-        eyeL.setAttribute('transform','translate(105.5 24.08) scale(1 '+s+') translate(-105.5 -24.08)');
-        eyeR.setAttribute('transform','translate(212.74 24.08) scale(1 '+s+') translate(-212.74 -24.08)');
-      }
-    }
-    requestAnimationFrame(frame);
-  }
-  requestAnimationFrame(frame);
-})();
-
 const MaratuStore = (function(){
   const cache = { params:null, catalogo:null, orcamentos:null, eventos:null, lancamentos:null, marketing:null, notas:null };
 
@@ -1739,70 +1702,18 @@ const MaratuStore = (function(){
   let TOKEN = "";
   try { TOKEN = localStorage.getItem("maratu.token") || ""; } catch (e) {}
 
-  function hideLogin(){
-    const overlay = document.getElementById('login');
-    if(!overlay) return;
-    overlay.classList.add('gone');
-    overlay.style.display = 'none';
-    overlay.setAttribute('aria-hidden','true');
-  }
-  function showLogin(){
-    const overlay = document.getElementById('login');
-    if(!overlay) return;
-    overlay.classList.remove('gone');
-    overlay.style.display = '';
-    overlay.setAttribute('aria-hidden','false');
-    setTimeout(()=>{ const i = document.getElementById('loginSenha'); if(i) i.focus(); }, 60);
+  function bounceToLogin(reason){
+    try { localStorage.removeItem("maratu.token"); } catch (e) {}
+    const q = reason ? ('?' + reason + '=1') : '';
+    location.replace('/login.html' + q);
   }
 
-  /* fetch /api/state com um token e devolve {status, data} */
   async function tryState(tk){
     const r = await fetch(API + "/api/state", { headers:{ Authorization:"Bearer "+tk } });
     if(r.status === 401) return { status:401 };
     if(!r.ok) return { status:r.status };
     const data = await r.json();
     return { status:200, data };
-  }
-
-  /* Login overlay: promise que resolve quando a senha bate. Devolve o state. */
-  function askToken(){
-    return new Promise((resolve)=>{
-      const form  = document.getElementById('loginForm');
-      const input = document.getElementById('loginSenha');
-      const erro  = document.getElementById('loginErro');
-      const btn   = document.getElementById('loginBtn');
-      showLogin();
-      form.onsubmit = async (e)=>{
-        e.preventDefault();
-        const pw = (input.value || '').trim();
-        if(!pw) return;
-        btn.disabled = true; erro.classList.remove('on');
-        try{
-          const res = await tryState(pw);
-          if(res.status === 401){
-            btn.disabled = false;
-            erro.textContent = 'senha incorreta';
-            erro.classList.add('on');
-            input.value = ''; input.focus();
-            return;
-          }
-          if(res.status !== 200){
-            btn.disabled = false;
-            erro.textContent = 'erro ' + res.status;
-            erro.classList.add('on');
-            return;
-          }
-          try { localStorage.setItem("maratu.token", pw); } catch (e) {}
-          TOKEN = pw;
-          hideLogin();
-          resolve(res.data);
-        }catch(e){
-          btn.disabled = false;
-          erro.textContent = 'sem conexão';
-          erro.classList.add('on');
-        }
-      };
-    });
   }
 
   function fill(s){
@@ -1817,21 +1728,14 @@ const MaratuStore = (function(){
 
   const backend = {
     async load(){
-      let data = null;
-      if(TOKEN){
-        const res = await tryState(TOKEN);
-        if(res.status === 200){
-          data = res.data;
-          hideLogin();
-        } else {
-          try { localStorage.removeItem("maratu.token"); } catch (e) {}
-          TOKEN = "";
-        }
-      }
-      if(!data){
-        data = await askToken();
-      }
-      fill(data);
+      /* Sem token: o guard do <head> já redirecionou. Se por algum motivo cair aqui, redireciona. */
+      if(!TOKEN){ bounceToLogin(); return new Promise(()=>{}); }
+      let res;
+      try { res = await tryState(TOKEN); }
+      catch(e){ bounceToLogin(); return new Promise(()=>{}); }
+      if(res.status === 401){ bounceToLogin('expired'); return new Promise(()=>{}); }
+      if(res.status !== 200){ bounceToLogin(); return new Promise(()=>{}); }
+      fill(res.data);
       try{
         const c = await fetch(API + "/api/config", { headers: { Authorization: "Bearer " + TOKEN } });
         if(c.ok){ const cfg = await c.json(); window.__MARATU_FEED = cfg.feedUrl || ""; }
@@ -1898,9 +1802,102 @@ document.querySelectorAll('#tabs .tab').forEach(btn=>{
    SAIR
    ===================================================================== */
 $('btnSair').addEventListener('click', ()=>{
-  try { localStorage.removeItem('maratu.token'); } catch (e) {}
-  location.reload();
+  try {
+    localStorage.removeItem('maratu.token');
+    localStorage.removeItem('maratu.lastActivity');
+  } catch (e) {}
+  location.replace('/login.html?logout=1');
 });
+
+/* =====================================================================
+   MODO DE COR (tema)
+   ===================================================================== */
+(function themeMenu(){
+  const seg = document.getElementById('themeSeg');
+  if(!seg) return;
+  function apply(theme){
+    if(theme) document.documentElement.setAttribute('data-theme', theme);
+    else document.documentElement.removeAttribute('data-theme');
+    seg.querySelectorAll('button').forEach(b=>{
+      b.setAttribute('aria-pressed', (b.dataset.theme||'') === (theme||'') ? 'true' : 'false');
+    });
+    /* Ajusta o theme-color do Safari conforme o modo */
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if(meta){
+      meta.setAttribute('content',
+        theme === 'dia' ? '#2E6FC4' :
+        theme === 'noite' ? '#0D0D0B' :
+        '#C8501A');
+    }
+    try { localStorage.setItem('maratu.theme', theme || ''); } catch(e){}
+  }
+  let cur = '';
+  try { cur = localStorage.getItem('maratu.theme') || ''; } catch(e){}
+  apply(cur);
+  seg.querySelectorAll('button').forEach(b=>{
+    b.addEventListener('click', ()=> apply(b.dataset.theme || ''));
+  });
+})();
+
+/* =====================================================================
+   IDLE TIMEOUT — expira sessão após 20min sem interação
+   ===================================================================== */
+(function idleTimeout(){
+  const IDLE_MS = 20 * 60 * 1000;   // 20 minutos
+  const CHECK_MS = 30 * 1000;        // checa a cada 30s
+  const THROTTLE_MS = 5 * 1000;      // atualiza no máximo a cada 5s
+
+  let lastActivity = Date.now();
+  try {
+    const saved = parseInt(localStorage.getItem('maratu.lastActivity') || '0', 10);
+    if(saved) lastActivity = saved;
+  } catch(e){}
+
+  function markActive(){
+    const now = Date.now();
+    if(now - lastActivity < THROTTLE_MS) return;
+    lastActivity = now;
+    try { localStorage.setItem('maratu.lastActivity', String(now)); } catch(e){}
+  }
+  ['mousemove','mousedown','keydown','touchstart','scroll','wheel','input','focus','pointerdown'].forEach(ev=>{
+    document.addEventListener(ev, markActive, {passive:true, capture:true});
+  });
+
+  setInterval(()=>{
+    /* Também lê o timestamp de localStorage (outra aba pode ter usado) */
+    let stamp = lastActivity;
+    try {
+      const saved = parseInt(localStorage.getItem('maratu.lastActivity') || '0', 10);
+      if(saved > stamp) stamp = saved;
+    } catch(e){}
+    if(Date.now() - stamp > IDLE_MS){
+      try {
+        localStorage.removeItem('maratu.token');
+        localStorage.removeItem('maratu.lastActivity');
+      } catch(e){}
+      location.replace('/login.html?expired=1');
+    }
+  }, CHECK_MS);
+
+  /* Ao voltar de outra aba/hibernação, checa imediato antes do intervalo */
+  document.addEventListener('visibilitychange', ()=>{
+    if(document.visibilityState !== 'visible') return;
+    let stamp = lastActivity;
+    try {
+      const saved = parseInt(localStorage.getItem('maratu.lastActivity') || '0', 10);
+      if(saved > stamp) stamp = saved;
+    } catch(e){}
+    if(Date.now() - stamp > IDLE_MS){
+      try {
+        localStorage.removeItem('maratu.token');
+        localStorage.removeItem('maratu.lastActivity');
+      } catch(e){}
+      location.replace('/login.html?expired=1');
+    } else {
+      markActive();
+    }
+  });
+})();
 
 /* =====================================================================
    ORCAMENTO
@@ -3249,6 +3246,8 @@ MaratuStore.ready.then(()=>{
   renderCal(); renderDay(); renderUpcoming();
   renderMarketing(); renderNotas();
   setupApple();
+  /* só agora libera o body pra pintar — evita qualquer flash de dados */
+  document.documentElement.classList.add('mrt-ready');
 });
 
 /* Redimensionamento — mantém sparkline com aspect-ratio correto em rotações/resize */

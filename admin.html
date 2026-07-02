@@ -227,48 +227,44 @@
   @media (max-width:720px){ .pn-grid{ grid-template-columns:1fr; } }
 
   .wellbeing{
-    background:linear-gradient(135deg, var(--laranja) 0%, #E27340 55%, var(--dourado) 100%);
-    border:1.5px solid var(--preto); border-radius:14px; box-shadow:4px 4px 0 0 var(--preto);
-    color:var(--areia); padding:26px; position:relative; overflow:hidden;
-  }
-  .wellbeing::after{
-    content:''; position:absolute; right:-40px; top:-40px; width:160px; height:160px;
-    border:1.5px solid rgba(240,236,228,0.18); border-radius:50%; pointer-events:none;
+    background:var(--areia); border:1.5px solid var(--preto); border-radius:14px;
+    box-shadow:4px 4px 0 0 var(--preto); color:var(--preto);
+    padding:26px; position:relative; overflow:hidden;
   }
   .wellbeing .wb-inner{ display:grid; grid-template-columns:auto 1fr; gap:24px; align-items:center; position:relative; }
   @media (max-width:560px){ .wellbeing .wb-inner{ grid-template-columns:1fr; text-align:left; justify-items:start; } }
   .wellbeing .wb-cap{
     font-family:var(--clother); font-weight:700; font-size:0.6rem;
-    letter-spacing:0.24em; text-transform:uppercase; opacity:0.75; margin-bottom:8px;
+    letter-spacing:0.24em; text-transform:uppercase; color:var(--muted); margin-bottom:8px;
   }
-  .wellbeing .wb-mood{
-    font-family:var(--jack); font-size:2rem; letter-spacing:-0.02em; line-height:0.95;
-    text-transform:uppercase; margin-bottom:14px; color:var(--areia);
+  .wellbeing .wb-greet{
+    font-family:var(--clother); font-weight:900; font-size:1.35rem; line-height:1.15;
+    letter-spacing:-0.01em; color:var(--preto); margin-bottom:16px;
   }
   .wellbeing .wb-num{
     font-family:var(--clother); font-weight:900; font-size:1.9rem; line-height:1; letter-spacing:-0.01em;
-    display:flex; align-items:baseline; gap:12px;
+    display:flex; align-items:baseline; gap:12px; color:var(--preto);
   }
-  .wellbeing .wb-num .eye{ background:transparent; border:none; color:var(--areia); opacity:0.75; cursor:pointer; padding:6px; display:inline-flex; align-items:center; }
-  .wellbeing .wb-num .eye:hover{ opacity:1; }
+  .wellbeing .wb-num .eye{ background:transparent; border:none; color:var(--muted); cursor:pointer; padding:6px; display:inline-flex; align-items:center; }
+  .wellbeing .wb-num .eye:hover{ color:var(--preto); }
   .wellbeing .wb-num .eye svg{ width:20px; height:20px; display:block; }
   .wellbeing .wb-sub{
-    font-family:var(--clother); font-size:0.82rem; opacity:0.85; margin-top:8px;
+    font-family:var(--clother); font-size:0.82rem; color:var(--muted); margin-top:8px;
   }
 
   .ring{ width:130px; height:130px; flex-shrink:0; }
   .ring circle{ fill:none; }
-  .ring .track{ stroke:rgba(240,236,228,0.28); stroke-width:11; }
+  .ring .track{ stroke:var(--linha); stroke-width:11; }
   .ring .fill{
-    stroke:var(--areia); stroke-width:11; stroke-linecap:round;
+    stroke:var(--laranja); stroke-width:11; stroke-linecap:round;
     transform:rotate(-90deg); transform-origin:60px 60px;
     transition:stroke-dashoffset 0.6s cubic-bezier(0.33, 1, 0.68, 1);
   }
   .ring text{
-    fill:var(--areia); font-family:var(--clother); font-weight:900; font-size:22px;
+    fill:var(--preto); font-family:var(--clother); font-weight:900; font-size:22px;
     text-anchor:middle; letter-spacing:-0.02em;
   }
-  .ring text.pct-lbl{ font-size:9px; letter-spacing:0.24em; font-weight:700; opacity:0.75; }
+  .ring text.pct-lbl{ font-size:9px; letter-spacing:0.24em; font-weight:700; fill:var(--muted); }
 
   .metric-card{
     background:var(--areia-sombra); border:1.5px solid var(--preto); border-radius:12px;
@@ -309,22 +305,25 @@
     letter-spacing:0.2em; text-transform:uppercase; color:var(--muted); white-space:nowrap;
   }
 
-  .week-bars{ display:grid; grid-template-columns:repeat(7,1fr); gap:6px; height:160px; align-items:end; }
-  .week-bars .wb-col{ display:flex; flex-direction:column; align-items:center; justify-content:flex-end; height:100%; gap:6px; min-width:0; }
+  .week-bars{ display:grid; grid-template-columns:repeat(7,1fr); gap:8px; }
+  .week-bars .wb-col{ display:flex; flex-direction:column; align-items:center; gap:6px; min-width:0; }
   .week-bars .wb-val{
     font-family:var(--clother); font-weight:700; font-size:0.58rem;
-    color:var(--preto); opacity:0; height:0;
-    letter-spacing:-0.01em;
+    color:var(--preto); opacity:0; letter-spacing:-0.01em; height:14px; line-height:14px;
   }
-  .week-bars .wb-col.on .wb-val{ opacity:1; height:auto; }
-  .week-bars .wb-bar-track{ width:100%; flex:1; display:flex; align-items:flex-end; min-height:0; }
+  .week-bars .wb-col.on .wb-val{ opacity:1; }
+  .week-bars .wb-bar-track{
+    width:100%; height:120px; display:flex; align-items:flex-end;
+  }
   .week-bars .wb-bar{
     width:100%; background:var(--laranja); border:1.5px solid var(--preto);
-    border-radius:8px 8px 3px 3px; min-height:4px;
+    border-radius:8px 8px 3px 3px; box-sizing:border-box;
     transition:height 0.4s cubic-bezier(0.33, 1, 0.68, 1);
   }
   .week-bars .wb-col.today .wb-bar{ background:var(--dourado); }
-  .week-bars .wb-col.empty .wb-bar{ background:var(--areia-sombra); border-style:dashed; }
+  .week-bars .wb-col.empty .wb-bar{
+    background:transparent; border:1.5px dashed var(--linha-forte); opacity:0.55;
+  }
   .week-bars .wb-day{
     font-family:var(--clother); font-weight:700; font-size:0.65rem;
     letter-spacing:0.12em; text-transform:uppercase; color:var(--muted);
@@ -1077,8 +1076,8 @@
     font-family:var(--clother); font-size:0.9rem; color:var(--muted); line-height:1.6;
   }
   .notas-empty .em-big{
-    font-family:var(--jack); font-size:3.2rem; color:var(--preto);
-    opacity:0.15; letter-spacing:-0.02em; margin-bottom:8px; line-height:1;
+    font-family:var(--clother); font-weight:900; font-size:2rem; color:var(--preto);
+    opacity:0.2; letter-spacing:-0.02em; margin-bottom:8px; line-height:1;
   }
 
   .when-pop{
@@ -1253,8 +1252,8 @@
           <text class="pct-num" x="60" y="72" text-anchor="middle" id="pnRingPct">0%</text>
         </svg>
         <div>
+          <div class="wb-greet" id="pnGreet">Bom dia, Raphael</div>
           <div class="wb-cap" id="pnMonthCap">Faturamento — mês</div>
-          <div class="wb-mood" id="pnMood">COMEÇA</div>
           <div class="wb-num">
             <span id="fatNum">R$ 0,00</span>
             <button class="eye" id="fatEye" type="button" aria-label="Mostrar/ocultar valor" aria-pressed="false">
@@ -2052,18 +2051,15 @@ function renderPainel(){
   const ringFill = document.querySelector('#pnRing .fill');
   if(ringFill) ringFill.setAttribute('stroke-dashoffset', dashOffset.toFixed(1));
   $('pnRingPct').textContent = pct+'%';
-  const mesesNm = ['JANEIRO','FEVEREIRO','MARÇO','ABRIL','MAIO','JUNHO','JULHO','AGOSTO','SETEMBRO','OUTUBRO','NOVEMBRO','DEZEMBRO'];
+  const mesesNm = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
   const mIdx = parseInt(mesAtual.slice(5,7),10)-1;
-  $('pnMonthCap').textContent = (mesesNm[mIdx]||'MÊS')+' — faturamento';
+  $('pnMonthCap').textContent = 'Faturamento de '+(mesesNm[mIdx]||'mês');
 
-  let mood = 'COMEÇA';
-  if(fat<=0) mood = 'COMEÇA';
-  else if(pctRaw<25) mood = 'OXE VEM';
-  else if(pctRaw<50) mood = 'TÁ INDO';
-  else if(pctRaw<75) mood = 'SEGUINDO';
-  else if(pctRaw<100) mood = 'TÁ VOANDO';
-  else mood = 'ARRETADO';
-  $('pnMood').textContent = mood;
+  const hNow = new Date().getHours();
+  const periodo = (hNow>=5 && hNow<12) ? 'Bom dia'
+                : (hNow>=12 && hNow<18) ? 'Boa tarde'
+                : 'Boa noite';
+  $('pnGreet').textContent = periodo+', Raphael';
 
   $('fatNum').textContent = fatHidden ? maskBRL() : brl(fat);
   $('fatRef').textContent = 'meta do mês '+(fatHidden ? maskBRL() : brl(metaMes));
@@ -2124,8 +2120,9 @@ function renderPainel(){
   const max7 = Math.max(1, ...days7.map(d=>d.total));
   const total7 = days7.reduce((s,d)=>s+d.total,0);
   $('pnWeekTotal').textContent = fatHidden ? maskBRL() : brl(total7);
+  const MAX_BAR_H = 120;
   $('pnWeekBars').innerHTML = days7.map(d=>{
-    const h = d.total>0 ? Math.max(10, Math.round(d.total/max7*100)) : 6;
+    const h = d.total>0 ? Math.max(14, Math.round(d.total/max7*MAX_BAR_H)) : 10;
     const cls = ['wb-col'];
     if(d.total>0) cls.push('on');
     if(d.isToday) cls.push('today');
@@ -2133,7 +2130,7 @@ function renderPainel(){
     const valTxt = d.total>0 ? (fatHidden ? '•••' : brl(d.total).replace('R$ ','')) : '';
     return `<div class="${cls.join(' ')}">
       <div class="wb-val">${valTxt}</div>
-      <div class="wb-bar-track"><div class="wb-bar" style="height:${h}%"></div></div>
+      <div class="wb-bar-track"><div class="wb-bar" style="height:${h}px"></div></div>
       <div class="wb-day">${d.dow}</div>
     </div>`;
   }).join('');
@@ -2150,14 +2147,16 @@ function renderPainel(){
   const total6 = six.reduce((s,d)=>s+d.total,0);
   $('pnSixTotal').textContent = fatHidden ? maskBRL() : brl(total6);
   const maxS = Math.max(1, ...six.map(d=>d.total));
-  const W = 300, H = 100, padY = 12;
+  const W = 300, H = 100, padY = 14, padX = 12;
   const pts = six.map((d,i)=>{
-    const x = (six.length===1) ? W/2 : (i/(six.length-1))*W;
+    const x = (six.length===1) ? W/2 : padX + (i/(six.length-1))*(W - padX*2);
     const y = H - padY - (d.total/maxS)*(H - padY*2);
     return { x, y, total:d.total };
   });
   const linePath = pts.map((p,i)=> (i===0?'M':'L')+p.x.toFixed(1)+' '+p.y.toFixed(1)).join(' ');
-  const areaPath = linePath + ` L ${W} ${H} L 0 ${H} Z`;
+  const lastX = pts[pts.length-1].x.toFixed(1);
+  const firstX = pts[0].x.toFixed(1);
+  const areaPath = linePath + ` L ${lastX} ${H} L ${firstX} ${H} Z`;
   const dots = pts.map((p,i)=>{
     const isLast = i===pts.length-1;
     return `<circle class="spark-dot${isLast?' last':''}" cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${isLast?4:3}"/>`;

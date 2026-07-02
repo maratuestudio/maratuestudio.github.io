@@ -1707,6 +1707,22 @@
           <label class="f"><span>Preço cheio (opcional, pra riscar)</span><input id="fPrecoCheio" inputmode="decimal" placeholder="0,00" /></label>
         </div>
 
+        <!-- Preços por tamanho (só pôsteres) — vazio herda tabela global -->
+        <div id="fPrecosPoster" style="display:none;">
+          <div class="form-section-title">Preços por tamanho (pôster)</div>
+          <div style="font-family:var(--clother); font-size:0.72rem; color:var(--muted); margin:-4px 0 10px;">
+            Deixe vazio pra usar o preço padrão. Preencha só se quiser <b>sobrescrever</b> um tamanho pra este pôster.
+          </div>
+          <div class="grid2">
+            <label class="f"><span>A4 (R$)</span><input id="fPrecoA4" inputmode="decimal" data-tam="A4" /></label>
+            <label class="f"><span>A3 (R$)</span><input id="fPrecoA3" inputmode="decimal" data-tam="A3" /></label>
+          </div>
+          <div class="grid2" style="margin-top:8px;">
+            <label class="f"><span>A2 (R$)</span><input id="fPrecoA2" inputmode="decimal" data-tam="A2" /></label>
+            <label class="f"><span>A1 (R$)</span><input id="fPrecoA1" inputmode="decimal" data-tam="A1" /></label>
+          </div>
+        </div>
+
         <div class="form-section-title">Coleções</div>
         <div class="chip-row" id="fColecoes">
           <button type="button" class="chip" data-col="origens" aria-pressed="false">Origens</button>
@@ -3634,6 +3650,16 @@ function setupApple(){
   $('prodFilter').addEventListener('input', drawProdutosGrid);
   $('prodNovo').addEventListener('click', ()=> openProdutoForm(null));
 
+  /* Tabela padrão global de preço por tamanho de pôster (R$).
+     ATENÇÃO: esta constante espelha PRECOS_BASE do index.html. Se mudar aqui,
+     tem que mudar lá também — futuramente virar um endpoint /api/settings/precos_base. */
+  const PRECOS_BASE_POSTER = { A4:49, A3:79, A2:119, A1:179 };
+
+  function togglePrecosPoster(){
+    const sub = getChipGroup('fSubcat','subcat',true);
+    $('fPrecosPoster').style.display = (sub === 'posteres') ? 'block' : 'none';
+  }
+
   /* ---------- FORM ---------- */
   function openProdutoForm(id){
     EDITING_ID = id;
@@ -3661,6 +3687,15 @@ function setupApple(){
     setChipGroup('fMarca', 'marca', [p?.marca || 'use']);
     setChipGroup('fSubcat', 'subcat', [p?.subcategoria || 'chaveiros']);
     setChipGroup('fColecoes', 'col', Array.isArray(p?.colecoes) ? p.colecoes : []);
+    // Preços por tamanho (só pôsteres). Vazio = herda PRECOS_BASE global.
+    const pc = (p && p.precos_custom && typeof p.precos_custom === 'object') ? p.precos_custom : {};
+    ['A4','A3','A2','A1'].forEach(tam=>{
+      const inp = $('fPreco'+tam);
+      const v = pc[tam];
+      inp.value = (v != null) ? cents2num(v) : '';
+      inp.placeholder = 'R$' + String(PRECOS_BASE_POSTER[tam]) + ' — padrão';
+    });
+    togglePrecosPoster();
     const flags = [];
     if(p?.ativo!==0 && p?.ativo!==false) flags.push('ativo');
     if(!p) flags.push('ativo');
@@ -3702,6 +3737,7 @@ function setupApple(){
       ch.addEventListener('click', ()=>{
         document.querySelectorAll('#'+id+' .chip').forEach(x=>x.setAttribute('aria-pressed','false'));
         ch.setAttribute('aria-pressed','true');
+        if(id === 'fSubcat') togglePrecosPoster();
       });
     });
   });
@@ -3859,6 +3895,15 @@ function setupApple(){
           return cur.split(',').map(s=>s.trim()).filter(Boolean);
         })(),
         cores: coresOut,
+        precos_custom: (() => {
+          if(getChipGroup('fSubcat','subcat',true) !== 'posteres') return null;
+          const out = {};
+          ['A4','A3','A2','A1'].forEach(tam=>{
+            const c = num2cents($('fPreco'+tam).value);
+            if(c != null) out[tam] = c;
+          });
+          return Object.keys(out).length ? out : null;
+        })(),
         imagem_principal: imgPrincipal,
         imagem_hover: imgHover,
         ativo: flags.includes('ativo') ? 1 : 0,

@@ -7,8 +7,8 @@
 <title>MARATU, admin</title>
 
 <link rel="manifest" href="admin.webmanifest" />
-<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon-v4.png" />
-<link rel="icon" type="image/png" href="favicon-v5.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon-v3.png" />
+<link rel="icon" type="image/png" href="favicon-v4.png" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -1417,6 +1417,19 @@
   :root[data-theme="noite"] .btn.ghost:hover{ background:var(--selected-bg); color:var(--selected-fg); border-color:var(--selected-bg); }
   :root[data-theme="noite"] .head .sair:hover{ background:var(--selected-bg); color:var(--selected-fg); border-color:var(--selected-bg); }
 
+  /* ── ARATU (mascote no header) — pequeno, só piscando. Hook pra agent depois. ── */
+  .crab-admin{
+    display:inline-flex; align-items:center; justify-content:center;
+    width:42px; height:22px; padding:0; border:none; background:transparent;
+    cursor:pointer; opacity:0.85; transition:opacity .18s, transform .18s;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .crab-admin:hover{ opacity:1; transform:translateY(-1px); }
+  .crab-admin:active{ transform:translateY(0); }
+  .crab-admin svg{ width:100%; height:100%; overflow:visible; display:block; fill:var(--laranja); }
+  .crab-admin svg [data-aratu] path{ fill:var(--laranja); }
+  .crab-admin:focus-visible{ outline:2px solid var(--azul-claro); outline-offset:3px; border-radius:4px; }
+
 </style>
 </head>
 <body>
@@ -1430,6 +1443,16 @@
       <span class="sub">painel operacional</span>
     </div>
     <div class="right">
+      <!-- Aratu (mascote). Só pisca hoje; hook pra virar agente depois -->
+      <button class="crab-admin" id="crabAdmin" type="button" aria-label="Aratu" data-crab-state="idle">
+        <svg viewBox="0 0 318.24 152.9" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <g data-aratu="claw-left"><path d="M0,104.77c0,26.58,21.55,48.13,48.13,48.13V56.65C21.55,56.65,0,78.19,0,104.77Z"/></g>
+          <g data-aratu="claw-right"><path d="M270.11,56.65v96.26c26.58,0,48.13-21.55,48.13-48.13s-21.55-48.13-48.13-48.13Z"/></g>
+          <g data-aratu="body"><path d="M159.12,152.9c53.16,0,96.26-43.1,96.26-96.26H62.86c0,53.16,43.1,96.26,96.26,96.26Z"/></g>
+          <g data-aratu="eye-right"><path d="M224.82,24.08c0-13.3-10.78-24.08-24.08-24.08v48.16c13.3,0,24.08-10.78,24.08-24.08Z"/></g>
+          <g data-aratu="eye-left"><path d="M117.49,48.16V0c-13.3,0-24.08,10.78-24.08,24.08s10.78,24.08,24.08,24.08Z"/></g>
+        </svg>
+      </button>
       <div class="theme-seg" role="group" aria-label="modo de cor" id="themeSeg">
         <button type="button" data-theme=""      aria-pressed="true"  title="Original — laranja"><span class="sw"></span></button>
         <button type="button" data-theme="dia"   aria-pressed="false" title="Dia — azul atalaia"><span class="sw"></span></button>
@@ -3983,6 +4006,46 @@ MaratuStore.ready.then(()=>{
   /* só agora libera o body pra pintar — evita qualquer flash de dados */
   document.documentElement.classList.add('mrt-ready');
 });
+
+/* ── ARATU (mascote): piscada aleatória + hook de clique pra virar agente depois ── */
+(function(){
+  const btn = document.getElementById('crabAdmin');
+  if(!btn) return;
+  const eyeL = btn.querySelector('[data-aratu="eye-left"]');
+  const eyeR = btn.querySelector('[data-aratu="eye-right"]');
+  if(!eyeL || !eyeR) return;
+
+  // Pivots batem com os do site (viewBox 318.24×152.9)
+  const LX=105.5, RX=212.74, EY=24.08;
+  let blinking = false, blinkStart = 0, lastBlink = Date.now() + 1500;
+
+  function tick(){
+    requestAnimationFrame(tick);
+    const now = Date.now();
+    if(!blinking && now - lastBlink > 2500 + Math.random()*2500){
+      blinking = true; blinkStart = now;
+    }
+    if(blinking){
+      const p = (now - blinkStart) / 180;
+      if(p >= 1){
+        blinking = false; lastBlink = now;
+        eyeL.setAttribute('transform',`translate(${LX} ${EY}) scale(1 1) translate(${-LX} ${-EY})`);
+        eyeR.setAttribute('transform',`translate(${RX} ${EY}) scale(1 1) translate(${-RX} ${-EY})`);
+      } else {
+        const s = p < 0.5 ? 1 - p*2*0.9 : 0.1 + (p-0.5)*2*0.9;
+        eyeL.setAttribute('transform',`translate(${LX} ${EY}) scale(1 ${s}) translate(${-LX} ${-EY})`);
+        eyeR.setAttribute('transform',`translate(${RX} ${EY}) scale(1 ${s}) translate(${-RX} ${-EY})`);
+      }
+    }
+  }
+  tick();
+
+  // Placeholder pro agent — hoje só pisca de volta na hora que clica
+  btn.addEventListener('click', ()=>{
+    lastBlink = Date.now() - 5000; // força piscada imediata
+    // TODO agente: abrir chat/painel do aratu aqui
+  });
+})();
 
 /* Redimensionamento — mantém sparkline com aspect-ratio correto em rotações/resize */
 let _resizeTO = null;

@@ -483,46 +483,193 @@
   .mn-check:active{ transform:translate(2px,2px); box-shadow:0 0 0 0 var(--preto); }
   .empty-mn{ padding:18px 0; text-align:center; color:var(--muted); font-size:0.85rem; }
 
-  /* ---------- Notas: grid de bloquinhos estilo Trello ---------- */
-  .notas-board{ display:grid; grid-template-columns:repeat(auto-fill, minmax(180px, 1fr)); gap:12px; }
-  .nota-card{
-    background:var(--areia-sombra); border:1.5px solid var(--preto); border-radius:8px;
-    box-shadow:3px 3px 0 0 var(--preto); padding:12px 14px; position:relative;
-    display:flex; flex-direction:column; gap:8px; min-height:100px;
+  /* ---------- Notas: Bear + Things 3 ---------- */
+  .notas-wrap{ display:grid; grid-template-columns:220px 1fr; gap:28px; margin-top:8px; }
+  @media (max-width:720px){ .notas-wrap{ grid-template-columns:1fr; gap:14px; } }
+
+  .quick-cap{
+    display:flex; align-items:center; gap:12px;
+    background:var(--areia); border:1.5px solid var(--preto); border-radius:12px;
+    box-shadow:3px 3px 0 0 var(--preto); padding:12px 16px; margin-bottom:20px;
+    transition:box-shadow .12s;
   }
-  .nota-card.done{ background:var(--areia); opacity:0.7; }
-  .nota-card.done .nc-title{ text-decoration:line-through; }
-  .nota-card .nc-top{ display:flex; justify-content:space-between; align-items:flex-start; gap:8px; }
-  .nota-card .nc-check{
-    width:20px; height:20px; border-radius:50%; border:1.5px solid var(--preto);
-    background:var(--areia); cursor:pointer; flex-shrink:0; display:flex; align-items:center;
-    justify-content:center; color:var(--areia); font-size:12px; font-weight:900;
-    transition:transform .12s;
+  .quick-cap:focus-within{ box-shadow:4px 4px 0 0 var(--preto); }
+  .quick-cap .qc-plus{
+    width:22px; height:22px; border-radius:50%; border:1.5px solid var(--preto);
+    background:var(--areia); display:flex; align-items:center; justify-content:center;
+    flex-shrink:0; font-size:14px; color:var(--muted); font-weight:900; line-height:1;
   }
-  .nota-card .nc-check.on{ background:var(--preto); }
-  .nota-card .nc-check:hover{ transform:scale(1.1); }
-  .nota-card .nc-del{
-    width:20px; height:20px; border-radius:50%; border:1.5px solid var(--preto);
-    background:var(--areia); cursor:pointer; padding:0; font-size:12px; line-height:1;
-    color:var(--preto); font-weight:900; display:flex; align-items:center; justify-content:center;
-    transition:background .12s, color .12s;
+  .quick-cap input{
+    flex:1; border:none; background:transparent; padding:4px 0; margin:0;
+    font-family:var(--clother); font-size:1rem; color:var(--preto);
+    outline:none; box-shadow:none; min-width:0;
   }
-  .nota-card .nc-del:hover{ background:var(--laranja); color:var(--areia); border-color:var(--laranja); }
-  .nota-card .nc-title{ font-family:var(--clother); font-weight:900; font-size:0.9rem; line-height:1.3; letter-spacing:-0.005em; }
-  .nota-card .nc-desc{ font-size:0.8rem; color:var(--muted); line-height:1.45; word-break:break-word; }
-  .nota-card .nc-tags{ display:flex; gap:5px; flex-wrap:wrap; margin-top:auto; padding-top:6px; }
-  .nota-card .nc-tag{
-    font-family:var(--clother); font-weight:700; font-size:0.55rem; letter-spacing:0.14em;
-    text-transform:uppercase; padding:2px 8px; border-radius:999px;
-    background:var(--areia); border:1.5px solid var(--preto); color:var(--preto);
+  .quick-cap input::placeholder{ color:var(--muted); }
+  .quick-cap .qc-hint{
+    font-family:var(--clother); font-weight:700; font-size:0.55rem;
+    letter-spacing:0.2em; text-transform:uppercase; color:var(--muted);
+    border:1px solid var(--linha-forte); border-radius:6px; padding:3px 8px; flex-shrink:0;
   }
-  .nota-card .nc-tag.data{ background:var(--laranja); color:var(--areia); border-color:var(--preto); }
-  .nota-card .nc-agendar{
-    background:transparent; border:none; padding:0; font-family:var(--clother); font-weight:700;
-    font-size:0.55rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted);
-    cursor:pointer; align-self:flex-start; text-decoration:underline; text-underline-offset:2px;
+  @media (max-width:640px){ .quick-cap .qc-hint{ display:none; } }
+
+  .notas-side{ display:flex; flex-direction:column; gap:2px; position:sticky; top:16px; align-self:start; }
+  @media (max-width:720px){
+    .notas-side{ position:static; flex-direction:row; gap:6px; overflow-x:auto; padding-bottom:4px; -webkit-overflow-scrolling:touch; }
   }
-  .nota-card .nc-agendar:hover{ color:var(--preto); }
+  .smart-item{
+    display:flex; align-items:center; gap:10px;
+    background:transparent; border:none; border-radius:8px;
+    padding:8px 10px; cursor:pointer; text-align:left; width:100%;
+    font-family:var(--clother); font-size:0.9rem; color:var(--preto);
+    transition:background .12s;
+  }
+  @media (max-width:720px){
+    .smart-item{ width:auto; white-space:nowrap; padding:7px 12px; border:1px solid var(--linha-forte); flex-shrink:0; }
+  }
+  .smart-item:hover{ background:var(--areia-sombra); }
+  .smart-item.on{ background:var(--preto); color:var(--areia); }
+  .smart-item .si-ico{ width:20px; height:20px; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .smart-item .si-ico svg{ width:18px; height:18px; }
+  .smart-item .si-lbl{ flex:1; font-weight:700; letter-spacing:-0.003em; }
+  .smart-item .si-count{ font-family:var(--clother); font-weight:700; font-size:0.72rem; opacity:0.55; }
+  .smart-item.on .si-count{ opacity:0.85; }
+
+  .smart-sep{ height:1px; background:var(--linha); margin:10px 6px; }
+  @media (max-width:720px){ .smart-sep, .tags-title, #tagList{ display:none; } }
+
+  .tags-title{
+    font-family:var(--clother); font-weight:700; font-size:0.58rem;
+    letter-spacing:0.2em; text-transform:uppercase; color:var(--muted);
+    padding:4px 10px; margin-top:4px;
+  }
+  .tag-item{
+    display:flex; align-items:center; gap:8px;
+    background:transparent; border:none; border-radius:8px;
+    padding:6px 10px; cursor:pointer; text-align:left; width:100%;
+    font-family:var(--clother); font-size:0.84rem; color:var(--preto);
+    transition:background .12s;
+  }
+  .tag-item:hover{ background:var(--areia-sombra); }
+  .tag-item.on{ background:var(--laranja); color:var(--areia); }
+  .tag-item .th{ color:var(--laranja); font-weight:900; }
+  .tag-item.on .th{ color:var(--areia); }
+  .tag-item .ti-count{ margin-left:auto; font-size:0.7rem; opacity:0.55; font-weight:700; }
+
+  .notas-main{ min-width:0; }
+  .section-head{
+    display:flex; align-items:baseline; justify-content:space-between; gap:12px; padding:6px 4px 14px;
+  }
+  .section-head .sh-title{
+    font-family:var(--clother); font-weight:900; font-size:1.5rem;
+    letter-spacing:-0.01em; color:var(--preto); line-height:1.1;
+  }
+  .section-head .sh-count{
+    font-family:var(--clother); font-weight:700; font-size:0.66rem;
+    letter-spacing:0.2em; text-transform:uppercase; color:var(--muted);
+  }
+
+  .day-head{
+    font-family:var(--clother); font-weight:700; font-size:0.6rem;
+    letter-spacing:0.24em; text-transform:uppercase; color:var(--muted);
+    padding:18px 4px 8px; border-top:1px solid var(--linha); margin-top:10px;
+  }
+  .day-head:first-child{ border-top:none; margin-top:0; padding-top:4px; }
+
+  .note-row{
+    display:grid; grid-template-columns:auto 1fr auto; gap:12px; align-items:flex-start;
+    padding:12px 6px; border-bottom:1px solid var(--linha);
+    position:relative; transition:background .1s;
+  }
+  .note-row:hover{ background:var(--areia); }
+  .note-row:hover .nr-del, .note-row:hover .nr-when-empty{ opacity:1; }
+
+  .note-row .nr-check{
+    width:22px; height:22px; border-radius:50%; border:1.5px solid var(--preto);
+    background:var(--areia); cursor:pointer; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center; margin-top:2px;
+    transition:transform .15s cubic-bezier(0.34, 1.56, 0.64, 1), background .15s;
+  }
+  .note-row .nr-check:hover{ transform:scale(1.12); }
+  .note-row .nr-check.on{ background:var(--preto); }
+  .note-row .nr-check svg{ width:12px; height:12px; opacity:0; transform:scale(0.5); transition:opacity .18s, transform .18s; color:var(--areia); }
+  .note-row .nr-check.on svg{ opacity:1; transform:scale(1); }
+
+  .note-row.done .nr-title{ text-decoration:line-through; opacity:0.5; }
+  .note-row.done .nr-desc{ opacity:0.4; }
+  .note-row.done .nr-tag{ opacity:0.55; }
+
+  .nr-body{ min-width:0; display:flex; flex-direction:column; gap:3px; padding-top:1px; }
+  .nr-title{
+    font-family:var(--clother); font-weight:700; font-size:0.98rem;
+    line-height:1.35; color:var(--preto); letter-spacing:-0.005em; word-break:break-word;
+  }
+  .nr-desc{
+    font-family:var(--clother); font-size:0.85rem; color:var(--muted);
+    line-height:1.5; word-break:break-word;
+  }
+  .nr-tags{ display:flex; gap:10px; flex-wrap:wrap; margin-top:4px; }
+  .nr-tag{
+    font-family:var(--clother); font-weight:700; font-size:0.76rem;
+    color:var(--laranja); letter-spacing:-0.003em; cursor:pointer;
+  }
+  .nr-tag:hover{ text-decoration:underline; text-underline-offset:2px; }
+
+  .nr-right{ display:flex; flex-direction:column; align-items:flex-end; gap:6px; flex-shrink:0; padding-top:2px; position:relative; }
+  .nr-when{
+    display:inline-flex; align-items:center; gap:5px;
+    font-family:var(--clother); font-weight:700; font-size:0.7rem;
+    padding:3px 10px; border-radius:999px; border:1px solid transparent;
+    cursor:pointer; white-space:nowrap;
+    background:var(--areia-sombra); color:var(--preto);
+  }
+  .nr-when svg{ width:12px; height:12px; }
+  .nr-when.today{ background:var(--dourado); color:var(--preto); border-color:var(--preto); }
+  .nr-when.overdue{ background:var(--laranja); color:var(--areia); border-color:var(--preto); }
+  .nr-when.upcoming{ background:var(--areia); color:var(--preto); border-color:var(--linha-forte); }
+  .nr-when-empty{
+    background:transparent; border:1px dashed var(--linha-forte); color:var(--muted);
+    opacity:0; transition:opacity .1s;
+  }
+  @media (max-width:640px){ .nr-when-empty{ opacity:1; } }
+
+  .nr-del{
+    background:transparent; border:none; padding:2px 6px; cursor:pointer;
+    font-family:var(--clother); font-weight:700; font-size:0.58rem;
+    color:var(--muted); letter-spacing:0.16em; text-transform:uppercase;
+    opacity:0; transition:opacity .1s, color .1s;
+  }
+  .nr-del:hover{ color:var(--laranja); }
+  @media (max-width:640px){ .nr-del{ opacity:0.6; } }
+
+  .notas-empty{
+    padding:60px 20px; text-align:center;
+    font-family:var(--clother); font-size:0.9rem; color:var(--muted); line-height:1.6;
+  }
+  .notas-empty .em-big{
+    font-family:var(--jack); font-size:3.2rem; color:var(--preto);
+    opacity:0.15; letter-spacing:-0.02em; margin-bottom:8px; line-height:1;
+  }
+
+  .when-pop{
+    position:absolute; top:calc(100% + 6px); right:0; z-index:20;
+    background:var(--areia); border:1.5px solid var(--preto); border-radius:10px;
+    box-shadow:3px 3px 0 0 var(--preto); padding:6px; min-width:210px;
+  }
+  .when-pop button{
+    display:flex; width:100%; align-items:center; gap:10px;
+    background:transparent; border:none; padding:8px 10px; border-radius:6px;
+    cursor:pointer; font-family:var(--clother); font-size:0.85rem; color:var(--preto);
+    text-align:left; font-weight:700;
+  }
+  .when-pop button:hover{ background:var(--areia-sombra); }
+  .when-pop button.destr{ color:var(--laranja); }
+  .when-pop button svg{ width:14px; height:14px; opacity:0.7; }
+  .when-pop input[type="date"]{
+    width:calc(100% - 8px); margin:6px 4px 4px; padding:6px 8px; font-size:0.82rem;
+    border:1px solid var(--linha-forte); border-radius:6px; background:var(--areia);
+    font-family:var(--clother); box-shadow:none;
+  }
+  .when-pop hr{ border:none; border-top:1px solid var(--linha); margin:4px 0; }
 
   .apple{ background:var(--areia-sombra); border:1.5px solid var(--preto); border-radius:8px; box-shadow:3px 3px 0 0 var(--preto); padding:18px; margin-top:22px; }
   .apple .t{ font-family:var(--clother); font-weight:900; font-size:0.95rem; margin-bottom:8px; letter-spacing:-0.005em; }
@@ -881,33 +1028,47 @@
 
   <!-- ================= NOTAS ================= -->
   <section class="panel" id="panel-notas">
-    <div class="seg" role="tablist" id="notSeg">
-      <button role="tab" data-sub="pendente" aria-selected="true">Pendentes</button>
-      <button role="tab" data-sub="feito" aria-selected="false">Concluídas</button>
-      <button role="tab" data-sub="todas" aria-selected="false">Todas</button>
+    <div class="quick-cap">
+      <div class="qc-plus">+</div>
+      <input id="notQuick" placeholder="Nova nota. Use #tag pra categorizar, #hoje ou #amanha pra agendar" autocomplete="off" />
+      <span class="qc-hint">Enter</span>
     </div>
 
-    <div class="card" style="margin-top:14px;">
-      <h2 class="title">Nova nota</h2>
-      <label class="f"><span>Título</span><input id="notTitulo" placeholder="Ex: comprar filamento PLA cinza" /></label>
-      <label class="f"><span>Detalhe (opcional)</span><textarea id="notDetalhe" rows="2" placeholder="Onde, quanto, referência"></textarea></label>
-      <div class="grid2">
-        <label class="f"><span>Categoria</span>
-          <select id="notCategoria">
-            <option value="Material">Material</option>
-            <option value="Compra">Compra</option>
-            <option value="Estúdio">Estúdio</option>
-            <option value="Geral">Geral</option>
-          </select>
-        </label>
-        <label class="f"><span>Lembrar em (opcional)</span><input id="notData" type="date" /></label>
+    <div class="notas-wrap">
+      <aside class="notas-side" id="notSide">
+        <button class="smart-item on" data-smart="hoje">
+          <span class="si-ico"><svg viewBox="0 0 24 24"><polygon points="12,3 14.5,9.5 21,10 16,14.5 17.5,21 12,17.5 6.5,21 8,14.5 3,10 9.5,9.5" fill="currentColor"/></svg></span>
+          <span class="si-lbl">Hoje</span>
+          <span class="si-count" id="cntHoje"></span>
+        </button>
+        <button class="smart-item" data-smart="upcoming">
+          <span class="si-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></span>
+          <span class="si-lbl">Em breve</span>
+          <span class="si-count" id="cntUpc"></span>
+        </button>
+        <button class="smart-item" data-smart="todas">
+          <span class="si-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg></span>
+          <span class="si-lbl">Todas</span>
+          <span class="si-count" id="cntAll"></span>
+        </button>
+        <button class="smart-item" data-smart="feitas">
+          <span class="si-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg></span>
+          <span class="si-lbl">Feitas</span>
+          <span class="si-count" id="cntDone"></span>
+        </button>
+        <div class="smart-sep"></div>
+        <div class="tags-title">Tags</div>
+        <div id="tagList"></div>
+      </aside>
+
+      <div class="notas-main">
+        <div class="section-head">
+          <div class="sh-title" id="notTitle">Hoje</div>
+          <div class="sh-count" id="notSubtitle"></div>
+        </div>
+        <div id="notLista"></div>
       </div>
-      <label class="f"><span>Hora (opcional)</span><input id="notHora" type="time" /></label>
-      <button class="btn blue" id="notAdd">Adicionar</button>
     </div>
-
-    <div class="divlbl" id="notLbl">Pendentes</div>
-    <div id="notLista"></div>
   </section>
 
   <div class="foot" id="foot">MARATU &middot; est. 2026 &middot; Aracaju &middot; sync D1</div>
@@ -1654,70 +1815,290 @@ $('mktAdd').addEventListener('click', ()=>{
 });
 
 /* =====================================================================
-   NOTAS
+   NOTAS — Bear + Things 3
    ===================================================================== */
-let notFilter = 'pendente';
-document.querySelectorAll('#notSeg button').forEach(btn=>{
-  btn.addEventListener('click', ()=>{
-    document.querySelectorAll('#notSeg button').forEach(b=>b.setAttribute('aria-selected', b===btn?'true':'false'));
-    notFilter = btn.dataset.sub;
-    $('notLbl').textContent = ({pendente:'Pendentes', feito:'Concluídas', todas:'Todas'})[notFilter];
-    renderNotas();
+let notView = 'hoje';   // hoje | upcoming | todas | feitas | tag:<name>
+
+const N_STAR  = '<svg viewBox="0 0 24 24"><polygon points="12,3 14.5,9.5 21,10 16,14.5 17.5,21 12,17.5 6.5,21 8,14.5 3,10 9.5,9.5" fill="currentColor"/></svg>';
+const N_CAL   = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>';
+const N_CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>';
+
+function notParseTags(text){
+  if(!text) return [];
+  const out=[]; const rx=/#([\p{L}\d_-]+)/gu; let m;
+  while((m=rx.exec(text))!==null){ out.push(m[1].toLowerCase()); }
+  return [...new Set(out)];
+}
+function notNorm(n){
+  const combo = [n.titulo, n.detalhe].filter(Boolean).join(' ');
+  let tags = notParseTags(combo);
+  if(!tags.length && n.categoria) tags = [String(n.categoria).toLowerCase()];
+  return {...n, tags};
+}
+function notAddDays(iso, days){
+  const [y,m,d] = iso.split('-').map(Number);
+  const dt = new Date(y, m-1, d); dt.setDate(dt.getDate()+days);
+  const yy=dt.getFullYear(), mm=String(dt.getMonth()+1).padStart(2,'0'), dd=String(dt.getDate()).padStart(2,'0');
+  return `${yy}-${mm}-${dd}`;
+}
+function notFmtWhen(iso){
+  if(!iso) return '';
+  const t = todayStr();
+  if(iso === t) return 'Hoje';
+  const [y,m,d] = iso.split('-').map(Number);
+  const dt = new Date(y, m-1, d);
+  const [ty,tm,td] = t.split('-').map(Number);
+  const now = new Date(ty, tm-1, td);
+  const diff = Math.round((dt-now)/86400000);
+  const dias  = ['dom','seg','ter','qua','qui','sex','sab'];
+  const meses = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+  if(diff === 1) return 'Amanha';
+  if(diff > 1 && diff < 7) return dias[dt.getDay()];
+  return `${d} ${meses[dt.getMonth()]}`;
+}
+function notWhenClass(iso){
+  if(!iso) return '';
+  const t = todayStr();
+  if(iso === t) return 'today';
+  if(iso < t) return 'overdue';
+  return 'upcoming';
+}
+function notCounts(all){
+  const t = todayStr();
+  const pending = all.filter(n=>!n.feito);
+  return {
+    hoje: pending.filter(n=> n.data && n.data <= t).length,
+    upc:  pending.filter(n=> n.data && n.data > t).length,
+    todas: pending.length,
+    feitas: all.filter(n=>n.feito).length,
+  };
+}
+function notTagCounts(all){
+  const map = {};
+  all.filter(n=>!n.feito).map(notNorm).forEach(n=>{
+    n.tags.forEach(t=> map[t] = (map[t]||0)+1);
   });
-});
+  return map;
+}
+function notFilterList(all, view){
+  const t = todayStr();
+  const norm = all.map(notNorm);
+  if(view === 'feitas') return norm.filter(n=>n.feito);
+  const pending = norm.filter(n=>!n.feito);
+  if(view === 'hoje')     return pending.filter(n=> n.data && n.data <= t);
+  if(view === 'upcoming') return pending.filter(n=> n.data && n.data > t);
+  if(view === 'todas')    return pending;
+  if(view.startsWith('tag:')){
+    const tag = view.slice(4);
+    return pending.filter(n=> n.tags.includes(tag));
+  }
+  return pending;
+}
+function notSort(list){
+  return list.slice().sort((a,b)=>{
+    const da = a.data || '9999-99-99';
+    const db = b.data || '9999-99-99';
+    return da.localeCompare(db)
+      || (a.hora||'99:99').localeCompare(b.hora||'99:99')
+      || (b.criado||'').localeCompare(a.criado||'');
+  });
+}
+function notGroup(list){
+  const t = todayStr();
+  const groups = new Map();
+  const put = (k, n)=>{ if(!groups.has(k)) groups.set(k, []); groups.get(k).push(n); };
+  list.forEach(n=>{
+    if(!n.data){ put('Sem data', n); return; }
+    if(n.data < t){ put('Atrasadas', n); return; }
+    if(n.data === t){ put('Hoje', n); return; }
+    const [y,m,d] = n.data.split('-').map(Number);
+    const [ty,tm,td] = t.split('-').map(Number);
+    const diff = Math.round((new Date(y,m-1,d) - new Date(ty,tm-1,td))/86400000);
+    if(diff === 1) put('Amanha', n);
+    else if(diff < 7) put('Essa semana', n);
+    else put('Mais tarde', n);
+  });
+  return groups;
+}
+
 function renderNotas(){
   const all = MaratuStore.getNotas();
-  const list = all
-    .filter(n=> notFilter==='todas' ? true : notFilter==='feito' ? !!n.feito : !n.feito)
-    .sort((a,b)=> {
-      const da = a.data||'9999-99-99', db = b.data||'9999-99-99';
-      return da.localeCompare(db) || (b.criado||'').localeCompare(a.criado||'');
-    });
-  if(!list.length){ $('notLista').innerHTML = '<div class="empty-mn">Nada aqui ainda.</div>'; return; }
-  $('notLista').innerHTML = '<div class="notas-board">' + list.map(n=>`
-    <div class="nota-card ${n.feito?'done':''}" data-id="${n.id}">
-      <div class="nc-top">
-        <div class="nc-check ${n.feito?'on':''}" data-not-check="${n.id}" title="marcar feito">${n.feito?'✓':''}</div>
-        <button class="nc-del" data-not-del="${n.id}" title="apagar">×</button>
-      </div>
-      <div class="nc-title">${esc(n.titulo)}</div>
-      ${n.detalhe?`<div class="nc-desc">${esc(n.detalhe)}</div>`:''}
-      <div class="nc-tags">
-        ${n.categoria?`<span class="nc-tag">${esc(n.categoria)}</span>`:''}
-        ${n.data?`<span class="nc-tag data">${fmtDia(n.data)}${n.hora?(' '+n.hora):''}</span>`:''}
-      </div>
-      <button class="nc-agendar" data-not-agendar="${n.id}">${n.data?'reagendar':'+ lembrar em'}</button>
-    </div>`).join('') + '</div>';
-  $('notLista').querySelectorAll('[data-not-check]').forEach(b=> b.addEventListener('click', ()=>{
-    const arr = MaratuStore.getNotas().map(x=> x.id===b.dataset.notCheck ? {...x, feito: !x.feito} : x);
-    MaratuStore.setNotas(arr); renderNotas(); renderCal(); renderDay(); renderUpcoming();
-  }));
-  $('notLista').querySelectorAll('[data-not-del]').forEach(b=> b.addEventListener('click', ()=>{
-    const arr = MaratuStore.getNotas().filter(x=> x.id!==b.dataset.notDel);
-    MaratuStore.setNotas(arr); renderNotas(); renderCal(); renderDay(); renderUpcoming();
-  }));
-  $('notLista').querySelectorAll('[data-not-agendar]').forEach(b=> b.addEventListener('click', ()=>{
-    const id = b.dataset.notAgendar;
-    const cur = MaratuStore.getNotas().find(x=>x.id===id);
-    const d = prompt('Data (aaaa-mm-dd) — vazio pra tirar do calendário:', cur?.data || todayStr());
-    if(d===null) return;
-    const h = d ? (prompt('Hora (hh:mm) — vazio pra dia inteiro:', cur?.hora || '') || '') : '';
-    const arr = MaratuStore.getNotas().map(x=> x.id===id ? {...x, data:d||null, hora:h||null} : x);
-    MaratuStore.setNotas(arr); renderNotas(); renderCal(); renderDay(); renderUpcoming();
-  }));
+
+  const c = notCounts(all);
+  $('cntHoje').textContent = c.hoje   || '';
+  $('cntUpc').textContent  = c.upc    || '';
+  $('cntAll').textContent  = c.todas  || '';
+  $('cntDone').textContent = c.feitas || '';
+
+  const tc = notTagCounts(all);
+  const keys = Object.keys(tc).sort((a,b)=> tc[b]-tc[a] || a.localeCompare(b));
+  $('tagList').innerHTML = keys.map(t=>`
+    <button class="tag-item ${notView==='tag:'+t?'on':''}" data-tag="${esc(t)}">
+      <span class="th">#</span><span>${esc(t)}</span>
+      <span class="ti-count">${tc[t]}</span>
+    </button>`).join('');
+  $('tagList').querySelectorAll('[data-tag]').forEach(b=>{
+    b.addEventListener('click', ()=>{ notView='tag:'+b.dataset.tag; renderNotas(); });
+  });
+
+  document.querySelectorAll('#notSide .smart-item').forEach(b=>{
+    b.classList.toggle('on', b.dataset.smart === notView);
+  });
+
+  const titles = { hoje:'Hoje', upcoming:'Em breve', todas:'Todas', feitas:'Feitas' };
+  let title = titles[notView] || 'Notas';
+  if(notView.startsWith('tag:')) title = '#' + notView.slice(4);
+  $('notTitle').textContent = title;
+
+  const filtered = notSort(notFilterList(all, notView));
+  $('notSubtitle').textContent = filtered.length ? (filtered.length === 1 ? '1 nota' : `${filtered.length} notas`) : '';
+
+  if(!filtered.length){
+    $('notLista').innerHTML = `
+      <div class="notas-empty">
+        <div class="em-big">nada</div>
+        <div>${notView==='feitas'?'Nada concluido por aqui.':'Sem notas por aqui. Adiciona uma la em cima.'}</div>
+      </div>`;
+    return;
+  }
+
+  let html='';
+  const grouped = (notView === 'upcoming' || notView === 'todas' || notView.startsWith('tag:'));
+  if(grouped){
+    const groups = notGroup(filtered);
+    for(const [label, items] of groups){
+      html += `<div class="day-head">${label}</div>`;
+      html += items.map(renderNotRow).join('');
+    }
+  } else {
+    html = filtered.map(renderNotRow).join('');
+  }
+  $('notLista').innerHTML = html;
+  wireNotRows();
 }
-$('notAdd').addEventListener('click', ()=>{
-  const titulo = $('notTitulo').value.trim();
-  if(!titulo){ alert('Título obrigatório.'); return; }
+
+function renderNotRow(n){
+  const nn = notNorm(n);
+  const wCls = notWhenClass(nn.data);
+  const whenBtn = nn.data
+    ? `<button class="nr-when ${wCls}" data-when="${nn.id}">${wCls==='today'?N_STAR:N_CAL}<span>${notFmtWhen(nn.data)}${nn.hora?(' '+nn.hora):''}</span></button>`
+    : `<button class="nr-when nr-when-empty" data-when="${nn.id}">${N_CAL}<span>Quando?</span></button>`;
+  const detail = nn.detalhe ? `<div class="nr-desc">${esc(nn.detalhe)}</div>` : '';
+  const tagsHtml = nn.tags.length
+    ? `<div class="nr-tags">${nn.tags.map(t=>`<span class="nr-tag" data-tag-jump="${esc(t)}">#${esc(t)}</span>`).join('')}</div>`
+    : '';
+  return `
+    <div class="note-row ${nn.feito?'done':''}" data-id="${nn.id}">
+      <div class="nr-check ${nn.feito?'on':''}" data-check="${nn.id}">${N_CHECK}</div>
+      <div class="nr-body">
+        <div class="nr-title">${esc(nn.titulo)}</div>
+        ${detail}
+        ${tagsHtml}
+      </div>
+      <div class="nr-right">
+        ${whenBtn}
+        <button class="nr-del" data-del="${nn.id}">apagar</button>
+      </div>
+    </div>`;
+}
+
+function wireNotRows(){
+  $('notLista').querySelectorAll('[data-check]').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      const id = b.dataset.check;
+      const arr = MaratuStore.getNotas().map(x=> x.id===id ? {...x, feito: !x.feito} : x);
+      MaratuStore.setNotas(arr);
+      renderNotas(); renderCal(); renderDay(); renderUpcoming();
+    });
+  });
+  $('notLista').querySelectorAll('[data-del]').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      const id = b.dataset.del;
+      if(!confirm('Apagar essa nota?')) return;
+      const arr = MaratuStore.getNotas().filter(x=> x.id!==id);
+      MaratuStore.setNotas(arr);
+      renderNotas(); renderCal(); renderDay(); renderUpcoming();
+    });
+  });
+  $('notLista').querySelectorAll('[data-tag-jump]').forEach(el=>{
+    el.addEventListener('click', (ev)=>{ ev.stopPropagation(); notView='tag:'+el.dataset.tagJump; renderNotas(); });
+  });
+  $('notLista').querySelectorAll('[data-when]').forEach(b=>{
+    b.addEventListener('click', (ev)=>{ ev.stopPropagation(); openWhenPop(b.dataset.when, b); });
+  });
+}
+
+function openWhenPop(id, anchor){
+  document.querySelectorAll('.when-pop').forEach(p=> p.remove());
+  const cur = MaratuStore.getNotas().find(x=>x.id===id);
+  const pop = document.createElement('div');
+  pop.className = 'when-pop';
+  pop.innerHTML = `
+    <button data-set="today">${N_STAR}<span>Hoje</span></button>
+    <button data-set="tomorrow">${N_CAL}<span>Amanha</span></button>
+    <button data-set="nextweek">${N_CAL}<span>Semana que vem</span></button>
+    <hr />
+    <input type="date" />
+    <hr />
+    <button data-set="clear" class="destr">Sem data</button>`;
+  const parent = anchor.closest('.nr-right');
+  parent.appendChild(pop);
+
+  const apply = (iso)=>{
+    const arr = MaratuStore.getNotas().map(x=> x.id===id ? {...x, data: iso || null} : x);
+    MaratuStore.setNotas(arr);
+    pop.remove();
+    renderNotas(); renderCal(); renderDay(); renderUpcoming();
+  };
+  pop.querySelectorAll('[data-set]').forEach(b=>{
+    b.addEventListener('click', (ev)=>{
+      ev.stopPropagation();
+      const v = b.dataset.set;
+      if(v==='today') apply(todayStr());
+      else if(v==='tomorrow') apply(notAddDays(todayStr(),1));
+      else if(v==='nextweek') apply(notAddDays(todayStr(),7));
+      else if(v==='clear') apply(null);
+    });
+  });
+  const dateInp = pop.querySelector('input[type="date"]');
+  if(cur?.data) dateInp.value = cur.data;
+  dateInp.addEventListener('change', ()=> apply(dateInp.value || null));
+  dateInp.addEventListener('click', (ev)=> ev.stopPropagation());
+
+  setTimeout(()=>{
+    const outside = (ev)=>{
+      if(!pop.contains(ev.target) && !anchor.contains(ev.target)){
+        pop.remove();
+        document.removeEventListener('click', outside, true);
+      }
+    };
+    document.addEventListener('click', outside, true);
+  }, 0);
+}
+
+document.querySelectorAll('#notSide .smart-item').forEach(b=>{
+  b.addEventListener('click', ()=>{ notView = b.dataset.smart; renderNotas(); });
+});
+
+$('notQuick').addEventListener('keydown', (ev)=>{
+  if(ev.key !== 'Enter') return;
+  ev.preventDefault();
+  const raw = $('notQuick').value.trim();
+  if(!raw) return;
+  let data = null;
+  let clean = raw;
+  if(/#hoje\b/i.test(clean)){ data = todayStr(); clean = clean.replace(/#hoje\b/ig,''); }
+  else if(/#amanha\b/i.test(clean)){ data = notAddDays(todayStr(),1); clean = clean.replace(/#amanha\b/ig,''); }
+  const tags = notParseTags(clean);
   const item = {
-    id: uid(), titulo, detalhe: $('notDetalhe').value.trim(),
-    categoria: $('notCategoria').value,
-    data: $('notData').value || null,
-    hora: $('notHora').value || null,
-    feito: false, criado: todayStr()
+    id: uid(),
+    titulo: clean.replace(/\s+/g,' ').trim(),
+    detalhe: '',
+    categoria: tags[0] || 'Geral',
+    data, hora: null, feito: false, criado: todayStr()
   };
   MaratuStore.setNotas(MaratuStore.getNotas().concat([item]));
-  $('notTitulo').value=''; $('notDetalhe').value=''; $('notData').value=''; $('notHora').value='';
+  $('notQuick').value='';
   renderNotas(); renderCal(); renderDay(); renderUpcoming();
 });
 

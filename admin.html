@@ -328,6 +328,121 @@
     margin:28px 0 12px; padding-top:18px; border-top:1px solid var(--linha);
   }
 
+  /* ---------- MARKETING: stats (Plausible) ---------- */
+  .mkt-stats{
+    display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:22px;
+  }
+  @media (max-width:640px){ .mkt-stats{ grid-template-columns:repeat(2,1fr); } }
+  .mkt-stat{
+    background:var(--areia-sombra); border:1.5px solid var(--preto); border-radius:8px;
+    box-shadow:3px 3px 0 0 var(--preto); padding:14px 16px;
+  }
+  .mkt-stat-n{ font-family:var(--clother); font-weight:900; font-size:1.6rem; letter-spacing:-0.02em; line-height:1; }
+  .mkt-stat-l{
+    font-family:var(--clother); font-weight:700; font-size:0.6rem; letter-spacing:0.18em;
+    text-transform:uppercase; color:var(--muted); margin-top:6px; display:flex; align-items:center; gap:6px;
+  }
+  .mkt-stat-sub{ color:var(--preto); opacity:0.55; letter-spacing:0.02em; text-transform:none; font-weight:700; }
+
+  /* ---------- MARKETING: planner (Metricool) ---------- */
+  .mkt-planner-head{
+    display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:10px;
+  }
+  .mkt-planner-legend{ display:flex; gap:12px; flex-wrap:wrap; font-family:var(--clother); font-weight:700; font-size:0.6rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); }
+  .mkt-planner-legend span{ display:inline-flex; align-items:center; gap:5px; }
+  .mkt-planner-legend i{ width:9px; height:9px; border-radius:2px; display:inline-block; border:1.5px solid var(--preto); }
+  .d-instagram{ background:var(--laranja); }
+  .d-tiktok{ background:var(--preto); }
+  .d-youtube{ background:var(--dourado); }
+  .d-todas{ background:var(--azul-claro); }
+
+  .mkt-planner{
+    display:grid; grid-auto-flow:column; grid-auto-columns:minmax(78px, 1fr); gap:6px;
+    overflow-x:auto; padding:2px 2px 8px; margin-bottom:22px;
+    scrollbar-width:thin;
+  }
+  .mkt-day{
+    background:var(--areia-sombra); border:1.5px solid var(--preto); border-radius:6px;
+    padding:8px 6px; min-height:110px; display:flex; flex-direction:column; gap:4px;
+    box-shadow:2px 2px 0 0 var(--preto);
+  }
+  .mkt-day.today{ background:var(--laranja); }
+  .mkt-day.today .mkt-day-dow, .mkt-day.today .mkt-day-num{ color:var(--areia); }
+  .mkt-day-head{ display:flex; flex-direction:column; align-items:center; margin-bottom:2px; }
+  .mkt-day-dow{ font-family:var(--clother); font-weight:700; font-size:0.55rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--muted); }
+  .mkt-day-num{ font-family:var(--clother); font-weight:900; font-size:1.15rem; line-height:1; letter-spacing:-0.02em; margin-top:2px; }
+  .mkt-day-empty{ font-size:0.55rem; color:var(--muted); text-align:center; margin-top:auto; margin-bottom:auto; letter-spacing:0.12em; text-transform:uppercase; opacity:0.5; }
+  .mkt-chip{
+    background:var(--areia); border:1.5px solid var(--preto); border-radius:4px;
+    padding:4px 6px; font-size:0.62rem; line-height:1.15; cursor:pointer;
+    border-left-width:4px;
+  }
+  .mkt-chip.r-instagram{ border-left-color:var(--laranja); }
+  .mkt-chip.r-tiktok{ border-left-color:var(--preto); }
+  .mkt-chip.r-youtube{ border-left-color:var(--dourado); }
+  .mkt-chip.r-todas{ border-left-color:var(--azul-claro); }
+  .mkt-chip:hover{ background:var(--areia-sombra); }
+  .mkt-chip .c-t{ font-weight:700; letter-spacing:-0.005em; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+  .mkt-chip .c-m{ font-family:var(--clother); font-weight:700; font-size:0.5rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); margin-top:3px; }
+
+  /* ---------- MARKETING: backlog (Linear) ---------- */
+  .mkt-backlog-head{
+    display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:12px; flex-wrap:wrap;
+  }
+  .seg.tight{ margin:0; }
+  .mkt-new{
+    background:var(--preto); border:1.5px solid var(--preto); color:var(--areia);
+    padding:8px 16px; font-family:var(--clother); font-weight:700; font-size:0.62rem;
+    letter-spacing:0.16em; text-transform:uppercase; border-radius:999px; cursor:pointer;
+    box-shadow:2px 2px 0 0 var(--preto);
+    transition:transform .12s, box-shadow .12s;
+  }
+  .mkt-new:hover{ background:var(--laranja); border-color:var(--laranja); }
+  .mkt-new:active{ transform:translate(2px,2px); box-shadow:0 0 0 0 var(--preto); }
+  .mkt-form-wrap{
+    background:var(--areia-sombra); border:1.5px solid var(--preto); border-radius:8px;
+    box-shadow:3px 3px 0 0 var(--preto); padding:16px; margin-bottom:14px;
+  }
+  .mkt-row{
+    display:flex; align-items:center; gap:10px; padding:11px 12px;
+    background:var(--areia-sombra); border:1.5px solid var(--preto); border-radius:6px;
+    margin-bottom:6px; cursor:pointer;
+    transition:background .12s, transform .12s;
+  }
+  .mkt-row:hover{ background:var(--areia); }
+  .mkt-row.open{ background:var(--areia); }
+  .mkt-row-status{
+    width:10px; height:10px; border-radius:50%; flex-shrink:0; border:1.5px solid var(--preto);
+  }
+  .mkt-row-status.s-ideia{ background:var(--areia); }
+  .mkt-row-status.s-aprovado{ background:var(--azul-claro); }
+  .mkt-row-status.s-publicado{ background:var(--dourado); }
+  .mkt-row-title{ flex:1; min-width:0; font-family:var(--clother); font-weight:700; font-size:0.9rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; letter-spacing:-0.005em; }
+  .mkt-row-meta{ display:flex; gap:8px; align-items:center; flex-shrink:0; }
+  .mkt-row-tag{
+    font-family:var(--clother); font-weight:700; font-size:0.58rem; letter-spacing:0.14em;
+    text-transform:uppercase; padding:3px 8px; border-radius:999px;
+    background:var(--areia); border:1.5px solid var(--preto); color:var(--preto);
+  }
+  .mkt-row-tag.data{ background:var(--laranja); color:var(--areia); }
+  @media (max-width:640px){ .mkt-row-tag.formato{ display:none; } }
+  .mkt-expand{
+    background:var(--areia); border:1.5px solid var(--preto); border-top:none;
+    padding:12px 14px; margin-top:-8px; margin-bottom:6px; border-radius:0 0 6px 6px;
+  }
+  .mkt-expand .desc{ font-size:0.85rem; color:var(--muted); line-height:1.5; margin-bottom:10px; }
+  .mkt-expand .acts{ display:flex; gap:6px; flex-wrap:wrap; }
+  .mkt-expand .acts button{
+    background:var(--areia); border:1.5px solid var(--preto); color:var(--preto);
+    border-radius:999px; padding:5px 12px; font-size:0.62rem; cursor:pointer;
+    font-family:var(--clother); font-weight:700; letter-spacing:0.14em; text-transform:uppercase;
+    box-shadow:2px 2px 0 0 var(--preto);
+    transition:transform .12s, box-shadow .12s;
+  }
+  .mkt-expand .acts button:hover{ background:var(--preto); color:var(--areia); }
+  .mkt-expand .acts button:active{ transform:translate(2px,2px); box-shadow:0 0 0 0 var(--preto); }
+  .mkt-expand .acts button.del:hover{ background:var(--laranja); border-color:var(--laranja); }
+
   /* ---------- Marketing/Notas item cards ---------- */
   .mn-item{
     background:var(--areia-sombra); border:1.5px solid var(--preto); border-radius:8px;
@@ -701,14 +816,38 @@
 
   <!-- ================= MARKETING ================= -->
   <section class="panel" id="panel-marketing">
-    <div class="seg" role="tablist" id="mktSeg">
-      <button role="tab" data-sub="ideia" aria-selected="true">Ideias</button>
-      <button role="tab" data-sub="aprovado" aria-selected="false">Aprovados</button>
-      <button role="tab" data-sub="publicado" aria-selected="false">Publicados</button>
+
+    <!-- STATS (Plausible) -->
+    <div class="mkt-stats">
+      <div class="mkt-stat"><div class="mkt-stat-n" id="mktSTotal">0</div><div class="mkt-stat-l">Total</div></div>
+      <div class="mkt-stat"><div class="mkt-stat-n" id="mktSIdeia">0</div><div class="mkt-stat-l">Ideias</div></div>
+      <div class="mkt-stat"><div class="mkt-stat-n" id="mktSAprov">0</div><div class="mkt-stat-l">Programados</div></div>
+      <div class="mkt-stat"><div class="mkt-stat-n" id="mktSPub">0</div><div class="mkt-stat-l">Publicados<span class="mkt-stat-sub" id="mktSPubSub"></span></div></div>
     </div>
 
-    <div class="card" style="margin-top:14px;">
-      <h2 class="title">Nova ideia</h2>
+    <!-- CONTENT PLANNER (Metricool) -->
+    <div class="mkt-planner-head">
+      <h2 class="title">Planner de conteúdo</h2>
+      <div class="mkt-planner-legend">
+        <span><i class="d-instagram"></i>Instagram</span>
+        <span><i class="d-tiktok"></i>TikTok</span>
+        <span><i class="d-youtube"></i>YouTube</span>
+        <span><i class="d-todas"></i>Todas</span>
+      </div>
+    </div>
+    <div class="mkt-planner" id="mktPlanner"></div>
+
+    <!-- BACKLOG (Linear) -->
+    <div class="mkt-backlog-head">
+      <div class="seg tight" role="tablist" id="mktSeg">
+        <button role="tab" data-sub="ideia" aria-selected="true">Ideias</button>
+        <button role="tab" data-sub="aprovado" aria-selected="false">Programados</button>
+        <button role="tab" data-sub="publicado" aria-selected="false">Publicados</button>
+      </div>
+      <button class="mkt-new" id="mktToggleNew">+ nova ideia</button>
+    </div>
+
+    <div class="mkt-form-wrap" id="mktFormWrap" style="display:none;">
       <label class="f"><span>Título</span><input id="mktTitulo" placeholder="Ex: Bastidores da carranca" /></label>
       <div class="grid2">
         <label class="f"><span>Formato</span>
@@ -737,7 +876,6 @@
       <button class="btn blue" id="mktAdd">Adicionar</button>
     </div>
 
-    <div class="divlbl" id="mktLbl">Ideias</div>
     <div id="mktLista"></div>
   </section>
 
@@ -1351,53 +1489,135 @@ function baixarICS(id){
 }
 
 /* =====================================================================
-   MARKETING
+   MARKETING — Plausible (stats) + Metricool (planner) + Linear (backlog)
    ===================================================================== */
 let mktFilter = 'ideia';
+let mktOpen = null;
+
 document.querySelectorAll('#mktSeg button').forEach(btn=>{
   btn.addEventListener('click', ()=>{
     document.querySelectorAll('#mktSeg button').forEach(b=>b.setAttribute('aria-selected', b===btn?'true':'false'));
     mktFilter = btn.dataset.sub;
-    $('mktLbl').textContent = ({ideia:'Ideias', aprovado:'Aprovados', publicado:'Publicados'})[mktFilter];
-    renderMarketing();
+    renderMktBacklog();
   });
 });
-function renderMarketing(){
+$('mktToggleNew').addEventListener('click', ()=>{
+  const w = $('mktFormWrap');
+  const showing = w.style.display !== 'none';
+  w.style.display = showing ? 'none' : 'block';
+  $('mktToggleNew').textContent = showing ? '+ nova ideia' : '× fechar';
+  if(!showing){ $('mktTitulo').focus(); }
+});
+
+function mktKey(r){ return (r||'').toLowerCase().replace(/[^a-z]/g,''); }
+
+function renderMktStats(){
+  const all = MaratuStore.getMarketing();
+  const byStatus = all.reduce((a,m)=>{ const s=m.status||'ideia'; a[s]=(a[s]||0)+1; return a; },{});
+  const total = all.length;
+  const pub = byStatus.publicado || 0;
+  const now = new Date();
+  const mesAtual = pad2(now.getMonth()+1);
+  const anoAtual = now.getFullYear();
+  const pubMes = all.filter(m=> m.status==='publicado' && m.data && m.data.startsWith(anoAtual+'-'+mesAtual)).length;
+  $('mktSTotal').textContent = total;
+  $('mktSIdeia').textContent = byStatus.ideia || 0;
+  $('mktSAprov').textContent = byStatus.aprovado || 0;
+  $('mktSPub').textContent = pub;
+  $('mktSPubSub').textContent = pubMes ? ' · '+pubMes+' este mês' : '';
+}
+
+function renderMktPlanner(){
+  const days = 14;
+  const t = new Date();
+  const list = MaratuStore.getMarketing().filter(m=> m.data && m.status !== 'publicado');
+  const byDay = {};
+  list.forEach(m=>{ (byDay[m.data]=byDay[m.data]||[]).push(m); });
+  Object.values(byDay).forEach(arr=> arr.sort((a,b)=>(a.hora||'').localeCompare(b.hora||'')));
+  const today = todayStr();
+  let html = '';
+  for(let i=0;i<days;i++){
+    const dt = new Date(t.getFullYear(), t.getMonth(), t.getDate()+i);
+    const iso = dateStr(dt.getFullYear(), dt.getMonth(), dt.getDate());
+    const items = byDay[iso] || [];
+    const chips = items.map(m=>`
+      <div class="mkt-chip r-${mktKey(m.rede)}" data-mkt-jump="${m.id}" title="${esc(m.titulo)}">
+        <div class="c-t">${esc(m.titulo)}</div>
+        <div class="c-m">${esc(m.formato||'')}${m.hora?(' · '+m.hora):''}</div>
+      </div>`).join('');
+    html += `<div class="mkt-day ${iso===today?'today':''}">
+      <div class="mkt-day-head">
+        <div class="mkt-day-dow">${DOW[dt.getDay()]}</div>
+        <div class="mkt-day-num">${dt.getDate()}</div>
+      </div>
+      ${items.length? chips : '<div class="mkt-day-empty">—</div>'}
+    </div>`;
+  }
+  $('mktPlanner').innerHTML = html;
+  $('mktPlanner').querySelectorAll('[data-mkt-jump]').forEach(el=> el.addEventListener('click', ()=>{
+    const id = el.dataset.mktJump;
+    const m = MaratuStore.getMarketing().find(x=>x.id===id);
+    if(!m) return;
+    // troca filtro pro status do post e abre
+    const st = m.status || 'ideia';
+    document.querySelector(`#mktSeg [data-sub="${st}"]`).click();
+    mktOpen = id;
+    renderMktBacklog();
+    setTimeout(()=>{ const row = document.querySelector(`[data-mkt-row="${id}"]`); row && row.scrollIntoView({behavior:'smooth', block:'center'}); }, 60);
+  }));
+}
+
+function renderMktBacklog(){
   const list = MaratuStore.getMarketing()
     .filter(m=> (m.status || 'ideia') === mktFilter)
-    .sort((a,b)=> (b.data||'').localeCompare(a.data||'') || (b.criado||'').localeCompare(a.criado||''));
+    .sort((a,b)=> (a.data||'9999-99-99').localeCompare(b.data||'9999-99-99') || (b.criado||'').localeCompare(a.criado||''));
   if(!list.length){ $('mktLista').innerHTML = '<div class="empty-mn">Nada aqui ainda.</div>'; return; }
-  $('mktLista').innerHTML = list.map(m=>`
-    <div class="mn-item" data-id="${m.id}">
-      <div class="mn-head">
-        <div style="flex:1; min-width:0;">
-          <div class="mn-title">${esc(m.titulo)}</div>
-          ${m.ideia?`<div class="mn-desc">${esc(m.ideia)}</div>`:''}
-          <div class="mn-tags">
-            ${m.formato?`<span class="mn-tag">${esc(m.formato)}</span>`:''}
-            ${m.rede?`<span class="mn-tag">${esc(m.rede)}</span>`:''}
-            <span class="mn-tag status-${m.status||'ideia'}">${esc(m.status||'ideia')}</span>
-            ${m.data?`<span class="mn-tag data">${fmtDia(m.data)}${m.hora?(' '+m.hora):''}</span>`:''}
-          </div>
+  $('mktLista').innerHTML = list.map(m=>{
+    const st = m.status || 'ideia';
+    const opened = mktOpen === m.id;
+    const row = `
+      <div class="mkt-row ${opened?'open':''}" data-mkt-row="${m.id}">
+        <div class="mkt-row-status s-${st}" title="${st}"></div>
+        <div class="mkt-row-title">${esc(m.titulo)}</div>
+        <div class="mkt-row-meta">
+          ${m.formato?`<span class="mkt-row-tag formato">${esc(m.formato)}</span>`:''}
+          ${m.rede?`<span class="mkt-row-tag">${esc(m.rede)}</span>`:''}
+          ${m.data?`<span class="mkt-row-tag data">${fmtDia(m.data)}${m.hora?(' '+m.hora):''}</span>`:''}
         </div>
-      </div>
-      <div class="mn-acts">
-        ${m.status!=='aprovado'?`<button data-mkt-status="aprovado" data-id="${m.id}">aprovar</button>`:''}
-        ${m.status!=='publicado'?`<button data-mkt-status="publicado" data-id="${m.id}">marcar publicado</button>`:''}
-        ${m.status==='publicado'?`<button data-mkt-status="ideia" data-id="${m.id}">voltar ideia</button>`:''}
-        <button data-mkt-agendar="${m.id}">${m.data?'reagendar':'agendar'}</button>
-        <button class="del" data-mkt-del="${m.id}">apagar</button>
-      </div>
-    </div>`).join('');
-  $('mktLista').querySelectorAll('[data-mkt-status]').forEach(b=> b.addEventListener('click', ()=>{
+      </div>`;
+    const expanded = opened ? `
+      <div class="mkt-expand">
+        ${m.ideia?`<div class="desc">${esc(m.ideia)}</div>`:'<div class="desc">Sem roteiro.</div>'}
+        <div class="acts">
+          ${st!=='aprovado'?`<button data-mkt-status="aprovado" data-id="${m.id}">programar</button>`:''}
+          ${st!=='publicado'?`<button data-mkt-status="publicado" data-id="${m.id}">marcar publicado</button>`:''}
+          ${st==='publicado'?`<button data-mkt-status="ideia" data-id="${m.id}">voltar ideia</button>`:''}
+          <button data-mkt-agendar="${m.id}">${m.data?'reagendar':'agendar data'}</button>
+          <button class="del" data-mkt-del="${m.id}">apagar</button>
+        </div>
+      </div>` : '';
+    return row + expanded;
+  }).join('');
+
+  $('mktLista').querySelectorAll('[data-mkt-row]').forEach(el=> el.addEventListener('click', (e)=>{
+    if(e.target.closest('button')) return;
+    const id = el.dataset.mktRow;
+    mktOpen = mktOpen === id ? null : id;
+    renderMktBacklog();
+  }));
+  $('mktLista').querySelectorAll('[data-mkt-status]').forEach(b=> b.addEventListener('click', (e)=>{
+    e.stopPropagation();
     const arr = MaratuStore.getMarketing().map(x=> x.id===b.dataset.id ? {...x, status:b.dataset.mktStatus} : x);
     MaratuStore.setMarketing(arr); renderMarketing(); renderCal(); renderDay(); renderUpcoming();
   }));
-  $('mktLista').querySelectorAll('[data-mkt-del]').forEach(b=> b.addEventListener('click', ()=>{
+  $('mktLista').querySelectorAll('[data-mkt-del]').forEach(b=> b.addEventListener('click', (e)=>{
+    e.stopPropagation();
     const arr = MaratuStore.getMarketing().filter(x=> x.id!==b.dataset.mktDel);
+    mktOpen = null;
     MaratuStore.setMarketing(arr); renderMarketing(); renderCal(); renderDay(); renderUpcoming();
   }));
-  $('mktLista').querySelectorAll('[data-mkt-agendar]').forEach(b=> b.addEventListener('click', ()=>{
+  $('mktLista').querySelectorAll('[data-mkt-agendar]').forEach(b=> b.addEventListener('click', (e)=>{
+    e.stopPropagation();
     const id = b.dataset.mktAgendar;
     const cur = MaratuStore.getMarketing().find(x=>x.id===id);
     const d = prompt('Data (aaaa-mm-dd) — vazio pra desagendar:', cur?.data || todayStr());
@@ -1407,19 +1627,29 @@ function renderMarketing(){
     MaratuStore.setMarketing(arr); renderMarketing(); renderCal(); renderDay(); renderUpcoming();
   }));
 }
+
+function renderMarketing(){
+  renderMktStats();
+  renderMktPlanner();
+  renderMktBacklog();
+}
+
 $('mktAdd').addEventListener('click', ()=>{
   const titulo = $('mktTitulo').value.trim();
   if(!titulo){ alert('Título obrigatório.'); return; }
   const item = {
     id: uid(), titulo, ideia: $('mktIdeia').value.trim(),
     formato: $('mktFormato').value, rede: $('mktRede').value,
-    status: 'ideia',
+    status: $('mktData').value ? 'aprovado' : 'ideia',
     data: $('mktData').value || null,
     hora: $('mktHora').value || null,
     criado: todayStr()
   };
   MaratuStore.setMarketing(MaratuStore.getMarketing().concat([item]));
   $('mktTitulo').value=''; $('mktIdeia').value=''; $('mktData').value=''; $('mktHora').value='';
+  $('mktFormWrap').style.display='none'; $('mktToggleNew').textContent='+ nova ideia';
+  // se agendou direto, muda pra aba aprovado
+  if(item.status==='aprovado'){ document.querySelector('#mktSeg [data-sub="aprovado"]').click(); }
   renderMarketing(); renderCal(); renderDay(); renderUpcoming();
 });
 

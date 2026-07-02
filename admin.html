@@ -368,6 +368,47 @@
   .mn-check:active{ transform:translate(2px,2px); box-shadow:0 0 0 0 var(--preto); }
   .empty-mn{ padding:18px 0; text-align:center; color:var(--muted); font-size:0.85rem; }
 
+  /* ---------- Notas: grid de bloquinhos estilo Trello ---------- */
+  .notas-board{ display:grid; grid-template-columns:repeat(auto-fill, minmax(180px, 1fr)); gap:12px; }
+  .nota-card{
+    background:var(--areia-sombra); border:1.5px solid var(--preto); border-radius:8px;
+    box-shadow:3px 3px 0 0 var(--preto); padding:12px 14px; position:relative;
+    display:flex; flex-direction:column; gap:8px; min-height:100px;
+  }
+  .nota-card.done{ background:var(--areia); opacity:0.7; }
+  .nota-card.done .nc-title{ text-decoration:line-through; }
+  .nota-card .nc-top{ display:flex; justify-content:space-between; align-items:flex-start; gap:8px; }
+  .nota-card .nc-check{
+    width:20px; height:20px; border-radius:50%; border:1.5px solid var(--preto);
+    background:var(--areia); cursor:pointer; flex-shrink:0; display:flex; align-items:center;
+    justify-content:center; color:var(--areia); font-size:12px; font-weight:900;
+    transition:transform .12s;
+  }
+  .nota-card .nc-check.on{ background:var(--preto); }
+  .nota-card .nc-check:hover{ transform:scale(1.1); }
+  .nota-card .nc-del{
+    width:20px; height:20px; border-radius:50%; border:1.5px solid var(--preto);
+    background:var(--areia); cursor:pointer; padding:0; font-size:12px; line-height:1;
+    color:var(--preto); font-weight:900; display:flex; align-items:center; justify-content:center;
+    transition:background .12s, color .12s;
+  }
+  .nota-card .nc-del:hover{ background:var(--laranja); color:var(--areia); border-color:var(--laranja); }
+  .nota-card .nc-title{ font-family:var(--clother); font-weight:900; font-size:0.9rem; line-height:1.3; letter-spacing:-0.005em; }
+  .nota-card .nc-desc{ font-size:0.8rem; color:var(--muted); line-height:1.45; word-break:break-word; }
+  .nota-card .nc-tags{ display:flex; gap:5px; flex-wrap:wrap; margin-top:auto; padding-top:6px; }
+  .nota-card .nc-tag{
+    font-family:var(--clother); font-weight:700; font-size:0.55rem; letter-spacing:0.14em;
+    text-transform:uppercase; padding:2px 8px; border-radius:999px;
+    background:var(--areia); border:1.5px solid var(--preto); color:var(--preto);
+  }
+  .nota-card .nc-tag.data{ background:var(--laranja); color:var(--areia); border-color:var(--preto); }
+  .nota-card .nc-agendar{
+    background:transparent; border:none; padding:0; font-family:var(--clother); font-weight:700;
+    font-size:0.55rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted);
+    cursor:pointer; align-self:flex-start; text-decoration:underline; text-underline-offset:2px;
+  }
+  .nota-card .nc-agendar:hover{ color:var(--preto); }
+
   .apple{ background:var(--areia-sombra); border:1.5px solid var(--preto); border-radius:8px; box-shadow:3px 3px 0 0 var(--preto); padding:18px; margin-top:22px; }
   .apple .t{ font-family:var(--clother); font-weight:900; font-size:0.95rem; margin-bottom:8px; letter-spacing:-0.005em; }
   .apple .d{ font-size:0.85rem; color:var(--muted); line-height:1.6; }
@@ -1403,24 +1444,20 @@ function renderNotas(){
       return da.localeCompare(db) || (b.criado||'').localeCompare(a.criado||'');
     });
   if(!list.length){ $('notLista').innerHTML = '<div class="empty-mn">Nada aqui ainda.</div>'; return; }
-  $('notLista').innerHTML = list.map(n=>`
-    <div class="mn-item ${n.feito?'done':''}" data-id="${n.id}">
-      <div class="mn-head">
-        <div class="mn-check ${n.feito?'on':''}" data-not-check="${n.id}">${n.feito?'✓':''}</div>
-        <div style="flex:1; min-width:0;">
-          <div class="mn-title">${esc(n.titulo)}</div>
-          ${n.detalhe?`<div class="mn-desc">${esc(n.detalhe)}</div>`:''}
-          <div class="mn-tags">
-            ${n.categoria?`<span class="mn-tag">${esc(n.categoria)}</span>`:''}
-            ${n.data?`<span class="mn-tag data">${fmtDia(n.data)}${n.hora?(' '+n.hora):''}</span>`:''}
-          </div>
-        </div>
+  $('notLista').innerHTML = '<div class="notas-board">' + list.map(n=>`
+    <div class="nota-card ${n.feito?'done':''}" data-id="${n.id}">
+      <div class="nc-top">
+        <div class="nc-check ${n.feito?'on':''}" data-not-check="${n.id}" title="marcar feito">${n.feito?'✓':''}</div>
+        <button class="nc-del" data-not-del="${n.id}" title="apagar">×</button>
       </div>
-      <div class="mn-acts">
-        <button data-not-agendar="${n.id}">${n.data?'reagendar':'lembrar em'}</button>
-        <button class="del" data-not-del="${n.id}">apagar</button>
+      <div class="nc-title">${esc(n.titulo)}</div>
+      ${n.detalhe?`<div class="nc-desc">${esc(n.detalhe)}</div>`:''}
+      <div class="nc-tags">
+        ${n.categoria?`<span class="nc-tag">${esc(n.categoria)}</span>`:''}
+        ${n.data?`<span class="nc-tag data">${fmtDia(n.data)}${n.hora?(' '+n.hora):''}</span>`:''}
       </div>
-    </div>`).join('');
+      <button class="nc-agendar" data-not-agendar="${n.id}">${n.data?'reagendar':'+ lembrar em'}</button>
+    </div>`).join('') + '</div>';
   $('notLista').querySelectorAll('[data-not-check]').forEach(b=> b.addEventListener('click', ()=>{
     const arr = MaratuStore.getNotas().map(x=> x.id===b.dataset.notCheck ? {...x, feito: !x.feito} : x);
     MaratuStore.setNotas(arr); renderNotas(); renderCal(); renderDay(); renderUpcoming();

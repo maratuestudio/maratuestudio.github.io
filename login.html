@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#C8501A" />
+<title>MARATU · entrar</title>
+<meta name="robots" content="noindex,nofollow" />
+
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon-v3.png" />
+<link rel="icon" type="image/png" href="favicon-v4.png" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="MARATU" />
+
+<style>
+  @font-face { font-family:'Jack';    src:url('TRYJackAlpha-Regular.ttf') format('truetype'); font-weight:400; font-display:swap; }
+  @font-face { font-family:'Clother'; src:url('TRYClother-Regular.ttf')    format('truetype'); font-weight:400; font-display:swap; }
+  @font-face { font-family:'Clother'; src:url('TRYClother-Bold.ttf')       format('truetype'); font-weight:700; font-display:swap; }
+  @font-face { font-family:'Clother'; src:url('TRYClother-Black.ttf')      format('truetype'); font-weight:900; font-display:swap; }
+
+  :root{
+    --laranja:#C8501A; --preto:#0D0D0B; --areia:#F0ECE4;
+    --clother:'Clother','Helvetica Neue',sans-serif;
+  }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; height:100%; }
+  html{ background:var(--laranja); -webkit-font-smoothing:antialiased; }
+  body{
+    background:var(--laranja); color:var(--preto); font-family:var(--clother);
+    line-height:1.5; min-height:100vh;
+    display:flex; align-items:center; justify-content:center;
+    padding:24px; text-align:center; position:relative; overflow:hidden;
+  }
+  /* Textura ruido papel */
+  body::before{
+    content:''; position:fixed; inset:0;
+    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events:none; z-index:0; opacity:0.35;
+  }
+
+  .canto{
+    position:fixed; left:0; bottom:0; margin:0; padding:0;
+    width:clamp(140px, 22vw, 240px); height:auto; display:block;
+    pointer-events:none; z-index:0;
+  }
+
+  .box{ max-width:460px; width:100%; display:flex; flex-direction:column; align-items:center; gap:22px; position:relative; z-index:1; }
+
+  .caranguejo{ width:min(22vw, 96px); height:auto; display:block; opacity:0.95; }
+  .caranguejo path{ fill:var(--preto); }
+
+  .lbl{
+    font-family:var(--clother); font-size:0.58rem; font-weight:700;
+    letter-spacing:0.2em; text-transform:uppercase;
+    display:flex; align-items:center; gap:10px; color:rgba(13,13,11,0.65);
+    justify-content:center;
+  }
+  .lbl::before{ content:''; display:block; width:22px; height:1px; background:currentColor; }
+
+  .t1{
+    font-family:var(--clother); font-weight:900; color:var(--preto);
+    font-size:clamp(2.2rem, 6.2vw, 3.6rem); line-height:1;
+    letter-spacing:-0.01em; margin:0;
+  }
+
+  form{ width:100%; display:flex; flex-direction:column; align-items:stretch; gap:14px; margin-top:8px; }
+  .senha-wrap{ position:relative; }
+  input[type="password"]{
+    width:100%;
+    background:transparent; border:none; border-bottom:1px solid rgba(13,13,11,0.35);
+    border-radius:0; padding:14px 4px; text-align:center;
+    font-family:var(--clother); font-size:1.05rem; letter-spacing:0.14em;
+    color:var(--preto);
+  }
+  input[type="password"]::placeholder{ letter-spacing:0.24em; text-transform:uppercase; font-size:0.75rem; color:rgba(13,13,11,0.55); font-weight:700; }
+  input[type="password"]:focus{ outline:none; border-bottom-color:var(--preto); box-shadow:none; }
+
+  .msg{
+    min-height:1em; font-family:var(--clother); font-weight:700;
+    font-size:0.7rem; letter-spacing:0.18em; text-transform:uppercase;
+    color:var(--preto); opacity:0; transition:opacity .2s;
+  }
+  .msg.on{ opacity:1; }
+  .msg.info{ opacity:0.7; }
+
+  button[type="submit"]{
+    background:var(--preto); color:var(--areia);
+    border:1.5px solid var(--preto); border-radius:999px;
+    box-shadow:3px 3px 0 0 var(--preto);
+    padding:14px 28px; font-family:var(--clother); font-weight:700;
+    font-size:0.72rem; letter-spacing:0.24em; text-transform:uppercase;
+    cursor:pointer; align-self:center;
+    transition:transform .12s, box-shadow .12s, background .18s, color .18s;
+  }
+  button[type="submit"]:hover{ background:var(--areia); color:var(--preto); }
+  button[type="submit"]:active{ transform:translate(3px,3px); box-shadow:0 0 0 0 var(--preto); }
+  button[type="submit"]:disabled{ opacity:0.4; cursor:wait; box-shadow:none; }
+
+  .foot{
+    margin-top:8px; padding-top:14px; border-top:1px solid rgba(13,13,11,0.2);
+    font-size:0.55rem; letter-spacing:0.22em; color:rgba(13,13,11,0.7);
+  }
+</style>
+</head>
+<body>
+
+<img class="canto" src="admin-corner.svg" alt="" aria-hidden="true" />
+
+<div class="box">
+  <svg class="caranguejo" viewBox="0 0 318.24 152.9" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <g data-aratu="claw-left">
+      <path d="M0,104.77c0,26.58,21.55,48.13,48.13,48.13V56.65C21.55,56.65,0,78.19,0,104.77Z"/>
+    </g>
+    <g data-aratu="claw-right">
+      <path d="M270.11,56.65v96.26c26.58,0,48.13-21.55,48.13-48.13s-21.55-48.13-48.13-48.13Z"/>
+    </g>
+    <g data-aratu="body">
+      <path d="M159.12,152.9c53.16,0,96.26-43.1,96.26-96.26H62.86c0,53.16,43.1,96.26,96.26,96.26Z"/>
+    </g>
+    <g data-aratu="eye-right">
+      <path d="M224.82,24.08c0-13.3-10.78-24.08-24.08-24.08v48.16c13.3,0,24.08-10.78,24.08-24.08Z"/>
+    </g>
+    <g data-aratu="eye-left">
+      <path d="M117.49,48.16V0c-13.3,0-24.08,10.78-24.08,24.08s10.78,24.08,24.08,24.08Z"/>
+    </g>
+  </svg>
+
+  <div class="lbl">000 &mdash; Admin</div>
+  <h1 class="t1">Seja bem-vindo!</h1>
+
+  <form id="loginForm" autocomplete="off">
+    <div class="senha-wrap">
+      <input id="loginSenha" type="password" placeholder="insira sua senha" autocomplete="current-password" autofocus />
+    </div>
+    <div class="msg" id="loginMsg">senha incorreta</div>
+    <button type="submit" id="loginBtn">Entrar</button>
+    <div class="foot">MARATU &middot; est. 2026 &middot; Aracaju</div>
+  </form>
+</div>
+
+<script>
+(function blinkAratu(){
+  const el = document.querySelector('.caranguejo');
+  if(!el) return;
+  const eyeL = el.querySelector('[data-aratu="eye-left"]');
+  const eyeR = el.querySelector('[data-aratu="eye-right"]');
+  let last = Date.now() + 1200;
+  let blinking = false, start = 0;
+  function frame(){
+    const now = Date.now();
+    if(!blinking && now - last > 2500 + Math.random()*2000){ blinking = true; start = now; }
+    if(blinking){
+      const p = (now - start) / 180;
+      if(p >= 1){
+        blinking = false; last = now;
+        eyeL.setAttribute('transform','translate(105.5 24.08) scale(1 1) translate(-105.5 -24.08)');
+        eyeR.setAttribute('transform','translate(212.74 24.08) scale(1 1) translate(-212.74 -24.08)');
+      } else {
+        const s = p < 0.5 ? 1 - p*2*0.9 : 0.1 + (p-0.5)*2*0.9;
+        eyeL.setAttribute('transform','translate(105.5 24.08) scale(1 '+s+') translate(-105.5 -24.08)');
+        eyeR.setAttribute('transform','translate(212.74 24.08) scale(1 '+s+') translate(-212.74 -24.08)');
+      }
+    }
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+
+const API = "https://maratu-api.raphaelnascimento.workers.dev";
+const form = document.getElementById('loginForm');
+const input = document.getElementById('loginSenha');
+const msg = document.getElementById('loginMsg');
+const btn = document.getElementById('loginBtn');
+
+/* Se veio de expiração, mostrar aviso */
+(function showReason(){
+  const p = new URLSearchParams(location.search);
+  if(p.get('expired') === '1'){
+    msg.textContent = 'sessão expirou — entre de novo';
+    msg.classList.add('on','info');
+  } else if(p.get('logout') === '1'){
+    msg.textContent = 'você saiu';
+    msg.classList.add('on','info');
+  }
+})();
+
+/* Se já tem token válido, manda direto pro admin */
+(async function autoLogin(){
+  let tk = null;
+  try { tk = localStorage.getItem('maratu.token'); } catch(e){}
+  if(!tk) return;
+  try{
+    const r = await fetch(API + "/api/state", { headers:{ Authorization:"Bearer "+tk } });
+    if(r.ok){
+      try { localStorage.setItem('maratu.lastActivity', String(Date.now())); } catch(e){}
+      location.replace('/admin.html');
+    } else if(r.status === 401){
+      try { localStorage.removeItem('maratu.token'); } catch(e){}
+    }
+  }catch(e){}
+})();
+
+form.addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  const pw = (input.value || '').trim();
+  if(!pw) return;
+  btn.disabled = true; msg.classList.remove('on','info');
+  try{
+    const r = await fetch(API + "/api/state", { headers:{ Authorization:"Bearer "+pw } });
+    if(r.status === 401){
+      btn.disabled = false;
+      msg.textContent = 'senha incorreta';
+      msg.classList.add('on');
+      input.value = ''; input.focus();
+      return;
+    }
+    if(!r.ok){
+      btn.disabled = false;
+      msg.textContent = 'erro ' + r.status;
+      msg.classList.add('on');
+      return;
+    }
+    try {
+      localStorage.setItem('maratu.token', pw);
+      localStorage.setItem('maratu.lastActivity', String(Date.now()));
+    } catch(e){}
+    location.replace('/admin.html');
+  }catch(e){
+    btn.disabled = false;
+    msg.textContent = 'sem conexão';
+    msg.classList.add('on');
+  }
+});
+</script>
+
+</body>
+</html>

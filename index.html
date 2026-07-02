@@ -2090,6 +2090,26 @@
             grid.innerHTML = items.map(function(p, i) { return cardHTML(p, cfg, i >= cfg.extraFrom); }).join('');
           });
           if (typeof applyVisibility === 'function') applyVisibility();
+          // Injeta JSON-LD Product por produto (SEO — Google mostra rich snippets)
+          try {
+            var itemList = { "@context": "https://schema.org", "@type": "ItemList", "itemListElement": produtos.map(function(p, i) {
+              var offers = { "@type": "Offer", "priceCurrency": "BRL", "price": (p.preco / 100).toFixed(2), "availability": "https://schema.org/InStock", "url": "https://maratu.com.br/" };
+              var prod = {
+                "@type": "Product",
+                "name": p.nome,
+                "image": R2 + p.imagem_principal,
+                "sku": p.sku_whatsapp || p.id,
+                "brand": { "@type": "Brand", "name": p.marca === 'use' ? "USE MARATU" : "CASA MARATU" },
+                "offers": offers
+              };
+              if (p.subtitulo) prod.description = String(p.subtitulo).split('|')[0].trim();
+              return { "@type": "ListItem", "position": i + 1, "item": prod };
+            }) };
+            var script = document.createElement('script');
+            script.type = 'application/ld+json';
+            script.textContent = JSON.stringify(itemList);
+            document.head.appendChild(script);
+          } catch (e) { console.warn('[seo] JSON-LD produto falhou:', e); }
         })
         .catch(function(err) { console.warn('[catalog] fetch falhou, mantendo HTML hardcoded:', err); });
     })();

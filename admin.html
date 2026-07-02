@@ -216,6 +216,8 @@
   }
   .pill.entrega{ color:var(--laranja); border-color:var(--laranja); }
   .pill.evento{ color:var(--azul-claro); border-color:var(--azul-claro); }
+  .pill.marketing{ color:var(--dourado); border-color:var(--dourado); }
+  .pill.nota{ color:var(--preto); border-color:var(--preto); }
   .empty{ color:var(--muted); font-size:0.88rem; padding:8px 0; font-style:italic; }
   .lil{ color:var(--muted); font-size:0.78rem; }
   .val{ font-family:var(--clother); font-weight:700; }
@@ -299,6 +301,8 @@
   .dot{ width:6px; height:6px; border-radius:50%; }
   .dot.entrega{ background:var(--laranja); }
   .dot.evento{ background:var(--azul-claro); }
+  .dot.marketing{ background:var(--dourado); }
+  .dot.nota{ background:var(--preto); }
 
   .daypanel{ margin-top:20px; }
   .daypanel h3{ font-family:var(--clother); font-weight:900; font-size:1rem; margin:0 0 12px; letter-spacing:-0.005em; }
@@ -323,6 +327,46 @@
     color:var(--muted); text-transform:uppercase; letter-spacing:0.2em;
     margin:28px 0 12px; padding-top:18px; border-top:1px solid var(--linha);
   }
+
+  /* ---------- Marketing/Notas item cards ---------- */
+  .mn-item{
+    background:var(--areia-sombra); border:1.5px solid var(--preto); border-radius:8px;
+    box-shadow:3px 3px 0 0 var(--preto); padding:14px 16px; margin-bottom:12px;
+  }
+  .mn-item .mn-head{ display:flex; justify-content:space-between; align-items:flex-start; gap:10px; }
+  .mn-item .mn-title{ font-family:var(--clother); font-weight:900; font-size:0.95rem; letter-spacing:-0.005em; line-height:1.3; }
+  .mn-item.done .mn-title{ text-decoration:line-through; opacity:0.55; }
+  .mn-item .mn-desc{ font-size:0.85rem; color:var(--muted); margin-top:6px; line-height:1.5; }
+  .mn-item .mn-tags{ display:flex; gap:6px; margin-top:10px; flex-wrap:wrap; }
+  .mn-tag{
+    font-family:var(--clother); font-weight:700; font-size:0.6rem; letter-spacing:0.14em;
+    text-transform:uppercase; padding:3px 9px; border-radius:999px;
+    background:var(--areia); border:1.5px solid var(--preto); color:var(--preto);
+  }
+  .mn-tag.data{ background:var(--laranja); color:var(--areia); border-color:var(--preto); }
+  .mn-tag.status-ideia{ background:var(--areia); }
+  .mn-tag.status-aprovado{ background:var(--azul-claro); color:var(--areia); }
+  .mn-tag.status-publicado{ background:var(--dourado); }
+  .mn-item .mn-acts{ display:flex; gap:6px; flex-wrap:wrap; margin-top:12px; }
+  .mn-item .mn-acts button{
+    background:var(--areia); border:1.5px solid var(--preto); color:var(--preto);
+    border-radius:999px; padding:5px 12px; font-size:0.62rem; cursor:pointer;
+    font-family:var(--clother); font-weight:700; letter-spacing:0.14em; text-transform:uppercase;
+    box-shadow:2px 2px 0 0 var(--preto);
+    transition:transform .12s, box-shadow .12s;
+  }
+  .mn-item .mn-acts button:active{ transform:translate(2px,2px); box-shadow:0 0 0 0 var(--preto); }
+  .mn-item .mn-acts button:hover{ background:var(--preto); color:var(--areia); }
+  .mn-item .mn-acts button.del:hover{ background:var(--laranja); border-color:var(--laranja); }
+  .mn-check{
+    width:22px; height:22px; border-radius:50%; border:1.5px solid var(--preto);
+    background:var(--areia); cursor:pointer; flex-shrink:0; display:flex; align-items:center;
+    justify-content:center; color:var(--areia); font-size:14px; font-weight:900;
+    box-shadow:2px 2px 0 0 var(--preto); transition:transform .12s, box-shadow .12s;
+  }
+  .mn-check.on{ background:var(--preto); }
+  .mn-check:active{ transform:translate(2px,2px); box-shadow:0 0 0 0 var(--preto); }
+  .empty-mn{ padding:18px 0; text-align:center; color:var(--muted); font-size:0.85rem; }
 
   .apple{ background:var(--areia-sombra); border:1.5px solid var(--preto); border-radius:8px; box-shadow:3px 3px 0 0 var(--preto); padding:18px; margin-top:22px; }
   .apple .t{ font-family:var(--clother); font-weight:900; font-size:0.95rem; margin-bottom:8px; letter-spacing:-0.005em; }
@@ -458,6 +502,8 @@
     <button class="tab" role="tab" data-tab="painel" aria-selected="true">Painel</button>
     <button class="tab" role="tab" data-tab="orcamento" aria-selected="false">Orçamento</button>
     <button class="tab" role="tab" data-tab="agenda" aria-selected="false">Agenda</button>
+    <button class="tab" role="tab" data-tab="marketing" aria-selected="false">Marketing</button>
+    <button class="tab" role="tab" data-tab="notas" aria-selected="false">Notas</button>
   </nav>
 
   <!-- ================= PAINEL ================= -->
@@ -612,6 +658,79 @@
     </div>
   </section>
 
+  <!-- ================= MARKETING ================= -->
+  <section class="panel" id="panel-marketing">
+    <div class="seg" role="tablist" id="mktSeg">
+      <button role="tab" data-sub="ideia" aria-selected="true">Ideias</button>
+      <button role="tab" data-sub="aprovado" aria-selected="false">Aprovados</button>
+      <button role="tab" data-sub="publicado" aria-selected="false">Publicados</button>
+    </div>
+
+    <div class="card" style="margin-top:14px;">
+      <h2 class="title">Nova ideia</h2>
+      <label class="f"><span>Título</span><input id="mktTitulo" placeholder="Ex: Bastidores da carranca" /></label>
+      <div class="grid2">
+        <label class="f"><span>Formato</span>
+          <select id="mktFormato">
+            <option value="Reels">Reels</option>
+            <option value="Carrossel">Carrossel</option>
+            <option value="Story">Story</option>
+            <option value="Post">Post estático</option>
+            <option value="Vídeo">Vídeo</option>
+          </select>
+        </label>
+        <label class="f"><span>Rede</span>
+          <select id="mktRede">
+            <option value="Instagram">Instagram</option>
+            <option value="TikTok">TikTok</option>
+            <option value="YouTube">YouTube</option>
+            <option value="Todas">Todas</option>
+          </select>
+        </label>
+      </div>
+      <label class="f"><span>Ideia / roteiro</span><textarea id="mktIdeia" rows="3" placeholder="Do que se trata"></textarea></label>
+      <div class="grid2">
+        <label class="f"><span>Data programada (opcional)</span><input id="mktData" type="date" /></label>
+        <label class="f"><span>Hora (opcional)</span><input id="mktHora" type="time" /></label>
+      </div>
+      <button class="btn blue" id="mktAdd">Adicionar</button>
+    </div>
+
+    <div class="divlbl" id="mktLbl">Ideias</div>
+    <div id="mktLista"></div>
+  </section>
+
+  <!-- ================= NOTAS ================= -->
+  <section class="panel" id="panel-notas">
+    <div class="seg" role="tablist" id="notSeg">
+      <button role="tab" data-sub="pendente" aria-selected="true">Pendentes</button>
+      <button role="tab" data-sub="feito" aria-selected="false">Concluídas</button>
+      <button role="tab" data-sub="todas" aria-selected="false">Todas</button>
+    </div>
+
+    <div class="card" style="margin-top:14px;">
+      <h2 class="title">Nova nota</h2>
+      <label class="f"><span>Título</span><input id="notTitulo" placeholder="Ex: comprar filamento PLA cinza" /></label>
+      <label class="f"><span>Detalhe (opcional)</span><textarea id="notDetalhe" rows="2" placeholder="Onde, quanto, referência"></textarea></label>
+      <div class="grid2">
+        <label class="f"><span>Categoria</span>
+          <select id="notCategoria">
+            <option value="Material">Material</option>
+            <option value="Compra">Compra</option>
+            <option value="Estúdio">Estúdio</option>
+            <option value="Geral">Geral</option>
+          </select>
+        </label>
+        <label class="f"><span>Lembrar em (opcional)</span><input id="notData" type="date" /></label>
+      </div>
+      <label class="f"><span>Hora (opcional)</span><input id="notHora" type="time" /></label>
+      <button class="btn blue" id="notAdd">Adicionar</button>
+    </div>
+
+    <div class="divlbl" id="notLbl">Pendentes</div>
+    <div id="notLista"></div>
+  </section>
+
   <div class="foot" id="foot">MARATU &middot; est. 2026 &middot; Aracaju &middot; sync D1</div>
 </div>
 
@@ -691,7 +810,7 @@ const WEBCAL_FEED_URL = "";
 })();
 
 const MaratuStore = (function(){
-  const cache = { params:null, catalogo:null, orcamentos:null, eventos:null, lancamentos:null };
+  const cache = { params:null, catalogo:null, orcamentos:null, eventos:null, lancamentos:null, marketing:null, notas:null };
 
   const API = "https://maratu-api.raphaelnascimento.workers.dev";
   let TOKEN = "";
@@ -769,6 +888,8 @@ const MaratuStore = (function(){
     cache.orcamentos  = s.orcamentos || [];
     cache.eventos     = s.eventos || [];
     cache.lancamentos = s.lancamentos || [];
+    cache.marketing   = s.marketing || [];
+    cache.notas       = s.notas || [];
   }
 
   const backend = {
@@ -818,7 +939,11 @@ const MaratuStore = (function(){
     getEventos(){ return cache.eventos; },
     setEventos(v){ cache.eventos=v; backend.persist('eventos'); },
     getLancamentos(){ return cache.lancamentos; },
-    setLancamentos(v){ cache.lancamentos=v; backend.persist('lancamentos'); }
+    setLancamentos(v){ cache.lancamentos=v; backend.persist('lancamentos'); },
+    getMarketing(){ return cache.marketing; },
+    setMarketing(v){ cache.marketing=v; backend.persist('marketing'); },
+    getNotas(){ return cache.notas; },
+    setNotas(v){ cache.notas=v; backend.persist('notas'); }
   };
 })();
 
@@ -1048,9 +1173,26 @@ $('calPrev').addEventListener('click', ()=>{ viewM--; if(viewM<0){viewM=11;viewY
 $('calNext').addEventListener('click', ()=>{ viewM++; if(viewM>11){viewM=0;viewY++;} renderCal(); });
 $('calToday').addEventListener('click', ()=>{ const t=new Date(); viewY=t.getFullYear(); viewM=t.getMonth(); selDay=todayStr(); renderCal(); renderDay(); });
 
+function calItems(){
+  const arr = [];
+  MaratuStore.getEventos().forEach(e=>{
+    arr.push({ id:e.id, kind:'evento', tipo:e.tipo, titulo:e.titulo, data:e.data, hora:e.hora||'', cliente:e.cliente, notas:e.notas });
+  });
+  MaratuStore.getMarketing().forEach(m=>{
+    if(m.data){
+      arr.push({ id:m.id, kind:'marketing', tipo:'marketing', titulo:m.titulo, data:m.data, hora:m.hora||'', cliente:m.rede, notas:[m.formato, m.status].filter(Boolean).join(' · ') });
+    }
+  });
+  MaratuStore.getNotas().forEach(n=>{
+    if(n.data && !n.feito){
+      arr.push({ id:n.id, kind:'nota', tipo:'nota', titulo:n.titulo, data:n.data, hora:n.hora||'', cliente:n.categoria, notas:n.detalhe });
+    }
+  });
+  return arr;
+}
 function eventsByDay(){
   const map={};
-  MaratuStore.getEventos().forEach(e=>{ (map[e.data]=map[e.data]||[]).push(e); });
+  calItems().forEach(e=>{ (map[e.data]=map[e.data]||[]).push(e); });
   return map;
 }
 function renderCal(){
@@ -1081,22 +1223,29 @@ function renderDay(){
   $('dayTitle').textContent = pad2(d)+' de '+MESES[m-1]+' de '+y;
   $('addForm').style.display='block';
   const evs = (eventsByDay()[selDay]||[]).sort((a,b)=>(a.hora||'').localeCompare(b.hora||''));
-  $('dayEvents').innerHTML = evs.length ? evs.map(e=>`
+  $('dayEvents').innerHTML = evs.length ? evs.map(e=>{
+    const isEv = e.kind==='evento';
+    const acts = isEv
+      ? `<button data-ics="${e.id}">.ics</button><button class="del" data-del="${e.id}">apagar</button>`
+      : `<button data-goto="${e.kind}">abrir</button>`;
+    return `
     <div class="ev">
       <div>
         <div class="t"><span class="pill ${e.tipo}">${e.tipo}</span> ${esc(e.titulo)}</div>
         <div class="meta">${e.hora?('às '+e.hora):'dia inteiro'}${e.cliente?(' · '+esc(e.cliente)):''}${e.notas?(' · '+esc(e.notas)):''}</div>
       </div>
-      <div class="acts">
-        <button data-ics="${e.id}">.ics</button>
-        <button class="del" data-del="${e.id}">apagar</button>
-      </div>
-    </div>`).join('') : '<div class="empty">Nada neste dia ainda.</div>';
+      <div class="acts">${acts}</div>
+    </div>`;
+  }).join('') : '<div class="empty">Nada neste dia ainda.</div>';
 
   $('dayEvents').querySelectorAll('[data-ics]').forEach(b=> b.addEventListener('click', ()=> baixarICS(b.dataset.ics)));
   $('dayEvents').querySelectorAll('[data-del]').forEach(b=> b.addEventListener('click', ()=>{
     const list = MaratuStore.getEventos().filter(x=>x.id!==b.dataset.del);
     MaratuStore.setEventos(list); renderCal(); renderDay(); renderPainel(); renderUpcoming();
+  }));
+  $('dayEvents').querySelectorAll('[data-goto]').forEach(b=> b.addEventListener('click', ()=>{
+    const kind = b.dataset.goto === 'marketing' ? 'marketing' : 'notas';
+    document.querySelector(`#tabs .tab[data-tab="${kind}"]`).click();
   }));
 }
 $('evSalvar').addEventListener('click', ()=>{
@@ -1113,7 +1262,7 @@ $('evSalvar').addEventListener('click', ()=>{
 });
 function renderUpcoming(){
   const hoje = todayStr();
-  const up = MaratuStore.getEventos().filter(e=>e.data>=hoje)
+  const up = calItems().filter(e=>e.data>=hoje)
     .sort((a,b)=> a.data.localeCompare(b.data) || (a.hora||'').localeCompare(b.hora||'')).slice(0,10);
   $('upcoming').innerHTML = up.length ? up.map(e=>`
     <li>
@@ -1160,6 +1309,151 @@ function baixarICS(id){
   setTimeout(()=>URL.revokeObjectURL(a.href), 2000);
 }
 
+/* =====================================================================
+   MARKETING
+   ===================================================================== */
+let mktFilter = 'ideia';
+document.querySelectorAll('#mktSeg button').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('#mktSeg button').forEach(b=>b.setAttribute('aria-selected', b===btn?'true':'false'));
+    mktFilter = btn.dataset.sub;
+    $('mktLbl').textContent = ({ideia:'Ideias', aprovado:'Aprovados', publicado:'Publicados'})[mktFilter];
+    renderMarketing();
+  });
+});
+function renderMarketing(){
+  const list = MaratuStore.getMarketing()
+    .filter(m=> (m.status || 'ideia') === mktFilter)
+    .sort((a,b)=> (b.data||'').localeCompare(a.data||'') || (b.criado||'').localeCompare(a.criado||''));
+  if(!list.length){ $('mktLista').innerHTML = '<div class="empty-mn">Nada aqui ainda.</div>'; return; }
+  $('mktLista').innerHTML = list.map(m=>`
+    <div class="mn-item" data-id="${m.id}">
+      <div class="mn-head">
+        <div style="flex:1; min-width:0;">
+          <div class="mn-title">${esc(m.titulo)}</div>
+          ${m.ideia?`<div class="mn-desc">${esc(m.ideia)}</div>`:''}
+          <div class="mn-tags">
+            ${m.formato?`<span class="mn-tag">${esc(m.formato)}</span>`:''}
+            ${m.rede?`<span class="mn-tag">${esc(m.rede)}</span>`:''}
+            <span class="mn-tag status-${m.status||'ideia'}">${esc(m.status||'ideia')}</span>
+            ${m.data?`<span class="mn-tag data">${fmtDia(m.data)}${m.hora?(' '+m.hora):''}</span>`:''}
+          </div>
+        </div>
+      </div>
+      <div class="mn-acts">
+        ${m.status!=='aprovado'?`<button data-mkt-status="aprovado" data-id="${m.id}">aprovar</button>`:''}
+        ${m.status!=='publicado'?`<button data-mkt-status="publicado" data-id="${m.id}">marcar publicado</button>`:''}
+        ${m.status==='publicado'?`<button data-mkt-status="ideia" data-id="${m.id}">voltar ideia</button>`:''}
+        <button data-mkt-agendar="${m.id}">${m.data?'reagendar':'agendar'}</button>
+        <button class="del" data-mkt-del="${m.id}">apagar</button>
+      </div>
+    </div>`).join('');
+  $('mktLista').querySelectorAll('[data-mkt-status]').forEach(b=> b.addEventListener('click', ()=>{
+    const arr = MaratuStore.getMarketing().map(x=> x.id===b.dataset.id ? {...x, status:b.dataset.mktStatus} : x);
+    MaratuStore.setMarketing(arr); renderMarketing(); renderCal(); renderDay(); renderUpcoming();
+  }));
+  $('mktLista').querySelectorAll('[data-mkt-del]').forEach(b=> b.addEventListener('click', ()=>{
+    const arr = MaratuStore.getMarketing().filter(x=> x.id!==b.dataset.mktDel);
+    MaratuStore.setMarketing(arr); renderMarketing(); renderCal(); renderDay(); renderUpcoming();
+  }));
+  $('mktLista').querySelectorAll('[data-mkt-agendar]').forEach(b=> b.addEventListener('click', ()=>{
+    const id = b.dataset.mktAgendar;
+    const cur = MaratuStore.getMarketing().find(x=>x.id===id);
+    const d = prompt('Data (aaaa-mm-dd) — vazio pra desagendar:', cur?.data || todayStr());
+    if(d===null) return;
+    const h = d ? (prompt('Hora (hh:mm) — vazio pra dia inteiro:', cur?.hora || '') || '') : '';
+    const arr = MaratuStore.getMarketing().map(x=> x.id===id ? {...x, data:d||null, hora:h||null} : x);
+    MaratuStore.setMarketing(arr); renderMarketing(); renderCal(); renderDay(); renderUpcoming();
+  }));
+}
+$('mktAdd').addEventListener('click', ()=>{
+  const titulo = $('mktTitulo').value.trim();
+  if(!titulo){ alert('Título obrigatório.'); return; }
+  const item = {
+    id: uid(), titulo, ideia: $('mktIdeia').value.trim(),
+    formato: $('mktFormato').value, rede: $('mktRede').value,
+    status: 'ideia',
+    data: $('mktData').value || null,
+    hora: $('mktHora').value || null,
+    criado: todayStr()
+  };
+  MaratuStore.setMarketing(MaratuStore.getMarketing().concat([item]));
+  $('mktTitulo').value=''; $('mktIdeia').value=''; $('mktData').value=''; $('mktHora').value='';
+  renderMarketing(); renderCal(); renderDay(); renderUpcoming();
+});
+
+/* =====================================================================
+   NOTAS
+   ===================================================================== */
+let notFilter = 'pendente';
+document.querySelectorAll('#notSeg button').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('#notSeg button').forEach(b=>b.setAttribute('aria-selected', b===btn?'true':'false'));
+    notFilter = btn.dataset.sub;
+    $('notLbl').textContent = ({pendente:'Pendentes', feito:'Concluídas', todas:'Todas'})[notFilter];
+    renderNotas();
+  });
+});
+function renderNotas(){
+  const all = MaratuStore.getNotas();
+  const list = all
+    .filter(n=> notFilter==='todas' ? true : notFilter==='feito' ? !!n.feito : !n.feito)
+    .sort((a,b)=> {
+      const da = a.data||'9999-99-99', db = b.data||'9999-99-99';
+      return da.localeCompare(db) || (b.criado||'').localeCompare(a.criado||'');
+    });
+  if(!list.length){ $('notLista').innerHTML = '<div class="empty-mn">Nada aqui ainda.</div>'; return; }
+  $('notLista').innerHTML = list.map(n=>`
+    <div class="mn-item ${n.feito?'done':''}" data-id="${n.id}">
+      <div class="mn-head">
+        <div class="mn-check ${n.feito?'on':''}" data-not-check="${n.id}">${n.feito?'✓':''}</div>
+        <div style="flex:1; min-width:0;">
+          <div class="mn-title">${esc(n.titulo)}</div>
+          ${n.detalhe?`<div class="mn-desc">${esc(n.detalhe)}</div>`:''}
+          <div class="mn-tags">
+            ${n.categoria?`<span class="mn-tag">${esc(n.categoria)}</span>`:''}
+            ${n.data?`<span class="mn-tag data">${fmtDia(n.data)}${n.hora?(' '+n.hora):''}</span>`:''}
+          </div>
+        </div>
+      </div>
+      <div class="mn-acts">
+        <button data-not-agendar="${n.id}">${n.data?'reagendar':'lembrar em'}</button>
+        <button class="del" data-not-del="${n.id}">apagar</button>
+      </div>
+    </div>`).join('');
+  $('notLista').querySelectorAll('[data-not-check]').forEach(b=> b.addEventListener('click', ()=>{
+    const arr = MaratuStore.getNotas().map(x=> x.id===b.dataset.notCheck ? {...x, feito: !x.feito} : x);
+    MaratuStore.setNotas(arr); renderNotas(); renderCal(); renderDay(); renderUpcoming();
+  }));
+  $('notLista').querySelectorAll('[data-not-del]').forEach(b=> b.addEventListener('click', ()=>{
+    const arr = MaratuStore.getNotas().filter(x=> x.id!==b.dataset.notDel);
+    MaratuStore.setNotas(arr); renderNotas(); renderCal(); renderDay(); renderUpcoming();
+  }));
+  $('notLista').querySelectorAll('[data-not-agendar]').forEach(b=> b.addEventListener('click', ()=>{
+    const id = b.dataset.notAgendar;
+    const cur = MaratuStore.getNotas().find(x=>x.id===id);
+    const d = prompt('Data (aaaa-mm-dd) — vazio pra tirar do calendário:', cur?.data || todayStr());
+    if(d===null) return;
+    const h = d ? (prompt('Hora (hh:mm) — vazio pra dia inteiro:', cur?.hora || '') || '') : '';
+    const arr = MaratuStore.getNotas().map(x=> x.id===id ? {...x, data:d||null, hora:h||null} : x);
+    MaratuStore.setNotas(arr); renderNotas(); renderCal(); renderDay(); renderUpcoming();
+  }));
+}
+$('notAdd').addEventListener('click', ()=>{
+  const titulo = $('notTitulo').value.trim();
+  if(!titulo){ alert('Título obrigatório.'); return; }
+  const item = {
+    id: uid(), titulo, detalhe: $('notDetalhe').value.trim(),
+    categoria: $('notCategoria').value,
+    data: $('notData').value || null,
+    hora: $('notHora').value || null,
+    feito: false, criado: todayStr()
+  };
+  MaratuStore.setNotas(MaratuStore.getNotas().concat([item]));
+  $('notTitulo').value=''; $('notDetalhe').value=''; $('notData').value=''; $('notHora').value='';
+  renderNotas(); renderCal(); renderDay(); renderUpcoming();
+});
+
 /* ---------- botao assinar (webcal) ---------- */
 function setupApple(){
   const feed = window.__MARATU_FEED || WEBCAL_FEED_URL;
@@ -1181,6 +1475,7 @@ MaratuStore.ready.then(()=>{
   fillAjustes(); recalc();
   renderPainel();
   renderCal(); renderDay(); renderUpcoming();
+  renderMarketing(); renderNotas();
   setupApple();
 });
 </script>

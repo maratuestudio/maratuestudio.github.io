@@ -1515,7 +1515,7 @@
     position:absolute; right:52px; bottom:14px; z-index:3;
     max-width:280px; padding:9px 12px 9px 14px;
     background:var(--areia); color:var(--preto);
-    border:1.5px dashed var(--linha-forte); border-radius:12px 12px 4px 12px;
+    border:1.5px solid var(--borda); border-radius:14px 14px 4px 14px;
     box-shadow:3px 3px 0 0 var(--sombra-hard);
     font-family:var(--clother); font-size:0.72rem; line-height:1.35; font-weight:600;
     cursor:pointer; opacity:0; transform:translateY(4px);
@@ -1524,9 +1524,9 @@
   }
   .chico-bubble.on{ opacity:1; transform:translateY(0); pointer-events:auto; }
   .chico-bubble::after{
-    content:''; position:absolute; right:-7px; bottom:8px;
-    width:12px; height:12px; background:var(--areia);
-    border-right:1.5px dashed var(--linha-forte); border-bottom:1.5px dashed var(--linha-forte);
+    content:''; position:absolute; right:-6px; bottom:-6px;
+    width:14px; height:14px; background:var(--areia);
+    border-right:1.5px solid var(--borda); border-bottom:1.5px solid var(--borda);
     transform:rotate(-45deg); border-radius:0 0 3px 0;
   }
   .chico-bubble .cb-cap{

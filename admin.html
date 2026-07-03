@@ -173,11 +173,11 @@
   /* ── HEADER ── */
   .head{
     position:relative;
-    display:flex; flex-direction:column; gap:0;
-    padding:36px 0 14px; border-bottom:1.5px solid var(--borda); margin-bottom:24px;
+    padding:36px 0 20px; min-height:132px;
+    border-bottom:1.5px solid var(--borda); margin-bottom:24px;
   }
-  .head-top{ display:flex; align-items:flex-end; justify-content:space-between; gap:16px; flex-wrap:wrap; }
-  .head-bot{ display:flex; align-items:center; justify-content:flex-end; gap:8px; min-height:22px; margin-top:4px; }
+  .head-top{ display:flex; align-items:flex-start; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+  .head-crab{ position:absolute; right:0; bottom:20px; display:flex; align-items:center; gap:8px; }
   .mark{ display:flex; flex-direction:column; gap:4px; }
   .mark .eyebrow{ font-family:var(--clother); font-size:0.62rem; font-weight:700; letter-spacing:0.24em; text-transform:uppercase; color:var(--preto); opacity:0.7; }
   .mark .word{
@@ -442,6 +442,7 @@
     background:var(--areia); border:1.5px solid var(--borda); border-radius:12px;
     box-shadow:3px 3px 0 0 var(--sombra-hard); padding:20px 22px;
   }
+  .chart-card + .chart-card{ margin-top:20px; }
   .chart-card .ch-head{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom:16px; gap:10px; }
   .chart-card .ch-title{
     font-family:var(--clother); font-weight:900; font-size:1rem;
@@ -1548,14 +1549,14 @@
   .chico-bubble.on{ opacity:1; transform:translateX(0); pointer-events:auto; display:inline-block; }
   /* Rabinho apontando pra DIREITA (direto pro Chico) — dois triângulos com borda */
   .chico-bubble::before{
-    content:''; position:absolute; right:-9px; top:50%; margin-top:-7px;
+    content:''; position:absolute; right:-6px; top:50%; margin-top:-7px;
     width:0; height:0;
     border-top:7px solid transparent; border-bottom:7px solid transparent;
     border-left:8px solid var(--borda);
     pointer-events:none;
   }
   .chico-bubble::after{
-    content:''; position:absolute; right:-6px; top:50%; margin-top:-5px;
+    content:''; position:absolute; right:-3px; top:50%; margin-top:-5px;
     width:0; height:0;
     border-top:5px solid transparent; border-bottom:5px solid transparent;
     border-left:6px solid var(--areia);
@@ -1647,8 +1648,8 @@
         <button class="sair" id="btnSair" type="button">Sair</button>
       </div>
     </div>
-    <!-- Linha do Chico: balão + Aratu, alinhados à direita (embaixo do SAIR) -->
-    <div class="head-bot">
+    <!-- Aratu + balão do Chico, absolute no canto inferior direito -->
+    <div class="head-crab">
       <div class="chico-bubble" id="chicoBubble" role="button" tabindex="0" aria-label="Ver recado do Chico">
         <span class="cb-cap">Chico</span>
         <span class="cb-text" id="chicoBubbleText">—</span>

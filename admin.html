@@ -1511,9 +1511,15 @@
   .crab-admin:focus-visible{ outline:2px solid var(--laranja); outline-offset:3px; border-radius:4px; }
 
   /* ── CHICO — balão de recado ao lado do aratu ── */
-  /* Balão do Chico — aparece EMBAIXO do botão SAIR, fora do fluxo */
+  /* Container do balão — fica ENTRE o header e as tabs, alinhado à direita */
+  .chico-slot{
+    display:flex; justify-content:flex-end;
+    margin:-16px 0 6px;
+    min-height:0;
+  }
+  /* Balão do Chico — pill alinhada à direita, rabinho apontando pra cima (pro SAIR) */
   .chico-bubble{
-    position:absolute; top:100%; right:0; margin-top:12px; z-index:5;
+    position:relative;
     max-width:min(340px, calc(100vw - 40px));
     padding:9px 16px;
     background:var(--areia); color:var(--preto);
@@ -1524,9 +1530,9 @@
     transition:opacity .22s ease, transform .22s ease;
     pointer-events:none;
     white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    display:none;
   }
-  .chico-bubble.on{ opacity:1; transform:translateY(0); pointer-events:auto; }
-  /* Rabinho apontando pra CIMA, direto pro botão SAIR */
+  .chico-bubble.on{ opacity:1; transform:translateY(0); pointer-events:auto; display:inline-block; }
   .chico-bubble::before{
     content:''; position:absolute; right:28px; top:-9px;
     width:0; height:0;
@@ -1541,6 +1547,7 @@
   }
   .chico-bubble .cb-cap{ display:none; }
   @media (max-width:640px){
+    .chico-slot{ margin:-8px 0 6px; }
     .chico-bubble{ max-width:calc(100vw - 40px); font-size:0.65rem; padding:7px 12px; }
   }
 
@@ -1621,10 +1628,6 @@
         <g data-aratu="eye-left"><path d="M117.49,48.16V0c-13.3,0-24.08,10.78-24.08,24.08s10.78,24.08,24.08,24.08Z"/></g>
       </svg>
     </button>
-    <div class="chico-bubble" id="chicoBubble" role="button" tabindex="0" aria-label="Ver recado do Chico">
-      <span class="cb-cap">Chico</span>
-      <span class="cb-text" id="chicoBubbleText">—</span>
-    </div>
     <div class="right">
       <div class="theme-seg" role="group" aria-label="modo de cor" id="themeSeg">
         <button type="button" data-theme=""      aria-pressed="true"  title="Original — laranja"><span class="sw"></span></button>
@@ -1634,6 +1637,14 @@
       <button class="sair" id="btnSair" type="button">Sair</button>
     </div>
   </header>
+
+  <!-- Balão do Chico — fora do header, alinhado à direita (embaixo do SAIR) -->
+  <div class="chico-slot">
+    <div class="chico-bubble" id="chicoBubble" role="button" tabindex="0" aria-label="Ver recado do Chico">
+      <span class="cb-cap">Chico</span>
+      <span class="cb-text" id="chicoBubbleText">—</span>
+    </div>
+  </div>
 
   <nav class="tabs" role="tablist" id="tabs">
     <button class="tab" role="tab" data-tab="painel" aria-selected="true">Painel</button>

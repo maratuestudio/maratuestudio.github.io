@@ -4976,6 +4976,102 @@ function chicoBuildMessages(){
     }
   }
 
+  // 12. Marcos de seguidores no IG (500 / 1000 / 1500 / 2000)
+  const ig = window._chicoIg || null;
+  if(ig && ig.followers){
+    const marcos = [2000, 1500, 1000, 500, 250, 100];
+    const alvo = marcos.find(m => ig.followers >= m);
+    if(alvo){
+      out.push({
+        priority:7, key:'igMarco',
+        text:`${fmt(ig.followers)} seguidores no IG. Vitória.`,
+        detail:`Passou dos ${fmt(alvo)}. Cada seguidor é alguém que quis ver mais da MARATU. Continua com posts de bastidor e produto que a base cresce.`
+      });
+    }
+  }
+
+  // 13. Engajamento forte no IG (soma de likes no período)
+  if(ig && (ig.likes||0) >= 100){
+    out.push({
+      priority:6, key:'igEng',
+      text:`${fmt(ig.likes)} curtidas nos últimos ${ig.rangeLabel}.`,
+      detail:`Engajamento tá aquecido: ${fmt(ig.likes)} curtidas e ${fmt(ig.comments||0)} comentários em ${ig.posts||0} posts. Passa no card do IG e vê qual post puxou pra repetir a fórmula.`
+    });
+  }
+
+  // 14. Poucos posts no IG no período
+  if(ig && ig.posts !== undefined && ig.posts < 3 && (ig.rangeLabel||'').includes('7')){
+    out.push({
+      priority:5, key:'igPoucosPosts',
+      text:`Só ${ig.posts} post${ig.posts===1?'':'s'} no IG essa semana.`,
+      detail:`O algoritmo esfria rápido sem post. Uma foto de bastidor ou um flat lay de pôster já resolve. Passa na aba Marketing e pega uma ideia da fila.`
+    });
+  }
+
+  // 15. Ticket médio do mês (usa lancamentos)
+  if(lancs.length >= 3){
+    const lancsMes = lancs.filter(l=>(l.data||'').slice(0,7)===mesAtual);
+    if(lancsMes.length >= 3){
+      const ticket = lancsMes.reduce((s,l)=>s+num(l.valor),0) / lancsMes.length;
+      out.push({
+        priority:8, key:'ticketMedio',
+        text:`Ticket médio do mês: ${brl(ticket)}.`,
+        detail:`Foram ${lancsMes.length} lançamentos em ${mesAtual.slice(5,7)}/${mesAtual.slice(0,4)}, média de ${brl(ticket)} por venda. Empurrar combos/kits sobe esse número rápido.`
+      });
+    }
+  }
+
+  // 16. Sexta-feira — bom dia pra post de fim de semana
+  const dowHoje = new Date(hoje+'T00:00:00').getDay(); // 0=dom, 5=sex, 6=sab
+  if(dowHoje === 5){
+    out.push({
+      priority:9, key:'sextaPost',
+      text:`Sexta. Bom dia pra soltar um post de fim de semana.`,
+      detail:`Sexta à tarde e sábado de manhã são os melhores horários pra alcance no IG. Se tem algo pronto na fila, hoje é o dia.`
+    });
+  }
+
+  // 17. Últimos 3 dias úteis do mês — fecha orçamentos
+  if(dia >= diasNoMes - 3 && orcs.length){
+    const orcsEmAberto = orcs.filter(o => o.data && (o.data||'').slice(0,7)===mesAtual);
+    if(orcsEmAberto.length){
+      out.push({
+        priority:3, key:'fimDoMes',
+        text:`Faltam ${diasNoMes-dia} dias no mês. ${orcsEmAberto.length} orçamento${orcsEmAberto.length>1?'s':''} pra fechar.`,
+        detail:`Final de mês é hora de puxar quem tá em cima do muro. Um "consegue confirmar hoje?" tira orçamento parado do limbo.`
+      });
+    }
+  }
+
+  // 18. Cliente frequente no mês (>=2 fechamentos)
+  {
+    const lancsMes = lancs.filter(l=>(l.data||'').slice(0,7)===mesAtual);
+    const porCliente = {};
+    lancsMes.forEach(l=>{
+      const c = (l.cliente||'').trim();
+      if(c) porCliente[c] = (porCliente[c]||0) + 1;
+    });
+    const topCli = Object.entries(porCliente).sort((a,b)=> b[1]-a[1])[0];
+    if(topCli && topCli[1] >= 2){
+      out.push({
+        priority:9, key:'clienteFiel',
+        text:`${topCli[0]} já fechou ${topCli[1]}x esse mês.`,
+        detail:`Cliente que volta merece um mimo — um desconto surpresa, brinde ou só um "obrigado" no WhatsApp. Fideliza mais que campanha.`
+      });
+    }
+  }
+
+  // 19. Produto sem foto no catálogo
+  const semFoto = cat.filter(c => !c.imagem_principal);
+  if(semFoto.length){
+    const c = semFoto[0];
+    out.push({
+      priority:8, key:'produtoSemFoto',
+      text:`"${c.nome}" tá sem foto no catálogo.`,
+      detail:`${semFoto.length} produto${semFoto.length>1?'s':''} sem imagem_principal. Sem foto, o site não mostra o card cheio. Passa na aba Orçamento → Produtos e sobe a imagem.`
+    });
+  }
+
   // Ordena por prioridade (0 = mais alta)
   out.sort((a,b)=> a.priority - b.priority);
   return out;
@@ -5010,7 +5106,9 @@ function chicoRender(){
     bubble.classList.remove('on');
     return;
   }
-  _chicoIdx = 0; // sempre mostra a de prioridade mais alta
+  // Sorteia entre as top 5 (por prioridade) — cada refresh mostra uma diferente
+  const topN = Math.min(_chicoMessages.length, 5);
+  _chicoIdx = Math.floor(Math.random() * topN);
   chicoShowBubble();
 }
 

@@ -5229,8 +5229,6 @@ function chicoBuildMessages(){
 let _chicoMessages = [];
 let _chicoIdx = 0;
 
-let _chicoHideTimer = null;
-const CHICO_SHOW_MS = 8000;         // quanto tempo o balão fica visível
 function chicoShowBubble(){
   const bubble = $('chicoBubble');
   const bt = $('chicoBubbleText');
@@ -5238,13 +5236,10 @@ function chicoShowBubble(){
   const m = _chicoMessages[_chicoIdx];
   bt.textContent = m.text;
   bubble.classList.add('on');
-  clearTimeout(_chicoHideTimer);
-  _chicoHideTimer = setTimeout(()=>{ bubble.classList.remove('on'); }, CHICO_SHOW_MS);
 }
 function chicoHideBubble(){
   const bubble = $('chicoBubble');
   if(bubble) bubble.classList.remove('on');
-  clearTimeout(_chicoHideTimer);
 }
 function chicoRender(){
   const bubble = $('chicoBubble');
@@ -5293,11 +5288,6 @@ function chicoWire(){
   if(bubble){
     bubble.addEventListener('click', open);
     bubble.addEventListener('keydown', (e)=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); open(); }});
-    // hover pausa o auto-hide
-    bubble.addEventListener('mouseenter', ()=> clearTimeout(_chicoHideTimer));
-    bubble.addEventListener('mouseleave', ()=>{
-      _chicoHideTimer = setTimeout(()=> bubble.classList.remove('on'), 2000);
-    });
   }
   if(crab){
     // click no crab: se tem mensagem, abre modal; se balão tá escondido, mostra de novo

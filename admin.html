@@ -197,6 +197,11 @@
     letter-spacing:0.18em; text-transform:uppercase; color:var(--preto);
     margin-top:2px;
   }
+  @media (max-width:560px){
+    .mark .word{ font-size:1.75rem; }
+    .mark .sub{ font-size:0.6rem; letter-spacing:0.16em; }
+    .mark .eyebrow{ font-size:0.55rem; }
+  }
   .head .right{ display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-left:auto; justify-content:flex-end; }
   @media (max-width:560px){ .head .right{ width:100%; justify-content:flex-end; } }
   .head .sair{
@@ -1758,9 +1763,28 @@
   .relat-card .btn{ white-space:nowrap; }
   .relat-card .btn:disabled{ opacity:0.5; cursor:wait; }
 
+  /* Pull-to-refresh (PWA standalone) */
+  #ptr{
+    position:fixed; top:-60px; left:0; right:0; height:60px;
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--clother); font-weight:700; font-size:0.65rem;
+    letter-spacing:0.2em; text-transform:uppercase; color:var(--preto);
+    background:var(--bg-page); z-index:9997; pointer-events:none;
+    transition:transform .2s ease;
+  }
+  #ptr.on{ transform:translateY(60px); }
+  #ptr .ptr-spin{
+    width:18px; height:18px; border:2px solid var(--preto);
+    border-top-color:transparent; border-radius:50%;
+    display:inline-block; margin-right:10px; animation:ptrSpin 0.7s linear infinite;
+  }
+  @keyframes ptrSpin{ to{ transform:rotate(360deg); } }
+
 </style>
 </head>
 <body>
+
+<div id="ptr" aria-hidden="true"><span class="ptr-lbl">Puxe pra atualizar</span></div>
 
 <div class="wrap">
 
@@ -5676,6 +5700,56 @@ if(window.MaratuStore && MaratuStore.ready && typeof MaratuStore.ready.then==='f
 setTimeout(chicoRefresh, 2500);
 setInterval(chicoRefresh, 5*60*1000);
 setInterval(chicoTick, 5*1000);
+
+/* =====================================================================
+   PULL-TO-REFRESH — só em modo standalone (PWA iOS/Android)
+   ===================================================================== */
+(function ptr(){
+  const standalone = window.matchMedia('(display-mode: standalone)').matches
+                  || window.navigator.standalone === true;
+  if(!standalone) return;
+  const el = document.getElementById('ptr');
+  if(!el) return;
+  const lbl = el.querySelector('.ptr-lbl');
+  const THRESHOLD = 80;
+  let startY = 0, currentY = 0, pulling = false, triggered = false;
+
+  document.addEventListener('touchstart', (e)=>{
+    if(document.scrollingElement.scrollTop > 0) return;
+    if(triggered) return;
+    startY = e.touches[0].clientY;
+    pulling = true;
+  }, {passive:true});
+
+  document.addEventListener('touchmove', (e)=>{
+    if(!pulling || triggered) return;
+    currentY = e.touches[0].clientY;
+    const delta = currentY - startY;
+    if(delta <= 0){ el.style.transform=''; el.classList.remove('on'); return; }
+    if(document.scrollingElement.scrollTop > 0){ pulling=false; el.style.transform=''; el.classList.remove('on'); return; }
+    const pulled = Math.min(delta * 0.55, 120);
+    el.style.transform = 'translateY('+pulled+'px)';
+    if(pulled >= THRESHOLD){ lbl.textContent = 'Solte pra atualizar'; }
+    else { lbl.textContent = 'Puxe pra atualizar'; }
+  }, {passive:true});
+
+  document.addEventListener('touchend', ()=>{
+    if(!pulling){ return; }
+    pulling = false;
+    const delta = currentY - startY;
+    const pulled = delta * 0.55;
+    if(pulled >= THRESHOLD && !triggered){
+      triggered = true;
+      el.innerHTML = '<span class="ptr-spin"></span><span class="ptr-lbl">Atualizando</span>';
+      el.style.transform = 'translateY(60px)';
+      setTimeout(()=> location.reload(), 250);
+    } else {
+      el.style.transform = '';
+      el.classList.remove('on');
+      lbl && (lbl.textContent = 'Puxe pra atualizar');
+    }
+  }, {passive:true});
+})();
 
 /* =====================================================================
    RELATÓRIO SEMANAL — 100% client, template estático

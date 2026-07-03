@@ -1774,7 +1774,7 @@
       <div class="rc-l">
         <div class="rc-cap">Relatório semanal</div>
         <div class="rc-lbl">Resumo dos últimos 7 dias</div>
-        <div class="rc-sub">Puxa vendas, agenda, marketing e GA4 e devolve um markdown pra baixar.</div>
+        <div class="rc-sub">Junta vendas, agenda, marketing, GA4, orçamentos e notas num markdown pronto pra baixar.</div>
       </div>
       <button class="btn blue" id="relatGerar" type="button">Gerar relatório</button>
     </div>
@@ -4625,8 +4625,6 @@ window.addEventListener('resize', ()=>{
 /* =====================================================================
    CHICO — recado ao lado do aratu + popup + relatório semanal
    ===================================================================== */
-const URL_CLAUDE = API + "/api/claude/relatorio";
-
 const CHICO_LIMIARES = {
   semVendasDias: 3,
   orcParadoDias: 7,
@@ -4879,48 +4877,134 @@ setTimeout(chicoRefresh, 1500);
 setInterval(chicoRefresh, 5*60*1000);
 
 /* =====================================================================
-   RELATÓRIO SEMANAL — chama Worker que fala com Claude
+   RELATÓRIO SEMANAL — 100% client, template estático
    ===================================================================== */
-async function gerarRelatorio(){
+function fmtDataMD(iso){
+  if(!iso) return '';
+  return iso.slice(8,10)+'/'+iso.slice(5,7);
+}
+function buildRelatorioMD(){
+  const hoje = todayStr();
+  const seteAtras = new Date(); seteAtras.setDate(seteAtras.getDate()-6);
+  const de = dateStr(seteAtras.getFullYear(), seteAtras.getMonth(), seteAtras.getDate());
+  const lancs = MaratuStore.getLancamentos().filter(l => (l.data||'')>=de && (l.data||'')<=hoje);
+  const evs = (MaratuStore.getEventos ? MaratuStore.getEventos() : []).filter(e => (e.data||'')>=de && (e.data||'')<=hoje);
+  const mkt = (MaratuStore.getMarketing ? MaratuStore.getMarketing() : []).filter(m => (m.data||'')>=de && (m.data||'')<=hoje);
+  const notas = (MaratuStore.getNotas ? MaratuStore.getNotas() : []).filter(n => (n.data||'')>=de && (n.data||'')<=hoje);
+  const orcs = (MaratuStore.getOrcamentos ? MaratuStore.getOrcamentos() : []).filter(o => (o.data||'')>=de && (o.data||'')<=hoje);
+  const ga = window._chicoGa4 || null;
+
+  const linhas = [];
+  linhas.push('# Relatório MARATU · '+fmtDataMD(de)+' a '+fmtDataMD(hoje));
+  linhas.push('');
+  linhas.push('_Gerado em '+hoje+'_');
+  linhas.push('');
+
+  // Vendas
+  linhas.push('## Vendas');
+  if(lancs.length){
+    const total = lancs.reduce((s,l)=>s+num(l.valor),0);
+    const p = MaratuStore.getParams();
+    const meta = num(p.fixo)+num(p.retirada);
+    const mesAtual = hoje.slice(0,7);
+    const fatMes = MaratuStore.getLancamentos().filter(l=>(l.data||'').slice(0,7)===mesAtual).reduce((s,l)=>s+num(l.valor),0);
+    linhas.push('- Total nos últimos 7 dias: **'+brl(total)+'** ('+lancs.length+' lançamento'+(lancs.length>1?'s':'')+')');
+    linhas.push('- Faturamento do mês: **'+brl(fatMes)+'**'+(meta>0?' de '+brl(meta)+' ('+Math.round(fatMes/meta*100)+'% da meta)':''));
+    linhas.push('');
+    linhas.push('| Data | Descrição | Valor |');
+    linhas.push('|---|---|---:|');
+    lancs.slice().sort((a,b)=> (b.data||'').localeCompare(a.data||'')).forEach(l=>{
+      linhas.push('| '+fmtDataMD(l.data)+' | '+(l.label||'—')+' | '+brl(num(l.valor))+' |');
+    });
+  } else {
+    linhas.push('_sem lançamentos no período_');
+  }
+  linhas.push('');
+
+  // Agenda
+  linhas.push('## Agenda');
+  if(evs.length){
+    evs.slice().sort((a,b)=> (a.data||'').localeCompare(b.data||'')).forEach(e=>{
+      const h = e.hora ? ' às '+e.hora : (e.diaInteiro?' (dia inteiro)':'');
+      linhas.push('- **'+fmtDataMD(e.data)+'**'+h+' — '+(e.titulo||'')+(e.cliente?' · '+e.cliente:''));
+    });
+  } else {
+    linhas.push('_sem eventos no período_');
+  }
+  linhas.push('');
+
+  // Marketing
+  linhas.push('## Marketing');
+  if(mkt.length){
+    const porStatus = { publicado:[], programado:[], ideia:[] };
+    mkt.forEach(m => (porStatus[m.status]||porStatus.ideia).push(m));
+    ['publicado','programado','ideia'].forEach(st=>{
+      if(porStatus[st].length){
+        linhas.push('- **'+st.charAt(0).toUpperCase()+st.slice(1)+':**');
+        porStatus[st].forEach(m=>{
+          linhas.push('  - '+fmtDataMD(m.data||'')+(m.data?' — ':'')+(m.titulo||'—')+(m.rede?' ('+m.rede+')':''));
+        });
+      }
+    });
+  } else {
+    linhas.push('_sem atividade de marketing no período_');
+  }
+  linhas.push('');
+
+  // Tráfego (GA4)
+  linhas.push('## Tráfego');
+  if(ga){
+    const delta = (typeof ga.deltaPct === 'number') ? (ga.deltaPct>=0?'+':'')+Math.round(ga.deltaPct)+'% vs período anterior' : 'sem comparação';
+    linhas.push('- Sessões (últimos '+(ga.rangeLabel||'7 dias')+'): **'+(ga.current||0)+'** — '+delta);
+    if(ga.previous!=null) linhas.push('- Período anterior: '+ga.previous+' sessões');
+  } else {
+    linhas.push('_GA4 sem dados carregados (abra o card do GA4 no painel antes de gerar)_');
+  }
+  linhas.push('');
+
+  // Orçamentos
+  linhas.push('## Orçamentos');
+  if(orcs.length){
+    orcs.slice().sort((a,b)=> (b.data||'').localeCompare(a.data||'')).forEach(o=>{
+      linhas.push('- '+fmtDataMD(o.data)+' — '+(o.cliente||'sem cliente')+' · '+brl(num(o.total)));
+    });
+  } else {
+    linhas.push('_sem orçamentos salvos no período_');
+  }
+  linhas.push('');
+
+  // Notas
+  linhas.push('## Notas');
+  if(notas.length){
+    notas.slice().sort((a,b)=> (a.data||'').localeCompare(b.data||'')).forEach(n=>{
+      linhas.push('- '+(n.feito?'[x]':'[ ]')+' '+fmtDataMD(n.data||'')+' — '+(n.titulo||'—'));
+    });
+  } else {
+    linhas.push('_sem notas com data no período_');
+  }
+  linhas.push('');
+
+  // Sinais de atenção (usa a lista do Chico)
+  linhas.push('## Sinais de atenção');
+  try {
+    const sinais = chicoBuildMessages();
+    if(sinais.length){
+      sinais.forEach(s=> linhas.push('- '+s.text));
+    } else {
+      linhas.push('_nenhum sinal ativo — tudo em dia_');
+    }
+  } catch(e){ linhas.push('_erro ao coletar sinais_'); }
+
+  return linhas.join('\n');
+}
+function gerarRelatorio(){
   const btn = $('relatGerar');
   if(!btn) return;
   const label0 = btn.textContent;
-  btn.disabled = true;
-  btn.textContent = 'Gerando…';
-  try{
+  btn.disabled = true; btn.textContent = 'Gerando…';
+  try {
+    const md = buildRelatorioMD();
     const hoje = todayStr();
-    const seteAtras = new Date(); seteAtras.setDate(seteAtras.getDate()-7);
-    const de = dateStr(seteAtras.getFullYear(), seteAtras.getMonth(), seteAtras.getDate());
-    const lancs = MaratuStore.getLancamentos().filter(l => (l.data||'')>=de);
-    const evs = (MaratuStore.getEventos ? MaratuStore.getEventos() : []).filter(e => (e.data||'')>=de);
-    const mkt = (MaratuStore.getMarketing ? MaratuStore.getMarketing() : []).filter(m => (m.data||'')>=de);
-    const notas = (MaratuStore.getNotas ? MaratuStore.getNotas() : []).filter(n => (n.data||'')>=de);
-    const orcs = (MaratuStore.getOrcamentos ? MaratuStore.getOrcamentos() : []).filter(o => (o.data||'')>=de);
-    const ga = window._chicoGa4 || null;
-    const body = {
-      periodo: { de, ate: hoje },
-      lancamentos: lancs,
-      eventos: evs,
-      marketing: mkt,
-      notas: notas,
-      orcamentos: orcs,
-      ga4: ga
-    };
-    let tk = null;
-    try { tk = localStorage.getItem('maratu.token'); } catch(e){}
-    const r = await fetch(URL_CLAUDE, {
-      method:'POST',
-      headers:{ 'Content-Type':'application/json', 'Authorization':'Bearer '+(tk||'') },
-      body: JSON.stringify(body)
-    });
-    if(!r.ok){
-      const t = await r.text().catch(()=> '');
-      alert('Erro ao gerar relatório ('+r.status+'). '+(t.slice(0,200)));
-      return;
-    }
-    const j = await r.json();
-    const md = j.markdown || j.text || '';
-    if(!md){ alert('Relatório veio vazio.'); return; }
     const blob = new Blob([md], { type:'text/markdown;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -4928,10 +5012,9 @@ async function gerarRelatorio(){
     document.body.appendChild(a); a.click(); a.remove();
     setTimeout(()=> URL.revokeObjectURL(url), 1500);
   } catch(e){
-    alert('Sem conexão pra gerar relatório.');
+    alert('Erro ao gerar relatório: '+e.message);
   } finally {
-    btn.disabled = false;
-    btn.textContent = label0;
+    btn.disabled = false; btn.textContent = label0;
   }
 }
 (function wireRelat(){

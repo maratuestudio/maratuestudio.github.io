@@ -1267,14 +1267,37 @@
   }
   @media (max-width:640px){ .nr-when-empty{ opacity:1; } }
 
-  .nr-del{
+  .nr-del, .nr-edit{
     background:transparent; border:none; padding:2px 6px; cursor:pointer;
     font-family:var(--clother); font-weight:700; font-size:0.58rem;
     color:var(--muted); letter-spacing:0.16em; text-transform:uppercase;
     opacity:0; transition:opacity .1s, color .1s;
   }
   .nr-del:hover{ color:var(--laranja); }
-  @media (max-width:640px){ .nr-del{ opacity:0.6; } }
+  .nr-edit:hover{ color:var(--preto); }
+  .note-row:hover .nr-edit{ opacity:1; }
+  @media (max-width:640px){ .nr-del, .nr-edit{ opacity:0.6; } }
+
+  .nr-edit-title, .nr-edit-desc{
+    width:100%; box-sizing:border-box;
+    border:1px solid var(--linha-forte); border-radius:6px;
+    background:var(--areia); padding:6px 8px;
+    font-family:var(--clother); color:var(--preto);
+    outline:none;
+  }
+  .nr-edit-title{ font-weight:700; font-size:0.98rem; letter-spacing:-0.005em; }
+  .nr-edit-desc{ font-size:0.85rem; line-height:1.5; resize:vertical; min-height:56px; }
+  .nr-edit-title:focus, .nr-edit-desc:focus{ border-color:var(--borda); }
+  .nr-edit-actions{ display:flex; gap:8px; margin-top:6px; }
+  .nr-edit-actions button{
+    background:transparent; border:none; padding:4px 8px; cursor:pointer;
+    font-family:var(--clother); font-weight:700; font-size:0.62rem;
+    letter-spacing:0.16em; text-transform:uppercase;
+  }
+  .nr-edit-actions .nr-save{ color:var(--preto); }
+  .nr-edit-actions .nr-save:hover{ color:var(--laranja); }
+  .nr-edit-actions .nr-cancel{ color:var(--muted); }
+  .nr-edit-actions .nr-cancel:hover{ color:var(--preto); }
 
   .notas-empty{
     padding:60px 20px; text-align:center;
@@ -1299,10 +1322,15 @@
   .when-pop button:hover{ background:var(--areia-sombra); }
   .when-pop button.destr{ color:var(--laranja); }
   .when-pop button svg{ width:14px; height:14px; opacity:0.7; }
-  .when-pop input[type="date"]{
+  .when-pop input[type="date"], .when-pop input[type="time"]{
     width:calc(100% - 8px); margin:6px 4px 4px; padding:6px 8px; font-size:0.82rem;
     border:1px solid var(--linha-forte); border-radius:6px; background:var(--areia);
     font-family:var(--clother); box-shadow:none;
+  }
+  .when-pop .wp-label{
+    font-family:var(--clother); font-weight:700; font-size:0.58rem;
+    color:var(--muted); letter-spacing:0.16em; text-transform:uppercase;
+    padding:4px 10px 0;
   }
   .when-pop hr{ border:none; border-top:1px solid var(--linha); margin:4px 0; }
 
@@ -3952,9 +3980,51 @@ function renderNotRow(n){
       </div>
       <div class="nr-right">
         ${whenBtn}
-        <button class="nr-del" data-del="${nn.id}">apagar</button>
+        <div style="display:flex; gap:4px;">
+          <button class="nr-edit" data-edit="${nn.id}">editar</button>
+          <button class="nr-del" data-del="${nn.id}">apagar</button>
+        </div>
       </div>
     </div>`;
+}
+
+function enterNotEdit(id){
+  const row = document.querySelector(`.note-row[data-id="${id}"]`);
+  if(!row) return;
+  const cur = MaratuStore.getNotas().find(x=>x.id===id);
+  if(!cur) return;
+  const body = row.querySelector('.nr-body');
+  const right = row.querySelector('.nr-right');
+  body.innerHTML = `
+    <input class="nr-edit-title" type="text" value="${esc(cur.titulo||'')}" />
+    <textarea class="nr-edit-desc" placeholder="detalhes (opcional)">${esc(cur.detalhe||'')}</textarea>
+    <div class="nr-edit-actions">
+      <button class="nr-save">salvar</button>
+      <button class="nr-cancel">cancelar</button>
+    </div>`;
+  right.style.visibility = 'hidden';
+  const tInp = body.querySelector('.nr-edit-title');
+  const dInp = body.querySelector('.nr-edit-desc');
+  tInp.focus();
+  tInp.setSelectionRange(tInp.value.length, tInp.value.length);
+  const save = ()=>{
+    const t = tInp.value.trim();
+    if(!t){ tInp.focus(); return; }
+    const arr = MaratuStore.getNotas().map(x=> x.id===id ? {...x, titulo:t, detalhe: dInp.value.trim()} : x);
+    MaratuStore.setNotas(arr);
+    renderNotas(); renderCal(); renderDay(); renderUpcoming(); renderPainel();
+  };
+  const cancel = ()=> renderNotas();
+  body.querySelector('.nr-save').addEventListener('click', save);
+  body.querySelector('.nr-cancel').addEventListener('click', cancel);
+  tInp.addEventListener('keydown', (ev)=>{
+    if(ev.key==='Enter'){ ev.preventDefault(); save(); }
+    if(ev.key==='Escape'){ ev.preventDefault(); cancel(); }
+  });
+  dInp.addEventListener('keydown', (ev)=>{
+    if(ev.key==='Enter' && (ev.metaKey||ev.ctrlKey)){ ev.preventDefault(); save(); }
+    if(ev.key==='Escape'){ ev.preventDefault(); cancel(); }
+  });
 }
 
 function wireNotRows(){
@@ -3981,6 +4051,9 @@ function wireNotRows(){
   $('notLista').querySelectorAll('[data-when]').forEach(b=>{
     b.addEventListener('click', (ev)=>{ ev.stopPropagation(); openWhenPop(b.dataset.when, b); });
   });
+  $('notLista').querySelectorAll('[data-edit]').forEach(b=>{
+    b.addEventListener('click', (ev)=>{ ev.stopPropagation(); enterNotEdit(b.dataset.edit); });
+  });
 }
 
 function openWhenPop(id, anchor){
@@ -3993,32 +4066,44 @@ function openWhenPop(id, anchor){
     <button data-set="tomorrow">${N_CAL}<span>Amanha</span></button>
     <button data-set="nextweek">${N_CAL}<span>Semana que vem</span></button>
     <hr />
+    <div class="wp-label">Dia</div>
     <input type="date" />
+    <div class="wp-label">Hora</div>
+    <input type="time" />
     <hr />
     <button data-set="clear" class="destr">Sem data</button>`;
   const parent = anchor.closest('.nr-right');
   parent.appendChild(pop);
 
-  const apply = (iso)=>{
-    const arr = MaratuStore.getNotas().map(x=> x.id===id ? {...x, data: iso || null} : x);
+  const applyDate = (iso)=>{
+    const arr = MaratuStore.getNotas().map(x=> x.id===id ? {...x, data: iso || null, hora: iso ? x.hora : null} : x);
     MaratuStore.setNotas(arr);
     pop.remove();
+    renderNotas(); renderCal(); renderDay(); renderUpcoming(); renderPainel();
+  };
+  const applyHora = (hhmm)=>{
+    const arr = MaratuStore.getNotas().map(x=> x.id===id ? {...x, hora: hhmm || null} : x);
+    MaratuStore.setNotas(arr);
     renderNotas(); renderCal(); renderDay(); renderUpcoming(); renderPainel();
   };
   pop.querySelectorAll('[data-set]').forEach(b=>{
     b.addEventListener('click', (ev)=>{
       ev.stopPropagation();
       const v = b.dataset.set;
-      if(v==='today') apply(todayStr());
-      else if(v==='tomorrow') apply(notAddDays(todayStr(),1));
-      else if(v==='nextweek') apply(notAddDays(todayStr(),7));
-      else if(v==='clear') apply(null);
+      if(v==='today') applyDate(todayStr());
+      else if(v==='tomorrow') applyDate(notAddDays(todayStr(),1));
+      else if(v==='nextweek') applyDate(notAddDays(todayStr(),7));
+      else if(v==='clear') applyDate(null);
     });
   });
   const dateInp = pop.querySelector('input[type="date"]');
   if(cur?.data) dateInp.value = cur.data;
-  dateInp.addEventListener('change', ()=> apply(dateInp.value || null));
+  dateInp.addEventListener('change', ()=> applyDate(dateInp.value || null));
   dateInp.addEventListener('click', (ev)=> ev.stopPropagation());
+  const horaInp = pop.querySelector('input[type="time"]');
+  if(cur?.hora) horaInp.value = cur.hora;
+  horaInp.addEventListener('change', ()=> applyHora(horaInp.value || null));
+  horaInp.addEventListener('click', (ev)=> ev.stopPropagation());
 
   setTimeout(()=>{
     const outside = (ev)=>{

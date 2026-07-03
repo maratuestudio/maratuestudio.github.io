@@ -628,10 +628,10 @@
   }
 
   /* ── ORCAMENTO subtabs ── */
-  .seg{ display:flex; gap:0; margin-bottom:20px; padding:0 8px; background:var(--areia); border:1.5px solid var(--borda); border-radius:999px; overflow:hidden; box-shadow:2px 2px 0 0 var(--sombra-hard); }
+  .seg{ display:flex; gap:0; margin-bottom:20px; background:var(--areia); border:1.5px solid var(--borda); border-radius:999px; overflow:hidden; box-shadow:2px 2px 0 0 var(--sombra-hard); }
   .seg button{
     flex:1; background:transparent; border:none; border-right:1px solid var(--linha);
-    color:var(--muted); padding:11px 6px; font-size:0.7rem; cursor:pointer;
+    color:var(--muted); padding:11px 18px; font-size:0.7rem; cursor:pointer;
     font-family:var(--clother); font-weight:700; letter-spacing:0.16em; text-transform:uppercase;
   }
   .seg button:last-child{ border-right:none; }
@@ -2247,6 +2247,17 @@
     </div>
   </div>
 
+  <!-- Modal de detalhe/edição de evento do calendário -->
+  <div class="modal-back" id="evDetail" role="dialog" aria-modal="true" aria-labelledby="evDetailTitle">
+    <div class="modal-card" style="max-width:520px;">
+      <div class="modal-head">
+        <h3 id="evDetailTitle">Detalhes</h3>
+        <button type="button" class="modal-close" id="evDetailClose" aria-label="Fechar">×</button>
+      </div>
+      <div id="evDetailBody"></div>
+    </div>
+  </div>
+
   <!-- ================= AGENDA (Fantastical + Amie) ================= -->
   <section class="panel" id="panel-agenda">
 
@@ -3404,8 +3415,11 @@ function renderMonth(){
       el.classList.remove('dragging');
       $('calGrid').querySelectorAll('.mcell.drop-hover').forEach(x=> x.classList.remove('drop-hover'));
     });
-    // Impede que clique no evento selecione o dia
-    el.addEventListener('click', (e)=>{ e.stopPropagation(); });
+    // Clique no evento abre o detalhe/edição (impede seleção do dia)
+    el.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      openEvDetail(el.dataset.dragKind, el.dataset.dragId);
+    });
   });
 }
 function monthCell(iso, dNum, evs, todayIso, otherMonth){
@@ -3592,15 +3606,12 @@ function wireWeekInteractions(){
     });
   });
 
-  // Click event → download ics (if evento) or jump to source
+  // Click event → abre detalhe/edição
   $('calWeek').querySelectorAll('.wk-ev, .wk-ad').forEach(el=>{
     el.addEventListener('click', ev=>{
       if(el.classList.contains('dragging')) return;
-      const kind = el.dataset.kind;
-      const id = el.dataset.id;
-      if(kind==='evento'){ baixarICS(id); return; }
-      const tab = kind==='marketing' ? 'marketing' : 'notas';
-      document.querySelector(`#tabs .tab[data-tab="${tab}"]`).click();
+      ev.stopPropagation();
+      openEvDetail(el.dataset.kind, el.dataset.id);
     });
   });
 
@@ -3793,6 +3804,110 @@ function renderUpcoming(){
       <span class="lil val">${fmtDia(e.data)}${e.hora?(' '+e.hora):''}</span>
     </li>`).join('') : '<li class="empty">Sem eventos futuros.</li>';
 }
+
+/* ---------- Modal detalhe/edição do evento (calendário) ---------- */
+function closeEvDetail(){ $('evDetail').classList.remove('on'); }
+function openEvDetail(kind, id){
+  const it = calItems().find(e => e.kind===kind && String(e.id)===String(id));
+  if(!it) return;
+  const title = $('evDetailTitle');
+  const body = $('evDetailBody');
+  const modal = $('evDetail');
+
+  if(kind==='evento'){
+    title.textContent = 'Editar evento';
+    const tipoAtual = it.tipo==='entrega' ? 'entrega' : 'evento';
+    body.innerHTML = `
+      <label class="f"><span>Título</span><input id="edTit" value="${esc(it.titulo)}" /></label>
+      <div class="form-section-title">Tipo</div>
+      <div class="chip-row" id="edTipo">
+        <button type="button" class="chip" data-tipo="evento" aria-pressed="${tipoAtual==='evento'?'true':'false'}">Evento</button>
+        <button type="button" class="chip" data-tipo="entrega" aria-pressed="${tipoAtual==='entrega'?'true':'false'}">Entrega</button>
+      </div>
+      <div class="grid2" style="margin-top:12px;">
+        <label class="f"><span>Data</span><input type="date" id="edData" value="${it.data}" /></label>
+        <label class="f"><span>Hora</span><input type="time" id="edHora" value="${it.hora||''}" /></label>
+      </div>
+      <label class="opt-toggle" style="margin-top:10px;">
+        <input type="checkbox" id="edDiaInteiro" ${!it.hora?'checked':''} />
+        <span class="opt-toggle-lbl"><b>Dia inteiro</b></span>
+      </label>
+      <label class="f"><span>Cliente</span><input id="edCli" value="${esc(it.cliente||'')}" /></label>
+      <label class="f"><span>Notas</span><textarea id="edNotas" rows="3">${esc(it.notas||'')}</textarea></label>
+      <div class="form-actions">
+        <button type="button" class="btn danger" id="edDel">Apagar evento</button>
+        <div class="actions-right">
+          <button type="button" class="btn ghost" id="edCancel">Cancelar</button>
+          <button type="button" class="btn blue" id="edSalvar">Salvar</button>
+        </div>
+      </div>
+    `;
+    body.querySelectorAll('#edTipo .chip').forEach(c=>{
+      c.addEventListener('click', ()=>{
+        body.querySelectorAll('#edTipo .chip').forEach(x=> x.setAttribute('aria-pressed','false'));
+        c.setAttribute('aria-pressed','true');
+      });
+    });
+    const syncDiaInteiro = ()=>{
+      const chk = $('edDiaInteiro').checked;
+      $('edHora').disabled = chk;
+      if(chk) $('edHora').value = '';
+    };
+    $('edDiaInteiro').addEventListener('change', syncDiaInteiro);
+    syncDiaInteiro();
+    $('edCancel').addEventListener('click', closeEvDetail);
+    $('edDel').addEventListener('click', ()=>{
+      if(!confirm('Apagar esse evento?')) return;
+      const list = MaratuStore.getEventos().filter(x=> String(x.id)!==String(id));
+      MaratuStore.setEventos(list);
+      closeEvDetail();
+      renderCal(); renderDay(); renderPainel(); renderUpcoming();
+    });
+    $('edSalvar').addEventListener('click', ()=>{
+      const tipo = body.querySelector('#edTipo .chip[aria-pressed="true"]').dataset.tipo;
+      const hora = $('edDiaInteiro').checked ? '' : ($('edHora').value || '');
+      const patch = {
+        titulo: $('edTit').value.trim() || it.titulo,
+        tipo,
+        data: $('edData').value || it.data,
+        hora,
+        diaInteiro: !hora,
+        cliente: $('edCli').value.trim(),
+        notas: $('edNotas').value.trim(),
+      };
+      const list = MaratuStore.getEventos().map(x=> String(x.id)===String(id) ? {...x, ...patch} : x);
+      MaratuStore.setEventos(list);
+      closeEvDetail();
+      renderCal(); renderDay(); renderPainel(); renderUpcoming();
+    });
+  } else {
+    const isMk = kind==='marketing';
+    title.textContent = isMk ? 'Marketing' : 'Nota';
+    body.innerHTML = `
+      <div style="font-family:var(--clother); color:var(--preto);">
+        <div style="font-size:1rem; font-weight:700; margin-bottom:6px;">${esc(it.titulo)}</div>
+        <div style="color:var(--muted); font-size:0.85rem;">${fmtDia(it.data)}${it.hora?(' · '+it.hora):''}${it.cliente?(' · '+esc(it.cliente)):''}</div>
+        ${it.notas?`<div style="color:var(--muted); font-size:0.85rem; margin-top:6px;">${esc(it.notas)}</div>`:''}
+      </div>
+      <div class="form-actions">
+        <div></div>
+        <div class="actions-right">
+          <button type="button" class="btn ghost" id="edCancel">Fechar</button>
+          <button type="button" class="btn blue" id="edGoto">Abrir na aba ${isMk?'Marketing':'Notas'}</button>
+        </div>
+      </div>
+    `;
+    $('edCancel').addEventListener('click', closeEvDetail);
+    $('edGoto').addEventListener('click', ()=>{
+      closeEvDetail();
+      const tab = isMk ? 'marketing' : 'notas';
+      document.querySelector(`#tabs .tab[data-tab="${tab}"]`).click();
+    });
+  }
+  modal.classList.add('on');
+}
+$('evDetailClose').addEventListener('click', closeEvDetail);
+$('evDetail').addEventListener('click', (e)=>{ if(e.target===$('evDetail')) closeEvDetail(); });
 
 /* ---------- ICS (Apple Calendar, client side) ---------- */
 function icsEscape(s){ return String(s||'').replace(/\\/g,'\\\\').replace(/;/g,'\\;').replace(/,/g,'\\,').replace(/\n/g,'\\n'); }
@@ -5447,10 +5562,25 @@ function chicoRender(){
     bubble.classList.remove('on');
     return;
   }
-  // Sorteia entre as top 5 (por prioridade) — cada refresh mostra uma diferente
+  // Ponto de partida aleatório entre as top 5 (por prioridade)
   const topN = Math.min(_chicoMessages.length, 5);
   _chicoIdx = Math.floor(Math.random() * topN);
   chicoShowBubble();
+}
+
+/* Rotação automática do balão — troca de mensagem a cada 5s */
+function chicoTick(){
+  if(!_chicoMessages.length) return;
+  const bubble = $('chicoBubble');
+  const bt = $('chicoBubbleText');
+  if(!bubble || !bt) return;
+  // Se a modal do Chico tá aberta, pausa a rotação
+  const back = $('chicoBack');
+  if(back && back.classList.contains('on')) return;
+  const topN = Math.min(_chicoMessages.length, 5);
+  _chicoIdx = (_chicoIdx + 1) % topN;
+  bt.textContent = _chicoMessages[_chicoIdx].text;
+  bubble.classList.add('on');
 }
 
 function chicoNext(){
@@ -5529,6 +5659,7 @@ if(window.MaratuStore && MaratuStore.ready && typeof MaratuStore.ready.then==='f
 }
 setTimeout(chicoRefresh, 2500);
 setInterval(chicoRefresh, 5*60*1000);
+setInterval(chicoTick, 5*1000);
 
 /* =====================================================================
    RELATÓRIO SEMANAL — 100% client, template estático

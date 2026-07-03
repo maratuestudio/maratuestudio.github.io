@@ -1511,36 +1511,41 @@
   .crab-admin:focus-visible{ outline:2px solid var(--laranja); outline-offset:3px; border-radius:4px; }
 
   /* ── CHICO — balão de recado ao lado do aratu ── */
+  /* Slot que agrupa balão + Chico como um único item flex do header */
+  .crab-slot{
+    display:flex; align-items:center; gap:14px;
+    position:relative;
+  }
   .chico-bubble{
-    position:absolute; right:56px; top:100%; margin-top:-4px; z-index:5;
-    max-width:min(320px, calc(100vw - 120px));
-    padding:8px 16px;
+    position:relative;
+    max-width:min(320px, 42vw);
+    padding:9px 16px;
     background:var(--areia); color:var(--preto);
     border:1.5px solid var(--borda); border-radius:999px;
     box-shadow:3px 3px 0 0 var(--sombra-hard);
     font-family:var(--clother); font-size:0.72rem; line-height:1.35; font-weight:700;
-    cursor:pointer; opacity:0; transform:translateY(-4px);
+    cursor:pointer; opacity:0; transform:translateX(6px);
     transition:opacity .22s ease, transform .22s ease;
     pointer-events:none;
     white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
   }
-  .chico-bubble.on{ opacity:1; transform:translateY(0); pointer-events:auto; }
-  /* Rabinho apontando pra cima (pro Chico que fica acima) — triângulo com borda */
+  .chico-bubble.on{ opacity:1; transform:translateX(0); pointer-events:auto; }
+  /* Rabinho apontando pra direita, direto pro Chico */
   .chico-bubble::before{
-    content:''; position:absolute; right:20px; top:-9px;
+    content:''; position:absolute; right:-9px; top:50%; margin-top:-8px;
     width:0; height:0;
-    border-left:8px solid transparent; border-right:8px solid transparent;
-    border-bottom:9px solid var(--borda);
+    border-top:8px solid transparent; border-bottom:8px solid transparent;
+    border-left:9px solid var(--borda);
   }
   .chico-bubble::after{
-    content:''; position:absolute; right:22px; top:-6px;
+    content:''; position:absolute; right:-6px; top:50%; margin-top:-6px;
     width:0; height:0;
-    border-left:6px solid transparent; border-right:6px solid transparent;
-    border-bottom:7px solid var(--areia);
+    border-top:6px solid transparent; border-bottom:6px solid transparent;
+    border-left:7px solid var(--areia);
   }
   .chico-bubble .cb-cap{ display:none; }
   @media (max-width:640px){
-    .chico-bubble{ max-width:calc(100vw - 80px); right:16px; font-size:0.65rem; }
+    .chico-bubble{ max-width:56vw; font-size:0.65rem; padding:7px 12px; }
   }
 
   /* ── CHICO — popup expandido ── */
@@ -1610,19 +1615,21 @@
       <span class="word">MARATU</span>
       <span class="sub">painel operacional</span>
     </div>
-    <!-- Aratu (mascote sentado na linha do header). Muda cor conforme tema. -->
-    <button class="crab-admin" id="crabAdmin" type="button" aria-label="Aratu" data-crab-state="idle">
-      <svg viewBox="0 0 318.24 152.9" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <g data-aratu="claw-left"><path d="M0,104.77c0,26.58,21.55,48.13,48.13,48.13V56.65C21.55,56.65,0,78.19,0,104.77Z"/></g>
-        <g data-aratu="claw-right"><path d="M270.11,56.65v96.26c26.58,0,48.13-21.55,48.13-48.13s-21.55-48.13-48.13-48.13Z"/></g>
-        <g data-aratu="body"><path d="M159.12,152.9c53.16,0,96.26-43.1,96.26-96.26H62.86c0,53.16,43.1,96.26,96.26,96.26Z"/></g>
-        <g data-aratu="eye-right"><path d="M224.82,24.08c0-13.3-10.78-24.08-24.08-24.08v48.16c13.3,0,24.08-10.78,24.08-24.08Z"/></g>
-        <g data-aratu="eye-left"><path d="M117.49,48.16V0c-13.3,0-24.08,10.78-24.08,24.08s10.78,24.08,24.08,24.08Z"/></g>
-      </svg>
-    </button>
-    <div class="chico-bubble" id="chicoBubble" role="button" tabindex="0" aria-label="Ver recado do Chico">
-      <span class="cb-cap">Chico</span>
-      <span class="cb-text" id="chicoBubbleText">—</span>
+    <!-- Aratu (mascote sentado na linha do header) + balão do Chico ao lado -->
+    <div class="crab-slot">
+      <div class="chico-bubble" id="chicoBubble" role="button" tabindex="0" aria-label="Ver recado do Chico">
+        <span class="cb-cap">Chico</span>
+        <span class="cb-text" id="chicoBubbleText">—</span>
+      </div>
+      <button class="crab-admin" id="crabAdmin" type="button" aria-label="Aratu" data-crab-state="idle">
+        <svg viewBox="0 0 318.24 152.9" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <g data-aratu="claw-left"><path d="M0,104.77c0,26.58,21.55,48.13,48.13,48.13V56.65C21.55,56.65,0,78.19,0,104.77Z"/></g>
+          <g data-aratu="claw-right"><path d="M270.11,56.65v96.26c26.58,0,48.13-21.55,48.13-48.13s-21.55-48.13-48.13-48.13Z"/></g>
+          <g data-aratu="body"><path d="M159.12,152.9c53.16,0,96.26-43.1,96.26-96.26H62.86c0,53.16,43.1,96.26,96.26,96.26Z"/></g>
+          <g data-aratu="eye-right"><path d="M224.82,24.08c0-13.3-10.78-24.08-24.08-24.08v48.16c13.3,0,24.08-10.78,24.08-24.08Z"/></g>
+          <g data-aratu="eye-left"><path d="M117.49,48.16V0c-13.3,0-24.08,10.78-24.08,24.08s10.78,24.08,24.08,24.08Z"/></g>
+        </svg>
+      </button>
     </div>
     <div class="right">
       <div class="theme-seg" role="group" aria-label="modo de cor" id="themeSeg">

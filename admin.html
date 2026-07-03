@@ -2067,8 +2067,8 @@
     <div class="cal-head">
       <div class="cal-month" id="calMonth">mês <span class="cm-year" id="calYear"></span></div>
       <div class="cal-view-toggle" role="tablist" id="calViewToggle">
-        <button role="tab" data-view="month" class="on">Mês</button>
-        <button role="tab" data-view="week">Semana</button>
+        <button role="tab" data-view="week" class="on">Semana</button>
+        <button role="tab" data-view="month">Mês</button>
       </div>
       <div class="cal-nav">
         <button id="calPrev" aria-label="anterior">‹</button>
@@ -2080,8 +2080,8 @@
     <!-- View area (month or week) -->
     <div class="cal-view">
       <div class="cal-view-inner" id="calViewInner">
-        <div class="cal-month-grid" id="calGrid" style="display:grid;"></div>
-        <div class="cal-week" id="calWeek" style="display:none;"></div>
+        <div class="cal-month-grid" id="calGrid" style="display:none;"></div>
+        <div class="cal-week" id="calWeek" style="display:block;"></div>
       </div>
     </div>
 
@@ -2930,7 +2930,7 @@ function renderOrcLista(){
    AGENDA — Fantastical (mês/semana) + Amie (drag/drop)
    ===================================================================== */
 let viewY, viewM, selDay=null;
-let calView = 'month';           // 'month' | 'week'
+let calView = 'week';           // 'month' | 'week'
 let weekAnchor = null;           // ISO of Sunday of shown week
 (function initCalDate(){
   const t=new Date();
@@ -4644,9 +4644,9 @@ function chicoBuildMessages(){
   const out = [];
   const hoje = todayStr();
   const mesAtual = hoje.slice(0,7);
-  const p = MaratuStore.getParams();
+  const p = MaratuStore.getParams() || {};
   const meta = num(p.fixo)+num(p.retirada);
-  const lancs = MaratuStore.getLancamentos();
+  const lancs = MaratuStore.getLancamentos() || [];
   const fatMes = lancs.filter(l=>(l.data||'').slice(0,7)===mesAtual).reduce((s,l)=>s+num(l.valor),0);
   const dia = parseInt(hoje.slice(8,10),10);
   const diasNoMes = new Date(parseInt(mesAtual.slice(0,4),10), parseInt(mesAtual.slice(5,7),10), 0).getDate();
@@ -4707,7 +4707,7 @@ function chicoBuildMessages(){
   }
 
   // 5. Tarefa atrasada
-  const notas = (MaratuStore.getNotas ? MaratuStore.getNotas() : (cache && cache.notas) || []);
+  const notas = MaratuStore.getNotas() || [];
   const atrasadas = notas.filter(n => n.data && n.data < hoje && !n.feito).sort((a,b)=> (a.data||'').localeCompare(b.data||''));
   if(atrasadas.length){
     const n = atrasadas[0];
@@ -4719,7 +4719,7 @@ function chicoBuildMessages(){
   }
 
   // 6. Marketing sem programado
-  const mkt = (MaratuStore.getMarketing ? MaratuStore.getMarketing() : (cache && cache.marketing) || []);
+  const mkt = MaratuStore.getMarketing() || [];
   const sete = new Date(); sete.setDate(sete.getDate()+7);
   const seteIso = dateStr(sete.getFullYear(), sete.getMonth(), sete.getDate());
   const programados = mkt.filter(m => m.status==='programado' && m.data && m.data>=hoje && m.data<=seteIso);
@@ -4732,7 +4732,7 @@ function chicoBuildMessages(){
   }
 
   // 7. Orçamento parado (mais alta prioridade dentro das operacionais)
-  const orcs = (MaratuStore.getOrcamentos ? MaratuStore.getOrcamentos() : (cache && cache.orcamentos) || []);
+  const orcs = MaratuStore.getOrcamentos() || [];
   const parados = orcs.filter(o => o.data && daysBetween(o.data, hoje) >= CHICO_LIMIARES.orcParadoDias);
   if(parados.length){
     const o = parados.sort((a,b)=>(a.data||'').localeCompare(b.data||''))[0];
@@ -4746,7 +4746,7 @@ function chicoBuildMessages(){
   // 8. Evento amanhã
   const amanha = new Date(); amanha.setDate(amanha.getDate()+1);
   const amanhaIso = dateStr(amanha.getFullYear(), amanha.getMonth(), amanha.getDate());
-  const evs = (MaratuStore.getEventos ? MaratuStore.getEventos() : (cache && cache.eventos) || []);
+  const evs = MaratuStore.getEventos() || [];
   const evAmanha = evs.filter(e => e.data===amanhaIso);
   if(evAmanha.length){
     const e = evAmanha[0];
@@ -4759,7 +4759,7 @@ function chicoBuildMessages(){
   }
 
   // 9. Produto sem preço
-  const cat = MaratuStore.getCatalogo();
+  const cat = MaratuStore.getCatalogo() || [];
   const semPreco = cat.filter(c => !c.preco || num(c.preco)<=0);
   if(semPreco.length){
     const c = semPreco[0];
@@ -4871,9 +4871,15 @@ if(document.readyState === 'loading'){
 }
 
 // Recomputa periodicamente e após render principal
-function chicoRefresh(){ try { chicoRender(); } catch(e){} }
-document.addEventListener('DOMContentLoaded', chicoRefresh);
-setTimeout(chicoRefresh, 1500);
+function chicoRefresh(){
+  try { chicoRender(); }
+  catch(e){ console.error('chico erro:', e); }
+}
+// Espera o cache do MaratuStore carregar antes de rodar
+if(window.MaratuStore && MaratuStore.ready && typeof MaratuStore.ready.then==='function'){
+  MaratuStore.ready.then(chicoRefresh);
+}
+setTimeout(chicoRefresh, 2500);
 setInterval(chicoRefresh, 5*60*1000);
 
 /* =====================================================================

@@ -766,7 +766,7 @@
 
   /* Month grid (Fantastical) */
   .cal-month-grid{
-    display:grid; grid-template-columns:repeat(7,1fr); gap:1px;
+    display:grid; grid-template-columns:repeat(7,1fr); grid-auto-rows:128px; gap:1px;
     background:var(--linha); border:1px solid var(--linha); border-radius:10px; overflow:hidden;
   }
   .cal-month-grid .dow{
@@ -775,10 +775,15 @@
     color:var(--muted); text-transform:uppercase; letter-spacing:0.2em;
   }
   .cal-month-grid .mcell{
-    background:var(--areia); min-height:96px; padding:8px 10px; cursor:pointer;
+    background:var(--areia); padding:8px 10px; cursor:pointer;
     display:flex; flex-direction:column; gap:4px; position:relative;
     transition:background .14s;
+    overflow:hidden;
   }
+  .cal-month-grid .mcell.drop-hover:not(.blank){ background:var(--laranja-suave, rgba(200,80,26,0.18)); box-shadow:inset 0 0 0 2px var(--laranja); }
+  .cal-month-grid .mev{ cursor:grab; user-select:none; }
+  .cal-month-grid .mev:active{ cursor:grabbing; }
+  .cal-month-grid .mev.dragging{ opacity:0.4; }
   .cal-month-grid .mcell.blank{ background:var(--areia-fundo); cursor:default; }
   .cal-month-grid .mcell:hover:not(.blank){ background:var(--areia-sombra); }
   .cal-month-grid .mcell.today .mcell-d{
@@ -807,7 +812,8 @@
     color:var(--muted); padding:0 6px;
   }
   @media (max-width:640px){
-    .cal-month-grid .mcell{ min-height:64px; padding:5px 6px; gap:2px; }
+    .cal-month-grid{ grid-auto-rows:78px; }
+    .cal-month-grid .mcell{ padding:5px 6px; gap:2px; }
     .cal-month-grid .dow{ padding:8px 4px; font-size:0.5rem; letter-spacing:0.12em; }
     .cal-month-grid .mcell-d{ font-size:0.7rem; }
     .cal-month-grid .mev{ font-size:0.56rem; padding:1px 4px; }
@@ -3130,7 +3136,48 @@ function renderMonth(){
   }
   $('calGrid').innerHTML = html;
   $('calGrid').querySelectorAll('.mcell[data-iso]').forEach(c=>{
-    c.addEventListener('click', ()=>{ selDay=c.dataset.iso; renderCal(); renderDay(); });
+    c.addEventListener('click', (e)=>{
+      if(e.target.classList.contains('mev')) return; // não seleciona o dia ao clicar num evento
+      selDay=c.dataset.iso; renderCal(); renderDay();
+    });
+    // Drop target
+    c.addEventListener('dragover', (e)=>{
+      if(c.classList.contains('blank')) return;
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      c.classList.add('drop-hover');
+    });
+    c.addEventListener('dragleave', ()=>{ c.classList.remove('drop-hover'); });
+    c.addEventListener('drop', (e)=>{
+      e.preventDefault();
+      c.classList.remove('drop-hover');
+      const raw = e.dataTransfer.getData('text/plain') || '';
+      const [kind, id] = raw.split('|');
+      if(!kind || !id) return;
+      const newIso = c.dataset.iso;
+      // se soltar no próprio dia, não faz nada
+      const items = calItems();
+      const item = items.find(i => i.kind===kind && String(i.id)===String(id));
+      if(!item || item.data===newIso) return;
+      moveCalItem(kind, isNaN(+id) ? id : +id, newIso);
+    });
+  });
+  // Draggable items (.mev)
+  $('calGrid').querySelectorAll('.mev[draggable="true"]').forEach(el=>{
+    el.addEventListener('dragstart', (e)=>{
+      e.stopPropagation();
+      const id = el.dataset.dragId;
+      const kind = el.dataset.dragKind;
+      e.dataTransfer.setData('text/plain', kind+'|'+id);
+      e.dataTransfer.effectAllowed = 'move';
+      el.classList.add('dragging');
+    });
+    el.addEventListener('dragend', ()=>{
+      el.classList.remove('dragging');
+      $('calGrid').querySelectorAll('.mcell.drop-hover').forEach(x=> x.classList.remove('drop-hover'));
+    });
+    // Impede que clique no evento selecione o dia
+    el.addEventListener('click', (e)=>{ e.stopPropagation(); });
   });
 }
 function monthCell(iso, dNum, evs, todayIso, otherMonth){
@@ -3142,12 +3189,26 @@ function monthCell(iso, dNum, evs, todayIso, otherMonth){
   if(isSel) cls.push('sel');
   const shown = evs.slice(0,3).map(e=>{
     const timeStr = e.hora ? e.hora+' ' : '';
-    return `<span class="mev ${e.tipo}">${timeStr}${esc(e.titulo)}</span>`;
+    return `<span class="mev ${e.tipo}" draggable="true" data-drag-id="${e.id}" data-drag-kind="${e.kind}" title="Arraste pra outro dia">${timeStr}${esc(e.titulo)}</span>`;
   }).join('');
   const more = evs.length>3 ? `<span class="mev-more">+${evs.length-3}</span>` : '';
   return `<div class="${cls.join(' ')}" data-iso="${iso}">
     <span class="mcell-d">${dNum}</span>${shown}${more}
   </div>`;
+}
+
+function moveCalItem(kind, id, newIso){
+  if(kind==='evento'){
+    const list = MaratuStore.getEventos().map(e => e.id===id ? {...e, data:newIso} : e);
+    MaratuStore.setEventos(list);
+  } else if(kind==='marketing'){
+    const list = MaratuStore.getMarketing().map(m => m.id===id ? {...m, data:newIso} : m);
+    MaratuStore.setMarketing(list);
+  } else if(kind==='nota'){
+    const list = MaratuStore.getNotas().map(n => n.id===id ? {...n, data:newIso} : n);
+    MaratuStore.setNotas(list);
+  }
+  renderCal(); renderDay(); renderPainel(); renderUpcoming();
 }
 function renderDay(){
   if(!selDay || calView!=='month'){ $('dayPanel').style.display='none'; return; }

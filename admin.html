@@ -1345,6 +1345,25 @@
   .ga4-list .g-name{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .ga4-list .g-val{ font-weight:700; opacity:0.9; }
   .ga4-foot{ margin-top:12px; font-size:0.65rem; letter-spacing:0.12em; opacity:0.55; text-align:right; }
+
+  /* Instagram card — reaproveita muito do ga4 */
+  .ig-head{ display:flex; align-items:center; gap:12px; margin-top:14px; padding:12px; background:rgba(13,13,11,0.03); border-radius:10px; }
+  .ig-avatar{ width:48px; height:48px; border-radius:50%; object-fit:cover; background:var(--areia); border:1.5px solid var(--preto); flex:0 0 48px; }
+  .ig-who{ display:flex; flex-direction:column; gap:2px; min-width:0; flex:1; }
+  .ig-who .ig-name{ font-weight:900; font-size:0.95rem; line-height:1.1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .ig-who .ig-user{ font-size:0.72rem; opacity:0.7; letter-spacing:0.08em; }
+  .ig-follows{ display:flex; gap:14px; flex:0 0 auto; text-align:right; }
+  .ig-follows > div{ display:flex; flex-direction:column; }
+  .ig-follows .fv{ font-weight:900; font-size:0.95rem; font-family:var(--clother); }
+  .ig-follows .fc{ font-size:0.55rem; letter-spacing:0.18em; text-transform:uppercase; opacity:0.7; }
+  @media (max-width:520px){ .ig-follows{ display:none; } }
+  .ig-grid{ display:grid; grid-template-columns:repeat(3, 1fr); gap:6px; margin-top:14px; }
+  .ig-post{ position:relative; aspect-ratio:1/1; overflow:hidden; border-radius:8px; background:rgba(13,13,11,0.06); display:block; }
+  .ig-post img{ width:100%; height:100%; object-fit:cover; display:block; transition:transform .2s; }
+  .ig-post:hover img{ transform:scale(1.05); }
+  .ig-post .ig-mtype{ position:absolute; top:6px; right:6px; font-size:0.55rem; padding:2px 5px; border-radius:4px; background:rgba(13,13,11,0.7); color:var(--areia); font-weight:700; letter-spacing:0.08em; text-transform:uppercase; }
+  .ig-post .ig-eng{ position:absolute; left:0; right:0; bottom:0; padding:6px 8px; background:linear-gradient(transparent, rgba(13,13,11,0.85)); color:var(--areia); font-size:0.7rem; font-weight:700; display:flex; gap:10px; opacity:0; transition:opacity .18s; }
+  .ig-post:hover .ig-eng{ opacity:1; }
   .opt-box{ border:1.5px solid var(--preto); border-radius:12px; padding:14px 16px; margin:14px 0 4px; background:rgba(13,13,11,0.02); }
   .opt-box.on{ background:var(--areia); box-shadow:3px 3px 0 0 var(--preto); }
   .opt-toggle{ display:flex; gap:12px; align-items:flex-start; cursor:pointer; user-select:none; }
@@ -1786,6 +1805,40 @@
         </div>
       </div>
       <div class="ga4-foot"><span id="ga4Meta">carregando…</span></div>
+    </div>
+
+    <!-- Instagram — @maratuestudio -->
+    <div class="chart-card" id="igCard">
+      <div class="ch-head">
+        <div class="ch-title">Instagram — @maratuestudio</div>
+        <div class="ga4-range" id="igRange">
+          <button type="button" class="ga4-r" data-r="1d">Ontem</button>
+          <button type="button" class="ga4-r on" data-r="7d">7d</button>
+          <button type="button" class="ga4-r" data-r="28d">28d</button>
+          <button type="button" class="ga4-r" data-r="90d">30d</button>
+        </div>
+      </div>
+      <div class="ig-head">
+        <img class="ig-avatar" id="igAvatar" alt="" />
+        <div class="ig-who">
+          <span class="ig-name" id="igName">—</span>
+          <span class="ig-user" id="igUser">—</span>
+        </div>
+        <div class="ig-follows">
+          <div><span class="fv" id="igFollowers">—</span><span class="fc">Seguidores</span></div>
+          <div><span class="fv" id="igMediaCount">—</span><span class="fc">Posts</span></div>
+        </div>
+      </div>
+      <div class="ga4-kpis" id="igKpis">
+        <div class="ga4-kpi"><span class="k-cap">Alcance</span><span class="k-val" id="igReach">—</span><span class="k-delta" id="igReachD"></span></div>
+        <div class="ga4-kpi"><span class="k-cap">Curtidas</span><span class="k-val" id="igLikes">—</span><span class="k-delta"></span></div>
+        <div class="ga4-kpi"><span class="k-cap">Comentários</span><span class="k-val" id="igCmts">—</span><span class="k-delta"></span></div>
+        <div class="ga4-kpi"><span class="k-cap">Posts no período</span><span class="k-val" id="igPosts">—</span><span class="k-delta"></span></div>
+      </div>
+      <svg class="ga4-spark" id="igSpark" preserveAspectRatio="none" viewBox="0 0 100 30" aria-hidden="true"><path class="fill" d=""/><path class="line" d=""/></svg>
+      <div class="ga4-col-title" style="margin-top:16px;">Posts recentes</div>
+      <div class="ig-grid" id="igGrid"></div>
+      <div class="ga4-foot"><span id="igMeta">carregando…</span></div>
     </div>
 
     <div class="relat-card">
@@ -4624,6 +4677,122 @@ MaratuStore.ready.then(()=>{
   document.querySelectorAll('#ga4Range .ga4-r').forEach(btn=>{
     btn.addEventListener('click', ()=>{
       document.querySelectorAll('#ga4Range .ga4-r').forEach(b=>b.classList.remove('on'));
+      btn.classList.add('on');
+      CURRENT_RANGE = btn.dataset.r;
+      load();
+    });
+  });
+
+  load();
+})();
+
+/* =====================================================================
+   Instagram — /api/analytics/instagram (Graph API + cache 20min em D1)
+   ===================================================================== */
+(function igPanel(){
+  const API = "https://maratu-api.raphaelnascimento.workers.dev";
+  let TOKEN = "";
+  try { TOKEN = localStorage.getItem("maratu.token") || ""; } catch(e){}
+  if(!TOKEN) return;
+
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) => String(s==null?'':s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  const fmt = (n) => Number(n||0).toLocaleString('pt-BR');
+  let CURRENT_RANGE = '7d';
+
+  function renderSpark(vals){
+    const svg = $('igSpark'); if(!svg) return;
+    const line = svg.querySelector('.line'); const fill = svg.querySelector('.fill');
+    if(vals.length < 2){ line.setAttribute('d',''); fill.setAttribute('d',''); return; }
+    const max = Math.max(...vals, 1), min = Math.min(...vals, 0);
+    const W = 100, H = 30, pad = 2;
+    const n = vals.length;
+    const pts = vals.map((v,i)=>{
+      const x = n===1?W/2:(i/(n-1))*W;
+      const y = H - pad - ((v-min)/(max-min||1)) * (H - pad*2);
+      return [x, y];
+    });
+    const d = pts.map((p,i)=>(i===0?'M':'L')+p[0].toFixed(2)+' '+p[1].toFixed(2)).join(' ');
+    line.setAttribute('d', d);
+    fill.setAttribute('d', d + ' L'+W+' '+H+' L0 '+H+' Z');
+  }
+
+  function render(data){
+    if(data.error && !data.account){
+      $('igMeta').textContent = 'erro: ' + data.error;
+      return;
+    }
+    const acc = data.account || {};
+    $('igAvatar').src = acc.profile_picture_url || '';
+    $('igName').textContent = acc.name || 'Instagram';
+    $('igUser').textContent = acc.username ? '@' + acc.username : '';
+    $('igFollowers').textContent = fmt(acc.followers_count);
+    $('igMediaCount').textContent = fmt(acc.media_count);
+
+    const reachVals = ((data.reach && data.reach.data && data.reach.data[0] && data.reach.data[0].values) || []).map(v => Number(v.value||0));
+    const reachSum = reachVals.reduce((a,b)=>a+b, 0);
+    $('igReach').textContent = fmt(reachSum);
+    renderSpark(reachVals);
+
+    const daysMap = { '1d': 1, '7d': 7, '28d': 28, '90d': 30 };
+    const days = daysMap[CURRENT_RANGE] || 7;
+    const cutoff = Date.now() - days * 24 * 3600 * 1000;
+
+    const mediaAll = (data.media && data.media.data) || [];
+    const inRange = mediaAll.filter(m => new Date(m.timestamp).getTime() >= cutoff);
+    const likesSum = inRange.reduce((a,m)=>a + Number(m.like_count||0), 0);
+    const cmtsSum = inRange.reduce((a,m)=>a + Number(m.comments_count||0), 0);
+    $('igLikes').textContent = fmt(likesSum);
+    $('igCmts').textContent = fmt(cmtsSum);
+    $('igPosts').textContent = fmt(inRange.length);
+
+    const grid = $('igGrid');
+    grid.innerHTML = mediaAll.slice(0, 9).map(m=>{
+      const thumb = m.thumbnail_url || m.media_url || '';
+      const isVideo = m.media_type === 'VIDEO';
+      const isCarousel = m.media_type === 'CAROUSEL_ALBUM';
+      const tag = isVideo ? 'reel' : (isCarousel ? 'carrossel' : '');
+      return `<a class="ig-post" href="${esc(m.permalink)}" target="_blank" rel="noopener">
+        <img loading="lazy" src="${esc(thumb)}" alt="" />
+        ${tag ? `<span class="ig-mtype">${tag}</span>` : ''}
+        <div class="ig-eng"><span>♥ ${fmt(m.like_count||0)}</span><span>💬 ${fmt(m.comments_count||0)}</span></div>
+      </a>`;
+    }).join('');
+
+    // Expõe pro Chico
+    window._chicoIg = {
+      followers: acc.followers_count,
+      reachSum,
+      posts: inRange.length,
+      likes: likesSum,
+      comments: cmtsSum,
+      rangeLabel: CURRENT_RANGE==='1d'?'1 dia': CURRENT_RANGE==='7d'?'7 dias': CURRENT_RANGE==='28d'?'28 dias':'30 dias'
+    };
+    try { chicoRefresh(); } catch(e){}
+
+    const when = new Date((data.cached_at||data.fetched_at||0)*1000);
+    const hh = String(when.getHours()).padStart(2,'0'), mm = String(when.getMinutes()).padStart(2,'0');
+    const label = data.cached ? ('cache ' + hh+':'+mm + (data.stale?' (stale)':'')) : ('atualizado ' + hh+':'+mm);
+    $('igMeta').textContent = label;
+  }
+
+  function load(){
+    $('igMeta').textContent = 'carregando…';
+    fetch(API + "/api/analytics/instagram?range=" + CURRENT_RANGE, {
+      headers: { Authorization: "Bearer " + TOKEN }
+    })
+    .then(r=>r.json().then(j=>({ok:r.ok,j})))
+    .then(({ok,j})=>{
+      if(!ok){ $('igMeta').textContent = 'erro: ' + (j.error||'HTTP'); return; }
+      render(j);
+    })
+    .catch(err=>{ $('igMeta').textContent = 'sem conexão'; });
+  }
+
+  document.querySelectorAll('#igRange .ga4-r').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('#igRange .ga4-r').forEach(b=>b.classList.remove('on'));
       btn.classList.add('on');
       CURRENT_RANGE = btn.dataset.r;
       load();

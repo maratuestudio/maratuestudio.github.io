@@ -1514,14 +1514,14 @@
   /* Container do balão — fica ENTRE o header e as tabs, alinhado à direita */
   .chico-slot{
     display:flex; justify-content:flex-end;
-    margin:-16px 0 6px;
+    margin:-30px 0 12px;
     min-height:0;
   }
   /* Balão do Chico — pill alinhada à direita, rabinho apontando pra cima (pro SAIR) */
   .chico-bubble{
     position:relative;
     max-width:min(340px, calc(100vw - 40px));
-    padding:9px 16px;
+    padding:9px 18px;
     background:var(--areia); color:var(--preto);
     border:1.5px solid var(--borda); border-radius:999px;
     box-shadow:3px 3px 0 0 var(--sombra-hard);
@@ -1529,26 +1529,32 @@
     cursor:pointer; opacity:0; transform:translateY(-4px);
     transition:opacity .22s ease, transform .22s ease;
     pointer-events:none;
-    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
     display:none;
   }
   .chico-bubble.on{ opacity:1; transform:translateY(0); pointer-events:auto; display:inline-block; }
+  /* Rabinho apontando pra cima (pro botão SAIR) — dois triângulos com borda */
   .chico-bubble::before{
-    content:''; position:absolute; right:28px; top:-9px;
+    content:''; position:absolute; right:26px; top:-11px;
     width:0; height:0;
-    border-left:8px solid transparent; border-right:8px solid transparent;
-    border-bottom:9px solid var(--borda);
+    border-left:9px solid transparent; border-right:9px solid transparent;
+    border-bottom:10px solid var(--borda);
+    pointer-events:none;
   }
   .chico-bubble::after{
-    content:''; position:absolute; right:30px; top:-6px;
+    content:''; position:absolute; right:28px; top:-8px;
     width:0; height:0;
-    border-left:6px solid transparent; border-right:6px solid transparent;
-    border-bottom:7px solid var(--areia);
+    border-left:7px solid transparent; border-right:7px solid transparent;
+    border-bottom:8px solid var(--areia);
+    pointer-events:none;
   }
   .chico-bubble .cb-cap{ display:none; }
+  .chico-bubble .cb-text{
+    display:inline-block; max-width:100%; vertical-align:middle;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  }
   @media (max-width:640px){
-    .chico-slot{ margin:-8px 0 6px; }
-    .chico-bubble{ max-width:calc(100vw - 40px); font-size:0.65rem; padding:7px 12px; }
+    .chico-slot{ margin:-18px 0 8px; }
+    .chico-bubble{ max-width:calc(100vw - 40px); font-size:0.65rem; padding:7px 14px; }
   }
 
   /* ── CHICO — popup expandido ── */

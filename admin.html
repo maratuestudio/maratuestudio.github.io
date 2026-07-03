@@ -1510,6 +1510,88 @@
   .crab-admin svg [data-aratu] path{ fill:var(--preto); }
   .crab-admin:focus-visible{ outline:2px solid var(--laranja); outline-offset:3px; border-radius:4px; }
 
+  /* ── CHICO — balão de recado ao lado do aratu ── */
+  .chico-bubble{
+    position:absolute; right:52px; bottom:14px; z-index:3;
+    max-width:280px; padding:9px 12px 9px 14px;
+    background:var(--areia); color:var(--preto);
+    border:1.5px dashed var(--linha-forte); border-radius:12px 12px 4px 12px;
+    box-shadow:3px 3px 0 0 var(--sombra-hard);
+    font-family:var(--clother); font-size:0.72rem; line-height:1.35; font-weight:600;
+    cursor:pointer; opacity:0; transform:translateY(4px);
+    transition:opacity .22s ease, transform .22s ease;
+    pointer-events:none;
+  }
+  .chico-bubble.on{ opacity:1; transform:translateY(0); pointer-events:auto; }
+  .chico-bubble::after{
+    content:''; position:absolute; right:-7px; bottom:8px;
+    width:12px; height:12px; background:var(--areia);
+    border-right:1.5px dashed var(--linha-forte); border-bottom:1.5px dashed var(--linha-forte);
+    transform:rotate(-45deg); border-radius:0 0 3px 0;
+  }
+  .chico-bubble .cb-cap{
+    display:block; font-size:0.5rem; letter-spacing:0.22em; text-transform:uppercase;
+    color:var(--muted); font-weight:700; margin-bottom:3px;
+  }
+  @media (max-width:640px){
+    .chico-bubble{ max-width:200px; right:48px; font-size:0.65rem; }
+  }
+
+  /* ── CHICO — popup expandido ── */
+  .chico-back{
+    position:fixed; inset:0; z-index:9998;
+    background:rgba(13,13,11,0.55); display:none;
+    align-items:center; justify-content:center; padding:20px;
+    animation:cbFade .18s ease;
+  }
+  .chico-back.on{ display:flex; }
+  @keyframes cbFade{ from{opacity:0} to{opacity:1} }
+  .chico-card{
+    background:var(--areia); color:var(--preto);
+    border:1.5px solid var(--borda); border-radius:14px;
+    box-shadow:6px 6px 0 0 var(--sombra-hard);
+    max-width:460px; width:100%; padding:22px 22px 20px;
+    position:relative;
+    animation:cbPop .22s ease;
+  }
+  @keyframes cbPop{ from{transform:translateY(8px); opacity:0} to{transform:translateY(0); opacity:1} }
+  .chico-card .cc-head{ display:flex; align-items:center; gap:10px; margin-bottom:14px; }
+  .chico-card .cc-aratu{ width:36px; height:36px; }
+  .chico-card .cc-aratu svg{ width:100%; height:100%; display:block; }
+  .chico-card .cc-aratu path{ fill:var(--preto); }
+  .chico-card .cc-title{ font-family:var(--clother); font-weight:900; font-size:0.75rem; letter-spacing:0.22em; text-transform:uppercase; color:var(--muted); }
+  .chico-card .cc-close{
+    position:absolute; top:12px; right:12px; width:28px; height:28px;
+    border-radius:50%; border:1.5px solid var(--borda); background:transparent;
+    color:var(--muted); cursor:pointer; font-size:1rem; line-height:1;
+    display:inline-flex; align-items:center; justify-content:center;
+  }
+  .chico-card .cc-close:hover{ background:var(--preto); color:var(--areia); border-color:var(--preto); }
+  .chico-card .cc-msg{
+    font-family:var(--clother); font-weight:700; color:var(--preto);
+    font-size:1.05rem; line-height:1.4; margin:0 0 10px;
+  }
+  .chico-card .cc-detail{
+    font-family:var(--clother); font-weight:500; color:var(--muted);
+    font-size:0.82rem; line-height:1.5; margin:0 0 16px;
+  }
+  .chico-card .cc-actions{ display:flex; gap:8px; justify-content:flex-end; flex-wrap:wrap; }
+  .chico-card .cc-actions .btn{ font-size:0.62rem; padding:9px 14px; }
+
+  /* ── Relatório semanal (Painel) ── */
+  .relat-card{
+    background:var(--areia); border:1.5px dashed var(--linha-forte); border-radius:12px;
+    padding:14px 16px; margin-top:14px;
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+    flex-wrap:wrap;
+  }
+  .relat-card .rc-l{ min-width:0; }
+  .relat-card .rc-cap{ font-size:0.58rem; letter-spacing:0.22em; text-transform:uppercase; color:var(--muted); font-weight:700; }
+  .relat-card .rc-lbl{ font-family:var(--clother); font-weight:900; font-size:1rem; color:var(--preto); margin-top:3px; }
+  .relat-card .rc-sub{ font-size:0.7rem; color:var(--muted); margin-top:2px; }
+  .relat-card .btn{ white-space:nowrap; }
+  .relat-card .btn:disabled{ opacity:0.5; cursor:wait; }
+
 </style>
 </head>
 <body>
@@ -1532,6 +1614,10 @@
         <g data-aratu="eye-left"><path d="M117.49,48.16V0c-13.3,0-24.08,10.78-24.08,24.08s10.78,24.08,24.08,24.08Z"/></g>
       </svg>
     </button>
+    <div class="chico-bubble" id="chicoBubble" role="button" tabindex="0" aria-label="Ver recado do Chico">
+      <span class="cb-cap">Chico</span>
+      <span class="cb-text" id="chicoBubbleText">—</span>
+    </div>
     <div class="right">
       <div class="theme-seg" role="group" aria-label="modo de cor" id="themeSeg">
         <button type="button" data-theme=""      aria-pressed="true"  title="Original — laranja"><span class="sw"></span></button>
@@ -1682,6 +1768,15 @@
         </div>
       </div>
       <div class="ga4-foot"><span id="ga4Meta">carregando…</span></div>
+    </div>
+
+    <div class="relat-card">
+      <div class="rc-l">
+        <div class="rc-cap">Relatório semanal</div>
+        <div class="rc-lbl">Resumo dos últimos 7 dias</div>
+        <div class="rc-sub">Puxa vendas, agenda, marketing e GA4 e devolve um markdown pra baixar.</div>
+      </div>
+      <button class="btn blue" id="relatGerar" type="button">Gerar relatório</button>
     </div>
 
   </section>
@@ -4465,6 +4560,15 @@ MaratuStore.ready.then(()=>{
       renderDelta('ga4UsersD', metricAt(cur,1), prev?metricAt(prev,1):0, false);
       renderDelta('ga4ViewsD', metricAt(cur,2), prev?metricAt(prev,2):0, false);
       renderDelta('ga4EngD',   metricAt(cur,3)*100, prev?metricAt(prev,3)*100:0, true);
+      // Expõe pro Chico
+      const curSess = metricAt(cur,0);
+      const prevSess = prev ? metricAt(prev,0) : 0;
+      const delta = prevSess>0 ? ((curSess - prevSess)/prevSess*100) : null;
+      window._chicoGa4 = {
+        current: curSess, previous: prevSess, deltaPct: delta,
+        rangeLabel: (CURRENT_RANGE==='1d'?'1 dia': CURRENT_RANGE==='7d'?'7 dias': CURRENT_RANGE==='28d'?'28 dias':'90 dias')
+      };
+      try { chicoRefresh(); } catch(e){}
     }
 
     // Sparkline diário (sessões por dia)
@@ -4517,6 +4621,349 @@ window.addEventListener('resize', ()=>{
   clearTimeout(_resizeTO);
   _resizeTO = setTimeout(()=>{ try { renderPainel(); } catch(e){} }, 180);
 });
+
+/* =====================================================================
+   CHICO — recado ao lado do aratu + popup + relatório semanal
+   ===================================================================== */
+const URL_CLAUDE = API + "/api/claude/relatorio";
+
+const CHICO_LIMIARES = {
+  semVendasDias: 3,
+  orcParadoDias: 7,
+  streakMin: 5,
+  metaRiscoDia: 20,
+  metaRiscoPct: 50,
+  ga4CaiuPct: -30,
+  ga4SubiuPct: 40
+};
+
+function daysBetween(a, b){
+  const A = new Date(a+'T00:00:00'), B = new Date(b+'T00:00:00');
+  return Math.round((B - A) / 86400000);
+}
+
+function chicoBuildMessages(){
+  const out = [];
+  const hoje = todayStr();
+  const mesAtual = hoje.slice(0,7);
+  const p = MaratuStore.getParams();
+  const meta = num(p.fixo)+num(p.retirada);
+  const lancs = MaratuStore.getLancamentos();
+  const fatMes = lancs.filter(l=>(l.data||'').slice(0,7)===mesAtual).reduce((s,l)=>s+num(l.valor),0);
+  const dia = parseInt(hoje.slice(8,10),10);
+  const diasNoMes = new Date(parseInt(mesAtual.slice(0,4),10), parseInt(mesAtual.slice(5,7),10), 0).getDate();
+  const pctMeta = meta>0 ? (fatMes/meta*100) : 0;
+
+  // 1. Meta batida
+  if(meta>0 && fatMes>=meta){
+    out.push({
+      priority:1, key:'metaBatida',
+      text:`Meta do mês fechada. ${brl(fatMes)} de ${brl(meta)}.`,
+      detail:`Você já bateu a meta com ${diasNoMes-dia} dias sobrando no mês. Todo lançamento daqui pra frente é gordura pra reinvestir.`
+    });
+  }
+
+  // 2. Meta em risco
+  if(meta>0 && dia >= CHICO_LIMIARES.metaRiscoDia && pctMeta < CHICO_LIMIARES.metaRiscoPct){
+    out.push({
+      priority:2, key:'metaRisco',
+      text:`Faltam ${diasNoMes-dia} dias e a meta tá em ${Math.round(pctMeta)}%.`,
+      detail:`Você está no dia ${dia} do mês com ${brl(fatMes)} lançados de ${brl(meta)}. Vale um empurrão nos pôsteres ou um post pushando os essenciais.`
+    });
+  }
+
+  // 3. Sem vendas há X dias
+  const lancsSorted = lancs.slice().sort((a,b)=> (b.data||'').localeCompare(a.data||''));
+  const ultLanc = lancsSorted[0];
+  if(ultLanc){
+    const gap = daysBetween(ultLanc.data, hoje);
+    if(gap >= CHICO_LIMIARES.semVendasDias){
+      out.push({
+        priority:3, key:'semVendas',
+        text:`${gap} dias sem lançamento.`,
+        detail:`A última venda registrada foi "${ultLanc.label}" em ${ultLanc.data.slice(8,10)}/${ultLanc.data.slice(5,7)}. Se vendeu algo, registra na aba Orçamento → Lançamentos pra o painel bater com a real.`
+      });
+    }
+  } else {
+    out.push({
+      priority:3, key:'semVendas',
+      text:`Nenhum lançamento registrado ainda.`,
+      detail:`Cadastra as vendas na aba Orçamento → Lançamentos pra o painel começar a ter dados de verdade.`
+    });
+  }
+
+  // 4. Streak
+  const dias = new Set(lancs.filter(l=>(l.data||'').slice(0,7)===mesAtual).map(l=>l.data));
+  let streak = 0;
+  for(let i=0; i<diasNoMes; i++){
+    const t = new Date(); t.setDate(t.getDate()-i);
+    const iso = dateStr(t.getFullYear(), t.getMonth(), t.getDate());
+    if(dias.has(iso)) streak++; else break;
+  }
+  if(streak >= CHICO_LIMIARES.streakMin){
+    out.push({
+      priority:4, key:'streak',
+      text:`${streak} dias seguidos com venda.`,
+      detail:`Sequência de ${streak} dias consecutivos com pelo menos um lançamento. Segue nesse ritmo — consistência é o que faz o painel florir.`
+    });
+  }
+
+  // 5. Tarefa atrasada
+  const notas = (MaratuStore.getNotas ? MaratuStore.getNotas() : (cache && cache.notas) || []);
+  const atrasadas = notas.filter(n => n.data && n.data < hoje && !n.feito).sort((a,b)=> (a.data||'').localeCompare(b.data||''));
+  if(atrasadas.length){
+    const n = atrasadas[0];
+    out.push({
+      priority:5, key:'tarefaAtrasada',
+      text:`"${n.titulo}" tá parada desde ${n.data.slice(8,10)}/${n.data.slice(5,7)}.`,
+      detail:`Você tem ${atrasadas.length} nota${atrasadas.length>1?'s':''} com data no passado sem marcar feito. Passa na aba Notas e fecha ou empurra pra depois.`
+    });
+  }
+
+  // 6. Marketing sem programado
+  const mkt = (MaratuStore.getMarketing ? MaratuStore.getMarketing() : (cache && cache.marketing) || []);
+  const sete = new Date(); sete.setDate(sete.getDate()+7);
+  const seteIso = dateStr(sete.getFullYear(), sete.getMonth(), sete.getDate());
+  const programados = mkt.filter(m => m.status==='programado' && m.data && m.data>=hoje && m.data<=seteIso);
+  if(!programados.length){
+    out.push({
+      priority:6, key:'mktVazio',
+      text:`Nenhum post na fila essa semana.`,
+      detail:`Nada com status "programado" nos próximos 7 dias. Passa na aba Marketing e pesca uma ideia da lista pra programar.`
+    });
+  }
+
+  // 7. Orçamento parado (mais alta prioridade dentro das operacionais)
+  const orcs = (MaratuStore.getOrcamentos ? MaratuStore.getOrcamentos() : (cache && cache.orcamentos) || []);
+  const parados = orcs.filter(o => o.data && daysBetween(o.data, hoje) >= CHICO_LIMIARES.orcParadoDias);
+  if(parados.length){
+    const o = parados.sort((a,b)=>(a.data||'').localeCompare(b.data||''))[0];
+    out.push({
+      priority:0, key:'orcParado',
+      text:`Orçamento pra ${o.cliente||'cliente sem nome'} de ${o.data.slice(8,10)}/${o.data.slice(5,7)} sem resposta.`,
+      detail:`Foram ${daysBetween(o.data, hoje)} dias desde que esse orçamento (${brl(num(o.total))}) foi salvo. Vale um follow no WhatsApp.`
+    });
+  }
+
+  // 8. Evento amanhã
+  const amanha = new Date(); amanha.setDate(amanha.getDate()+1);
+  const amanhaIso = dateStr(amanha.getFullYear(), amanha.getMonth(), amanha.getDate());
+  const evs = (MaratuStore.getEventos ? MaratuStore.getEventos() : (cache && cache.eventos) || []);
+  const evAmanha = evs.filter(e => e.data===amanhaIso);
+  if(evAmanha.length){
+    const e = evAmanha[0];
+    const h = e.hora ? ` às ${e.hora}` : '';
+    out.push({
+      priority:2, key:'evAmanha',
+      text:`Amanhã: ${e.titulo}${h}.`,
+      detail:`${evAmanha.length>1 ? evAmanha.length+' eventos amanhã. ' : ''}Deixa tudo pronto hoje pra não correr no dia.`
+    });
+  }
+
+  // 9. Produto sem preço
+  const cat = MaratuStore.getCatalogo();
+  const semPreco = cat.filter(c => !c.preco || num(c.preco)<=0);
+  if(semPreco.length){
+    const c = semPreco[0];
+    out.push({
+      priority:7, key:'produtoSemPreco',
+      text:`"${c.nome}" tá no catálogo sem preço.`,
+      detail:`${semPreco.length} produto${semPreco.length>1?'s':''} do catálogo sem preço definido. Passa na aba Orçamento → Produtos do site e resolve.`
+    });
+  }
+
+  // 10 + 11. GA4 delta
+  const ga = window._chicoGa4 || null;
+  if(ga && typeof ga.deltaPct === 'number'){
+    if(ga.deltaPct <= CHICO_LIMIARES.ga4CaiuPct){
+      out.push({
+        priority:6, key:'ga4Caiu',
+        text:`Sessões caíram ${Math.abs(Math.round(ga.deltaPct))}% vs período anterior.`,
+        detail:`De ${ga.previous||0} pra ${ga.current||0} sessões nos últimos ${ga.rangeLabel||'dias'}. Um post costuma reanimar — vale checar quais páginas caíram mais.`
+      });
+    } else if(ga.deltaPct >= CHICO_LIMIARES.ga4SubiuPct){
+      out.push({
+        priority:5, key:'ga4Subiu',
+        text:`Tráfego subiu ${Math.round(ga.deltaPct)}% no GA4.`,
+        detail:`Sessões saltaram de ${ga.previous||0} pra ${ga.current||0}. Vale ver no card do GA4 quais páginas puxaram e reforçar.`
+      });
+    }
+  }
+
+  // Ordena por prioridade (0 = mais alta)
+  out.sort((a,b)=> a.priority - b.priority);
+  return out;
+}
+
+let _chicoMessages = [];
+let _chicoIdx = 0;
+
+function chicoRender(){
+  const bubble = $('chicoBubble');
+  const bt = $('chicoBubbleText');
+  if(!bubble || !bt) return;
+  _chicoMessages = chicoBuildMessages();
+  if(!_chicoMessages.length){
+    bubble.classList.remove('on');
+    return;
+  }
+  // Início: seed pelo dia (mesma mensagem no mesmo dia até rotacionar)
+  const seed = parseInt(todayStr().replace(/-/g,''), 10);
+  _chicoIdx = seed % _chicoMessages.length;
+  // Sempre mostra a mais alta prioridade primeiro na primeira renderização
+  _chicoIdx = 0;
+  const m = _chicoMessages[_chicoIdx];
+  bt.textContent = m.text;
+  bubble.classList.add('on');
+}
+
+function chicoNext(){
+  if(!_chicoMessages.length) return;
+  _chicoIdx = (_chicoIdx + 1) % _chicoMessages.length;
+  const m = _chicoMessages[_chicoIdx];
+  $('chicoBubbleText').textContent = m.text;
+  chicoOpenModal(m);
+}
+
+function chicoOpenModal(m){
+  const back = $('chicoBack');
+  if(!back) return;
+  $('chicoMsg').textContent = m.text;
+  $('chicoDetail').textContent = m.detail || '';
+  back.classList.add('on');
+}
+function chicoCloseModal(){
+  const back = $('chicoBack');
+  if(back) back.classList.remove('on');
+}
+
+/* Handlers do balão + popup (roda depois do DOM tá pronto) */
+function chicoWire(){
+  const bubble = $('chicoBubble');
+  const crab = $('crabAdmin');
+  const open = ()=>{
+    if(!_chicoMessages.length) return;
+    chicoOpenModal(_chicoMessages[_chicoIdx]);
+  };
+  if(bubble){
+    bubble.addEventListener('click', open);
+    bubble.addEventListener('keydown', (e)=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); open(); }});
+  }
+  if(crab){
+    crab.addEventListener('click', open);
+  }
+  const back = $('chicoBack');
+  if(back){
+    back.addEventListener('click', (e)=>{ if(e.target===back) chicoCloseModal(); });
+  }
+  const cl = $('chicoClose');
+  if(cl) cl.addEventListener('click', chicoCloseModal);
+  const cl2 = $('chicoCloseBtn');
+  if(cl2) cl2.addEventListener('click', chicoCloseModal);
+  const nx = $('chicoNext');
+  if(nx) nx.addEventListener('click', chicoNext);
+  document.addEventListener('keydown', (e)=>{
+    if(e.key==='Escape') chicoCloseModal();
+  });
+}
+if(document.readyState === 'loading'){
+  document.addEventListener('DOMContentLoaded', chicoWire);
+} else {
+  chicoWire();
+}
+
+// Recomputa periodicamente e após render principal
+function chicoRefresh(){ try { chicoRender(); } catch(e){} }
+document.addEventListener('DOMContentLoaded', chicoRefresh);
+setTimeout(chicoRefresh, 1500);
+setInterval(chicoRefresh, 5*60*1000);
+
+/* =====================================================================
+   RELATÓRIO SEMANAL — chama Worker que fala com Claude
+   ===================================================================== */
+async function gerarRelatorio(){
+  const btn = $('relatGerar');
+  if(!btn) return;
+  const label0 = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = 'Gerando…';
+  try{
+    const hoje = todayStr();
+    const seteAtras = new Date(); seteAtras.setDate(seteAtras.getDate()-7);
+    const de = dateStr(seteAtras.getFullYear(), seteAtras.getMonth(), seteAtras.getDate());
+    const lancs = MaratuStore.getLancamentos().filter(l => (l.data||'')>=de);
+    const evs = (MaratuStore.getEventos ? MaratuStore.getEventos() : []).filter(e => (e.data||'')>=de);
+    const mkt = (MaratuStore.getMarketing ? MaratuStore.getMarketing() : []).filter(m => (m.data||'')>=de);
+    const notas = (MaratuStore.getNotas ? MaratuStore.getNotas() : []).filter(n => (n.data||'')>=de);
+    const orcs = (MaratuStore.getOrcamentos ? MaratuStore.getOrcamentos() : []).filter(o => (o.data||'')>=de);
+    const ga = window._chicoGa4 || null;
+    const body = {
+      periodo: { de, ate: hoje },
+      lancamentos: lancs,
+      eventos: evs,
+      marketing: mkt,
+      notas: notas,
+      orcamentos: orcs,
+      ga4: ga
+    };
+    let tk = null;
+    try { tk = localStorage.getItem('maratu.token'); } catch(e){}
+    const r = await fetch(URL_CLAUDE, {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json', 'Authorization':'Bearer '+(tk||'') },
+      body: JSON.stringify(body)
+    });
+    if(!r.ok){
+      const t = await r.text().catch(()=> '');
+      alert('Erro ao gerar relatório ('+r.status+'). '+(t.slice(0,200)));
+      return;
+    }
+    const j = await r.json();
+    const md = j.markdown || j.text || '';
+    if(!md){ alert('Relatório veio vazio.'); return; }
+    const blob = new Blob([md], { type:'text/markdown;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'maratu-relatorio-'+hoje+'.md';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=> URL.revokeObjectURL(url), 1500);
+  } catch(e){
+    alert('Sem conexão pra gerar relatório.');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = label0;
+  }
+}
+(function wireRelat(){
+  const b = $('relatGerar');
+  if(b) b.addEventListener('click', gerarRelatorio);
+})();
 </script>
+
+<!-- CHICO — popup expandido -->
+<div class="chico-back" id="chicoBack" aria-hidden="true">
+  <div class="chico-card" role="dialog" aria-modal="true" aria-labelledby="chicoMsg">
+    <button type="button" class="cc-close" id="chicoClose" aria-label="Fechar">×</button>
+    <div class="cc-head">
+      <div class="cc-aratu">
+        <svg viewBox="0 0 318.24 152.9" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M0,104.77c0,26.58,21.55,48.13,48.13,48.13V56.65C21.55,56.65,0,78.19,0,104.77Z"/>
+          <path d="M270.11,56.65v96.26c26.58,0,48.13-21.55,48.13-48.13s-21.55-48.13-48.13-48.13Z"/>
+          <path d="M159.12,152.9c53.16,0,96.26-43.1,96.26-96.26H62.86c0,53.16,43.1,96.26,96.26,96.26Z"/>
+          <path d="M224.82,24.08c0-13.3-10.78-24.08-24.08-24.08v48.16c13.3,0,24.08-10.78,24.08-24.08Z"/>
+          <path d="M117.49,48.16V0c-13.3,0-24.08,10.78-24.08,24.08s10.78,24.08,24.08,24.08Z"/>
+        </svg>
+      </div>
+      <div class="cc-title">Recado do Chico</div>
+    </div>
+    <p class="cc-msg" id="chicoMsg">—</p>
+    <p class="cc-detail" id="chicoDetail"></p>
+    <div class="cc-actions">
+      <button type="button" class="btn ghost" id="chicoNext">Próximo recado</button>
+      <button type="button" class="btn" id="chicoCloseBtn">Fechar</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>

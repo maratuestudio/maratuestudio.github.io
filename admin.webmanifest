@@ -3,13 +3,15 @@
   "short_name": "MARATU",
   "description": "Painel operacional do estúdio MARATU",
   "start_url": "/admin.html",
-  "scope": "/admin.html",
+  "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#0D0D0D",
+  "background_color": "#C8501A",
   "theme_color": "#C8501A",
   "icons": [
-    { "src": "admin-icon-192-v4.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
-    { "src": "admin-icon-512-v4.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+    { "src": "admin-icon-192-v6.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "admin-icon-512-v6.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "admin-icon-192-v6.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "admin-icon-512-v6.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ]
 }

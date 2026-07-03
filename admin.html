@@ -198,13 +198,21 @@
     margin-top:2px;
   }
   @media (max-width:560px){
-    .mark .word{ font-size:1.75rem; }
-    .mark .sub{ font-size:0.6rem; letter-spacing:0.16em; }
+    /* MARATU + painel operacional lado a lado, na mesma linha do × */
+    .mark{ flex:1 1 auto; min-width:0; }
     .mark .eyebrow{ font-size:0.55rem; }
+    .mark .row-name{
+      display:flex; align-items:baseline; gap:8px; flex-wrap:wrap;
+    }
+    .mark .word{ font-size:1.55rem; line-height:1; }
+    .mark .sub{ font-size:0.58rem; letter-spacing:0.14em; margin-top:0; }
+    .head-top{ flex-wrap:nowrap; align-items:flex-start; }
+    .head .right{ width:auto; margin-left:auto; flex:0 0 auto; }
+    .head .right .theme-seg{ display:none; }
     /* Aratu + Chico ganham linha própria — não sobrepõem MARATU */
-    .head{ padding:28px 0 14px; min-height:0; }
+    .head{ padding:24px 0 14px; min-height:0; }
     .head-crab{
-      position:static; margin-top:14px;
+      position:static; margin-top:12px;
       justify-content:flex-end; width:100%;
     }
     .chico-bubble{ max-width:calc(100vw - 120px); }
@@ -1799,8 +1807,10 @@
     <div class="head-top">
       <div class="mark">
         <span class="eyebrow">000 &mdash; Admin</span>
-        <span class="word">MARATU</span>
-        <span class="sub">painel operacional</span>
+        <span class="row-name">
+          <span class="word">MARATU</span>
+          <span class="sub">painel operacional</span>
+        </span>
       </div>
       <div class="right">
         <div class="theme-seg" role="group" aria-label="modo de cor" id="themeSeg">

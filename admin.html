@@ -201,6 +201,13 @@
     .mark .word{ font-size:1.75rem; }
     .mark .sub{ font-size:0.6rem; letter-spacing:0.16em; }
     .mark .eyebrow{ font-size:0.55rem; }
+    /* Aratu + Chico ganham linha própria — não sobrepõem MARATU */
+    .head{ padding:28px 0 14px; min-height:0; }
+    .head-crab{
+      position:static; margin-top:14px;
+      justify-content:flex-end; width:100%;
+    }
+    .chico-bubble{ max-width:calc(100vw - 120px); }
   }
   .head .right{ display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-left:auto; justify-content:flex-end; }
   @media (max-width:560px){ .head .right{ width:100%; justify-content:flex-end; } }

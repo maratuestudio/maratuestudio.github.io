@@ -206,6 +206,17 @@
   }
   .head .sair:hover{ background:var(--preto); color:var(--areia); }
   .head .sair:active{ transform:translate(2px,2px); box-shadow:0 0 0 0 var(--sombra-hard); }
+  /* Mobile: vira só um × redondo pra economizar espaço no header */
+  @media (max-width:560px){
+    .head .sair{
+      width:34px; height:34px; padding:0; font-size:0; line-height:1;
+      display:inline-flex; align-items:center; justify-content:center;
+    }
+    .head .sair::before{
+      content:'×'; font-size:1.3rem; font-weight:700; letter-spacing:0;
+      color:inherit; line-height:1; margin-top:-2px;
+    }
+  }
   @keyframes pulse{ 0%,100%{opacity:1} 50%{opacity:0.35} }
 
   /* Menu de temas — 3 chips lado a lado (segmentado circular) */

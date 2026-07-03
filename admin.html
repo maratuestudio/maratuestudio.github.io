@@ -505,6 +505,83 @@
     letter-spacing:-0.005em; color:var(--preto); margin-bottom:12px;
   }
 
+  /* ── Pendentes de ontem ── */
+  .pn-pend{
+    background:var(--areia); border:1.5px solid var(--borda); border-radius:12px;
+    box-shadow:3px 3px 0 0 var(--sombra-hard); padding:20px 22px;
+    border-left:4px solid var(--laranja);
+    margin-bottom:20px;
+  }
+  .pn-pend .pp-head{
+    display:flex; align-items:baseline; justify-content:space-between; gap:10px; margin-bottom:14px;
+  }
+  .pn-pend .pp-title{
+    font-family:var(--clother); font-weight:900; font-size:1rem;
+    letter-spacing:-0.005em; color:var(--preto);
+  }
+  .pn-pend .pp-sub{
+    font-family:var(--clother); font-weight:700; font-size:0.62rem;
+    letter-spacing:0.2em; text-transform:uppercase; color:var(--laranja); white-space:nowrap;
+  }
+  .pn-pend-list{ display:flex; flex-direction:column; gap:8px; }
+  .pp-row{
+    display:flex; align-items:center; gap:10px;
+    padding:10px 12px; border:1.5px solid var(--linha-forte); border-radius:10px;
+    background:var(--areia);
+    position:relative;
+  }
+  .pp-row .pp-check{
+    width:22px; height:22px; border-radius:50%; border:1.5px solid var(--borda);
+    background:var(--areia); cursor:pointer; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+    transition:background .15s, transform .15s;
+  }
+  .pp-row .pp-check:hover{ background:var(--preto); transform:scale(1.08); }
+  .pp-row .pp-check:hover svg{ opacity:1; color:var(--areia); }
+  .pp-row .pp-check svg{ width:12px; height:12px; opacity:0; transition:opacity .15s; }
+  .pp-row .pp-body{ flex:1; min-width:0; display:flex; flex-direction:column; gap:2px; }
+  .pp-row .pp-t{ font-family:var(--clother); font-weight:700; color:var(--preto); font-size:0.9rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .pp-row .pp-m{ font-family:var(--clother); font-weight:700; font-size:0.62rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--muted); }
+  .pp-row .pp-resch{
+    background:transparent; border:1px solid var(--linha-forte); border-radius:999px;
+    padding:5px 12px; cursor:pointer; flex-shrink:0;
+    font-family:var(--clother); font-weight:700; font-size:0.62rem;
+    letter-spacing:0.14em; text-transform:uppercase; color:var(--preto);
+    transition:background .12s, color .12s, border-color .12s;
+  }
+  .pp-row .pp-resch:hover{ background:var(--preto); color:var(--areia); border-color:var(--preto); }
+
+  .pp-pop{
+    position:absolute; top:calc(100% + 6px); right:0; z-index:30;
+    background:var(--areia); border:1.5px solid var(--borda); border-radius:10px;
+    box-shadow:3px 3px 0 0 var(--sombra-hard); padding:8px; min-width:260px;
+    display:flex; flex-direction:column; gap:2px;
+  }
+  .pp-pop button{
+    display:flex; width:100%; align-items:center; justify-content:space-between; gap:10px;
+    background:transparent; border:none; padding:8px 10px; border-radius:6px;
+    cursor:pointer; font-family:var(--clother); font-size:0.82rem; color:var(--preto);
+    text-align:left; font-weight:700;
+  }
+  .pp-pop button:hover{ background:var(--areia-sombra); }
+  .pp-pop button .pp-when{ font-weight:700; font-size:0.62rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); }
+  .pp-pop hr{ border:none; border-top:1px solid var(--linha); margin:4px 0; }
+  .pp-pop .pp-label{
+    font-family:var(--clother); font-weight:700; font-size:0.58rem;
+    color:var(--muted); letter-spacing:0.16em; text-transform:uppercase;
+    padding:4px 10px 0;
+  }
+  .pp-pop input[type="date"], .pp-pop input[type="time"]{
+    width:calc(100% - 8px); margin:4px 4px; padding:6px 8px; font-size:0.82rem;
+    border:1px solid var(--linha-forte); border-radius:6px; background:var(--areia);
+    font-family:var(--clother); box-shadow:none;
+  }
+  .pp-pop .pp-apply{
+    margin-top:4px; background:var(--preto); color:var(--areia); border-radius:8px;
+    padding:8px 10px; text-align:center; justify-content:center;
+  }
+  .pp-pop .pp-apply:hover{ background:var(--preto); opacity:0.85; }
+
   .quick-lanc{
     background:var(--areia); border:1.5px dashed var(--linha-forte); border-radius:10px;
     padding:14px 16px; margin-top:14px;
@@ -1762,6 +1839,15 @@
     </div>
 
     <div class="spacer"></div>
+
+    <!-- Pendentes de ontem — só aparece se tiver evento sem check -->
+    <div class="pn-pend" id="pnPend" style="display:none;">
+      <div class="pp-head">
+        <div class="pp-title">Pendentes de ontem</div>
+        <div class="pp-sub" id="pnPendSub">0 eventos sem check</div>
+      </div>
+      <div class="pn-pend-list" id="pnPendList"></div>
+    </div>
 
     <!-- Notas pendentes + Eventos de hoje -->
     <div class="pn-grid">
@@ -3026,8 +3112,117 @@ function renderPainel(){
       </li>`).join('') : '<li class="empty">Sem eventos hoje.</li>';
   }
 
+  renderPnPend();
   renderOrcLista();
 }
+
+function renderPnPend(){
+  const wrap = $('pnPend');
+  const list = $('pnPendList');
+  const sub  = $('pnPendSub');
+  if(!wrap || !list) return;
+  const hoje = todayStr();
+  const evs = MaratuStore.getEventos()
+    .filter(e => e.data && e.data < hoje && !e.feito)
+    .sort((a,b)=> a.data.localeCompare(b.data) || (a.hora||'').localeCompare(b.hora||''));
+  if(!evs.length){
+    wrap.style.display = 'none';
+    return;
+  }
+  wrap.style.display = '';
+  sub.textContent = evs.length===1 ? '1 evento sem check' : `${evs.length} eventos sem check`;
+  const CHK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>';
+  list.innerHTML = evs.map(e=>{
+    const meta = `${fmtDia(e.data)}${e.hora?(' · '+e.hora):' · dia todo'} · ${e.tipo}`;
+    return `
+      <div class="pp-row" data-id="${e.id}">
+        <div class="pp-check" data-check="${e.id}" title="Marcar como feito">${CHK}</div>
+        <div class="pp-body">
+          <div class="pp-t">${esc(e.titulo||'(sem título)')}</div>
+          <div class="pp-m">${meta}</div>
+        </div>
+        <button class="pp-resch" data-resch="${e.id}">reagendar</button>
+      </div>`;
+  }).join('');
+  list.querySelectorAll('[data-check]').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      const id = el.dataset.check;
+      const arr = MaratuStore.getEventos().map(x=> x.id===id ? {...x, feito:true} : x);
+      MaratuStore.setEventos(arr);
+      renderPainel(); renderCal(); renderDay(); renderUpcoming();
+    });
+  });
+  list.querySelectorAll('[data-resch]').forEach(el=>{
+    el.addEventListener('click', (ev)=>{ ev.stopPropagation(); openReschPop(el.dataset.resch, el); });
+  });
+}
+
+function openReschPop(id, anchor){
+  document.querySelectorAll('.pp-pop').forEach(p=> p.remove());
+  const cur = MaratuStore.getEventos().find(x=>x.id===id);
+  if(!cur) return;
+  const pop = document.createElement('div');
+  pop.className = 'pp-pop';
+  const hoje = todayStr();
+  const amanha = notAddDays(hoje, 1);
+  const seg = (()=>{
+    const t = new Date(hoje+'T00:00:00');
+    const dow = t.getDay();
+    const add = ((8 - dow) % 7) || 7;
+    return notAddDays(hoje, add);
+  })();
+  const proxSemMD = notAddDays(hoje, 7);
+  const curHora = cur.hora || '';
+  pop.innerHTML = `
+    <button data-set="today"><span>Hoje</span><span class="pp-when">${fmtDia(hoje)}</span></button>
+    <button data-set="tomorrow"><span>Amanhã</span><span class="pp-when">${fmtDia(amanha)}</span></button>
+    <button data-set="mesmahora-amanha"><span>Amanhã mesma hora</span><span class="pp-when">${fmtDia(amanha)}${curHora?(' · '+curHora):''}</span></button>
+    <button data-set="segunda"><span>Próxima segunda</span><span class="pp-when">${fmtDia(seg)}</span></button>
+    <button data-set="proxsem"><span>Semana que vem</span><span class="pp-when">${fmtDia(proxSemMD)}</span></button>
+    <hr />
+    <div class="pp-label">Data personalizada</div>
+    <input type="date" value="${hoje}" />
+    <div class="pp-label">Hora (opcional)</div>
+    <input type="time" value="${curHora}" />
+    <button class="pp-apply" data-set="custom">Aplicar</button>
+  `;
+  anchor.closest('.pp-row').appendChild(pop);
+
+  const apply = (iso, hora)=>{
+    if(!iso) return;
+    const diaInteiro = !hora;
+    const arr = MaratuStore.getEventos().map(x=> x.id===id ? {...x, data:iso, hora:hora||'', diaInteiro, feito:false} : x);
+    MaratuStore.setEventos(arr);
+    pop.remove();
+    renderPainel(); renderCal(); renderDay(); renderUpcoming();
+  };
+  const dateInp = pop.querySelector('input[type="date"]');
+  const horaInp = pop.querySelector('input[type="time"]');
+  dateInp.addEventListener('click', (ev)=> ev.stopPropagation());
+  horaInp.addEventListener('click', (ev)=> ev.stopPropagation());
+  pop.querySelectorAll('[data-set]').forEach(b=>{
+    b.addEventListener('click', (ev)=>{
+      ev.stopPropagation();
+      const v = b.dataset.set;
+      if(v==='today') apply(hoje, curHora);
+      else if(v==='tomorrow') apply(amanha, curHora);
+      else if(v==='mesmahora-amanha') apply(amanha, curHora);
+      else if(v==='segunda') apply(seg, curHora);
+      else if(v==='proxsem') apply(proxSemMD, curHora);
+      else if(v==='custom') apply(dateInp.value, horaInp.value);
+    });
+  });
+  setTimeout(()=>{
+    const outside = (ev)=>{
+      if(!pop.contains(ev.target) && !anchor.contains(ev.target)){
+        pop.remove();
+        document.removeEventListener('click', outside, true);
+      }
+    };
+    document.addEventListener('click', outside, true);
+  }, 0);
+}
+
 function renderOrcLista(){
   const list = MaratuStore.getOrcamentos().slice().sort((a,b)=>b.id.localeCompare(a.id)).slice(0,6);
   $('orcLista').innerHTML = list.length ? list.map(o=>`

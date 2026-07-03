@@ -357,6 +357,11 @@
     font-size:clamp(2rem, 4.4vw, 3rem); line-height:1;
     letter-spacing:-0.02em; color:var(--preto); margin:0;
   }
+  .wellbeing .wb-lastact{
+    font-family:var(--clother); font-weight:700; font-size:0.62rem;
+    letter-spacing:0.2em; text-transform:uppercase; color:var(--muted);
+    margin:8px 0 0; min-height:1em;
+  }
   .wellbeing .wb-right{
     display:flex; align-items:center; gap:20px; flex-shrink:0;
   }
@@ -1288,6 +1293,17 @@
   .ga4-kpi{ display:flex; flex-direction:column; gap:4px; padding:12px; background:rgba(13,13,11,0.03); border-radius:10px; }
   .ga4-kpi .k-cap{ font-size:0.6rem; letter-spacing:0.18em; text-transform:uppercase; opacity:0.7; }
   .ga4-kpi .k-val{ font-size:1.4rem; font-weight:900; font-family:var(--clother); }
+  .ga4-kpi .k-delta{ font-size:0.68rem; font-weight:700; letter-spacing:0.05em; margin-top:2px; min-height:1em; }
+  .ga4-kpi .k-delta.up{ color:#0a8f3e; }
+  .ga4-kpi .k-delta.down{ color:#b93a2b; }
+  .ga4-kpi .k-delta.flat{ opacity:0.45; }
+  :root[data-theme="noite"] .ga4-kpi .k-delta.up{ color:#4ac97a; }
+  :root[data-theme="noite"] .ga4-kpi .k-delta.down{ color:#e46b5c; }
+  .ga4-spark{ width:100%; height:44px; margin-top:14px; display:block; overflow:visible; }
+  .ga4-spark .line{ fill:none; stroke:var(--laranja); stroke-width:1.6; vector-effect:non-scaling-stroke; }
+  .ga4-spark .fill{ fill:var(--laranja); opacity:0.14; stroke:none; }
+  :root[data-theme="dia"]   .ga4-spark .line{ stroke:var(--laranja); }
+  :root[data-theme="noite"] .ga4-spark .line{ stroke:var(--laranja); }
   .ga4-cols{ display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:18px; }
   @media (max-width:640px){ .ga4-cols{ grid-template-columns:1fr; } }
   .ga4-col-title{ font-size:0.7rem; letter-spacing:0.18em; text-transform:uppercase; opacity:0.7; margin-bottom:8px; font-weight:700; }
@@ -1449,11 +1465,11 @@
   :root[data-theme="noite"] .btn.ghost:hover{ background:var(--selected-bg); color:var(--selected-fg); border-color:var(--selected-bg); }
   :root[data-theme="noite"] .head .sair:hover{ background:var(--selected-bg); color:var(--selected-fg); border-color:var(--selected-bg); }
 
-  /* ── ARATU (mascote sentado sobre a linha do header, à direita) ── */
+  /* ── ARATU (mascote em cima da linha do header — linha passa por trás) ── */
   .crab-admin{
-    position:absolute; right:24px; bottom:-13px;
+    position:absolute; right:32px; bottom:0;
     display:inline-flex; align-items:center; justify-content:center;
-    width:42px; height:22px; padding:0 8px; border:none; background:var(--bg-page);
+    width:42px; height:22px; padding:0; border:none; background:transparent;
     cursor:pointer; opacity:0.9; transition:opacity .18s, transform .18s;
     -webkit-tap-highlight-color:transparent; z-index:2;
   }
@@ -1508,7 +1524,10 @@
 
     <!-- Wellbeing hero -->
     <div class="wellbeing">
-      <div class="wb-greet" id="pnGreet">Bom dia, Raphael</div>
+      <div>
+        <div class="wb-greet" id="pnGreet">Bom dia, Raphael</div>
+        <div class="wb-lastact" id="pnLastAct"></div>
+      </div>
       <div class="wb-right">
         <div class="wb-info">
           <div class="wb-cap" id="pnMonthCap">Faturamento — mês</div>
@@ -1615,11 +1634,12 @@
         </div>
       </div>
       <div class="ga4-kpis" id="ga4Kpis">
-        <div class="ga4-kpi"><span class="k-cap">Sessões</span><span class="k-val" id="ga4Sess">—</span></div>
-        <div class="ga4-kpi"><span class="k-cap">Usuários</span><span class="k-val" id="ga4Users">—</span></div>
-        <div class="ga4-kpi"><span class="k-cap">Páginas</span><span class="k-val" id="ga4Views">—</span></div>
-        <div class="ga4-kpi"><span class="k-cap">Engajamento</span><span class="k-val" id="ga4Eng">—</span></div>
+        <div class="ga4-kpi"><span class="k-cap">Sessões</span><span class="k-val" id="ga4Sess">—</span><span class="k-delta" id="ga4SessD"></span></div>
+        <div class="ga4-kpi"><span class="k-cap">Usuários</span><span class="k-val" id="ga4Users">—</span><span class="k-delta" id="ga4UsersD"></span></div>
+        <div class="ga4-kpi"><span class="k-cap">Páginas</span><span class="k-val" id="ga4Views">—</span><span class="k-delta" id="ga4ViewsD"></span></div>
+        <div class="ga4-kpi"><span class="k-cap">Engajamento</span><span class="k-val" id="ga4Eng">—</span><span class="k-delta" id="ga4EngD"></span></div>
       </div>
+      <svg class="ga4-spark" id="ga4Spark" preserveAspectRatio="none" viewBox="0 0 100 30" aria-hidden="true"><path class="fill" d=""/><path class="line" d=""/></svg>
       <div class="ga4-cols">
         <div class="ga4-col">
           <div class="ga4-col-title">Páginas mais vistas</div>
@@ -2218,9 +2238,63 @@ $('btnSair').addEventListener('click', ()=>{
   try {
     localStorage.removeItem('maratu.token');
     localStorage.removeItem('maratu.lastActivity');
+    localStorage.removeItem('maratu.sessionStart');
   } catch (e) {}
   location.replace('/login.html?logout=1');
 });
+
+/* =====================================================================
+   ÚLTIMA ENTRADA — mostra quando foi a última vez que o admin abriu.
+   Uma "entrada" = admin aberto após 30min de inatividade. Refresh na
+   mesma sessão não conta como nova entrada.
+   ===================================================================== */
+(function lastEntry(){
+  try {
+    const NOW = Date.now();
+    const NEW_SESSION_GAP = 30 * 60 * 1000; // 30min
+    const curSess  = Number(localStorage.getItem('maratu.sessionStart') || 0);
+    const prevSess = Number(localStorage.getItem('maratu.previousSession') || 0);
+
+    let showTs = prevSess;
+    if (!curSess || (NOW - curSess) > NEW_SESSION_GAP) {
+      // Nova sessão — o "curSess" antigo agora vira "previous"
+      if (curSess) {
+        localStorage.setItem('maratu.previousSession', String(curSess));
+        showTs = curSess;
+      }
+      localStorage.setItem('maratu.sessionStart', String(NOW));
+    }
+
+    if (!showTs) return; // primeira visita — não tem histórico
+
+    const el = document.getElementById('pnLastAct');
+    if (!el) return;
+
+    const when = new Date(showTs);
+    const gap  = NOW - showTs;
+    const min  = Math.floor(gap / 60000);
+    const hh   = String(when.getHours()).padStart(2,'0');
+    const mm   = String(when.getMinutes()).padStart(2,'0');
+
+    const sameDay = (d1, d2) => d1.getFullYear()===d2.getFullYear() && d1.getMonth()===d2.getMonth() && d1.getDate()===d2.getDate();
+    const now = new Date(NOW);
+    const yesterday = new Date(NOW - 24*3600*1000);
+
+    let label;
+    if (min < 60) {
+      label = 'última entrada ' + Math.max(1,min) + ' min atrás';
+    } else if (sameDay(when, now)) {
+      label = 'última entrada hoje às ' + hh + ':' + mm;
+    } else if (sameDay(when, yesterday)) {
+      label = 'última entrada ontem às ' + hh + ':' + mm;
+    } else {
+      const dd = String(when.getDate()).padStart(2,'0');
+      const mo = String(when.getMonth()+1).padStart(2,'0');
+      label = 'última entrada ' + dd + '/' + mo + ' às ' + hh + ':' + mm;
+    }
+    el.textContent = label;
+  } catch(e){}
+})();
 
 /* =====================================================================
    MODO DE COR (tema)
@@ -4258,6 +4332,36 @@ MaratuStore.ready.then(()=>{
 
   let CURRENT_RANGE = '7d';
 
+  function metricAt(row, idx){ return Number(row?.metricValues?.[idx]?.value||0); }
+  function renderDelta(id, cur, prev, isPct){
+    const el = $(id); if(!el) return;
+    if(!prev){ el.className='k-delta flat'; el.textContent='—'; return; }
+    const diff = isPct ? (cur - prev) : ((cur - prev) / prev);
+    const abs = Math.abs(diff*100);
+    if(abs < 0.5){ el.className='k-delta flat'; el.textContent='='; return; }
+    const up = diff > 0;
+    el.className = 'k-delta ' + (up?'up':'down');
+    const sign = up?'+':'−';
+    el.textContent = sign + abs.toFixed(1).replace('.',',') + (isPct?'pp':'%');
+  }
+  function renderSpark(rows){
+    const svg = $('ga4Spark'); if(!svg) return;
+    const line = svg.querySelector('.line'); const fill = svg.querySelector('.fill');
+    if(rows.length < 2){ line.setAttribute('d',''); fill.setAttribute('d',''); return; }
+    const vals = rows.map(r=>metricAt(r,0));
+    const max = Math.max(...vals, 1), min = Math.min(...vals, 0);
+    const W = 100, H = 30, pad = 2;
+    const n = vals.length;
+    const pts = vals.map((v,i)=>{
+      const x = n===1?W/2:(i/(n-1))*W;
+      const y = H - pad - ((v-min)/(max-min||1)) * (H - pad*2);
+      return [x, y];
+    });
+    const d = pts.map((p,i)=>(i===0?'M':'L')+p[0].toFixed(2)+' '+p[1].toFixed(2)).join(' ');
+    line.setAttribute('d', d);
+    fill.setAttribute('d', d + ' L'+W+' '+H+' L0 '+H+' Z');
+  }
+
   function render(data){
     if(data.error){
       $('ga4Meta').textContent = 'erro: ' + data.error;
@@ -4268,6 +4372,19 @@ MaratuStore.ready.then(()=>{
     $('ga4Users').textContent = fmt(sumMetric(rows, 1));
     $('ga4Views').textContent = fmt(sumMetric(rows, 2));
     $('ga4Eng').textContent   = pct(avgMetric(rows, 3));
+
+    // Delta vs período anterior (data.totals.rows[0]=current, [1]=previous)
+    const tRows = (data.totals?.rows) || [];
+    const cur = tRows[0], prev = tRows[1];
+    if(cur){
+      renderDelta('ga4SessD',  metricAt(cur,0), prev?metricAt(prev,0):0, false);
+      renderDelta('ga4UsersD', metricAt(cur,1), prev?metricAt(prev,1):0, false);
+      renderDelta('ga4ViewsD', metricAt(cur,2), prev?metricAt(prev,2):0, false);
+      renderDelta('ga4EngD',   metricAt(cur,3)*100, prev?metricAt(prev,3)*100:0, true);
+    }
+
+    // Sparkline diário (sessões por dia)
+    renderSpark(rows);
 
     const topRows = (data.top?.rows) || [];
     $('ga4Top').innerHTML = topRows.length

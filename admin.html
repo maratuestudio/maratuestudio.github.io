@@ -58,6 +58,7 @@
     --brand-areia:#F0ECE4;
 
     --laranja:#C8501A;
+    --acento-rgb:200,80,26;
     --azul:#0E3272;
     --azul-claro:#2E6FC4;
     --areia:#F0ECE4;
@@ -78,8 +79,8 @@
 
     /* Cor de fundo da página — trocada por tema */
     --bg-page:var(--brand-laranja);
-    --scroll-thumb:rgba(200,80,26,0.55);
-    --scroll-thumb-hover:rgba(200,80,26,0.9);
+    --scroll-thumb:rgba(var(--acento-rgb),0.55);
+    --scroll-thumb-hover:rgba(var(--acento-rgb),0.9);
     --texture-opacity:0.35;
 
     /* aliases pro codigo antigo (nao mexer) */
@@ -98,6 +99,8 @@
   /* TEMA DIA — fundo azul-atalaia, cards/texto seguem original */
   :root[data-theme="dia"]{
     --bg-page:var(--brand-azul-claro);
+    --laranja:var(--brand-azul-claro);
+    --acento-rgb:46,111,196;
     --scroll-thumb:rgba(13,13,11,0.35);
     --scroll-thumb-hover:rgba(13,13,11,0.6);
     --texture-opacity:0.28;
@@ -173,7 +176,7 @@
   /* ── HEADER ── */
   .head{
     position:relative;
-    padding:36px 0 20px; min-height:132px;
+    padding:36px 0 20px; min-height:170px;
     border-bottom:1.5px solid var(--borda); margin-bottom:24px;
   }
   .head-top{ display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; }
@@ -283,7 +286,7 @@
     font-family:var(--clother);
   }
   input::placeholder, textarea::placeholder{ color:var(--muted); opacity:0.7; }
-  input:focus, select:focus, textarea:focus{ outline:none; border-color:var(--laranja); box-shadow:0 0 0 3px rgba(200,80,26,0.12); }
+  input:focus, select:focus, textarea:focus{ outline:none; border-color:var(--laranja); box-shadow:0 0 0 3px rgba(var(--acento-rgb),0.12); }
   label.f{ display:block; margin-bottom:14px; }
   label.f > span{
     display:block; font-family:var(--clother); font-weight:700;
@@ -730,7 +733,7 @@
     transition:border-color .18s, box-shadow .18s;
   }
   .cal-quick:focus-within{
-    border-color:var(--borda); box-shadow:0 0 0 3px rgba(200,80,26,0.12);
+    border-color:var(--borda); box-shadow:0 0 0 3px rgba(var(--acento-rgb),0.12);
   }
   .cal-quick .cq-ico{
     width:22px; height:22px; color:var(--muted); flex-shrink:0;
@@ -780,7 +783,7 @@
     transition:background .14s;
     overflow:hidden;
   }
-  .cal-month-grid .mcell.drop-hover:not(.blank){ background:var(--laranja-suave, rgba(200,80,26,0.18)); box-shadow:inset 0 0 0 2px var(--laranja); }
+  .cal-month-grid .mcell.drop-hover:not(.blank){ background:var(--laranja-suave, rgba(var(--acento-rgb),0.18)); box-shadow:inset 0 0 0 2px var(--laranja); }
   .cal-month-grid .mev{ cursor:grab; user-select:none; }
   .cal-month-grid .mev:active{ cursor:grabbing; }
   .cal-month-grid .mev.dragging{ opacity:0.4; }
@@ -801,7 +804,7 @@
     font-family:var(--clother); font-size:0.68rem; font-weight:600;
     padding:2px 6px; border-radius:4px; overflow:hidden; white-space:nowrap;
     text-overflow:ellipsis; line-height:1.35; letter-spacing:-0.005em;
-    background:rgba(200,80,26,0.14); color:var(--preto);
+    background:rgba(var(--acento-rgb),0.14); color:var(--preto);
     border-left:2px solid var(--laranja);
   }
   .cal-month-grid .mev.evento{ background:rgba(14,50,114,0.12); border-left-color:var(--azul); }
@@ -873,7 +876,7 @@
     transition:background .12s;
   }
   .cal-week .wk-slot:hover{ background:var(--areia-sombra); }
-  .cal-week .wk-daycol.today{ background:rgba(200,80,26,0.03); }
+  .cal-week .wk-daycol.today{ background:rgba(var(--acento-rgb),0.03); }
   .cal-week .wk-now{
     position:absolute; left:0; right:0; height:2px; background:var(--laranja);
     z-index:3; pointer-events:none;
@@ -899,7 +902,7 @@
     border-radius:6px; overflow:hidden; cursor:grab;
     font-family:var(--clother); font-size:0.7rem; font-weight:600;
     line-height:1.3; letter-spacing:-0.005em; color:var(--preto);
-    background:rgba(200,80,26,0.14); border-left:3px solid var(--laranja);
+    background:rgba(var(--acento-rgb),0.14); border-left:3px solid var(--laranja);
     transition:transform .12s, box-shadow .12s;
     z-index:1;
   }
@@ -911,7 +914,7 @@
   .cal-week .wk-ev-time{ font-size:0.58rem; color:var(--muted); font-weight:700; letter-spacing:0.04em; }
   .cal-week .wk-ev-title{ font-weight:700; }
   .cal-week .wk-ad{
-    background:rgba(200,80,26,0.14); border-left:3px solid var(--laranja);
+    background:rgba(var(--acento-rgb),0.14); border-left:3px solid var(--laranja);
     border-radius:6px; padding:3px 8px; font-family:var(--clother);
     font-size:0.68rem; font-weight:700; color:var(--preto); cursor:grab;
     max-width:160px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
@@ -919,7 +922,7 @@
   .cal-week .wk-ad.evento{ background:rgba(14,50,114,0.12); border-left-color:var(--azul); }
   .cal-week .wk-ad.marketing{ background:rgba(212,150,10,0.16); border-left-color:var(--dourado); }
   .cal-week .wk-ad.nota{ background:rgba(13,13,11,0.08); border-left-color:var(--preto); }
-  .cal-week .wk-daycol.drop-target{ background:rgba(200,80,26,0.06); }
+  .cal-week .wk-daycol.drop-target{ background:rgba(var(--acento-rgb),0.06); }
 
   /* Selected day panel (only shown in month view) */
   .daypanel{

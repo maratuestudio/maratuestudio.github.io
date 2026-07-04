@@ -197,7 +197,7 @@
     letter-spacing:0.18em; text-transform:uppercase; color:var(--preto);
     margin-top:2px;
   }
-  .mark .row-name{ display:block; }
+  .mark .row-name{ display:flex; flex-direction:column; }
   .head .right{ display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-left:auto; justify-content:flex-end; position:relative; }
   .head-menu{ display:flex; align-items:center; gap:12px; }
   .head-menu .hm-lbl{ display:none; }
@@ -208,7 +208,7 @@
     .mark{ flex:1 1 auto; min-width:0; }
     .mark .eyebrow{ font-size:0.55rem; }
     .mark .row-name{
-      display:flex; align-items:baseline; gap:8px; flex-wrap:wrap;
+      flex-direction:row; align-items:baseline; gap:8px; flex-wrap:wrap;
     }
     .mark .word{ font-size:1.55rem; line-height:1; }
     .mark .sub{ font-size:0.58rem; letter-spacing:0.14em; margin-top:0; }

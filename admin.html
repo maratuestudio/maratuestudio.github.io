@@ -18,19 +18,20 @@
 <meta name="apple-mobile-web-app-title" content="MARATU" />
 
 <script>
-/* GUARD DE SESSÃO — roda antes de qualquer render pra evitar flash do conteúdo. */
+/* GUARD DE SESSÃO — só checa idle timeout local. Auth real via cookie httpOnly (verificada na 1ª chamada). */
 (function(){
-  let tk = null, last = 0;
-  try { tk = localStorage.getItem('maratu.token'); } catch(e){}
+  let last = 0;
   try { last = parseInt(localStorage.getItem('maratu.lastActivity') || '0', 10); } catch(e){}
   const IDLE_MS = 20 * 60 * 1000;
-  if(!tk){ location.replace('/login.html'); return; }
-  if(last && (Date.now() - last) > IDLE_MS){
-    try { localStorage.removeItem('maratu.token'); } catch(e){}
+  if(!last){ location.replace('/login.html'); return; }
+  if((Date.now() - last) > IDLE_MS){
+    try { localStorage.removeItem('maratu.lastActivity'); } catch(e){}
     location.replace('/login.html?expired=1');
     return;
   }
   try { localStorage.setItem('maratu.lastActivity', String(Date.now())); } catch(e){}
+  /* Limpeza defensiva de token legacy (agora auth é 100% cookie) */
+  try { localStorage.removeItem('maratu.token'); } catch(e){}
   /* Aplica tema salvo o mais cedo possível (evita flash de cor) */
   try {
     const th = localStorage.getItem('maratu.theme') || '';
@@ -2580,10 +2581,14 @@ const MaratuStore = (function(){
 
   const API = "https://maratu-api.raphaelnascimento.workers.dev";
   let TOKEN = "";
-  try { TOKEN = localStorage.getItem("maratu.token") || ""; } catch (e) {}
+  /* Auth via cookie httpOnly (monkey-patch injeta credentials) */
 
   function bounceToLogin(reason){
-    try { localStorage.removeItem("maratu.token"); } catch (e) {}
+    try { fetch(API + "/api/logout", { method:'POST', keepalive:true }); } catch(e){}
+    try {
+      localStorage.removeItem("maratu.token");
+      localStorage.removeItem("maratu.lastActivity");
+    } catch (e) {}
     const q = reason ? ('?' + reason + '=1') : '';
     location.replace('/login.html' + q);
   }
@@ -2683,7 +2688,9 @@ document.querySelectorAll('#tabs .tab').forEach(btn=>{
 /* =====================================================================
    SAIR
    ===================================================================== */
-$('btnSair').addEventListener('click', ()=>{
+$('btnSair').addEventListener('click', async ()=>{
+  const API = "https://maratu-api.raphaelnascimento.workers.dev";
+  try { await fetch(API + "/api/logout", { method:'POST' }); } catch(e){}
   try {
     localStorage.removeItem('maratu.token');
     localStorage.removeItem('maratu.lastActivity');
@@ -2835,6 +2842,7 @@ $('btnSair').addEventListener('click', ()=>{
       if(saved > stamp) stamp = saved;
     } catch(e){}
     if(Date.now() - stamp > IDLE_MS){
+      try { fetch("https://maratu-api.raphaelnascimento.workers.dev/api/logout", { method:'POST', keepalive:true }); } catch(e){}
       try {
         localStorage.removeItem('maratu.token');
         localStorage.removeItem('maratu.lastActivity');
@@ -2852,6 +2860,7 @@ $('btnSair').addEventListener('click', ()=>{
       if(saved > stamp) stamp = saved;
     } catch(e){}
     if(Date.now() - stamp > IDLE_MS){
+      try { fetch("https://maratu-api.raphaelnascimento.workers.dev/api/logout", { method:'POST', keepalive:true }); } catch(e){}
       try {
         localStorage.removeItem('maratu.token');
         localStorage.removeItem('maratu.lastActivity');
@@ -4605,7 +4614,7 @@ function setupApple(){
 (function(){
   const API = "https://maratu-api.raphaelnascimento.workers.dev";
   let TOKEN = "";
-  try { TOKEN = localStorage.getItem("maratu.token") || ""; } catch(e){}
+  /* Auth via cookie httpOnly (monkey-patch injeta credentials) */
 
   const authHeaders = (extra) => Object.assign({ Authorization: "Bearer " + TOKEN }, extra||{});
   const brlFmt = (n) => (Number(n)/100).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
@@ -5146,8 +5155,7 @@ MaratuStore.ready.then(()=>{
 (function ga4Panel(){
   const API = "https://maratu-api.raphaelnascimento.workers.dev";
   let TOKEN = "";
-  try { TOKEN = localStorage.getItem("maratu.token") || ""; } catch(e){}
-  if(!TOKEN) return;
+  /* Auth via cookie httpOnly — TOKEN vazio é OK (monkey-patch injeta credentials) */
 
   const $ = (id) => document.getElementById(id);
   const esc = (s) => String(s==null?'':s)
@@ -5283,8 +5291,7 @@ MaratuStore.ready.then(()=>{
 (function igPanel(){
   const API = "https://maratu-api.raphaelnascimento.workers.dev";
   let TOKEN = "";
-  try { TOKEN = localStorage.getItem("maratu.token") || ""; } catch(e){}
-  if(!TOKEN) return;
+  /* Auth via cookie httpOnly — TOKEN vazio é OK (monkey-patch injeta credentials) */
 
   const $ = (id) => document.getElementById(id);
   const esc = (s) => String(s==null?'':s)

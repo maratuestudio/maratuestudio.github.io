@@ -198,18 +198,21 @@ const btn = document.getElementById('loginBtn');
   }
 })();
 
-/* Se já tem sessão (cookie httpOnly) ou token válido, manda direto pro admin */
+/* Se já tem sessão (cookie httpOnly), manda direto pro admin. Legacy token só pra migração 1x. */
 (async function autoLogin(){
-  let tk = null;
-  try { tk = localStorage.getItem('maratu.token'); } catch(e){}
+  let legacyTk = null;
+  try { legacyTk = localStorage.getItem('maratu.token'); } catch(e){}
   const headers = {};
-  if (tk) headers.Authorization = "Bearer " + tk;
+  if (legacyTk) headers.Authorization = "Bearer " + legacyTk;
   try{
     const r = await fetch(API + "/api/state", { credentials:'include', headers });
     if(r.ok){
-      try { localStorage.setItem('maratu.lastActivity', String(Date.now())); } catch(e){}
+      try {
+        localStorage.removeItem('maratu.token');
+        localStorage.setItem('maratu.lastActivity', String(Date.now()));
+      } catch(e){}
       location.replace('/admin.html');
-    } else if(r.status === 401 && tk){
+    } else if(r.status === 401 && legacyTk){
       try { localStorage.removeItem('maratu.token'); } catch(e){}
     }
   }catch(e){}
@@ -236,7 +239,7 @@ form.addEventListener('submit', async (e)=>{
       return;
     }
     try {
-      localStorage.setItem('maratu.token', pw);
+      localStorage.removeItem('maratu.token');
       localStorage.setItem('maratu.lastActivity', String(Date.now()));
     } catch(e){}
     location.replace('/admin.html');

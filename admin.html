@@ -161,7 +161,7 @@
 
   .wrap{
     max-width:960px; margin:0 auto;
-    padding:env(safe-area-inset-top) max(20px, env(safe-area-inset-right)) 56px max(20px, env(safe-area-inset-left));
+    padding:max(env(safe-area-inset-top), 20px) max(20px, env(safe-area-inset-right)) 56px max(20px, env(safe-area-inset-left));
     position:relative; z-index:1; overflow-x:hidden;
   }
   @media (max-width:560px){
@@ -207,11 +207,8 @@
     /* MARATU + painel operacional lado a lado, na mesma linha do menu */
     .mark{ flex:1 1 auto; min-width:0; }
     .mark .eyebrow{ font-size:0.55rem; }
-    .mark .row-name{
-      flex-direction:row; align-items:baseline; gap:8px; flex-wrap:wrap;
-    }
-    .mark .word{ font-size:1.55rem; line-height:1; }
-    .mark .sub{ font-size:0.58rem; letter-spacing:0.14em; margin-top:0; }
+    .mark .word{ font-size:1.9rem; line-height:0.9; }
+    .mark .sub{ font-size:0.65rem; letter-spacing:0.16em; margin-top:4px; }
     .head-top{ flex-wrap:nowrap; align-items:flex-start; }
     .head .right{ width:auto; margin-left:auto; flex:0 0 auto; gap:0; }
     /* No mobile: menu inline vira dropdown; botão ⋯ aparece */
@@ -5814,7 +5811,12 @@ setInterval(chicoTick, 5*1000);
       triggered = true;
       el.innerHTML = '<span class="ptr-spin"></span><span class="ptr-lbl">Atualizando</span>';
       el.style.transform = 'translateY(60px)';
-      setTimeout(()=> location.reload(), 250);
+      setTimeout(()=>{
+        /* Bypass cache HTTP/PWA: força GET novo com querystring */
+        const u = new URL(location.href);
+        u.searchParams.set('_r', String(Date.now()));
+        location.replace(u.toString());
+      }, 250);
     } else {
       el.style.transform = '';
       el.classList.remove('on');

@@ -146,6 +146,9 @@
     <div class="senha-wrap">
       <input id="loginSenha" type="password" placeholder="insira sua senha" autocomplete="current-password" autofocus />
     </div>
+    <div class="senha-wrap" id="totpWrap" style="display:none">
+      <input id="loginTotp" type="text" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" placeholder="código 2FA (6 dígitos)" autocomplete="one-time-code" />
+    </div>
     <div class="msg" id="loginMsg">senha incorreta</div>
     <button type="submit" id="loginBtn">Entrar</button>
     <div class="foot">MARATU &middot; est. 2026 &middot; Aracaju</div>
@@ -218,15 +221,37 @@ const btn = document.getElementById('loginBtn');
   }catch(e){}
 })();
 
+const totpWrap = document.getElementById('totpWrap');
+const totpInput = document.getElementById('loginTotp');
+
 form.addEventListener('submit', async (e)=>{
   e.preventDefault();
   const pw = (input.value || '').trim();
   if(!pw) return;
+  const totp = (totpInput.value || '').trim();
   btn.disabled = true; msg.classList.remove('on','info');
   try{
-    const r = await fetch(API + "/api/state", { credentials:'include', headers:{ Authorization:"Bearer "+pw } });
+    const headers = { Authorization: "Bearer " + pw };
+    if(totp) headers['X-TOTP-Code'] = totp;
+    const r = await fetch(API + "/api/state", { credentials:'include', headers });
     if(r.status === 401){
+      let body = {};
+      try { body = await r.json(); } catch(e){}
       btn.disabled = false;
+      if(body.error === 'totp_required'){
+        totpWrap.style.display = '';
+        totpInput.focus();
+        msg.textContent = 'código 2FA necessário';
+        msg.classList.add('on','info');
+        return;
+      }
+      if(body.error === 'totp_invalid'){
+        totpWrap.style.display = '';
+        totpInput.value = ''; totpInput.focus();
+        msg.textContent = 'código 2FA inválido';
+        msg.classList.add('on');
+        return;
+      }
       msg.textContent = 'senha incorreta';
       msg.classList.add('on');
       input.value = ''; input.focus();

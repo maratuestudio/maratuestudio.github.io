@@ -264,7 +264,7 @@ form.addEventListener('submit', async (e)=>{
       return;
     }
     try {
-      localStorage.removeItem('maratu.token');
+      localStorage.setItem('maratu.token', pw);
       localStorage.setItem('maratu.lastActivity', String(Date.now()));
     } catch(e){}
     location.replace('/admin.html');

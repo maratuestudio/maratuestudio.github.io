@@ -1780,6 +1780,20 @@
       });
     }
 
+    // SMOOTH SCROLL — âncoras internas (bypass do smooth-scroll nativo)
+    document.querySelectorAll('a[href^="#"]').forEach(function(a){
+      a.addEventListener('click', function(e){
+        var hash = a.getAttribute('href');
+        if (hash.length < 2) return;
+        var el = document.getElementById(hash.slice(1));
+        if (!el) return;
+        e.preventDefault();
+        var y = el.getBoundingClientRect().top + window.pageYOffset - 80;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+        history.pushState(null, '', hash);
+      });
+    });
+
     // SCROLL REVEAL
     var reveals = document.querySelectorAll('.reveal');
     var observer = new IntersectionObserver(function(entries) {

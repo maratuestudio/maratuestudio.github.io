@@ -198,17 +198,18 @@ const btn = document.getElementById('loginBtn');
   }
 })();
 
-/* Se já tem token válido, manda direto pro admin */
+/* Se já tem sessão (cookie httpOnly) ou token válido, manda direto pro admin */
 (async function autoLogin(){
   let tk = null;
   try { tk = localStorage.getItem('maratu.token'); } catch(e){}
-  if(!tk) return;
+  const headers = {};
+  if (tk) headers.Authorization = "Bearer " + tk;
   try{
-    const r = await fetch(API + "/api/state", { headers:{ Authorization:"Bearer "+tk } });
+    const r = await fetch(API + "/api/state", { credentials:'include', headers });
     if(r.ok){
       try { localStorage.setItem('maratu.lastActivity', String(Date.now())); } catch(e){}
       location.replace('/admin.html');
-    } else if(r.status === 401){
+    } else if(r.status === 401 && tk){
       try { localStorage.removeItem('maratu.token'); } catch(e){}
     }
   }catch(e){}
@@ -220,7 +221,7 @@ form.addEventListener('submit', async (e)=>{
   if(!pw) return;
   btn.disabled = true; msg.classList.remove('on','info');
   try{
-    const r = await fetch(API + "/api/state", { headers:{ Authorization:"Bearer "+pw } });
+    const r = await fetch(API + "/api/state", { credentials:'include', headers:{ Authorization:"Bearer "+pw } });
     if(r.status === 401){
       btn.disabled = false;
       msg.textContent = 'senha incorreta';

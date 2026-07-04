@@ -197,8 +197,14 @@
     letter-spacing:0.18em; text-transform:uppercase; color:var(--preto);
     margin-top:2px;
   }
+  .mark .row-name{ display:block; }
+  .head .right{ display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-left:auto; justify-content:flex-end; position:relative; }
+  .head-menu{ display:flex; align-items:center; gap:12px; }
+  .head-menu .hm-lbl{ display:none; }
+  .head-menu-btn{ display:none; }
+  .head-menu-back{ display:none; }
   @media (max-width:560px){
-    /* MARATU + painel operacional lado a lado, na mesma linha do × */
+    /* MARATU + painel operacional lado a lado, na mesma linha do menu */
     .mark{ flex:1 1 auto; min-width:0; }
     .mark .eyebrow{ font-size:0.55rem; }
     .mark .row-name{
@@ -207,8 +213,36 @@
     .mark .word{ font-size:1.55rem; line-height:1; }
     .mark .sub{ font-size:0.58rem; letter-spacing:0.14em; margin-top:0; }
     .head-top{ flex-wrap:nowrap; align-items:flex-start; }
-    .head .right{ width:auto; margin-left:auto; flex:0 0 auto; }
-    .head .right .theme-seg{ display:none; }
+    .head .right{ width:auto; margin-left:auto; flex:0 0 auto; gap:0; }
+    /* No mobile: menu inline vira dropdown; botão ⋯ aparece */
+    .head-menu{ display:none; }
+    .head-menu.open{
+      display:flex; flex-direction:column; align-items:stretch; gap:12px;
+      position:absolute; top:calc(100% + 8px); right:0; z-index:9990;
+      background:var(--areia); border:1.5px solid var(--borda); border-radius:14px;
+      box-shadow:4px 4px 0 0 var(--sombra-hard);
+      padding:14px; min-width:200px;
+    }
+    .head-menu.open .hm-lbl{
+      display:block;
+      font-family:var(--clother); font-size:0.55rem; font-weight:700;
+      letter-spacing:0.22em; text-transform:uppercase; color:var(--muted);
+    }
+    .head-menu.open .theme-seg{ box-shadow:none; align-self:flex-start; }
+    .head-menu.open .sair{ width:100%; padding:10px 16px; font-size:0.62rem; box-shadow:2px 2px 0 0 var(--sombra-hard); }
+    .head-menu-btn{
+      display:inline-flex; align-items:center; justify-content:center;
+      width:34px; height:34px; padding:0;
+      background:var(--areia); border:1.5px solid var(--borda); color:var(--preto);
+      border-radius:999px; box-shadow:2px 2px 0 0 var(--sombra-hard);
+      cursor:pointer; font-size:1.3rem; line-height:1; font-weight:900;
+      transition:transform .12s, box-shadow .12s;
+      letter-spacing:0;
+    }
+    .head-menu-btn:active{ transform:translate(2px,2px); box-shadow:0 0 0 0 var(--sombra-hard); }
+    .head-menu-back.on{
+      display:block; position:fixed; inset:0; z-index:9989; background:transparent;
+    }
     /* Aratu + Chico ganham linha própria — não sobrepõem MARATU */
     .head{ padding:24px 0 14px; min-height:0; }
     .head-crab{
@@ -217,8 +251,6 @@
     }
     .chico-bubble{ max-width:calc(100vw - 120px); }
   }
-  .head .right{ display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-left:auto; justify-content:flex-end; }
-  @media (max-width:560px){ .head .right{ width:100%; justify-content:flex-end; } }
   .head .sair{
     background:var(--areia); border:1.5px solid var(--borda); color:var(--preto);
     padding:8px 16px; font-family:var(--clother); font-weight:700;
@@ -228,17 +260,6 @@
   }
   .head .sair:hover{ background:var(--preto); color:var(--areia); }
   .head .sair:active{ transform:translate(2px,2px); box-shadow:0 0 0 0 var(--sombra-hard); }
-  /* Mobile: vira só um × redondo pra economizar espaço no header */
-  @media (max-width:560px){
-    .head .sair{
-      width:34px; height:34px; padding:0; font-size:0; line-height:1;
-      display:inline-flex; align-items:center; justify-content:center;
-    }
-    .head .sair::before{
-      content:'×'; font-size:1.3rem; font-weight:700; letter-spacing:0;
-      color:inherit; line-height:1; margin-top:-2px;
-    }
-  }
   @keyframes pulse{ 0%,100%{opacity:1} 50%{opacity:0.35} }
 
   /* Menu de temas — 3 chips lado a lado (segmentado circular) */
@@ -1813,12 +1834,18 @@
         </span>
       </div>
       <div class="right">
-        <div class="theme-seg" role="group" aria-label="modo de cor" id="themeSeg">
-          <button type="button" data-theme=""      aria-pressed="true"  title="Original — laranja"><span class="sw"></span></button>
-          <button type="button" data-theme="dia"   aria-pressed="false" title="Dia — azul atalaia"><span class="sw"></span></button>
-          <button type="button" data-theme="noite" aria-pressed="false" title="Noite — preto mangue"><span class="sw"></span></button>
+        <div class="head-menu" id="headMenu" role="menu">
+          <span class="hm-lbl">Modo de cor</span>
+          <div class="theme-seg" role="group" aria-label="modo de cor" id="themeSeg">
+            <button type="button" data-theme=""      aria-pressed="true"  title="Original — laranja"><span class="sw"></span></button>
+            <button type="button" data-theme="dia"   aria-pressed="false" title="Dia — azul atalaia"><span class="sw"></span></button>
+            <button type="button" data-theme="noite" aria-pressed="false" title="Noite — preto mangue"><span class="sw"></span></button>
+          </div>
+          <span class="hm-lbl">Sessão</span>
+          <button class="sair" id="btnSair" type="button">Sair</button>
         </div>
-        <button class="sair" id="btnSair" type="button">Sair</button>
+        <button class="head-menu-btn" id="headMenuBtn" type="button" aria-label="Menu" aria-expanded="false">&#8942;</button>
+        <div class="head-menu-back" id="headMenuBack" aria-hidden="true"></div>
       </div>
     </div>
     <!-- Aratu + balão do Chico, absolute no canto inferior direito -->
@@ -2704,6 +2731,34 @@ $('btnSair').addEventListener('click', ()=>{
 /* =====================================================================
    MODO DE COR (tema)
    ===================================================================== */
+/* Menu ⋯ do header no mobile (contém temas + Sair) */
+(function headMenu(){
+  const btn = document.getElementById('headMenuBtn');
+  const menu = document.getElementById('headMenu');
+  const back = document.getElementById('headMenuBack');
+  if(!btn || !menu || !back) return;
+  function close(){
+    menu.classList.remove('open');
+    back.classList.remove('on');
+    btn.setAttribute('aria-expanded','false');
+  }
+  function open(){
+    menu.classList.add('open');
+    back.classList.add('on');
+    btn.setAttribute('aria-expanded','true');
+  }
+  btn.addEventListener('click', (e)=>{
+    e.stopPropagation();
+    if(menu.classList.contains('open')) close(); else open();
+  });
+  back.addEventListener('click', close);
+  document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') close(); });
+  /* fecha ao clicar item do menu */
+  menu.addEventListener('click', (e)=>{
+    if(e.target.closest('button')) setTimeout(close, 100);
+  });
+})();
+
 (function themeMenu(){
   const seg = document.getElementById('themeSeg');
   if(!seg) return;

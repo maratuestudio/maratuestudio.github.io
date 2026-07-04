@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#C8501A" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://maratu-api.raphaelnascimento.workers.dev; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests;" />
+<title>MARATU · 2FA</title>
+<meta name="robots" content="noindex,nofollow" />
+<link rel="icon" type="image/png" href="favicon-v6.png" />
+<style>
+  @font-face { font-family:'Clother'; src:url('TRYClother-Regular.woff2') format('woff2'); font-weight:400; font-display:swap; }
+  @font-face { font-family:'Clother'; src:url('TRYClother-Bold.woff2') format('woff2'); font-weight:700; font-display:swap; }
+  @font-face { font-family:'Clother'; src:url('TRYClother-Black.woff2') format('woff2'); font-weight:900; font-display:swap; }
+  :root{ --laranja:#C8501A; --preto:#0D0D0B; --areia:#F0ECE4; --clother:'Clother','Helvetica Neue',sans-serif; }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; }
+  html{ background:var(--areia); -webkit-font-smoothing:antialiased; }
+  body{ background:var(--areia); color:var(--preto); font-family:var(--clother); line-height:1.5; min-height:100vh; padding:32px 20px; }
+  .wrap{ max-width:520px; margin:0 auto; }
+  h1{ font-family:var(--clother); font-weight:900; font-size:1.8rem; margin:0 0 8px; letter-spacing:-0.01em; }
+  .lbl{ font-size:0.62rem; font-weight:700; letter-spacing:0.24em; text-transform:uppercase; color:rgba(13,13,11,0.6); margin-bottom:16px; }
+  .card{ background:#fff; border:1.5px solid var(--preto); border-radius:14px; padding:22px; box-shadow:4px 4px 0 0 var(--preto); margin:18px 0; }
+  .status-on{ background:#e0ffdc; }
+  .status-off{ background:#fff3d6; }
+  .kv{ font-size:0.85rem; margin:6px 0; }
+  .kv b{ font-weight:700; }
+  code, pre{ font-family:'SF Mono','Consolas',monospace; background:#f0ece4; padding:2px 6px; border-radius:4px; font-size:0.85rem; }
+  pre{ padding:12px; white-space:pre-wrap; word-break:break-all; }
+  input[type="text"]{ width:100%; font-family:var(--clother); font-size:1.05rem; letter-spacing:0.14em; padding:12px; border:1.5px solid var(--preto); border-radius:8px; background:#fff; }
+  button{ background:var(--preto); color:var(--areia); border:1.5px solid var(--preto); border-radius:999px; box-shadow:3px 3px 0 0 var(--preto); padding:12px 22px; font-family:var(--clother); font-weight:700; font-size:0.72rem; letter-spacing:0.24em; text-transform:uppercase; cursor:pointer; margin:4px 0; }
+  button:hover{ background:var(--areia); color:var(--preto); }
+  button:active{ transform:translate(3px,3px); box-shadow:0 0 0 0 var(--preto); }
+  button.danger{ background:#c8451a; color:#fff; }
+  button.ghost{ background:transparent; color:var(--preto); }
+  .msg{ font-size:0.85rem; margin:8px 0; min-height:1em; }
+  .msg.ok{ color:#1a7a3a; }
+  .msg.err{ color:#c02c1a; }
+  a{ color:var(--laranja); font-weight:700; }
+  .back{ display:inline-block; margin-bottom:20px; text-decoration:none; font-size:0.7rem; letter-spacing:0.18em; text-transform:uppercase; }
+  ol{ padding-left:20px; font-size:0.9rem; }
+  ol li{ margin:6px 0; }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <a class="back" href="/admin.html">← voltar ao admin</a>
+  <div class="lbl">Segurança</div>
+  <h1>Autenticação em 2 passos</h1>
+
+  <div id="loading" class="card">Carregando…</div>
+
+  <div id="statusCard" class="card" style="display:none">
+    <div class="kv"><b>Status:</b> <span id="statusText">—</span></div>
+    <div id="disabledActions" style="display:none">
+      <p style="font-size:0.9rem; margin:10px 0;">Adicione uma segunda camada de segurança. Você vai precisar de um app autenticador (Google Authenticator, Authy, 1Password, Aegis).</p>
+      <button id="btnSetup">Ativar 2FA</button>
+    </div>
+    <div id="enabledActions" style="display:none">
+      <p style="font-size:0.9rem; margin:10px 0;">2FA ativa. A cada login, além da senha, você vai precisar digitar o código de 6 dígitos do seu app autenticador.</p>
+      <button class="danger" id="btnDisable">Desativar 2FA</button>
+    </div>
+  </div>
+
+  <div id="setupCard" class="card" style="display:none">
+    <div class="kv"><b>1.</b> Adicione esta chave no seu app autenticador:</div>
+    <pre id="secretDisplay"></pre>
+    <p style="font-size:0.75rem; color:rgba(13,13,11,0.6); margin:4px 0 12px;">Ou clique no link (abre o app no celular): <a id="otpauthLink" href="#">otpauth://…</a></p>
+    <div class="kv"><b>2.</b> Digite o código de 6 dígitos que apareceu no app:</div>
+    <input id="confirmCode" type="text" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" placeholder="000000" autocomplete="one-time-code" />
+    <div class="msg" id="setupMsg"></div>
+    <button id="btnConfirm">Confirmar e ativar</button>
+    <button class="ghost" id="btnCancel">Cancelar</button>
+  </div>
+</div>
+
+<script>
+/* Guard: precisa estar autenticado (cookie httpOnly) */
+(function(){
+  try {
+    const last = parseInt(localStorage.getItem('maratu.lastActivity') || '0', 10);
+    if(!last || Date.now() - last > 20*60*1000){ location.replace('/login.html?expired=1'); }
+  } catch(e){}
+})();
+
+const API = "https://maratu-api.raphaelnascimento.workers.dev";
+const $ = (id)=>document.getElementById(id);
+
+async function api(path, opts){
+  const r = await fetch(API + path, Object.assign({ credentials:'include' }, opts||{}));
+  if(r.status === 401){ location.replace('/login.html?expired=1'); throw new Error('unauth'); }
+  return r;
+}
+
+async function refresh(){
+  const r = await api('/api/totp/status');
+  const j = await r.json();
+  $('loading').style.display = 'none';
+  const card = $('statusCard');
+  card.style.display = '';
+  card.classList.toggle('status-on', j.enabled);
+  card.classList.toggle('status-off', !j.enabled);
+  $('statusText').textContent = j.enabled ? 'ATIVA ✓' : 'desativada';
+  $('disabledActions').style.display = j.enabled ? 'none' : '';
+  $('enabledActions').style.display = j.enabled ? '' : 'none';
+  $('setupCard').style.display = 'none';
+}
+
+$('btnSetup').addEventListener('click', async ()=>{
+  const r = await api('/api/totp/setup', { method:'POST' });
+  const j = await r.json();
+  $('secretDisplay').textContent = j.secret;
+  $('otpauthLink').href = j.uri;
+  $('otpauthLink').textContent = j.uri.length > 60 ? j.uri.slice(0,60)+'…' : j.uri;
+  $('setupCard').style.display = '';
+  $('statusCard').style.display = 'none';
+  $('confirmCode').value = '';
+  $('setupMsg').textContent = '';
+  $('confirmCode').focus();
+});
+
+$('btnConfirm').addEventListener('click', async ()=>{
+  const code = ($('confirmCode').value||'').trim();
+  if(!/^\d{6}$/.test(code)){
+    $('setupMsg').textContent = 'digite o código de 6 dígitos';
+    $('setupMsg').className = 'msg err';
+    return;
+  }
+  const r = await api('/api/totp/enable', {
+    method:'POST',
+    headers:{ 'Content-Type':'application/json' },
+    body: JSON.stringify({ code })
+  });
+  const j = await r.json();
+  if(j.ok){
+    $('setupMsg').textContent = '2FA ativada ✓';
+    $('setupMsg').className = 'msg ok';
+    setTimeout(refresh, 800);
+  } else {
+    $('setupMsg').textContent = 'código inválido — tente de novo';
+    $('setupMsg').className = 'msg err';
+    $('confirmCode').value = ''; $('confirmCode').focus();
+  }
+});
+
+$('btnCancel').addEventListener('click', refresh);
+
+$('btnDisable').addEventListener('click', async ()=>{
+  if(!confirm('Desativar 2FA? Você vai voltar a entrar só com a senha.')) return;
+  await api('/api/totp/disable', { method:'POST' });
+  refresh();
+});
+
+refresh();
+</script>
+</body>
+</html>

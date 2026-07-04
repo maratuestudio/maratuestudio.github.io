@@ -1817,6 +1817,107 @@
   }
   @keyframes ptrSpin{ to{ transform:rotate(360deg); } }
 
+  /* ========== MEI · obrigações ========== */
+  .mei-block{
+    background:var(--areia); border:1.5px solid var(--borda); border-radius:14px;
+    box-shadow:4px 4px 0 0 var(--sombra-hard); padding:20px 22px; margin:0 0 20px;
+  }
+  .mei-block .mei-head{
+    display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:16px;
+  }
+  .mei-block .mei-lbl{
+    font-family:var(--clother); font-weight:700; font-size:0.58rem;
+    letter-spacing:0.24em; text-transform:uppercase; color:var(--muted);
+  }
+  .mei-block .mei-lbl b{ color:var(--laranja); font-weight:900; }
+  .mei-block .mei-config-btn{
+    background:transparent; border:1.5px solid var(--borda); border-radius:999px;
+    padding:6px 14px; font-family:var(--clother); font-weight:700; font-size:0.58rem;
+    letter-spacing:0.2em; text-transform:uppercase; color:var(--preto); cursor:pointer;
+    box-shadow:2px 2px 0 0 var(--sombra-hard);
+  }
+  .mei-block .mei-config-btn:hover{ background:var(--preto); color:var(--areia); }
+  .mei-block .mei-config-btn:active{ transform:translate(2px,2px); box-shadow:0 0 0 0 var(--sombra-hard); }
+  .mei-grid{ display:grid; grid-template-columns:repeat(3, 1fr); gap:14px; }
+  @media (max-width:760px){ .mei-grid{ grid-template-columns:1fr; } }
+  .mei-card{
+    background:var(--surface); border:1.5px solid var(--borda); border-radius:10px;
+    padding:16px 18px; display:flex; flex-direction:column; gap:8px;
+  }
+  .mei-card.ok{ background:#dcefe0; border-color:#4a7a52; }
+  .mei-card.warn{ background:#fff3d6; }
+  .mei-card.danger{ background:#f6d5cd; border-color:#c04432; }
+  .mei-card .mc-cap{
+    font-family:var(--clother); font-weight:700; font-size:0.58rem;
+    letter-spacing:0.22em; text-transform:uppercase; color:var(--muted); margin:0;
+  }
+  .mei-card .mc-val{
+    font-family:var(--clother); font-weight:900; font-size:1.4rem;
+    line-height:1.1; letter-spacing:-0.01em; color:var(--preto); margin:0;
+  }
+  .mei-card .mc-sub{ font-family:var(--clother); font-size:0.78rem; color:var(--muted); margin:0; }
+  .mei-card .mei-btn{
+    background:var(--preto); color:var(--areia); border:1.5px solid var(--borda);
+    border-radius:999px; padding:8px 16px; font-family:var(--clother); font-weight:700;
+    font-size:0.6rem; letter-spacing:0.22em; text-transform:uppercase; cursor:pointer;
+    box-shadow:2px 2px 0 0 var(--sombra-hard); margin-top:4px; align-self:flex-start;
+  }
+  .mei-card .mei-btn:hover{ background:var(--areia); color:var(--preto); }
+  .mei-card .mei-btn:active{ transform:translate(2px,2px); box-shadow:0 0 0 0 var(--sombra-hard); }
+  .mei-card .mei-btn.ghost{ background:transparent; color:var(--preto); }
+  .mei-bar{ height:8px; background:var(--areia); border:1.5px solid var(--borda); border-radius:999px; overflow:hidden; margin:4px 0 2px; }
+  .mei-bar-fill{ height:100%; background:var(--laranja); border-right:1px solid var(--borda); transition:width .4s ease; width:0%; }
+  .mei-bar-fill.warn{ background:#e0a91a; }
+  .mei-bar-fill.danger{ background:#c04432; }
+  .mei-history{
+    display:flex; gap:6px; flex-wrap:wrap; margin-top:14px; padding-top:12px;
+    border-top:1px solid var(--linha);
+  }
+  .mei-pill{
+    font-family:var(--clother); font-size:0.6rem; letter-spacing:0.14em; text-transform:uppercase;
+    padding:6px 10px; border:1.5px solid var(--borda); border-radius:999px;
+    background:var(--areia); color:var(--preto); cursor:pointer; font-weight:700;
+  }
+  .mei-pill.paid{ background:#dcefe0; border-color:#4a7a52; }
+  .mei-pill.late{ background:#f6d5cd; border-color:#c04432; }
+  .mei-pill.current{ box-shadow:0 0 0 2px var(--dourado) inset; }
+  .mei-detail-btn{
+    background:transparent; border:none; color:var(--muted); cursor:pointer; margin-top:12px;
+    font-family:var(--clother); font-size:0.7rem; letter-spacing:0.16em; text-transform:uppercase;
+    font-weight:700; padding:6px 0;
+  }
+  .mei-detail-btn:hover{ color:var(--laranja); }
+
+  /* modal MEI conteúdo (usa .modal-back existente) */
+  #meiDetailModal .modal-card{ max-width:820px; }
+  #meiConfigModal .modal-card{ max-width:520px; }
+  .mei-mo-tabs{ display:flex; gap:6px; margin-bottom:16px; }
+  .mei-mo-tab{
+    background:var(--areia); border:1.5px solid var(--borda); border-radius:999px;
+    padding:6px 14px; font-family:var(--clother); font-weight:700; font-size:0.6rem;
+    letter-spacing:0.2em; text-transform:uppercase; color:var(--preto); cursor:pointer;
+  }
+  .mei-mo-tab.on{ background:var(--preto); color:var(--areia); }
+  .mei-mo-body table{ width:100%; border-collapse:collapse; font-size:0.85rem; }
+  .mei-mo-body th, .mei-mo-body td{ padding:8px 6px; text-align:left; border-bottom:1px solid var(--linha); }
+  .mei-mo-body th{ font-weight:700; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--muted); }
+  .mei-mo-body td.num{ text-align:right; font-variant-numeric:tabular-nums; }
+  .mei-mo-body input[type="text"], .mei-mo-body input[type="number"]{
+    font-family:var(--clother); font-size:0.85rem; padding:6px 8px;
+    border:1.5px solid var(--borda); border-radius:6px; background:var(--areia); color:var(--preto);
+    width:100%; box-sizing:border-box;
+  }
+  .mei-mo-body button.small{
+    background:var(--preto); color:var(--areia); border:1.5px solid var(--borda);
+    border-radius:999px; padding:5px 10px; font-family:var(--clother); font-weight:700;
+    font-size:0.55rem; letter-spacing:0.18em; text-transform:uppercase; cursor:pointer;
+  }
+  .mei-mo-body button.small.ghost{ background:transparent; color:var(--preto); }
+  .mei-mo-body button.small.danger{ background:#c04432; color:#fff; }
+  .mei-cfg-row{ display:flex; flex-direction:column; gap:6px; margin-bottom:14px; }
+  .mei-cfg-row label{ font-size:0.62rem; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; color:var(--muted); }
+  .mei-cfg-hint{ font-size:0.72rem; color:var(--muted); margin-top:-6px; margin-bottom:10px; }
+
 </style>
 <script>
 /* Envia cookie httpOnly em toda chamada pro Worker (auth aditiva Bearer+cookie) */
@@ -1924,6 +2025,36 @@
           <text class="pct-num" x="60" y="72" text-anchor="middle" id="pnRingPct">0%</text>
         </svg>
       </div>
+    </div>
+
+    <!-- ================= MEI · obrigações ================= -->
+    <div class="mei-block" id="meiBlock" style="display:none">
+      <div class="mei-head">
+        <div class="mei-lbl"><b>MEI</b> · obrigações do mês</div>
+        <button class="mei-config-btn" id="meiConfigBtn" type="button">config</button>
+      </div>
+      <div class="mei-grid">
+        <div class="mei-card" id="meiDasCard">
+          <div class="mc-cap">DAS · <span id="meiDasMes">—</span></div>
+          <div class="mc-val" id="meiDasVal">R$ 0,00</div>
+          <div class="mc-sub" id="meiDasSub">—</div>
+          <button class="mei-btn" id="meiDasBtn" type="button">marcar pago</button>
+        </div>
+        <div class="mei-card" id="meiFatCard">
+          <div class="mc-cap">Faturamento · <span id="meiFatAno">—</span></div>
+          <div class="mc-val" id="meiFatVal">R$ 0,00</div>
+          <div class="mei-bar"><div class="mei-bar-fill" id="meiFatBar"></div></div>
+          <div class="mc-sub" id="meiFatSub">—</div>
+        </div>
+        <div class="mei-card" id="meiDasnCard">
+          <div class="mc-cap">DASN-SIMEI · <span id="meiDasnAno">—</span></div>
+          <div class="mc-val" id="meiDasnVal">—</div>
+          <div class="mc-sub" id="meiDasnSub">—</div>
+          <button class="mei-btn" id="meiDasnBtn" type="button" style="display:none">marcar entregue</button>
+        </div>
+      </div>
+      <div class="mei-history" id="meiHistory"></div>
+      <button class="mei-detail-btn" id="meiDetailBtn" type="button">ver detalhes do ano ↓</button>
     </div>
 
     <!-- Metric cards row -->
@@ -2530,7 +2661,64 @@
   <div class="foot" id="foot">MARATU &middot; est. 2026 &middot; Aracaju &middot; sync D1</div>
 </div>
 
+<!-- MEI · modal detalhes -->
+<div class="modal-back" id="meiDetailModal" role="dialog" aria-modal="true" aria-labelledby="meiDetailTitle">
+  <div class="modal-card">
+    <div class="modal-head">
+      <h3 id="meiDetailTitle">MEI · detalhes <span id="meiDetailAno" style="color:var(--muted);font-weight:400"></span></h3>
+      <button class="modal-close" data-mei-close type="button" aria-label="Fechar">×</button>
+    </div>
+    <div class="mei-mo-tabs">
+      <button class="mei-mo-tab on" type="button" data-mei-tab="das">DAS</button>
+      <button class="mei-mo-tab" type="button" data-mei-tab="fat">Faturamento</button>
+    </div>
+    <div class="mei-mo-body">
+      <div id="meiTabDas"></div>
+      <div id="meiTabFat" style="display:none"></div>
+    </div>
+  </div>
+</div>
+
+<!-- MEI · modal config -->
+<div class="modal-back" id="meiConfigModal" role="dialog" aria-modal="true" aria-labelledby="meiConfigTitle">
+  <div class="modal-card">
+    <div class="modal-head">
+      <h3 id="meiConfigTitle">MEI · configuração</h3>
+      <button class="modal-close" data-mei-close type="button" aria-label="Fechar">×</button>
+    </div>
+    <div class="mei-cfg-row">
+      <label for="meiCfgDasValor">Valor mensal do DAS (R$)</label>
+      <input id="meiCfgDasValor" type="number" step="0.01" min="0" placeholder="ex: 85,60" />
+      <div class="mei-cfg-hint">Valor que você paga hoje. Usado como padrão ao marcar um mês como pago.</div>
+    </div>
+    <div class="mei-cfg-row">
+      <label for="meiCfgLimite">Limite anual de faturamento (R$)</label>
+      <input id="meiCfgLimite" type="number" step="0.01" min="0" placeholder="81000,00" />
+      <div class="mei-cfg-hint">Limite MEI vigente. Ajuste quando o governo mudar.</div>
+    </div>
+    <div class="mei-cfg-row">
+      <label for="meiCfgVencDia">Dia de vencimento do DAS</label>
+      <input id="meiCfgVencDia" type="number" min="1" max="28" placeholder="20" />
+      <div class="mei-cfg-hint">Padrão MEI: dia 20 do mês seguinte.</div>
+    </div>
+    <div class="mei-cfg-row">
+      <label>Prazo da DASN (mês/dia)</label>
+      <div style="display:flex;gap:8px">
+        <input id="meiCfgDasnMes" type="number" min="1" max="12" placeholder="5" style="flex:1" />
+        <input id="meiCfgDasnDia" type="number" min="1" max="31" placeholder="31" style="flex:1" />
+      </div>
+      <div class="mei-cfg-hint">Padrão: 31 de maio.</div>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:8px">
+      <button class="mei-btn ghost" data-mei-close type="button">cancelar</button>
+      <button class="mei-btn" id="meiCfgSave" type="button">salvar</button>
+    </div>
+    <div id="meiCfgMsg" style="margin-top:10px;font-size:0.85rem;min-height:1em"></div>
+  </div>
+</div>
+
 <script src="/admin.js?v=20260704"></script>
+<script src="/admin-mei.js?v=20260704"></script>
 
 <!-- CHICO — popup expandido -->
 <div class="chico-back" id="chicoBack" aria-hidden="true">

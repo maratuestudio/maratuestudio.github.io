@@ -30,8 +30,6 @@
     return;
   }
   try { localStorage.setItem('maratu.lastActivity', String(Date.now())); } catch(e){}
-  /* Limpeza defensiva de token legacy (agora auth é 100% cookie) */
-  try { localStorage.removeItem('maratu.token'); } catch(e){}
   /* Aplica tema salvo o mais cedo possível (evita flash de cor) */
   try {
     const th = localStorage.getItem('maratu.theme') || '';

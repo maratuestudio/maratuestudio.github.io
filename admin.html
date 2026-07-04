@@ -4,6 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="theme-color" content="#C8501A" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://maratu-api.raphaelnascimento.workers.dev https://pub-33d995a6b2b8438fac0996c2196c8416.r2.dev https://*.cdninstagram.com https://*.fbcdn.net; font-src 'self'; connect-src 'self' https://maratu-api.raphaelnascimento.workers.dev; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests;" />
 <title>MARATU, admin</title>
 
 <link rel="preconnect" href="https://maratu-api.raphaelnascimento.workers.dev" crossorigin />
@@ -50,7 +51,7 @@
   @font-face { font-family:'Clother'; src:url('TRYClother-Regular.ttf')    format('truetype'); font-weight:400; font-display:swap; }
   @font-face { font-family:'Clother'; src:url('TRYClother-Bold.ttf')       format('truetype'); font-weight:700; font-display:swap; }
   @font-face { font-family:'Clother'; src:url('TRYClother-Black.ttf')      format('truetype'); font-weight:900; font-display:swap; }
-  @font-face { font-family:'Clother'; src:url('TRYClother-Italic.ttf')     format('truetype'); font-weight:400; font-style:italic; font-display:swap; }
+  @font-face { font-family:'Clother'; src:url('TRYClother-Italic.ttf')     format('truetype'); font-weight:400; font-style:italic; font-display:optional; }
 
   :root{
     /* Paleta base da marca — nunca muda por tema */
@@ -5999,5 +6000,14 @@ function gerarRelatorio(){
   </div>
 </div>
 
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('/sw.js').catch(function (e) {
+        console.warn('sw register failed:', e);
+      });
+    });
+  }
+</script>
 </body>
 </html>

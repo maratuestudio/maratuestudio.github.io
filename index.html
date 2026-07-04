@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <script>
     if('scrollRestoration' in history){history.scrollRestoration='manual';}
-    window.scrollTo(0,0);
+    if(!location.hash){window.scrollTo(0,0);}
     document.addEventListener('gesturestart', function(e){ e.preventDefault(); });
     document.addEventListener('gesturechange', function(e){ e.preventDefault(); });
     document.addEventListener('gestureend', function(e){ e.preventDefault(); });
@@ -1220,10 +1220,10 @@
     <a href="index.html" class="header__logo">maratu</a>
     <nav class="header__nav">
       <a href="index.html" class="active">início</a>
-      <a href="index.html#loja">loja</a>
-      <a href="index.html#sobre">estúdio</a>
-      <a href="index.html#contato">contato</a>
-      <a href="index.html#parceiros">parceiros</a>
+      <a href="#loja">loja</a>
+      <a href="#sobre">estúdio</a>
+      <a href="#contato">contato</a>
+      <a href="#parceiros">parceiros</a>
     </nav>
     <div class="header__actions">
       <button class="btn-radio" id="mr-btn" aria-label="Radio MARATU" aria-expanded="false"><div class="mr-btn-speaker"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div><div class="mr-btn-display" id="mr-display">88.5 FM</div><span class="mr-btn-led"></span></button>
@@ -1237,10 +1237,10 @@
     <button class="mobile-menu__close" aria-label="fechar menu">fechar</button>
     <nav class="mobile-menu__nav">
       <a href="index.html">início</a>
-      <a href="index.html#loja">loja</a>
-      <a href="index.html#sobre">estúdio</a>
-      <a href="index.html#contato">contato</a>
-      <a href="index.html#parceiros">parceiros</a>
+      <a href="#loja">loja</a>
+      <a href="#sobre">estúdio</a>
+      <a href="#contato">contato</a>
+      <a href="#parceiros">parceiros</a>
     </nav>
     <div class="mobile-menu__footer">
       maratu · aracaju / se · 2026
@@ -1251,10 +1251,10 @@
   <section class="hero">
     <div class="hero__bg">
       <div class="hero__bg-slide ativo" style="background-image: url('Artboard 1@300x.webp');"></div>
-      <div class="hero__bg-slide" style="background-image: url('blusa-destrua-frente.jpg'); background-position: center 60%;"></div>
-      <div class="hero__bg-slide" style="background-image: url('blusa-destrua-costas.jpg'); background-position: center 60%;"></div>
-      <div class="hero__bg-slide" style="background-image: url('blusa-azulejos-costas.jpg'); background-position: center 60%;"></div>
-      <div class="hero__bg-slide" style="background-image: url('blusa-maratu-print.jpg'); background-position: center 60%;"></div>
+      <div class="hero__bg-slide" style="background-image: url('blusa-destrua-frente.webp'); background-position: center 60%;"></div>
+      <div class="hero__bg-slide" style="background-image: url('blusa-destrua-costas.webp'); background-position: center 60%;"></div>
+      <div class="hero__bg-slide" style="background-image: url('blusa-azulejos-costas.webp'); background-position: center 60%;"></div>
+      <div class="hero__bg-slide" style="background-image: url('blusa-maratu-print.webp'); background-position: center 60%;"></div>
       <div class="hero__bg-slide" style="background-image: url('Artboard 4@300x.webp');"></div>
       <div class="hero__bg-slide" style="background-image: url('Artboard 5@300x.webp');"></div>
       <div class="hero__bg-slide" style="background-image: url('vaso-pinda-cinza.webp');"></div>
@@ -1366,9 +1366,9 @@
       </div>
       <div class="produtos-grid" id="grid-adesivos">
       <div class="produto-card" data-tipo="adesivo" data-faixa="adesivos">
-        <div class="produto-img-wrap" style="aspect-ratio: 875 / 1241;" onclick="abrirLightbox('adesivos-origens.png','Coleção de Adesivos Origens')">
+        <div class="produto-img-wrap" style="aspect-ratio: 875 / 1241;" onclick="abrirLightbox('adesivos-origens.webp','Coleção de Adesivos Origens')">
           <div class="tag-badge"><span class="pill-colecao pill-origens">Origens</span></div>
-          <img class="img-principal" src="adesivos-origens.png" alt="Coleção de Adesivos Origens" loading="lazy" style="object-fit:cover;">
+          <img class="img-principal" src="adesivos-origens.webp" alt="Coleção de Adesivos Origens" loading="lazy" style="object-fit:cover;">
           <div class="preco-selo"><span class="preco-riscado">R$29</span><span class="preco-valor"><span class="preco-cifrao">R$</span>19</span></div>
         </div>
         <div class="produto-info">

@@ -98,7 +98,7 @@
     @font-face { font-family: 'Clother'; src: url('TRYClother-Regular.ttf') format('truetype'); font-weight: 400; font-display: swap; }
     @font-face { font-family: 'Clother'; src: url('TRYClother-Bold.ttf') format('truetype'); font-weight: 700; font-display: swap; }
     @font-face { font-family: 'Clother'; src: url('TRYClother-Black.ttf') format('truetype'); font-weight: 900; font-display: swap; }
-    @font-face { font-family: 'Clother'; src: url('TRYClother-Italic.ttf') format('truetype'); font-weight: 400; font-style: italic; font-display: swap; }
+    @font-face { font-family: 'Clother'; src: url('TRYClother-Italic.ttf') format('truetype'); font-weight: 400; font-style: italic; font-display: optional; }
 
     /* ── VARIÁVEIS ── */
     :root {
@@ -1793,6 +1793,18 @@
         var y = el.getBoundingClientRect().top + window.pageYOffset - 80;
         window.scrollTo({ top: y, behavior: 'smooth' });
         history.pushState(null, '', hash);
+      });
+    });
+
+    // PARCEIROS — fallback JS pra forçar navegação (Safari ITP às vezes bloqueia click default em links pra IG)
+    document.querySelectorAll('.footer__indica-marca').forEach(function(a){
+      a.addEventListener('click', function(e){
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+        var url = a.href;
+        if (!url) return;
+        console.log('[maratu] navegando parceiro:', url);
+        e.preventDefault();
+        try { window.location.assign(url); } catch(err){ window.location.href = url; }
       });
     });
 

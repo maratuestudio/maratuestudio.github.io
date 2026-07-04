@@ -1817,6 +1817,23 @@
   @keyframes ptrSpin{ to{ transform:rotate(360deg); } }
 
 </style>
+<script>
+/* Envia cookie httpOnly em toda chamada pro Worker (auth aditiva Bearer+cookie) */
+(function(){
+  const origFetch = window.fetch.bind(window);
+  const API_HOST = 'maratu-api.raphaelnascimento.workers.dev';
+  window.fetch = function(input, init){
+    try {
+      const url = typeof input === 'string' ? input : (input && input.url) || '';
+      if (url.indexOf(API_HOST) !== -1) {
+        init = init || {};
+        if (!init.credentials) init.credentials = 'include';
+      }
+    } catch(e){}
+    return origFetch(input, init);
+  };
+})();
+</script>
 </head>
 <body>
 

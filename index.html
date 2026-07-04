@@ -125,6 +125,7 @@
       background: var(--areia);
       scrollbar-color: rgba(200,80,26,0.6) transparent;
       scrollbar-width: thin;
+      scroll-padding-top: 80px;
     }
     body {
       font-family: var(--clother);
@@ -1463,7 +1464,7 @@
   <!-- ④ ORIGEM — split foto estatuas | azul -->
   <div class="split foto-esquerda reveal">
     <div class="split-foto">
-      <img src="bg-estatuas.webp" alt="Estatuas de Aracaju">
+      <img src="bg-estatuas.webp" alt="Estatuas de Aracaju" loading="lazy" decoding="async">
     </div>
     <div class="split-texto bg-azul" id="origem">
       <p class="lbl">002 — ORIGEM</p>
@@ -1482,7 +1483,7 @@
     <div class="contato-grid">
       <a href="https://instagram.com/maratuestudio" target="_blank" rel="noopener" class="clink-pill">
         <div class="clink-pill__icon">
-          <img src="icon-instagram.png" alt="Instagram">
+          <img src="icon-instagram.png" alt="Instagram" loading="lazy" decoding="async">
         </div>
         <div class="clink-pill__body">
           <span class="clink-pill__tag">Instagram</span>
@@ -1492,7 +1493,7 @@
       </a>
       <a href="https://wa.me/5579991957415" target="_blank" rel="noopener" class="clink-pill">
         <div class="clink-pill__icon">
-          <img src="icon-whatsapp.png" alt="WhatsApp">
+          <img src="icon-whatsapp.png" alt="WhatsApp" loading="lazy" decoding="async">
         </div>
         <div class="clink-pill__body">
           <span class="clink-pill__tag">WhatsApp</span>
@@ -1502,7 +1503,7 @@
       </a>
       <a href="mailto:estudio@maratu.com.br" class="clink-pill">
         <div class="clink-pill__icon">
-          <img src="icon-email.png" alt="Email">
+          <img src="icon-email.png" alt="Email" loading="lazy" decoding="async">
         </div>
         <div class="clink-pill__body">
           <span class="clink-pill__tag">Email</span>
@@ -1512,7 +1513,7 @@
       </a>
       <a href="https://tiktok.com/@maratuestudio" target="_blank" rel="noopener" class="clink-pill">
         <div class="clink-pill__icon">
-          <img src="icon-tiktok.png" alt="TikTok">
+          <img src="icon-tiktok.png" alt="TikTok" loading="lazy" decoding="async">
         </div>
         <div class="clink-pill__body">
           <span class="clink-pill__tag">TikTok</span>
@@ -1605,32 +1606,32 @@
         <hr class="footer__indica-divider">
         <div class="footer__indica-marcas">
           <a href="https://www.qabrand.com.br" target="_blank" rel="noopener" class="footer__indica-marca" aria-label="QA">
-            <div class="footer__indica-marca-circulo"><img src="logo-qa.png" alt="QA"></div>
+            <div class="footer__indica-marca-circulo"><img src="logo-qa.png" alt="QA" loading="lazy" decoding="async"></div>
             <span class="footer__indica-marca-nome">QA</span>
             <span class="footer__indica-marca-cat">moda</span>
           </a>
           <a href="https://instagram.com/vilacajuse" target="_blank" rel="noopener" class="footer__indica-marca" aria-label="Vila Caju">
-            <div class="footer__indica-marca-circulo"><img src="logo-vilacaju.png" alt="Vila Caju"></div>
+            <div class="footer__indica-marca-circulo"><img src="logo-vilacaju.png" alt="Vila Caju" loading="lazy" decoding="async"></div>
             <span class="footer__indica-marca-nome">Vila Caju</span>
             <span class="footer__indica-marca-cat">café · arte</span>
           </a>
           <a href="https://www.instagram.com/flo.streetwear/" target="_blank" rel="noopener" class="footer__indica-marca" aria-label="flo streetwear">
-            <div class="footer__indica-marca-circulo"><img src="logo-flo.png?v=2" alt="flo streetwear"></div>
+            <div class="footer__indica-marca-circulo"><img src="logo-flo.png?v=2" alt="flo streetwear" loading="lazy" decoding="async"></div>
             <span class="footer__indica-marca-nome">FLO</span>
             <span class="footer__indica-marca-cat">streetwear</span>
           </a>
           <a href="https://www.instagram.com/estudio.gece/" target="_blank" rel="noopener" class="footer__indica-marca" aria-label="estúdio GECÊ">
-            <div class="footer__indica-marca-circulo"><img src="logo-gece.png" alt="estúdio GECÊ"></div>
+            <div class="footer__indica-marca-circulo"><img src="logo-gece.png" alt="estúdio GECÊ" loading="lazy" decoding="async"></div>
             <span class="footer__indica-marca-nome">GECÊ</span>
             <span class="footer__indica-marca-cat">arquitetura<br>interiores</span>
           </a>
           <a href="https://instagram.com/winebarbellclub" target="_blank" rel="noopener" class="footer__indica-marca" aria-label="Wine Barbell Club">
-            <div class="footer__indica-marca-circulo"><img src="logo-wbc.png?v=2" alt="Wine Barbell Club"></div>
+            <div class="footer__indica-marca-circulo"><img src="logo-wbc.png?v=2" alt="Wine Barbell Club" loading="lazy" decoding="async"></div>
             <span class="footer__indica-marca-nome">WBC</span>
             <span class="footer__indica-marca-cat">academia · LPO</span>
           </a>
           <a href="https://www.instagram.com/robertoqueirozfotografia/" target="_blank" rel="noopener" class="footer__indica-marca" aria-label="Roberto Queiroz Fotografia">
-            <div class="footer__indica-marca-circulo"><img src="logo-roberto.png?v=2" alt="Roberto Queiroz Fotografia"></div>
+            <div class="footer__indica-marca-circulo"><img src="logo-roberto.png?v=2" alt="Roberto Queiroz Fotografia" loading="lazy" decoding="async"></div>
             <span class="footer__indica-marca-nome">Roberto Queiroz</span>
             <span class="footer__indica-marca-cat">fotografia</span>
           </a>
@@ -1773,6 +1774,11 @@
     if (menuClose) menuClose.addEventListener('click', closeMenu);
     if (menuOverlay) menuOverlay.addEventListener('click', closeMenu);
     document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeMenu(); });
+    if (mobileMenu) {
+      mobileMenu.querySelectorAll('a').forEach(function(a){
+        a.addEventListener('click', function(){ closeMenu(); });
+      });
+    }
 
     // SCROLL REVEAL
     var reveals = document.querySelectorAll('.reveal');

@@ -1108,18 +1108,28 @@ window.addEventListener('error', function(ev){
   /* Selected day panel — now a popup, styles handled by .modal-back / .modal-card */
   .ev{
     display:flex; justify-content:space-between; align-items:flex-start; gap:12px;
-    padding:12px 0; border-bottom:1px solid var(--linha);
+    padding:12px 10px 12px 12px; border-bottom:1px solid var(--linha);
+    border-left:3px solid transparent; border-radius:6px;
+    transition:background .25s ease, border-left-color .25s ease;
   }
   .ev:last-child{ border-bottom:none; }
-  .ev .t{ font-family:var(--clother); font-size:0.92rem; font-weight:700; letter-spacing:-0.005em; }
-  .ev .t.ev-feito{ text-decoration:line-through; opacity:0.55; }
+  .ev.ev-done{
+    background:rgba(47,138,62,0.10); border-left-color:#2F8A3E;
+  }
+  .ev .t{
+    font-family:var(--clother); font-size:0.92rem; font-weight:700; letter-spacing:-0.005em;
+    transition:opacity .25s ease, color .25s ease;
+  }
+  .ev .t.ev-feito{ text-decoration:line-through; opacity:0.75; color:#2F8A3E; }
   .ev .t .ev-tag{
     display:inline-block; width:8px; height:8px; border-radius:50%;
     background:var(--laranja); margin-right:8px; vertical-align:middle;
+    transition:background .25s ease;
   }
   .ev .t .ev-tag.evento{ background:var(--azul); }
   .ev .t .ev-tag.marketing{ background:var(--dourado); }
   .ev .t .ev-tag.nota{ background:var(--preto); }
+  .ev.ev-done .t .ev-tag{ background:#2F8A3E; }
   .ev .meta{
     font-family:var(--clother); font-size:0.78rem; color:var(--muted);
     margin-top:4px; letter-spacing:0.02em;
@@ -1129,10 +1139,19 @@ window.addEventListener('error', function(ev){
     background:transparent; border:1.5px solid var(--linha-forte); color:var(--preto);
     border-radius:999px; padding:5px 12px; font-size:0.6rem; cursor:pointer;
     font-family:var(--clother); font-weight:700; letter-spacing:0.14em; text-transform:uppercase;
-    transition:background .14s, color .14s, border-color .14s;
+    transition:background .14s, color .14s, border-color .14s, transform .1s;
   }
   .ev .acts button:hover{ background:var(--preto); color:var(--areia); border-color:var(--borda); }
+  .ev .acts button:active{ transform:scale(0.94); }
   .ev .acts button.del:hover{ background:var(--laranja); border-color:var(--laranja); color:var(--areia); }
+  .ev.ev-done .acts button[data-check]{
+    background:#2F8A3E; color:var(--areia); border-color:#2F8A3E;
+  }
+  .ev.ev-done .acts button[data-check]:hover{
+    background:#256E31; border-color:#256E31;
+  }
+  @keyframes evDonePop { 0%{transform:scale(1)} 40%{transform:scale(1.02)} 100%{transform:scale(1)} }
+  .ev.ev-done{ animation:evDonePop .28s ease-out; }
 
   .divlbl{
     font-family:var(--clother); font-weight:700; font-size:0.62rem;
@@ -2190,7 +2209,7 @@ window.addEventListener('error', function(ev){
       <svg class="ga4-spark" id="ga4Spark" preserveAspectRatio="none" viewBox="0 0 100 30" aria-hidden="true"><path class="fill" d=""/><path class="line" d=""/></svg>
       <div class="ga4-cols">
         <div class="ga4-col">
-          <div class="ga4-col-title">Páginas mais vistas</div>
+          <div class="ga4-col-title">Cliques no WhatsApp por produto</div>
           <ul class="ga4-list" id="ga4Top"></ul>
         </div>
         <div class="ga4-col">
@@ -2756,7 +2775,7 @@ window.addEventListener('error', function(ev){
   </div>
 </div>
 
-<script src="/admin.js?v=20260705d"></script>
+<script src="/admin.js?v=20260705g"></script>
 <script src="/admin-mei.js?v=20260704e"></script>
 
 <!-- CHICO — popup expandido -->

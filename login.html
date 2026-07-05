@@ -204,17 +204,16 @@ const btn = document.getElementById('loginBtn');
 /* Se já tem token válido salvo, entra direto. Senão fica no form de login. */
 (async function autoLogin(){
   let tk = null;
-  try { tk = localStorage.getItem('maratu.token'); } catch(e){}
+  try { tk = sessionStorage.getItem('maratu.token'); } catch(e){}
   if (!tk) return;
   try{
     const r = await fetch(API + "/api/state", {
       headers: { Authorization: "Bearer " + tk }
     });
     if(r.ok){
-      try { localStorage.setItem('maratu.lastActivity', String(Date.now())); } catch(e){}
       location.replace('/admin.html');
     } else if(r.status === 401){
-      try { localStorage.removeItem('maratu.token'); } catch(e){}
+      try { sessionStorage.removeItem('maratu.token'); } catch(e){}
     }
   }catch(e){}
 })();
@@ -261,10 +260,9 @@ form.addEventListener('submit', async (e)=>{
       msg.classList.add('on');
       return;
     }
-    try {
-      localStorage.setItem('maratu.token', pw);
-      localStorage.setItem('maratu.lastActivity', String(Date.now()));
-    } catch(e){}
+    let sess = '';
+    try { const j = await r.json(); sess = (j && j.session) || ''; } catch(e){}
+    try { sessionStorage.setItem('maratu.token', sess || pw); } catch(e){}
     location.replace('/admin.html');
   }catch(e){
     btn.disabled = false;

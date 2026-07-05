@@ -117,6 +117,131 @@
 </style>
 </head>
 <body>
+<style id="mi-style">
+#maratu-splash{
+  --mi-mangue:#0D0D0B; --mi-caju:#C8501A;
+  --mi-logo-size:min(64vw,360px);
+  --mi-crab-stroke:1.0; --mi-wm-stroke:3.6;
+  --mi-crab-draw:720; --mi-crab-fill:360; --mi-crab-stagger:170;
+  --mi-wm-gap:60; --mi-wm-draw:660; --mi-wm-fill:360; --mi-sub-fade:440;
+  --mi-hold:260; --mi-zoom-dur:1100;
+  position:fixed; inset:0; z-index:99999;
+  background:var(--mi-mangue);
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:20px;
+  user-select:none; will-change:transform; overflow:hidden;
+}
+#maratu-splash .crab-stage{width:var(--mi-logo-size);line-height:0}
+#maratu-splash .word-stage{width:calc(var(--mi-logo-size) * .92);line-height:0}
+#maratu-splash svg{width:100%;height:auto;display:block;overflow:visible}
+#maratu-splash #mi-crab path, #maratu-splash .lp{
+  fill:var(--mi-caju); stroke:var(--mi-caju);
+  stroke-linecap:round; stroke-linejoin:round;
+  fill-opacity:0; stroke-opacity:0;
+}
+#maratu-splash #mi-crab path{ stroke-width:var(--mi-crab-stroke); vector-effect:non-scaling-stroke; }
+#maratu-splash .lp{ stroke-width:var(--mi-wm-stroke); }
+#maratu-splash #mi-wm-sub{ fill:var(--mi-caju); opacity:0; }
+</style>
+<div id="maratu-splash" aria-hidden="true">
+    <div class="crab-stage"><svg viewBox="0 0 221.06 106.21" xmlns="http://www.w3.org/2000/svg">
+        <g id="mi-crab">
+          <path id="p-body"   d="M110.53,106.21c36.93,0,66.86-29.94,66.86-66.86H43.66c0,36.93,29.94,66.86,66.86,66.86Z"/>
+          <path id="p-claw-l" d="M0,72.78c0,18.46,14.97,33.43,33.43,33.43V39.35C14.97,39.35,0,54.31,0,72.78Z"/>
+          <path id="p-claw-r" d="M187.62,39.35v66.86c18.46,0,33.43-14.97,33.43-33.43s-14.97-33.43-33.43-33.43Z"/>
+          <path id="p-eye-l"  d="M81.61,33.45V0c-9.24,0-16.73,7.49-16.73,16.73s7.49,16.73,16.73,16.73Z"/>
+          <path id="p-eye-r"  d="M156.17,16.73c0-9.24-7.49-16.73-16.73-16.73v33.45c9.24,0,16.73-7.49,16.73-16.73Z"/>
+        </g>
+      </svg></div>
+    <div class="word-stage"><svg viewBox="0 0 440.48 84.58" xmlns="http://www.w3.org/2000/svg">
+        <g id="mi-wm-main">
+          <polygon class="lp" points="38.49 19.28 32.91 0 .44 0 .44 23.92 31.97 29.14 .44 29.14 .44 53.57 32.91 53.57 32.91 29.94 38.57 47.91 44.15 29.94 44.15 53.57 76.55 53.57 76.55 0 44.15 0 38.49 19.28"/>
+          <path class="lp" d="M80.17,0v23.85l32.55,4.93h-32.62v24.79h13.41c11.23,0,19.35-9.13,19.72-24.72l6.74,24.5v.22h32.4v-23.05l.07-.07L138.45,0h-58.28Z"/>
+          <path class="lp" d="M225.35,15.08c0-11.23-7.39-15.08-26.02-15.08h-44.43l.14,53.57h32.33v-28.56c4.28.14,5.36,1.3,5.36,4.13v2.97h-5.36c3.62,16.89,17.69,21.46,29.28,21.46h8.05v-21.46h-28.99c21.82-1.23,29.65-5.36,29.65-17.03Z"/>
+          <path class="lp" d="M227.96,0v23.85l32.55,4.93h-32.62v24.79h13.41c11.24,0,19.35-9.13,19.72-24.72l6.74,24.5v.22h32.4v-23.05l.07-.07-13.99-30.44h-58.28Z"/>
+          <polygon class="lp" points="300.37 26.38 318.64 26.38 318.64 53.57 350.96 53.57 350.96 26.38 369.3 26.38 369.3 0 300.37 0 300.37 26.38"/>
+          <path class="lp" d="M408.15,0v21.53h-.87c-2.32,0-3.33-.87-3.33-4.2V0h-32.4v28.12c0,18.56,4.78,25.95,17.61,25.95,14.86,0,17.83-8.26,18.99-31.02v30.52h32.33V0h-32.33Z"/>
+        </g>
+        <g id="mi-wm-sub">
+          <path d="M0,64.27h12.62v3.57H4v4.44h7.83v3.56h-7.83v4.88h8.62v3.56H0v-20.02Z"/>
+          <path d="M23.99,72.69c3.74,1.26,5.64,2.81,5.64,5.87,0,3.42-3.04,6.02-7.01,6.02-2.92,0-5.64-1.11-7.69-3.16l2.19-2.69c1.61,1.61,3.42,2.37,5.49,2.37,1.84,0,3.07-.96,3.07-2.4,0-1.34-1.23-1.96-4-2.86-3.97-1.34-6.02-2.81-6.02-6.11s2.92-5.76,6.69-5.76c2.45,0,4.76.96,6.6,2.75l-2.28,2.66c-1.43-1.32-2.75-1.93-4.3-1.93s-2.78.76-2.78,2.13c0,1.46,1.34,2.1,4.38,3.1Z"/>
+          <path d="M37.11,67.84h-5.87v-3.57h15.78v3.57h-5.87v16.45h-4.03v-16.45Z"/>
+          <path d="M49.62,76.31v-12.04h4v11.98c0,2.92,1.46,4.65,3.94,4.65s3.89-1.72,3.89-4.65v-11.98h4.03v12.04c0,5.06-3.07,8.27-7.92,8.27s-7.95-3.21-7.95-8.27ZM60.02,56.41l1.75,2.92-5.84,3.19-1.32-2.05,5.41-4.06Z"/>
+          <path d="M69.93,64.27h5.67c7.07,0,11.37,3.74,11.37,10.02s-4.3,9.99-11.37,9.99h-5.67v-20.02ZM82.85,74.29c0-4.06-2.54-6.37-7.1-6.37h-1.81v12.71h1.81c4.53,0,7.1-2.31,7.1-6.34Z"/>
+          <path d="M90.62,64.27h4v20.02h-4v-20.02Z"/>
+          <path d="M118.7,74.26c0,5.87-4.38,10.32-10.23,10.32s-10.2-4.44-10.2-10.32,4.41-10.29,10.2-10.29,10.23,4.44,10.23,10.29ZM102.42,74.26c0,3.8,2.57,6.63,6.05,6.63s6.08-2.83,6.08-6.63-2.6-6.6-6.08-6.6-6.05,2.83-6.05,6.6Z"/>
+        </g>
+      </svg></div>
+  </div>
+<script>
+(function(){
+  var splash = document.getElementById('maratu-splash');
+  if(!splash) return;
+  function kill(){ try{ if(splash && splash.parentNode) splash.parentNode.removeChild(splash); }catch(e){} }
+  try{
+    if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches){ kill(); return; }
+    if(sessionStorage.getItem('maratu-intro')){ kill(); return; }
+    var hasTok=false; try{ hasTok=!!localStorage.getItem('maratu.token'); }catch(e){}
+    // login.html: so anima se NAO estiver logado (se logado, autoLogin manda pro admin que anima la)
+    if(hasTok){ kill(); return; }
+    sessionStorage.setItem('maratu-intro','1');
+    // FAILSAFE: nunca deixar o overlay preso na frente do painel
+    var failsafe = setTimeout(kill, 6500);
+
+    var V = getComputedStyle(splash);
+    var num = function(n){ return parseFloat(V.getPropertyValue(n)); };
+    var SMOOTH = 'cubic-bezier(.45,0,.4,1)';
+    var pBody = splash.querySelector('#p-body');
+    var sub   = splash.querySelector('#mi-wm-sub');
+    var crabEls = [].slice.call(splash.querySelectorAll('#mi-crab path'));
+    var wordEls = [].slice.call(splash.querySelectorAll('#mi-wm-main > *'));
+
+    function drawFill(el, delay, draw, fill){
+      var len = el.getTotalLength();
+      el.style.strokeDasharray = len;
+      el.style.strokeDashoffset = len;
+      el.style.strokeOpacity = 1;
+      el.style.fillOpacity = 0;
+      el.animate([{ strokeDashoffset: len }, { strokeDashoffset: 0 }],
+        { duration: draw, delay: delay, fill:'forwards', easing:'cubic-bezier(.65,0,.35,1)' });
+      el.animate([{ fillOpacity:0, strokeOpacity:1 }, { fillOpacity:1, strokeOpacity:0 }],
+        { duration: fill, delay: delay + draw, fill:'forwards', easing:'ease-out' });
+    }
+
+    function zoomInvert(){
+      var zoomDur = num('--mi-zoom-dur');
+      var bodyRect = pBody.getBoundingClientRect();
+      var splashRect = splash.getBoundingClientRect();
+      var originX = ((bodyRect.left + bodyRect.width/2) - splashRect.left) / splashRect.width * 100;
+      var originY = ((bodyRect.top  + bodyRect.height/2) - splashRect.top ) / splashRect.height * 100;
+      splash.style.transformOrigin = originX.toFixed(2) + '% ' + originY.toFixed(2) + '%';
+      var bodySize = Math.max(bodyRect.width, bodyRect.height);
+      var targetSize = Math.hypot(window.innerWidth, window.innerHeight) * 1.8;
+      var scale = Math.max(targetSize / bodySize, 8);
+      splash.animate([{ transform:'scale(1)' }, { transform:'scale(' + scale.toFixed(2) + ')' }],
+        { duration: zoomDur, fill:'forwards', easing: SMOOTH });
+      setTimeout(function(){ clearTimeout(failsafe); kill(); }, zoomDur + 40);
+    }
+
+    function play(){
+      var CD=num('--mi-crab-draw'), CF=num('--mi-crab-fill'), CS=num('--mi-crab-stagger');
+      var GAP=num('--mi-wm-gap'), WD=num('--mi-wm-draw'), WF=num('--mi-wm-fill');
+      var SUB=num('--mi-sub-fade'), HOLD=num('--mi-hold');
+      crabEls.forEach(function(el,i){ drawFill(el, i*CS, CD, CF); });
+      var crabEnd = (crabEls.length-1)*CS + CD + CF;
+      var wmStart = crabEnd + GAP;
+      wordEls.forEach(function(el){ drawFill(el, wmStart, WD, WF); });
+      var wmEnd = wmStart + WD + WF;
+      var subDelay = wmStart + Math.round(WD*0.5);
+      sub.animate([{ opacity:0 }, { opacity:1 }], { duration:SUB, delay:subDelay, fill:'forwards', easing:'ease-out' });
+      var introEnd = Math.max(wmEnd, subDelay + SUB);
+      setTimeout(zoomInvert, introEnd + HOLD);
+    }
+
+    requestAnimationFrame(play);
+  }catch(e){ try{ clearTimeout(failsafe); }catch(_){}; kill(); }
+})();
+</script>
+
 
 <img class="canto" src="admin-corner.svg" alt="" aria-hidden="true" />
 

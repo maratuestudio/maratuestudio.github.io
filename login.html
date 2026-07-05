@@ -274,7 +274,12 @@ form.addEventListener('submit', async (e)=>{
     }
     let sess = '';
     try { const j = await r.json(); sess = (j && j.session) || ''; } catch(e){}
-    try { sessionStorage.setItem('maratu.token', sess || pw); } catch(e){}
+    const tok = sess || pw;
+    /* grava nos dois: sessionStorage p/ admin.js novo; localStorage como ponte
+       p/ admin.js ainda em cache antigo (que lê de localStorage). */
+    try { sessionStorage.setItem('maratu.token', tok); } catch(e){}
+    try { localStorage.setItem('maratu.token', tok); } catch(e){}
+    try { sessionStorage.removeItem('maratu.autologinAt'); } catch(e){}
     location.replace('/admin.html');
   }catch(e){
     btn.disabled = false;

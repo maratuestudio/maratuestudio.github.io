@@ -36,6 +36,51 @@
     if(th) document.documentElement.setAttribute('data-theme', th);
   } catch(e){}
 })();
+
+/* FAILSAFE: se em 6s o admin não renderizar (mrt-ready ausente), limpa SW+caches e recarrega. */
+(function(){
+  const MAX = 6000;
+  setTimeout(function(){
+    if(document.documentElement.classList.contains('mrt-ready')) return;
+    try {
+      if (window.__mrt_recovery) return;
+      window.__mrt_recovery = 1;
+    } catch(e){}
+    /* Mostra painel de erro visível */
+    try {
+      document.documentElement.classList.add('mrt-ready');
+      const box = document.createElement('div');
+      box.style.cssText = 'position:fixed;inset:0;background:#0D0D0B;color:#F0ECE4;font:600 16px system-ui,-apple-system,sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px;text-align:center;z-index:99999;gap:16px';
+      box.innerHTML = '<div style="font-size:22px;letter-spacing:0.14em;text-transform:uppercase">tentando recuperar…</div>'+
+                      '<div style="opacity:0.7;font-weight:400;max-width:520px;font-size:14px">limpando cache e recarregando. Se isso persistir, use Cmd+Option+E no Safari.</div>';
+      document.body.appendChild(box);
+    } catch(e){}
+    /* unregister service workers + clear caches + reload */
+    Promise.resolve()
+      .then(function(){ return navigator.serviceWorker ? navigator.serviceWorker.getRegistrations() : []; })
+      .then(function(regs){ return Promise.all((regs||[]).map(function(r){ return r.unregister(); })); })
+      .then(function(){ return window.caches ? caches.keys() : []; })
+      .then(function(keys){ return Promise.all((keys||[]).map(function(k){ return caches.delete(k); })); })
+      .catch(function(){})
+      .then(function(){
+        var u = new URL(location.href);
+        u.searchParams.set('_r', String(Date.now()));
+        location.replace(u.toString());
+      });
+  }, MAX);
+})();
+
+/* GLOBAL ERROR: se algum script quebrar, mostra em cima da tela ao invés de esconder. */
+window.addEventListener('error', function(ev){
+  try {
+    if(document.documentElement.classList.contains('mrt-ready')) return;
+    document.documentElement.classList.add('mrt-ready');
+    var box = document.createElement('div');
+    box.style.cssText='position:fixed;inset:0;background:#0D0D0B;color:#F0ECE4;font:600 14px ui-monospace,SFMono-Regular,Menlo,monospace;padding:24px;overflow:auto;z-index:99999;white-space:pre-wrap';
+    box.textContent='erro: '+(ev.error && ev.error.stack || ev.message || 'desconhecido');
+    document.body.appendChild(box);
+  } catch(e){}
+});
 </script>
 
 <style>

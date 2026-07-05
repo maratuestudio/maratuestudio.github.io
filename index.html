@@ -1206,6 +1206,17 @@
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
     gtag('config', 'G-HCJ291HL72');
+    // WhatsApp click tracking por produto — fire event nomeado wa_<slug>
+    document.addEventListener('click', function(ev){
+      var btn = ev.target && ev.target.closest && ev.target.closest('.btn-encomendar[data-produto]');
+      if (!btn) return;
+      var nome = btn.getAttribute('data-produto') || '';
+      if (!nome) return;
+      var slug = nome.normalize ? nome.normalize('NFD').replace(/[\u0300-\u036f]/g,'') : nome;
+      slug = slug.toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_+|_+$/g,'').slice(0,32);
+      if (!slug) slug = 'desc';
+      try { gtag('event', 'wa_' + slug, { produto: nome }); } catch(e){}
+    }, true);
   </script>
 </head>
 <body>

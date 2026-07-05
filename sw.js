@@ -1,10 +1,9 @@
 /* MARATU Admin Service Worker — offline + instant open */
-const VERSION = 'maratu-admin-v6';
+const VERSION = 'maratu-admin-v7';
 const STATIC_CACHE = 'static-' + VERSION;
 const RUNTIME_CACHE = 'runtime-' + VERSION;
 
 const PRECACHE = [
-  '/admin.html',
   '/login.html',
   '/admin.webmanifest',
   '/TRYJackAlpha-Regular.ttf',
@@ -35,8 +34,22 @@ self.addEventListener('activate', (event) => {
         keys.filter((k) => k !== STATIC_CACHE && k !== RUNTIME_CACHE).map((k) => caches.delete(k))
       )
     ).then(() => self.clients.claim())
+     .then(() => self.clients.matchAll({ type: 'window' }))
+     .then((clients) => clients.forEach((c) => { try { c.navigate(c.url); } catch (e) {} }))
   );
 });
+
+/* HTML and JS: always hit the network fresh (bypass HTTP cache) so a new
+   deploy is picked up immediately; fall back to cache only when offline. */
+function freshFirst(req) {
+  return fetch(req, { cache: 'no-store' }).then((resp) => {
+    if (resp && resp.ok) {
+      const clone = resp.clone();
+      caches.open(RUNTIME_CACHE).then((c) => c.put(req, clone));
+    }
+    return resp;
+  }).catch(() => caches.match(req).then((cached) => cached || caches.match('/login.html')));
+}
 
 self.addEventListener('fetch', (event) => {
   const req = event.request;
@@ -46,20 +59,13 @@ self.addEventListener('fetch', (event) => {
   if (url.hostname === API_HOST) return;
   if (url.origin !== self.location.origin) return;
 
-  const isAdmin = /\/(admin|login)\.html$/.test(url.pathname) || url.pathname === '/admin.webmanifest';
+  const isHtml = /\/(admin|login)\.html$/.test(url.pathname) || url.pathname === '/admin.webmanifest';
+  const isScript = /\.js$/.test(url.pathname);
   const isFont = /\.(ttf|woff2?|otf)$/.test(url.pathname);
   const isImg = /\.(png|jpg|jpeg|webp|svg|ico|gif|avif)$/.test(url.pathname);
 
-  if (isAdmin) {
-    event.respondWith(
-      fetch(req).then((resp) => {
-        if (resp && resp.ok) {
-          const clone = resp.clone();
-          caches.open(RUNTIME_CACHE).then((c) => c.put(req, clone));
-        }
-        return resp;
-      }).catch(() => caches.match(req).then((cached) => cached || caches.match('/admin.html')))
-    );
+  if (isHtml || isScript) {
+    event.respondWith(freshFirst(req));
     return;
   }
 

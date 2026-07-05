@@ -204,20 +204,8 @@ const btn = document.getElementById('loginBtn');
 /* Se já tem token válido salvo, entra direto. Senão fica no form de login. */
 (async function autoLogin(){
   let tk = null;
-  try { tk = sessionStorage.getItem('maratu.token'); } catch(e){}
+  try { tk = localStorage.getItem('maratu.token'); } catch(e){}
   if (!tk) return;
-  /* trava anti-loop: se acabamos de voltar do admin (bounce < 6s), o admin
-     rejeitou a sessão — para no login em vez de ficar piscando. */
-  try {
-    const now = Date.now();
-    const last = Number(sessionStorage.getItem('maratu.autologinAt') || '0');
-    if (last && now - last < 6000){
-      sessionStorage.removeItem('maratu.token');
-      sessionStorage.removeItem('maratu.autologinAt');
-      return;
-    }
-    sessionStorage.setItem('maratu.autologinAt', String(now));
-  } catch(e){}
   try{
     const r = await fetch(API + "/api/state", {
       headers: { Authorization: "Bearer " + tk }
@@ -225,7 +213,7 @@ const btn = document.getElementById('loginBtn');
     if(r.ok){
       location.replace('/admin.html');
     } else if(r.status === 401){
-      try { sessionStorage.removeItem('maratu.token'); } catch(e){}
+      try { localStorage.removeItem('maratu.token'); } catch(e){}
     }
   }catch(e){}
 })();
@@ -272,14 +260,7 @@ form.addEventListener('submit', async (e)=>{
       msg.classList.add('on');
       return;
     }
-    let sess = '';
-    try { const j = await r.json(); sess = (j && j.session) || ''; } catch(e){}
-    const tok = sess || pw;
-    /* grava nos dois: sessionStorage p/ admin.js novo; localStorage como ponte
-       p/ admin.js ainda em cache antigo (que lê de localStorage). */
-    try { sessionStorage.setItem('maratu.token', tok); } catch(e){}
-    try { localStorage.setItem('maratu.token', tok); } catch(e){}
-    try { sessionStorage.removeItem('maratu.autologinAt'); } catch(e){}
+    try { localStorage.setItem('maratu.token', pw); } catch(e){}
     location.replace('/admin.html');
   }catch(e){
     btn.disabled = false;

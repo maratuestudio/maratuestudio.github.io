@@ -1066,10 +1066,15 @@ window.addEventListener('error', function(ev){
     border-radius:50%; background:var(--laranja);
   }
   .cal-week .wk-allday{
-    grid-column:2 / -1; display:flex; gap:4px; padding:6px 8px;
-    border-bottom:1px solid var(--linha); background:var(--areia-sombra); flex-wrap:wrap;
+    grid-column:2 / -1; display:grid; grid-template-columns:repeat(7, minmax(0,1fr));
+    border-bottom:1px solid var(--linha); background:var(--areia-sombra);
     min-height:32px;
   }
+  .cal-week .wk-ad-col{
+    display:flex; flex-direction:column; gap:3px; padding:6px 6px;
+    border-left:1px solid var(--linha); min-width:0;
+  }
+  .cal-week .wk-ad-col:first-child{ border-left:none; }
   .cal-week .wk-allday-lbl{
     grid-column:1; background:var(--areia-sombra); border-bottom:1px solid var(--linha);
     font-family:var(--clother); font-weight:700; font-size:0.52rem;
@@ -1097,7 +1102,7 @@ window.addEventListener('error', function(ev){
     background:rgba(var(--acento-rgb),0.14); border-left:3px solid var(--laranja);
     border-radius:6px; padding:3px 8px; font-family:var(--clother);
     font-size:0.68rem; font-weight:700; color:var(--preto); cursor:grab;
-    max-width:160px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
   }
   .cal-week .wk-ad.evento{ background:rgba(14,50,114,0.12); border-left-color:var(--azul); }
   .cal-week .wk-ad.marketing{ background:rgba(212,150,10,0.16); border-left-color:var(--dourado); }
@@ -1891,6 +1896,19 @@ window.addEventListener('error', function(ev){
   .mei-card.ok{ background:#dcefe0; border-color:#4a7a52; }
   .mei-card.warn{ background:#fff3d6; }
   .mei-card.danger{ background:#f6d5cd; border-color:#c04432; }
+  /* Bg dos estados é fixo (claro) — força texto escuro sempre pra contraste, inclusive no tema noite */
+  .mei-card.ok, .mei-card.warn, .mei-card.danger{ color:#0D0D0B; }
+  .mei-card.ok .mc-cap, .mei-card.warn .mc-cap, .mei-card.danger .mc-cap,
+  .mei-card.ok .mc-sub, .mei-card.warn .mc-sub, .mei-card.danger .mc-sub{
+    color:rgba(13,13,11,0.65);
+  }
+  .mei-card.ok .mc-val, .mei-card.warn .mc-val, .mei-card.danger .mc-val{ color:#0D0D0B; }
+  .mei-card.ok .mei-btn, .mei-card.warn .mei-btn, .mei-card.danger .mei-btn{
+    background:#0D0D0B; color:#F0ECE4; border-color:#0D0D0B; box-shadow:2px 2px 0 0 #0D0D0B;
+  }
+  .mei-card.ok .mei-btn.ghost, .mei-card.warn .mei-btn.ghost, .mei-card.danger .mei-btn.ghost{
+    background:transparent; color:#0D0D0B;
+  }
   .mei-card .mc-cap{
     font-family:var(--clother); font-weight:700; font-size:0.58rem;
     letter-spacing:0.22em; text-transform:uppercase; color:var(--muted); margin:0;
@@ -1922,8 +1940,8 @@ window.addEventListener('error', function(ev){
     padding:6px 10px; border:1.5px solid var(--borda); border-radius:999px;
     background:var(--areia); color:var(--preto); cursor:pointer; font-weight:700;
   }
-  .mei-pill.paid{ background:#dcefe0; border-color:#4a7a52; }
-  .mei-pill.late{ background:#f6d5cd; border-color:#c04432; }
+  .mei-pill.paid{ background:#dcefe0; border-color:#4a7a52; color:#0D0D0B; }
+  .mei-pill.late{ background:#f6d5cd; border-color:#c04432; color:#0D0D0B; }
   .mei-pill.current{ box-shadow:0 0 0 2px var(--dourado) inset; }
   .mei-detail-btn{
     background:transparent; border:none; color:var(--muted); cursor:pointer; margin-top:12px;

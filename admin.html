@@ -18,18 +18,8 @@
 <meta name="apple-mobile-web-app-title" content="MARATU" />
 
 <script>
-/* GUARD DE SESSÃO — só checa idle timeout local. Auth real via Bearer token (verificada na 1ª chamada de /api/state). */
+/* Auth real via Bearer token (verificada na 1ª chamada de /api/state). SEM timeout de inatividade (removido a pedido). */
 (function(){
-  let last = 0;
-  try { last = parseInt(localStorage.getItem('maratu.lastActivity') || '0', 10); } catch(e){}
-  const IDLE_MS = 20 * 60 * 1000;
-  if(!last){ location.replace('/login.html'); return; }
-  if((Date.now() - last) > IDLE_MS){
-    try { localStorage.removeItem('maratu.lastActivity'); } catch(e){}
-    location.replace('/login.html?expired=1');
-    return;
-  }
-  try { localStorage.setItem('maratu.lastActivity', String(Date.now())); } catch(e){}
   /* Aplica tema salvo o mais cedo possível (evita flash de cor) */
   try {
     const th = localStorage.getItem('maratu.theme') || '';

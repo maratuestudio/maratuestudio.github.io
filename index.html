@@ -690,7 +690,7 @@
       justify-content: space-between; flex-wrap: wrap; gap: 8px;
       font-family: var(--mono); font-size: 0.5rem;
       letter-spacing: 0.12em; text-transform: uppercase;
-      color: rgba(13,13,11,0.2);
+      color: rgba(13,13,11,0.62);
     }
     .footer__topo {
       display: block;
@@ -1197,8 +1197,16 @@
     .vaso-slide.ativo { opacity: 1; }
   </style>
   <meta name="theme-color" content="#C8501A">
-  <link rel="stylesheet" href="aratu-mascote.css?v=7">
+  <style>
+  /* aratu-mascote inline */
+  .aratu-mascote{position:absolute;left:0;bottom:4px;width:48px;height:24px;pointer-events:none;z-index:10;overflow:visible}
+  .aratu-mascote svg{width:100%;height:100%;overflow:visible;display:block}
+  @media (max-width:640px){.aratu-mascote{width:40px;height:20px;bottom:4px}}
+  </style>
   <link rel="stylesheet" href="components/radio/radio.css?v=7">
+  <link rel="preconnect" href="https://pub-33d995a6b2b8438fac0996c21b3a13c3.r2.dev" crossorigin>
+  <link rel="preconnect" href="https://www.googletagmanager.com">
+  <link rel="preconnect" href="https://www.google-analytics.com">
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-HCJ291HL72"></script>
   <script>
@@ -1239,7 +1247,7 @@
       <a href="#parceiros">parceiros</a>
     </nav>
     <div class="header__actions">
-      <button class="btn-radio" id="mr-btn" aria-label="Radio MARATU" aria-expanded="false"><div class="mr-btn-speaker"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div><div class="mr-btn-display" id="mr-display">88.5 FM</div><span class="mr-btn-led"></span></button>
+      <button class="btn-radio" id="mr-btn" aria-label="Radio MARATU 88.5 FM" aria-expanded="false"><div class="mr-btn-speaker"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div><div class="mr-btn-display" id="mr-display">88.5 FM</div><span class="mr-btn-led"></span></button>
     </div>
     <button class="header__menu-toggle" aria-label="abrir menu" aria-expanded="false">MENU</button>
   </header>

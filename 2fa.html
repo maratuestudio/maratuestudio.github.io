@@ -79,7 +79,7 @@
 /* Guard: precisa estar autenticado (cookie httpOnly) */
 (function(){
   try {
-    if(!sessionStorage.getItem('maratu.token')){ location.replace('/login.html?expired=1'); }
+    if(!localStorage.getItem('maratu.token')){ location.replace('/login.html?expired=1'); }
   } catch(e){}
 })();
 
@@ -89,7 +89,7 @@ const $ = (id)=>document.getElementById(id);
 async function api(path, opts){
   opts = opts || {};
   const headers = new Headers(opts.headers || {});
-  try { const tk = sessionStorage.getItem('maratu.token'); if(tk) headers.set('Authorization','Bearer '+tk); } catch(e){}
+  try { const tk = localStorage.getItem('maratu.token'); if(tk) headers.set('Authorization','Bearer '+tk); } catch(e){}
   const r = await fetch(API + path, Object.assign({ credentials:'include' }, opts, { headers }));
   if(r.status === 401){ location.replace('/login.html?expired=1'); throw new Error('unauth'); }
   return r;

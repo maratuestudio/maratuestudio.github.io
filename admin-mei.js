@@ -6,6 +6,62 @@
   const MONTH_ABBR = ["jan","fev","mar","abr","mai","jun","jul","ago","set","out","nov","dez"];
   const MONTH_FULL = ["janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"];
 
+  /* Dialog MARATU (usa .modal-back existente). Sub .alert/.confirm/.prompt nativos. */
+  function mrtDialog(opts){
+    return new Promise((resolve)=>{
+      const back = document.createElement("div");
+      back.className = "modal-back on";
+      back.setAttribute("role","dialog");
+      back.setAttribute("aria-modal","true");
+      const showInput = opts.kind === "prompt";
+      const okText = opts.okText || (opts.kind === "alert" ? "ok" : "confirmar");
+      const cancelText = opts.cancelText || "cancelar";
+      const title = opts.title || "MARATU · MEI";
+      back.innerHTML =
+        '<div class="modal-card" style="max-width:460px">'+
+          '<div class="modal-head">'+
+            '<h3></h3>'+
+            '<button type="button" class="modal-close" data-mrt-cancel aria-label="Fechar">×</button>'+
+          '</div>'+
+          '<div style="font-family:var(--clother); font-size:0.95rem; color:var(--preto); line-height:1.5; margin-bottom:18px" data-mrt-msg></div>'+
+          (showInput ? '<input type="text" data-mrt-input style="width:100%; padding:12px 14px; background:var(--areia); border:1.5px solid var(--borda); border-radius:8px; font-family:var(--clother); font-size:1rem; color:var(--preto); box-shadow:2px 2px 0 0 var(--sombra-hard); margin-bottom:18px" />' : '')+
+          '<div style="display:flex; justify-content:flex-end; gap:10px">'+
+            (opts.kind === "alert" ? '' : '<button type="button" class="btn" data-mrt-cancel style="background:var(--areia)"></button>')+
+            '<button type="button" class="btn" data-mrt-ok style="background:var(--preto); color:var(--areia)"></button>'+
+          '</div>'+
+        '</div>';
+      back.querySelector("h3").textContent = title;
+      back.querySelector("[data-mrt-msg]").textContent = opts.message || "";
+      const okBtn = back.querySelector("[data-mrt-ok]"); okBtn.textContent = okText;
+      const cancelBtn = back.querySelector("button[data-mrt-cancel]:not(.modal-close)");
+      if(cancelBtn) cancelBtn.textContent = cancelText;
+      const inp = back.querySelector("[data-mrt-input]");
+      if(inp && opts.defaultValue != null) inp.value = String(opts.defaultValue);
+
+      function close(result){
+        back.remove();
+        document.removeEventListener("keydown", onKey);
+        resolve(result);
+      }
+      function onKey(ev){
+        if(ev.key === "Escape") close({ ok:false, value:null });
+        if(ev.key === "Enter"){ ev.preventDefault(); close({ ok:true, value: inp ? inp.value : null }); }
+      }
+      back.querySelectorAll("[data-mrt-cancel]").forEach(b=>b.addEventListener("click", ()=>close({ ok:false, value:null })));
+      okBtn.addEventListener("click", ()=>close({ ok:true, value: inp ? inp.value : null }));
+      back.addEventListener("click", (ev)=>{ if(ev.target === back) close({ ok:false, value:null }); });
+      document.addEventListener("keydown", onKey);
+      document.body.appendChild(back);
+      if(inp){ inp.focus(); inp.select(); } else { okBtn.focus(); }
+    });
+  }
+  const mrtAlert = (message, title)=>mrtDialog({ kind:"alert", message, title });
+  const mrtConfirm = async (message, title)=>(await mrtDialog({ kind:"confirm", message, title })).ok;
+  const mrtPrompt = async (message, defaultValue, title)=>{
+    const r = await mrtDialog({ kind:"prompt", message, defaultValue, title });
+    return r.ok ? r.value : null;
+  };
+
   function brl(centavos){
     const v = Number(centavos||0) / 100;
     return v.toLocaleString("pt-BR", { style:"currency", currency:"BRL" });
@@ -149,18 +205,18 @@
 
   async function toggleDasFromPill(m){
     if(m.paid){
-      if(!confirm("Desmarcar DAS de " + MONTH_FULL[m.month-1] + "/" + m.year + " como não pago?")) return;
+      if(!(await mrtConfirm("Desmarcar DAS de " + MONTH_FULL[m.month-1] + "/" + m.year + " como não pago?"))) return;
       await jsonFetch("/api/mei/das/unpay", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ year:m.year, month:m.month })});
     } else {
       const cfg = cachedDash && cachedDash.config;
       if(!cfg || !cfg.das_valor_centavos){
-        alert("Antes de marcar como pago, configure o valor do DAS em 'config'.");
+        await mrtAlert("Antes de marcar como pago, configure o valor do DAS em 'config'.");
         return;
       }
-      const v = prompt("Valor pago do DAS (R$)?", (cfg.das_valor_centavos/100).toFixed(2).replace(".",","));
+      const v = await mrtPrompt("Valor pago do DAS (R$)?", (cfg.das_valor_centavos/100).toFixed(2).replace(".",","));
       if(v == null) return;
       const centavos = parseCurrencyToCentavos(v);
-      if(centavos <= 0){ alert("Valor inválido."); return; }
+      if(centavos <= 0){ await mrtAlert("Valor inválido."); return; }
       await jsonFetch("/api/mei/das/pay", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ year:m.year, month:m.month, valor_centavos:centavos })});
     }
     await loadDashboard();
@@ -176,7 +232,7 @@
     if(t.id === "meiDasnBtn"){
       const year = Number(t.dataset.year), done = t.dataset.done === "1";
       if(done){
-        if(!confirm("Desmarcar DASN " + year + " como entregue?")) return;
+        if(!(await mrtConfirm("Desmarcar DASN " + year + " como entregue?"))) return;
         await jsonFetch("/api/mei/dasn/undo", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ year })});
       } else {
         await jsonFetch("/api/mei/dasn/done", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ year })});

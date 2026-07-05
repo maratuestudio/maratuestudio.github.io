@@ -829,8 +829,8 @@ window.addEventListener('error', function(ev){
   }
 
   .orc-total{
-    background:var(--preto); border:1.5px solid var(--borda); border-radius:10px;
-    color:var(--areia); padding:22px 24px; margin-top:4px;
+    background:var(--areia); border:1.5px solid var(--borda); border-radius:8px;
+    color:var(--preto); padding:22px 24px; margin-top:4px;
     display:grid; grid-template-columns:1fr auto; gap:20px; align-items:center;
     box-shadow:4px 4px 0 0 var(--laranja);
   }
@@ -841,25 +841,26 @@ window.addEventListener('error', function(ev){
   }
   .orc-total .ot-cap{
     font-family:var(--clother); font-weight:700; font-size:0.6rem;
-    letter-spacing:0.22em; text-transform:uppercase; color:var(--areia); opacity:0.55;
+    letter-spacing:0.22em; text-transform:uppercase; color:var(--preto); opacity:0.6;
   }
   .orc-total .ot-val{
     display:block; font-family:var(--clother); font-weight:900; font-size:2.8rem;
     color:var(--laranja); line-height:1; letter-spacing:-0.01em; margin:8px 0 6px;
   }
   .orc-total .ot-sub{
-    font-family:var(--clother); font-size:0.78rem; color:var(--areia); opacity:0.65; font-style:italic;
+    font-family:var(--clother); font-size:0.78rem; color:var(--preto); opacity:0.6; font-style:italic;
   }
   .orc-total .ot-right{ display:flex; flex-direction:column; gap:8px; min-width:220px; }
   .orc-total .ot-right input{
-    background:var(--areia); border:1.5px solid var(--areia); color:var(--preto); box-shadow:none; margin:0;
+    background:var(--areia-sombra); border:1.5px solid var(--borda); color:var(--preto);
+    box-shadow:2px 2px 0 0 var(--sombra-hard); margin:0;
   }
   .orc-total .ot-right .btn{
-    background:var(--laranja); border-color:var(--areia); color:var(--areia);
-    box-shadow:2px 2px 0 0 var(--areia);
+    background:var(--laranja); border-color:var(--borda); color:var(--areia);
+    box-shadow:2px 2px 0 0 var(--sombra-hard);
   }
-  .orc-total .ot-right .btn:hover{ background:var(--areia); color:var(--preto); border-color:var(--areia); }
-  .orc-total .ot-right .btn:active{ transform:translate(2px,2px); box-shadow:0 0 0 0 var(--areia); }
+  .orc-total .ot-right .btn:hover{ background:var(--preto); color:var(--areia); border-color:var(--borda); }
+  .orc-total .ot-right .btn:active{ transform:translate(2px,2px); box-shadow:0 0 0 0 var(--sombra-hard); }
 
   .orc-group{ margin-bottom:14px; padding:18px 20px; }
   .orc-group .og-head{ margin-bottom:14px; padding-bottom:12px; border-bottom:1px solid var(--linha); }
@@ -2736,8 +2737,8 @@ window.addEventListener('error', function(ev){
       <div class="mei-cfg-hint">Padrão: 31 de maio.</div>
     </div>
     <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:8px">
-      <button class="mei-btn ghost" data-mei-close type="button">cancelar</button>
-      <button class="mei-btn" id="meiCfgSave" type="button">salvar</button>
+      <button class="btn" data-mei-close type="button" style="background:var(--areia)">cancelar</button>
+      <button class="btn" id="meiCfgSave" type="button" style="background:var(--preto);color:var(--areia)">salvar</button>
     </div>
     <div id="meiCfgMsg" style="margin-top:10px;font-size:0.85rem;min-height:1em"></div>
   </div>

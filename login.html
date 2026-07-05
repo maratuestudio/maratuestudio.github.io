@@ -206,6 +206,18 @@ const btn = document.getElementById('loginBtn');
   let tk = null;
   try { tk = sessionStorage.getItem('maratu.token'); } catch(e){}
   if (!tk) return;
+  /* trava anti-loop: se acabamos de voltar do admin (bounce < 6s), o admin
+     rejeitou a sessão — para no login em vez de ficar piscando. */
+  try {
+    const now = Date.now();
+    const last = Number(sessionStorage.getItem('maratu.autologinAt') || '0');
+    if (last && now - last < 6000){
+      sessionStorage.removeItem('maratu.token');
+      sessionStorage.removeItem('maratu.autologinAt');
+      return;
+    }
+    sessionStorage.setItem('maratu.autologinAt', String(now));
+  } catch(e){}
   try{
     const r = await fetch(API + "/api/state", {
       headers: { Authorization: "Bearer " + tk }

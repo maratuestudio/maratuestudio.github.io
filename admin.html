@@ -1105,15 +1105,7 @@ window.addEventListener('error', function(ev){
   .cal-week .wk-ad.nota{ background:rgba(13,13,11,0.08); border-left-color:var(--preto); }
   .cal-week .wk-daycol.drop-target{ background:rgba(var(--acento-rgb),0.06); }
 
-  /* Selected day panel (only shown in month view) */
-  .daypanel{
-    margin-top:22px; background:var(--areia); border:1.5px solid var(--linha-forte);
-    border-radius:10px; padding:18px 20px;
-  }
-  .daypanel h3{
-    font-family:var(--clother); font-weight:900; font-size:1rem;
-    margin:0 0 14px; letter-spacing:-0.005em;
-  }
+  /* Selected day panel — now a popup, styles handled by .modal-back / .modal-card */
   .ev{
     display:flex; justify-content:space-between; align-items:flex-start; gap:12px;
     padding:12px 0; border-bottom:1px solid var(--linha);
@@ -2569,10 +2561,15 @@ window.addEventListener('error', function(ev){
       </div>
     </div>
 
-    <!-- Selected day panel (month view only) -->
-    <div class="daypanel" id="dayPanel" style="display:none;">
-      <h3 id="dayTitle">Selecione um dia</h3>
-      <div id="dayEvents"></div>
+    <!-- Selected day panel (month view only) — popup -->
+    <div class="modal-back" id="dayPanel" role="dialog" aria-modal="true" aria-labelledby="dayTitle">
+      <div class="modal-card" style="max-width:560px;">
+        <div class="modal-head">
+          <h3 id="dayTitle">Selecione um dia</h3>
+          <button type="button" class="modal-close" id="dayPanelClose" aria-label="Fechar">×</button>
+        </div>
+        <div id="dayEvents"></div>
+      </div>
     </div>
 
     <div class="divlbl">Próximos compromissos</div>
@@ -2759,7 +2756,7 @@ window.addEventListener('error', function(ev){
   </div>
 </div>
 
-<script src="/admin.js?v=20260705b"></script>
+<script src="/admin.js?v=20260705c"></script>
 <script src="/admin-mei.js?v=20260704e"></script>
 
 <!-- CHICO — popup expandido -->

@@ -2005,7 +2005,6 @@ window.addEventListener('error', function(ev){
 #maratu-splash #mi-crab path{ stroke-width:var(--mi-crab-stroke); vector-effect:non-scaling-stroke; }
 #maratu-splash .lp{ stroke-width:var(--mi-wm-stroke); vector-effect:non-scaling-stroke; }
 #maratu-splash #mi-wm-sub{ fill:var(--mi-caju); opacity:0; }
-#mi-cover{ position:fixed; border-radius:50%; background:#C8501A; z-index:100000; pointer-events:none; transform:scale(0); will-change:transform; }
 </style>
 <div id="maratu-splash" aria-hidden="true">
     <div class="crab-stage"><svg viewBox="0 0 221.06 106.21" xmlns="http://www.w3.org/2000/svg">
@@ -2041,7 +2040,7 @@ window.addEventListener('error', function(ev){
 (function(){
   var splash = document.getElementById('maratu-splash');
   if(!splash) return;
-  function kill(){ try{ if(splash && splash.parentNode) splash.parentNode.removeChild(splash); }catch(e){} try{ var cv=document.getElementById('mi-cover'); if(cv&&cv.parentNode) cv.parentNode.removeChild(cv); }catch(e){} }
+  function kill(){ try{ if(splash && splash.parentNode) splash.parentNode.removeChild(splash); }catch(e){} }
   try{
     if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches){ kill(); return; }
     if(sessionStorage.getItem('maratu-intro')){ kill(); return; }
@@ -2076,23 +2075,17 @@ window.addEventListener('error', function(ev){
       var zoomDur = num('--mi-zoom-dur');
       var bodyRect = pBody.getBoundingClientRect();
       var splashRect = splash.getBoundingClientRect();
-      var originX = ((bodyRect.left + bodyRect.width/2) - splashRect.left) / splashRect.width * 100;
-      var originY = ((bodyRect.top  + bodyRect.height/2) - splashRect.top ) / splashRect.height * 100;
-      splash.style.transformOrigin = originX.toFixed(2) + '% ' + originY.toFixed(2) + '%';
-      splash.animate([{ transform:'scale(1)' }, { transform:'scale(6)' }],
-        { duration: zoomDur, fill:'forwards', easing: SMOOTH });
       var cx = bodyRect.left + bodyRect.width/2, cy = bodyRect.top + bodyRect.height/2;
+      var originX = (cx - splashRect.left) / splashRect.width * 100;
+      var originY = (cy - splashRect.top ) / splashRect.height * 100;
+      splash.style.transformOrigin = originX.toFixed(2) + '% ' + originY.toFixed(2) + '%';
       var W = window.innerWidth, H = window.innerHeight;
       var maxDist = Math.max(Math.hypot(cx,cy), Math.hypot(W-cx,cy), Math.hypot(cx,H-cy), Math.hypot(W-cx,H-cy));
-      var radius = maxDist * 1.08, diam = radius * 2;
-      var cover = document.createElement('div');
-      cover.id = 'mi-cover';
-      cover.style.width = diam + 'px'; cover.style.height = diam + 'px';
-      cover.style.left = (cx - radius) + 'px'; cover.style.top = (cy - radius) + 'px';
-      document.body.appendChild(cover);
-      cover.animate([{ transform:'scale(0)' }, { transform:'scale(1)' }],
+      var nearEdge = Math.min(bodyRect.width, bodyRect.height) / 2;
+      var scale = Math.max((maxDist / nearEdge) * 1.5, 12);
+      splash.animate([{ transform:'scale(1)' }, { transform:'scale(' + scale.toFixed(1) + ')' }],
         { duration: zoomDur, fill:'forwards', easing: SMOOTH });
-      setTimeout(function(){ clearTimeout(failsafe); kill(); }, zoomDur + 60);
+      setTimeout(function(){ clearTimeout(failsafe); kill(); }, zoomDur + 40);
     }
 
     function play(){

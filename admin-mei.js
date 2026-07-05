@@ -335,8 +335,8 @@
   function openConfigModal(){
     if(!cachedDash) return;
     const c = cachedDash.config;
-    $("meiCfgDasValor").value = c.das_valor_centavos ? (c.das_valor_centavos/100).toFixed(2) : "";
-    $("meiCfgLimite").value = c.limite_anual_centavos ? (c.limite_anual_centavos/100).toFixed(2) : "";
+    $("meiCfgDasValor").value = c.das_valor_centavos ? (c.das_valor_centavos/100).toFixed(2).replace(".",",") : "";
+    $("meiCfgLimite").value = c.limite_anual_centavos ? (c.limite_anual_centavos/100).toFixed(2).replace(".",",") : "";
     $("meiCfgVencDia").value = c.das_vencimento_dia || 20;
     $("meiCfgDasnMes").value = c.dasn_deadline_month || 5;
     $("meiCfgDasnDia").value = c.dasn_deadline_day || 31;

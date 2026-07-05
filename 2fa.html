@@ -79,8 +79,7 @@
 /* Guard: precisa estar autenticado (cookie httpOnly) */
 (function(){
   try {
-    const last = parseInt(localStorage.getItem('maratu.lastActivity') || '0', 10);
-    if(!last || Date.now() - last > 20*60*1000){ location.replace('/login.html?expired=1'); }
+    if(!sessionStorage.getItem('maratu.token')){ location.replace('/login.html?expired=1'); }
   } catch(e){}
 })();
 
@@ -88,7 +87,10 @@ const API = "https://maratu-api.raphaelnascimento.workers.dev";
 const $ = (id)=>document.getElementById(id);
 
 async function api(path, opts){
-  const r = await fetch(API + path, Object.assign({ credentials:'include' }, opts||{}));
+  opts = opts || {};
+  const headers = new Headers(opts.headers || {});
+  try { const tk = sessionStorage.getItem('maratu.token'); if(tk) headers.set('Authorization','Bearer '+tk); } catch(e){}
+  const r = await fetch(API + path, Object.assign({ credentials:'include' }, opts, { headers }));
   if(r.status === 401){ location.replace('/login.html?expired=1'); throw new Error('unauth'); }
   return r;
 }

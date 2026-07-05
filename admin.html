@@ -1019,7 +1019,7 @@ window.addEventListener('error', function(ev){
     .cal-week .wk-ev-time{ font-size:0.5rem; }
   }
   .cal-week .wk-corner, .cal-week .wk-daycol-head{
-    background:var(--areia-sombra); padding:10px 8px; border-bottom:1px solid var(--linha);
+    background:var(--areia-sombra); padding:10px 8px;
     text-align:center; position:sticky; top:0; z-index:2;
   }
   .cal-week .wk-daycol-head{
@@ -1067,20 +1067,16 @@ window.addEventListener('error', function(ev){
   }
   .cal-week .wk-allday{
     grid-column:2 / -1; display:grid; grid-template-columns:repeat(7, minmax(0,1fr));
-    border-bottom:1px solid var(--linha); background:var(--areia-sombra);
-    min-height:32px;
+    border-bottom:1.5px solid var(--linha); background:var(--areia-sombra);
+    min-height:6px;
   }
   .cal-week .wk-ad-col{
-    display:flex; flex-direction:column; gap:3px; padding:6px 6px;
+    display:flex; flex-direction:column; gap:2px; padding:2px 4px 4px;
     border-left:1px solid var(--linha); min-width:0;
   }
   .cal-week .wk-ad-col:first-child{ border-left:none; }
   .cal-week .wk-allday-lbl{
-    grid-column:1; background:var(--areia-sombra); border-bottom:1px solid var(--linha);
-    font-family:var(--clother); font-weight:700; font-size:0.52rem;
-    color:var(--muted); letter-spacing:0.16em; text-transform:uppercase;
-    display:flex; align-items:center; justify-content:flex-end;
-    padding:0 8px; text-align:right;
+    grid-column:1; background:var(--areia-sombra); border-bottom:1.5px solid var(--linha);
   }
   .cal-week .wk-ev{
     position:absolute; left:4px; right:4px; padding:4px 8px;
@@ -1099,10 +1095,10 @@ window.addEventListener('error', function(ev){
   .cal-week .wk-ev-time{ font-size:0.58rem; color:var(--muted); font-weight:700; letter-spacing:0.04em; }
   .cal-week .wk-ev-title{ font-weight:700; }
   .cal-week .wk-ad{
-    background:rgba(var(--acento-rgb),0.14); border-left:3px solid var(--laranja);
-    border-radius:6px; padding:3px 8px; font-family:var(--clother);
-    font-size:0.68rem; font-weight:700; color:var(--preto); cursor:grab;
-    overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+    background:rgba(var(--acento-rgb),0.16); border-left:3px solid var(--laranja);
+    border-radius:4px; padding:2px 6px; font-family:var(--clother);
+    font-size:0.62rem; font-weight:700; color:var(--preto); cursor:grab;
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap; line-height:1.25;
   }
   .cal-week .wk-ad.evento{ background:rgba(14,50,114,0.12); border-left-color:var(--azul); }
   .cal-week .wk-ad.marketing{ background:rgba(212,150,10,0.16); border-left-color:var(--dourado); }

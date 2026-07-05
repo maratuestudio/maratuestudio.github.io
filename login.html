@@ -201,21 +201,19 @@ const btn = document.getElementById('loginBtn');
   }
 })();
 
-/* Se já tem sessão (cookie httpOnly), manda direto pro admin. Legacy token só pra migração 1x. */
+/* Se já tem token válido salvo, entra direto. Senão fica no form de login. */
 (async function autoLogin(){
-  let legacyTk = null;
-  try { legacyTk = localStorage.getItem('maratu.token'); } catch(e){}
-  const headers = {};
-  if (legacyTk) headers.Authorization = "Bearer " + legacyTk;
+  let tk = null;
+  try { tk = localStorage.getItem('maratu.token'); } catch(e){}
+  if (!tk) return;
   try{
-    const r = await fetch(API + "/api/state", { credentials:'include', headers });
+    const r = await fetch(API + "/api/state", {
+      headers: { Authorization: "Bearer " + tk }
+    });
     if(r.ok){
-      try {
-        localStorage.removeItem('maratu.token');
-        localStorage.setItem('maratu.lastActivity', String(Date.now()));
-      } catch(e){}
+      try { localStorage.setItem('maratu.lastActivity', String(Date.now())); } catch(e){}
       location.replace('/admin.html');
-    } else if(r.status === 401 && legacyTk){
+    } else if(r.status === 401){
       try { localStorage.removeItem('maratu.token'); } catch(e){}
     }
   }catch(e){}

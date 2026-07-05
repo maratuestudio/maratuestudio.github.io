@@ -18,7 +18,7 @@
 <meta name="apple-mobile-web-app-title" content="MARATU" />
 
 <script>
-/* GUARD DE SESSÃO — só checa idle timeout local. Auth real via cookie httpOnly (verificada na 1ª chamada). */
+/* GUARD DE SESSÃO — só checa idle timeout local. Auth real via Bearer token (verificada na 1ª chamada de /api/state). */
 (function(){
   let last = 0;
   try { last = parseInt(localStorage.getItem('maratu.lastActivity') || '0', 10); } catch(e){}
@@ -1917,23 +1917,6 @@
   .mei-cfg-hint{ font-size:0.72rem; color:var(--muted); margin-top:-6px; margin-bottom:10px; }
 
 </style>
-<script>
-/* Envia cookie httpOnly em toda chamada pro Worker (auth aditiva Bearer+cookie) */
-(function(){
-  const origFetch = window.fetch.bind(window);
-  const API_HOST = 'maratu-api.raphaelnascimento.workers.dev';
-  window.fetch = function(input, init){
-    try {
-      const url = typeof input === 'string' ? input : (input && input.url) || '';
-      if (url.indexOf(API_HOST) !== -1) {
-        init = init || {};
-        if (!init.credentials) init.credentials = 'include';
-      }
-    } catch(e){}
-    return origFetch(input, init);
-  };
-})();
-</script>
 </head>
 <body>
 
@@ -2715,8 +2698,8 @@
   </div>
 </div>
 
-<script src="/admin.js?v=20260704d"></script>
-<script src="/admin-mei.js?v=20260704d"></script>
+<script src="/admin.js?v=20260704e"></script>
+<script src="/admin-mei.js?v=20260704e"></script>
 
 <!-- CHICO — popup expandido -->
 <div class="chico-back" id="chicoBack" aria-hidden="true">

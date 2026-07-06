@@ -290,6 +290,28 @@ window.addEventListener('error', function(ev){
     .head-menu-back.on{
       display:block; position:fixed; inset:0; z-index:9989; background:transparent;
     }
+
+    /* Ajustes: popup sempre (engrenagem) em qualquer largura */
+    .right{ position:relative; }
+    .head-menu{ display:none !important; }
+    .head-menu.open{
+      display:flex !important; flex-direction:column; align-items:stretch; gap:9px;
+      position:absolute; top:calc(100% + 8px); right:0; z-index:9990;
+      background:var(--areia); border:1.5px solid var(--borda); border-radius:14px;
+      box-shadow:4px 4px 0 0 var(--sombra-hard); padding:14px; min-width:252px;
+      max-height:min(78vh,560px); overflow-y:auto;
+    }
+    .head-menu.open .hm-lbl{ display:block; font-family:var(--clother); font-size:0.55rem; font-weight:700; letter-spacing:0.22em; text-transform:uppercase; color:var(--muted); margin-top:4px; }
+    .head-menu.open .theme-seg{ box-shadow:none; align-self:flex-start; }
+    .head-menu.open .sair{ width:100%; padding:10px 16px; font-size:0.62rem; }
+    .head-menu .hm-btn{ width:100%; text-align:left; background:var(--areia); border:1.5px solid var(--borda); color:var(--preto); padding:9px 12px; border-radius:8px; font-family:var(--clother); font-weight:700; font-size:0.66rem; letter-spacing:0.05em; cursor:pointer; }
+    .head-menu .hm-btn:hover{ background:var(--preto); color:var(--areia); }
+    .head-menu .hm-btn:disabled{ opacity:0.5; cursor:default; }
+    .head-menu .hm-msg{ font-size:0.7rem; color:var(--muted); min-height:0.6em; }
+    .head-menu .hm-list{ display:flex; flex-direction:column; gap:4px; font-size:0.72rem; color:var(--preto); }
+    .head-menu-btn{ display:inline-flex !important; align-items:center; justify-content:center; width:38px; height:38px; padding:0; background:var(--areia); border:1.5px solid var(--borda); color:var(--preto); border-radius:999px; box-shadow:2px 2px 0 0 var(--sombra-hard); cursor:pointer; }
+    .head-menu-btn:active{ transform:translate(2px,2px); box-shadow:0 0 0 0 var(--sombra-hard); }
+
     /* Aratu + Chico ganham linha própria — não sobrepõem MARATU */
     .head{ padding:24px 0 14px; min-height:0; }
     .head-crab{
@@ -2144,10 +2166,18 @@ window.addEventListener('error', function(ev){
             <button type="button" data-theme="dia"   aria-pressed="false" title="Dia — azul atalaia"><span class="sw"></span></button>
             <button type="button" data-theme="noite" aria-pressed="false" title="Noite — preto mangue"><span class="sw"></span></button>
           </div>
+          <span class="hm-lbl">Segurança · Passkey</span>
+          <button id="ajPkReg" class="hm-btn" type="button">Registrar Touch ID / Face ID</button>
+          <div id="ajPkMsg" class="hm-msg"></div>
+          <div id="ajPkList" class="hm-list"></div>
+          <span class="hm-lbl">Calendário</span>
+          <button id="hmFeed" class="hm-btn" type="button">Assinar calendário (.ics)</button>
+          <span class="hm-lbl">Manutenção</span>
+          <button id="hmClearCache" class="hm-btn" type="button">Limpar cache e recarregar</button>
           <span class="hm-lbl">Sessão</span>
           <button class="sair" id="btnSair" type="button">Sair</button>
         </div>
-        <button class="head-menu-btn" id="headMenuBtn" type="button" aria-label="Menu" aria-expanded="false">&#8942;</button>
+        <button class="head-menu-btn" id="headMenuBtn" type="button" aria-label="Ajustes" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
         <div class="head-menu-back" id="headMenuBack" aria-hidden="true"></div>
       </div>
     </div>
@@ -2907,52 +2937,62 @@ window.addEventListener('error', function(ev){
   </div>
 </div>
 
-<details id="mrt-ajustes" style="max-width:920px;margin:44px auto 64px;padding:0 22px;font-family:var(--clother,'Helvetica Neue',sans-serif)">
-  <summary style="cursor:pointer;list-style:none;font-size:0.62rem;font-weight:700;letter-spacing:0.24em;text-transform:uppercase;color:rgba(240,236,228,0.65);padding:8px 0">⚙ Ajustes</summary>
-  <div style="margin-top:14px;background:#F0ECE4;color:#0D0D0B;border:1.5px solid #0D0D0B;border-radius:14px;padding:20px;box-shadow:4px 4px 0 0 #0D0D0B">
-    <div style="font-size:0.6rem;font-weight:700;letter-spacing:0.22em;text-transform:uppercase;color:rgba(13,13,11,0.55);margin-bottom:6px">Segurança · Passkey</div>
-    <p style="font-size:0.9rem;margin:0 0 12px">Entrar com <b>Touch ID / Face ID</b>. A senha continua funcionando como reserva.</p>
-    <span id="aj-unsupported" style="display:none;color:#c02c1a;font-size:0.85rem">Este navegador não suporta passkeys.</span>
-    <button id="ajPkReg" type="button" style="background:#0D0D0B;color:#F0ECE4;border:1.5px solid #0D0D0B;border-radius:999px;box-shadow:3px 3px 0 0 #0D0D0B;padding:11px 20px;font-family:inherit;font-weight:700;font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;cursor:pointer">Registrar este dispositivo</button>
-    <div id="ajPkMsg" style="font-size:0.85rem;margin:10px 0;min-height:1em"></div>
-    <div id="ajPkList" style="margin-top:6px"></div>
-  </div>
-</details>
 <script>
 (function(){
   var API="https://maratu-api.raphaelnascimento.workers.dev";
-  var reg=document.getElementById('ajPkReg'); if(!reg) return;
-  var msg=document.getElementById('ajPkMsg'), list=document.getElementById('ajPkList');
   var b64=function(b){return btoa(String.fromCharCode.apply(null,new Uint8Array(b))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');};
   var tb=function(s){s=String(s).replace(/-/g,'+').replace(/_/g,'/');while(s.length%4)s+='=';var x=atob(s);var u=new Uint8Array(x.length);for(var i=0;i<x.length;i++)u[i]=x.charCodeAt(i);return u.buffer;};
-  function api(path,opts){opts=opts||{};var h=new Headers(opts.headers||{});try{var tk=localStorage.getItem('maratu.token');if(tk)h.set('Authorization','Bearer '+tk);}catch(e){}return fetch(API+path,Object.assign({},opts,{headers:h}));}
-  if(!window.PublicKeyCredential){document.getElementById('aj-unsupported').style.display='';reg.disabled=true;}
-  function refresh(){api('/api/webauthn/list').then(function(r){return r.json();}).then(function(j){
-    if(!j.passkeys||!j.passkeys.length){list.innerHTML='<span style="color:rgba(13,13,11,0.55);font-size:0.78rem">nenhum dispositivo registrado.</span>';return;}
+  function api(p,o){o=o||{};var h=new Headers(o.headers||{});try{var tk=localStorage.getItem('maratu.token');if(tk)h.set('Authorization','Bearer '+tk);}catch(e){}return fetch(API+p,Object.assign({},o,{headers:h}));}
+  var reg=document.getElementById('ajPkReg'),msg=document.getElementById('ajPkMsg'),list=document.getElementById('ajPkList');
+  function refresh(){ if(!list)return; api('/api/webauthn/list').then(function(r){return r.json();}).then(function(j){
+    if(!j.passkeys||!j.passkeys.length){ list.innerHTML='<span style="color:var(--muted)">nenhum dispositivo</span>'; return; }
     list.innerHTML=''; j.passkeys.forEach(function(pk){
-      var row=document.createElement('div'); row.style.cssText='display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:0.85rem;padding:8px 0;border-top:1px solid rgba(13,13,11,0.12)';
-      row.innerHTML='<span><b>'+(pk.label||'dispositivo')+'</b> <span style="color:rgba(13,13,11,0.5);font-size:0.72rem">'+new Date(pk.created).toLocaleDateString('pt-BR')+'</span></span>';
-      var del=document.createElement('button'); del.textContent='remover'; del.style.cssText='background:#c8451a;color:#fff;border:none;border-radius:999px;padding:6px 12px;font-size:0.6rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer';
+      var row=document.createElement('div'); row.style.cssText='display:flex;align-items:center;justify-content:space-between;gap:8px';
+      row.innerHTML='<span>'+(pk.label||'dispositivo')+'</span>';
+      var del=document.createElement('button'); del.textContent='×'; del.title='remover'; del.style.cssText='background:none;border:none;color:#c8451a;cursor:pointer;font-size:1.1rem;font-weight:700;line-height:1';
       del.onclick=function(){ if(!confirm('Remover esta passkey?'))return; api('/api/webauthn/delete',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:pk.id})}).then(refresh); };
       row.appendChild(del); list.appendChild(row);
     });
-  }).catch(function(){});}
-  reg.addEventListener('click', async function(){
-    msg.textContent='aguardando biometria…'; msg.style.color='';
-    try{
-      var o=await (await api('/api/webauthn/register/options',{method:'POST'})).json();
-      var c=await navigator.credentials.create({publicKey:{challenge:tb(o.challenge),rp:o.rp,user:{id:tb(o.user.id),name:o.user.name,displayName:o.user.displayName},pubKeyCredParams:o.pubKeyCredParams,timeout:o.timeout,authenticatorSelection:o.authenticatorSelection,attestation:o.attestation,excludeCredentials:(o.excludeCredentials||[]).map(function(x){return{type:x.type,id:tb(x.id)};})}});
-      var ua=navigator.userAgent, label=/iPhone|iPad/.test(ua)?'iPhone/iPad':/Macintosh/.test(ua)?'Mac':'dispositivo';
-      var v=await (await api('/api/webauthn/register/verify',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:b64(c.rawId),clientDataJSON:b64(c.response.clientDataJSON),attestationObject:b64(c.response.attestationObject),label:label})})).json();
-      if(v.ok){ msg.textContent='dispositivo registrado ✓'; msg.style.color='#1a7a3a'; refresh(); }
-      else { msg.textContent='falhou: '+(v.error||'erro'); msg.style.color='#c02c1a'; }
-    }catch(e){ msg.textContent=(e&&e.name==='NotAllowedError')?'cancelado':('erro: '+e.message); msg.style.color='#c02c1a'; }
+  }).catch(function(){}); }
+  if(reg){
+    if(!window.PublicKeyCredential){ reg.disabled=true; reg.textContent='passkey não suportado'; }
+    reg.addEventListener('click', async function(){
+      if(msg)msg.textContent='aguardando biometria…';
+      try{
+        var o=await (await api('/api/webauthn/register/options',{method:'POST'})).json();
+        var c=await navigator.credentials.create({publicKey:{challenge:tb(o.challenge),rp:o.rp,user:{id:tb(o.user.id),name:o.user.name,displayName:o.user.displayName},pubKeyCredParams:o.pubKeyCredParams,timeout:o.timeout,authenticatorSelection:o.authenticatorSelection,attestation:o.attestation,excludeCredentials:(o.excludeCredentials||[]).map(function(x){return{type:x.type,id:tb(x.id)};})}});
+        var ua=navigator.userAgent,label=/iPhone|iPad/.test(ua)?'iPhone/iPad':/Macintosh/.test(ua)?'Mac':'dispositivo';
+        var v=await (await api('/api/webauthn/register/verify',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:b64(c.rawId),clientDataJSON:b64(c.response.clientDataJSON),attestationObject:b64(c.response.attestationObject),label:label})})).json();
+        if(msg)msg.textContent=v.ok?'registrado ✓':'falhou: '+(v.error||'erro');
+        if(v.ok)refresh();
+      }catch(e){ if(msg)msg.textContent=(e&&e.name==='NotAllowedError')?'cancelado':'erro'; }
+    });
+    refresh();
+  }
+  var feed=document.getElementById('hmFeed');
+  if(feed)feed.addEventListener('click', async function(){
+    var old=feed.textContent; feed.textContent='abrindo…';
+    try{ var j=await (await api('/api/config')).json();
+      if(j.feedUrl){ try{await navigator.clipboard.writeText(j.feedUrl);}catch(e){} location.href=j.feedUrl.replace(/^https?:/,'webcal:'); }
+      feed.textContent='link copiado ✓';
+    }catch(e){ feed.textContent='erro'; }
+    setTimeout(function(){feed.textContent=old;},2500);
   });
-  refresh();
+  var cc=document.getElementById('hmClearCache');
+  if(cc)cc.addEventListener('click', function(){
+    if(!confirm('Limpar cache e recarregar o app?'))return;
+    cc.textContent='limpando…';
+    Promise.resolve()
+      .then(function(){return navigator.serviceWorker?navigator.serviceWorker.getRegistrations():[];})
+      .then(function(rs){return Promise.all((rs||[]).map(function(r){return r.unregister();}));})
+      .then(function(){return window.caches?caches.keys():[];})
+      .then(function(ks){return Promise.all((ks||[]).map(function(k){return caches.delete(k);}));})
+      .catch(function(){}).then(function(){location.reload(true);});
+  });
 })();
 </script>
 
-<script src="/admin.js?v=20260705l"></script>
+    <script src="/admin.js?v=20260705l"></script>
 <script src="/admin-mei.js?v=20260704e"></script>
 
 <!-- CHICO — popup expandido -->

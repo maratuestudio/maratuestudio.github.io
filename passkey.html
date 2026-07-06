@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#C8501A" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://maratu-api.raphaelnascimento.workers.dev; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests;" />
+<title>MARATU · Passkey</title>
+<meta name="robots" content="noindex,nofollow" />
+<link rel="icon" type="image/png" href="favicon-v6.png" />
+<style>
+  @font-face { font-family:'Clother'; src:url('TRYClother-Regular.woff2') format('woff2'); font-weight:400; font-display:swap; }
+  @font-face { font-family:'Clother'; src:url('TRYClother-Bold.woff2') format('woff2'); font-weight:700; font-display:swap; }
+  @font-face { font-family:'Clother'; src:url('TRYClother-Black.woff2') format('woff2'); font-weight:900; font-display:swap; }
+  :root{ --laranja:#C8501A; --preto:#0D0D0B; --areia:#F0ECE4; --clother:'Clother','Helvetica Neue',sans-serif; }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; }
+  html{ background:var(--areia); -webkit-font-smoothing:antialiased; }
+  body{ background:var(--areia); color:var(--preto); font-family:var(--clother); line-height:1.5; min-height:100vh; padding:32px 20px; }
+  .wrap{ max-width:520px; margin:0 auto; }
+  h1{ font-weight:900; font-size:1.8rem; margin:0 0 8px; letter-spacing:-0.01em; }
+  .lbl{ font-size:0.62rem; font-weight:700; letter-spacing:0.24em; text-transform:uppercase; color:rgba(13,13,11,0.6); margin-bottom:16px; }
+  .card{ background:#fff; border:1.5px solid var(--preto); border-radius:14px; padding:22px; box-shadow:4px 4px 0 0 var(--preto); margin:18px 0; }
+  p{ font-size:0.9rem; }
+  button{ background:var(--preto); color:var(--areia); border:1.5px solid var(--preto); border-radius:999px; box-shadow:3px 3px 0 0 var(--preto); padding:12px 22px; font-family:var(--clother); font-weight:700; font-size:0.72rem; letter-spacing:0.24em; text-transform:uppercase; cursor:pointer; margin:4px 0; }
+  button:hover{ background:var(--areia); color:var(--preto); }
+  button:active{ transform:translate(3px,3px); box-shadow:0 0 0 0 var(--preto); }
+  button.danger{ background:#c8451a; color:#fff; border-color:#c8451a; box-shadow:none; padding:7px 14px; font-size:0.6rem; }
+  .msg{ font-size:0.85rem; margin:10px 0; min-height:1em; }
+  .msg.ok{ color:#1a7a3a; } .msg.err{ color:#c02c1a; }
+  a{ color:var(--laranja); font-weight:700; }
+  .back{ display:inline-block; margin-bottom:20px; text-decoration:none; font-size:0.7rem; letter-spacing:0.18em; text-transform:uppercase; }
+  .pk-item{ display:flex; align-items:center; justify-content:space-between; gap:10px; font-size:0.85rem; padding:8px 0; border-top:1px solid rgba(13,13,11,0.12); }
+  .pk-item:first-child{ border-top:none; }
+  .muted{ color:rgba(13,13,11,0.55); font-size:0.75rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="/admin.html">← voltar ao admin</a>
+  <div class="lbl">Segurança</div>
+  <h1>Entrar com Touch ID / Face ID</h1>
+
+  <div class="card">
+    <p>Registre este aparelho como <b>passkey</b>. Depois você entra só com a biometria — a senha continua funcionando como reserva (quebra-vidro).</p>
+    <div id="unsupported" style="display:none" class="msg err">Este navegador não suporta passkeys.</div>
+    <button id="btnReg">Registrar este dispositivo</button>
+    <div class="msg" id="regMsg"></div>
+  </div>
+
+  <div class="card">
+    <div class="lbl" style="margin:0 0 10px">Dispositivos registrados</div>
+    <div id="list"><p class="muted">carregando…</p></div>
+  </div>
+</div>
+
+<script>
+const API = "https://maratu-api.raphaelnascimento.workers.dev";
+const $ = (id)=>document.getElementById(id);
+const b64url = buf => btoa(String.fromCharCode(...new Uint8Array(buf))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+const toBuf = s => { s=String(s).replace(/-/g,'+').replace(/_/g,'/'); while(s.length%4)s+='='; const bin=atob(s); const u=new Uint8Array(bin.length); for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i); return u.buffer; };
+
+/* precisa estar logado (token no localStorage) */
+(function(){ try{ if(!localStorage.getItem('maratu.token')){ location.replace('/login.html?expired=1'); } }catch(e){} })();
+
+async function api(path, opts){
+  opts = opts || {};
+  const headers = new Headers(opts.headers || {});
+  try { const tk = localStorage.getItem('maratu.token'); if(tk) headers.set('Authorization','Bearer '+tk); } catch(e){}
+  const r = await fetch(API + path, Object.assign({}, opts, { headers }));
+  if(r.status === 401){ location.replace('/login.html?expired=1'); throw new Error('unauth'); }
+  return r;
+}
+
+if(!window.PublicKeyCredential){ $('unsupported').style.display=''; $('btnReg').disabled = true; }
+
+async function refresh(){
+  try{
+    const r = await api('/api/webauthn/list');
+    const j = await r.json();
+    const el = $('list');
+    if(!j.passkeys || !j.passkeys.length){ el.innerHTML = '<p class="muted">nenhum dispositivo registrado ainda.</p>'; return; }
+    el.innerHTML = '';
+    j.passkeys.forEach(pk=>{
+      const d = new Date(pk.created);
+      const row = document.createElement('div');
+      row.className = 'pk-item';
+      row.innerHTML = '<span><b>'+ (pk.label||'dispositivo') +'</b><br><span class="muted">'+ d.toLocaleDateString('pt-BR') +'</span></span>';
+      const btn = document.createElement('button');
+      btn.className='danger'; btn.textContent='remover';
+      btn.onclick = async ()=>{ if(!confirm('Remover esta passkey?')) return; await api('/api/webauthn/delete',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:pk.id})}); refresh(); };
+      row.appendChild(btn);
+      el.appendChild(row);
+    });
+  }catch(e){}
+}
+
+$('btnReg').addEventListener('click', async ()=>{
+  $('regMsg').textContent = 'aguardando biometria…'; $('regMsg').className='msg';
+  try{
+    const r = await api('/api/webauthn/register/options',{method:'POST'});
+    const opt = await r.json();
+    const cred = await navigator.credentials.create({ publicKey:{
+      challenge: toBuf(opt.challenge), rp: opt.rp,
+      user: { id: toBuf(opt.user.id), name: opt.user.name, displayName: opt.user.displayName },
+      pubKeyCredParams: opt.pubKeyCredParams, timeout: opt.timeout,
+      authenticatorSelection: opt.authenticatorSelection, attestation: opt.attestation,
+      excludeCredentials: (opt.excludeCredentials||[]).map(c=>({ type:c.type, id: toBuf(c.id) }))
+    }});
+    const ua = navigator.userAgent;
+    const label = /iPhone|iPad/.test(ua) ? 'iPhone/iPad' : /Macintosh/.test(ua) ? 'Mac' : 'dispositivo';
+    const v = await api('/api/webauthn/register/verify',{ method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({
+      id: b64url(cred.rawId), clientDataJSON: b64url(cred.response.clientDataJSON), attestationObject: b64url(cred.response.attestationObject), label
+    })});
+    const j = await v.json();
+    if(j.ok){ $('regMsg').textContent = 'dispositivo registrado ✓'; $('regMsg').className='msg ok'; refresh(); }
+    else { $('regMsg').textContent = 'falhou: '+(j.error||'erro'); $('regMsg').className='msg err'; }
+  }catch(e){
+    $('regMsg').textContent = e.name==='NotAllowedError' ? 'cancelado' : ('erro: '+e.message);
+    $('regMsg').className='msg err';
+  }
+});
+
+refresh();
+</script>
+</body>
+</html>

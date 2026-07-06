@@ -610,9 +610,9 @@ window.addEventListener('error', function(ev){
 
   /* ── Pendentes de ontem ── */
   .pn-pend{
-    background:var(--areia); border:1.5px solid var(--borda); border-radius:12px;
-    box-shadow:3px 3px 0 0 var(--sombra-hard); padding:20px 22px;
-    border-left:4px solid var(--laranja);
+    background:#FBF3DE; border:1.5px solid var(--sol); border-radius:12px;
+    box-shadow:5px 5px 0 0 var(--sol); padding:20px 22px;
+    border-left:7px solid var(--sol);
     margin-bottom:20px;
   }
   .pn-pend .pp-head{
@@ -623,8 +623,9 @@ window.addEventListener('error', function(ev){
     letter-spacing:-0.005em; color:var(--preto);
   }
   .pn-pend .pp-sub{
-    font-family:var(--clother); font-weight:700; font-size:0.62rem;
-    letter-spacing:0.2em; text-transform:uppercase; color:var(--laranja); white-space:nowrap;
+    font-family:var(--clother); font-weight:700; font-size:0.58rem;
+    letter-spacing:0.16em; text-transform:uppercase; color:#0D0D0B; white-space:nowrap;
+    background:var(--sol); padding:4px 10px; border-radius:999px;
   }
   .pn-pend-list{ display:flex; flex-direction:column; gap:8px; }
   .pp-row{
@@ -2210,6 +2211,15 @@ window.addEventListener('error', function(ev){
       </div>
     </div>
 
+<!-- Pendentes de ontem — só aparece se tiver evento sem check -->
+    <div class="pn-pend" id="pnPend" style="display:none;">
+      <div class="pp-head">
+        <div class="pp-title">Pendentes de ontem</div>
+        <div class="pp-sub" id="pnPendSub">0 eventos sem check</div>
+      </div>
+      <div class="pn-pend-list" id="pnPendList"></div>
+    </div>
+
     <!-- ================= MEI · obrigações ================= -->
     <div class="mei-block" id="meiBlock" style="display:none">
       <div class="mei-head">
@@ -2257,14 +2267,7 @@ window.addEventListener('error', function(ev){
 
     <div class="spacer"></div>
 
-    <!-- Pendentes de ontem — só aparece se tiver evento sem check -->
-    <div class="pn-pend" id="pnPend" style="display:none;">
-      <div class="pp-head">
-        <div class="pp-title">Pendentes de ontem</div>
-        <div class="pp-sub" id="pnPendSub">0 eventos sem check</div>
-      </div>
-      <div class="pn-pend-list" id="pnPendList"></div>
-    </div>
+    
 
     <!-- Notas pendentes + Eventos de hoje -->
     <div class="pn-grid">

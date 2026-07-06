@@ -278,6 +278,7 @@
     </div>
     <div class="msg" id="loginMsg">senha incorreta</div>
     <button type="submit" id="loginBtn">Entrar</button>
+    <button type="button" id="pkBtn" style="display:none; background:transparent; color:var(--preto); border:1.5px solid var(--preto); box-shadow:none; margin-top:2px;">Entrar com Touch ID / Face ID</button>
     <div class="foot">MARATU &middot; est. 2026 &middot; Aracaju</div>
   </form>
 </div>
@@ -405,5 +406,28 @@ if ('serviceWorker' in navigator) {
 }
 </script>
 
+<script>
+(function(){
+  var API="https://maratu-api.raphaelnascimento.workers.dev";
+  var btn=document.getElementById('pkBtn'); if(!btn||!window.PublicKeyCredential) return;
+  var b64url=function(buf){return btoa(String.fromCharCode.apply(null,new Uint8Array(buf))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');};
+  var toBuf=function(s){s=String(s).replace(/-/g,'+').replace(/_/g,'/');while(s.length%4)s+='=';var bin=atob(s);var u=new Uint8Array(bin.length);for(var i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);return u.buffer;};
+  var msg=document.getElementById('loginMsg');
+  btn.style.display='';
+  btn.addEventListener('click', async function(){
+    btn.disabled=true; if(msg){ msg.classList.remove('on','info'); }
+    try{
+      var r=await fetch(API+"/api/webauthn/login/options",{method:"POST"});
+      var opt=await r.json();
+      if(!opt.allowCredentials||!opt.allowCredentials.length){ if(msg){ msg.textContent='nenhuma passkey registrada'; msg.classList.add('on','info'); } btn.disabled=false; return; }
+      var a=await navigator.credentials.get({publicKey:{challenge:toBuf(opt.challenge),rpId:opt.rpId,timeout:opt.timeout,userVerification:opt.userVerification,allowCredentials:opt.allowCredentials.map(function(c){return {type:c.type,id:toBuf(c.id)};})}});
+      var v=await fetch(API+"/api/webauthn/login/verify",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({id:b64url(a.rawId),clientDataJSON:b64url(a.response.clientDataJSON),authenticatorData:b64url(a.response.authenticatorData),signature:b64url(a.response.signature)})});
+      var j=await v.json();
+      if(j.session){ try{ localStorage.setItem('maratu.token', j.session); }catch(e){} location.replace('/admin.html'); }
+      else { if(msg){ msg.textContent='passkey falhou'; msg.classList.add('on'); } btn.disabled=false; }
+    }catch(e){ if(msg){ msg.textContent=(e&&e.name==='NotAllowedError')?'cancelado':'erro passkey'; msg.classList.add('on'); } btn.disabled=false; }
+  });
+})();
+</script>
 </body>
 </html>

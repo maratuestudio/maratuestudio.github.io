@@ -4,6 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="theme-color" content="#0D0D0B" />
+<style>html:not(.mi-ready),html:not(.mi-ready) body{background:#0D0D0B}</style>
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://maratu-api.raphaelnascimento.workers.dev https://pub-33d995a6b2b8438fac0996c2196c8416.r2.dev https://*.cdninstagram.com https://*.fbcdn.net; font-src 'self'; connect-src 'self' https://maratu-api.raphaelnascimento.workers.dev; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests;" />
 <title>MARATU, admin</title>
 
@@ -11,16 +12,18 @@
 <link rel="dns-prefetch" href="https://maratu-api.raphaelnascimento.workers.dev" />
 <link rel="manifest" href="admin.webmanifest" />
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon-v6.png" />
-<link rel="apple-touch-startup-image" href="splash-black.png" media="screen and (device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" />
-<link rel="apple-touch-startup-image" href="splash-black.png" media="screen and (device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" />
-<link rel="apple-touch-startup-image" href="splash-black.png" media="screen and (device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" />
-<link rel="apple-touch-startup-image" href="splash-black.png" media="screen and (device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" />
-<link rel="apple-touch-startup-image" href="splash-black.png" media="screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" />
-<link rel="apple-touch-startup-image" href="splash-black.png" media="screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" />
-<link rel="apple-touch-startup-image" href="splash-black.png" media="screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" />
-<link rel="apple-touch-startup-image" href="splash-black.png" media="screen and (device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" />
-<link rel="apple-touch-startup-image" href="splash-black.png" media="screen and (device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" />
-<link rel="apple-touch-startup-image" href="splash-black.png" media="screen and (device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" />
+<link rel="apple-touch-startup-image" href="splash-1320x2868.png" media="(device-width: 440px) and (device-height: 956px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" />
+<link rel="apple-touch-startup-image" href="splash-1290x2796.png" media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" />
+<link rel="apple-touch-startup-image" href="splash-1206x2622.png" media="(device-width: 402px) and (device-height: 874px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" />
+<link rel="apple-touch-startup-image" href="splash-1179x2556.png" media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" />
+<link rel="apple-touch-startup-image" href="splash-1284x2778.png" media="(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" />
+<link rel="apple-touch-startup-image" href="splash-1170x2532.png" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" />
+<link rel="apple-touch-startup-image" href="splash-1125x2436.png" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" />
+<link rel="apple-touch-startup-image" href="splash-1242x2688.png" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" />
+<link rel="apple-touch-startup-image" href="splash-828x1792.png" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" />
+<link rel="apple-touch-startup-image" href="splash-750x1334.png" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" />
+<link rel="apple-touch-startup-image" href="splash-1242x2208.png" media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" />
+<link rel="apple-touch-startup-image" href="splash-640x1136.png" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" />
 <link rel="icon" type="image/png" href="favicon-v6.png" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="mobile-web-app-capable" content="yes" />
@@ -2050,7 +2053,7 @@ window.addEventListener('error', function(ev){
 (function(){
   var splash = document.getElementById('maratu-splash');
   if(!splash) return;
-  function kill(){ try{ if(splash && splash.parentNode) splash.parentNode.removeChild(splash); }catch(e){} }
+  function kill(){ try{ document.documentElement.classList.add('mi-ready'); }catch(e){} try{ if(splash && splash.parentNode) splash.parentNode.removeChild(splash); }catch(e){} }
   try{
     if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches){ kill(); return; }
     if(sessionStorage.getItem('maratu-intro')){ kill(); return; }
@@ -2141,7 +2144,6 @@ window.addEventListener('error', function(ev){
             <button type="button" data-theme="noite" aria-pressed="false" title="Noite — preto mangue"><span class="sw"></span></button>
           </div>
           <span class="hm-lbl">Sessão</span>
-          <a class="sair" href="/passkey.html" style="text-decoration:none;display:inline-block;padding:8px 14px;">Passkey</a>
           <button class="sair" id="btnSair" type="button">Sair</button>
         </div>
         <button class="head-menu-btn" id="headMenuBtn" type="button" aria-label="Menu" aria-expanded="false">&#8942;</button>
@@ -2901,6 +2903,51 @@ window.addEventListener('error', function(ev){
     <div id="meiCfgMsg" style="margin-top:10px;font-size:0.85rem;min-height:1em"></div>
   </div>
 </div>
+
+<details id="mrt-ajustes" style="max-width:920px;margin:44px auto 64px;padding:0 22px;font-family:var(--clother,'Helvetica Neue',sans-serif)">
+  <summary style="cursor:pointer;list-style:none;font-size:0.62rem;font-weight:700;letter-spacing:0.24em;text-transform:uppercase;color:rgba(240,236,228,0.65);padding:8px 0">⚙ Ajustes</summary>
+  <div style="margin-top:14px;background:#F0ECE4;color:#0D0D0B;border:1.5px solid #0D0D0B;border-radius:14px;padding:20px;box-shadow:4px 4px 0 0 #0D0D0B">
+    <div style="font-size:0.6rem;font-weight:700;letter-spacing:0.22em;text-transform:uppercase;color:rgba(13,13,11,0.55);margin-bottom:6px">Segurança · Passkey</div>
+    <p style="font-size:0.9rem;margin:0 0 12px">Entrar com <b>Touch ID / Face ID</b>. A senha continua funcionando como reserva.</p>
+    <span id="aj-unsupported" style="display:none;color:#c02c1a;font-size:0.85rem">Este navegador não suporta passkeys.</span>
+    <button id="ajPkReg" type="button" style="background:#0D0D0B;color:#F0ECE4;border:1.5px solid #0D0D0B;border-radius:999px;box-shadow:3px 3px 0 0 #0D0D0B;padding:11px 20px;font-family:inherit;font-weight:700;font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;cursor:pointer">Registrar este dispositivo</button>
+    <div id="ajPkMsg" style="font-size:0.85rem;margin:10px 0;min-height:1em"></div>
+    <div id="ajPkList" style="margin-top:6px"></div>
+  </div>
+</details>
+<script>
+(function(){
+  var API="https://maratu-api.raphaelnascimento.workers.dev";
+  var reg=document.getElementById('ajPkReg'); if(!reg) return;
+  var msg=document.getElementById('ajPkMsg'), list=document.getElementById('ajPkList');
+  var b64=function(b){return btoa(String.fromCharCode.apply(null,new Uint8Array(b))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');};
+  var tb=function(s){s=String(s).replace(/-/g,'+').replace(/_/g,'/');while(s.length%4)s+='=';var x=atob(s);var u=new Uint8Array(x.length);for(var i=0;i<x.length;i++)u[i]=x.charCodeAt(i);return u.buffer;};
+  function api(path,opts){opts=opts||{};var h=new Headers(opts.headers||{});try{var tk=localStorage.getItem('maratu.token');if(tk)h.set('Authorization','Bearer '+tk);}catch(e){}return fetch(API+path,Object.assign({},opts,{headers:h}));}
+  if(!window.PublicKeyCredential){document.getElementById('aj-unsupported').style.display='';reg.disabled=true;}
+  function refresh(){api('/api/webauthn/list').then(function(r){return r.json();}).then(function(j){
+    if(!j.passkeys||!j.passkeys.length){list.innerHTML='<span style="color:rgba(13,13,11,0.55);font-size:0.78rem">nenhum dispositivo registrado.</span>';return;}
+    list.innerHTML=''; j.passkeys.forEach(function(pk){
+      var row=document.createElement('div'); row.style.cssText='display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:0.85rem;padding:8px 0;border-top:1px solid rgba(13,13,11,0.12)';
+      row.innerHTML='<span><b>'+(pk.label||'dispositivo')+'</b> <span style="color:rgba(13,13,11,0.5);font-size:0.72rem">'+new Date(pk.created).toLocaleDateString('pt-BR')+'</span></span>';
+      var del=document.createElement('button'); del.textContent='remover'; del.style.cssText='background:#c8451a;color:#fff;border:none;border-radius:999px;padding:6px 12px;font-size:0.6rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer';
+      del.onclick=function(){ if(!confirm('Remover esta passkey?'))return; api('/api/webauthn/delete',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:pk.id})}).then(refresh); };
+      row.appendChild(del); list.appendChild(row);
+    });
+  }).catch(function(){});}
+  reg.addEventListener('click', async function(){
+    msg.textContent='aguardando biometria…'; msg.style.color='';
+    try{
+      var o=await (await api('/api/webauthn/register/options',{method:'POST'})).json();
+      var c=await navigator.credentials.create({publicKey:{challenge:tb(o.challenge),rp:o.rp,user:{id:tb(o.user.id),name:o.user.name,displayName:o.user.displayName},pubKeyCredParams:o.pubKeyCredParams,timeout:o.timeout,authenticatorSelection:o.authenticatorSelection,attestation:o.attestation,excludeCredentials:(o.excludeCredentials||[]).map(function(x){return{type:x.type,id:tb(x.id)};})}});
+      var ua=navigator.userAgent, label=/iPhone|iPad/.test(ua)?'iPhone/iPad':/Macintosh/.test(ua)?'Mac':'dispositivo';
+      var v=await (await api('/api/webauthn/register/verify',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:b64(c.rawId),clientDataJSON:b64(c.response.clientDataJSON),attestationObject:b64(c.response.attestationObject),label:label})})).json();
+      if(v.ok){ msg.textContent='dispositivo registrado ✓'; msg.style.color='#1a7a3a'; refresh(); }
+      else { msg.textContent='falhou: '+(v.error||'erro'); msg.style.color='#c02c1a'; }
+    }catch(e){ msg.textContent=(e&&e.name==='NotAllowedError')?'cancelado':('erro: '+e.message); msg.style.color='#c02c1a'; }
+  });
+  refresh();
+})();
+</script>
 
 <script src="/admin.js?v=20260705k"></script>
 <script src="/admin-mei.js?v=20260704e"></script>

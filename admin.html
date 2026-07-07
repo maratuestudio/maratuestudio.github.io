@@ -265,7 +265,7 @@ window.addEventListener('error', function(ev){
     .head-menu{ display:none; }
     .head-menu.open{
       display:flex; flex-direction:column; align-items:stretch; gap:12px;
-      position:absolute; top:calc(100% + 8px); right:0; z-index:9990;
+      position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); z-index:9990; width:min(340px, calc(100vw - 40px)); max-height:82vh; overflow:auto;
       background:var(--areia); border:1.5px solid var(--borda); border-radius:14px;
       box-shadow:4px 4px 0 0 var(--sombra-hard);
       padding:14px; min-width:200px;
@@ -288,7 +288,7 @@ window.addEventListener('error', function(ev){
     }
     .head-menu-btn:active{ transform:translate(2px,2px); box-shadow:0 0 0 0 var(--sombra-hard); }
     .head-menu-back.on{
-      display:block; position:fixed; inset:0; z-index:9989; background:transparent;
+      display:block; position:fixed; inset:0; z-index:9989; background:rgba(0,0,0,0.45);
     }
     /* Aratu + Chico ganham linha própria — não sobrepõem MARATU */
     .head{ padding:24px 0 14px; min-height:0; }
@@ -1130,6 +1130,24 @@ window.addEventListener('error', function(ev){
     transition:background .25s ease;
   }
   .ev .t .ev-tag.evento{ background:var(--azul); }
+/* ===== AGENDA+ ===== */
+#dayPlusBar{ display:flex; flex-direction:column; gap:10px; margin:2px 0 14px; }
+.day-plus-row{ display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+.day-cor{ display:flex; align-items:center; gap:6px; }
+.dc-lbl{ font-size:0.68rem; color:var(--muted); margin-right:2px; text-transform:uppercase; letter-spacing:0.1em; }
+.dc-sw{ width:22px; height:22px; border-radius:50%; border:2px solid rgba(0,0,0,0.18); cursor:pointer; padding:0; line-height:1; }
+.dc-sw.on{ outline:2px solid var(--preto); outline-offset:1px; }
+.dc-sw.dc-azul{ background:#2E6FC4; } .dc-sw.dc-verde{ background:#3E8A5F; }
+.dc-sw.dc-amarelo{ background:#E0A31A; } .dc-sw.dc-laranja{ background:#C8501A; }
+.dc-sw.dc-clear{ background:var(--areia); color:var(--preto); font-weight:900; }
+.mcell.dc-azul{ background:rgba(46,111,196,0.20); } .mcell.dc-verde{ background:rgba(62,138,95,0.20); }
+.mcell.dc-amarelo{ background:rgba(224,163,26,0.22); } .mcell.dc-laranja{ background:rgba(200,80,26,0.20); }
+.mcell.dc-off{ background:repeating-linear-gradient(45deg, rgba(0,0,0,0.05), rgba(0,0,0,0.05) 6px, rgba(0,0,0,0.10) 6px, rgba(0,0,0,0.10) 12px); }
+.mcell.dc-off .mcell-d{ opacity:0.5; text-decoration:line-through; }
+.mev.post{ background:rgba(46,111,196,0.14); border-left-color:#2E6FC4; }
+.mev.projeto{ background:rgba(62,138,95,0.14); border-left-color:#3E8A5F; }
+.ev-tag.post{ background:#2E6FC4; } .ev-tag.projeto{ background:#3E8A5F; }
+.pill.post{ color:#2E6FC4; border-color:#2E6FC4; } .pill.projeto{ color:#3E8A5F; border-color:#3E8A5F; }
   .ev .t .ev-tag.marketing{ background:var(--dourado); }
   .ev .t .ev-tag.nota{ background:var(--preto); }
   .ev.ev-done .t .ev-tag{ background:#2F8A3E; }
@@ -1998,7 +2016,7 @@ window.addEventListener('error', function(ev){
     .head-menu{ display:none !important; }
     .head-menu.open{
       display:flex !important; flex-direction:column; align-items:stretch; gap:9px;
-      position:absolute; top:calc(100% + 8px); right:0; z-index:9990;
+      position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); z-index:9990; width:min(340px, calc(100vw - 40px)); max-height:82vh; overflow:auto;
       background:var(--areia); border:1.5px solid var(--borda); border-radius:14px;
       box-shadow:4px 4px 0 0 var(--sombra-hard); padding:14px; min-width:252px;
       max-height:min(78vh,560px); overflow-y:auto;
@@ -2197,7 +2215,7 @@ window.addEventListener('error', function(ev){
           <div id="ajPkMsg" class="hm-msg"></div>
           <div id="ajPkList" class="hm-list"></div>
           <span class="hm-lbl">Calendário</span>
-          <button id="hmFeed" class="hm-btn" type="button">Assinar calendário (.ics)</button>
+          <a id="appleSub" class="hm-btn" style="text-decoration:none;text-align:center;display:block;">Assinar no Apple Calendar</a>
           <span class="hm-lbl">Manutenção</span>
           <button id="hmClearCache" class="hm-btn" type="button">Limpar cache e recarregar</button>
           <span class="hm-lbl">Sessão</span>
@@ -2757,16 +2775,7 @@ window.addEventListener('error', function(ev){
     <div class="divlbl">Próximos compromissos</div>
     <ul class="list" id="upcoming"></ul>
 
-    <div class="apple">
-      <div class="t">Sincronizar com Apple Calendar</div>
-      <div class="d" id="appleBox">
-        Cada evento já tem o botão ".ics" (baixa e abre no Calendário, adiciona na hora).
-        A assinatura automática (você adiciona aqui, aparece sozinho no iPhone e no Mac) já está ativa.
-        É via um só caminho (admin para Apple Calendar, atualiza sozinho).
-      </div>
-      <div class="spacer"></div>
-      <a id="appleSub" class="btn ghost" style="display:inline-block; text-decoration:none;">Assinar no Apple Calendar</a>
-    </div>
+
   </section>
 
   <!-- ================= MARKETING ================= -->
@@ -2993,7 +3002,7 @@ window.addEventListener('error', function(ev){
 })();
 </script>
 
-    <script src="/admin.js?v=20260706a"></script>
+    <script src="/admin.js?v=20260707a"></script>
 <script src="/admin-mei.js?v=20260704e"></script>
 
 <!-- CHICO — popup expandido -->

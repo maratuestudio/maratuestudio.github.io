@@ -19,16 +19,26 @@ const DEFAULT_PARAMS={filamento:140,maquina:5,maodeobra:30,margem:2,fixo:267,ret
     var clean = (arr || []).filter(function(e){ return !isMark(e); });
     rawSet(clean.concat(marks));
   };
-  MaratuStore.getDayMarks = function(){ return rawGet().filter(isMark); };
+  // o Worker só preserva o schema fixo (id,titulo,tipo,data,hora,cliente,notas) e DESCARTA
+  // campos extras — então cor/bloqueio ficam codificados em `notas`: "dc:<cor>;off:<0|1>".
+  function decodeMark(ev){
+    var n = ev.notas || "", cor = "", off = false;
+    var mc = /dc:([a-z]*)/.exec(n); if (mc) cor = mc[1];
+    if (/off:1/.test(n)) off = true;
+    return { id: ev.id, data: ev.data, cor: cor, bloqueio: off };
+  }
+  MaratuStore.getDayMarks = function(){ return rawGet().filter(isMark).map(decodeMark); };
   MaratuStore.getDayMark = function(iso){
-    return rawGet().filter(isMark).filter(function(m){ return m.data === iso; })[0] || null;
+    return MaratuStore.getDayMarks().filter(function(m){ return m.data === iso; })[0] || null;
   };
   MaratuStore.setDayMark = function(iso, patch){
     var all = rawGet();
     var m = all.filter(function(e){ return isMark(e) && e.data === iso; })[0];
-    if (!m){ m = { id: uid(), tipo:"__mark", data: iso, cor:"", bloqueio:false, titulo:"" }; all.push(m); }
-    for (var k in patch) m[k] = patch[k];
-    all = all.filter(function(e){ return !(isMark(e) && !e.cor && !e.bloqueio); }); // limpa vazios
+    var cur = m ? decodeMark(m) : { cor:"", bloqueio:false };
+    for (var k in patch) cur[k] = patch[k];
+    if (!m){ m = { id: uid(), tipo:"__mark", data: iso }; all.push(m); }
+    m.tipo = "__mark"; m.titulo = ""; m.notas = "dc:" + (cur.cor || "") + ";off:" + (cur.bloqueio ? 1 : 0);
+    all = all.filter(function(e){ if (!isMark(e)) return true; var d = decodeMark(e); return d.cor || d.bloqueio; });
     rawSet(all);
   };
 

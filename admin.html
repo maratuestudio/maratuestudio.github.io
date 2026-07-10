@@ -573,9 +573,9 @@ window.addEventListener('error', function(ev){
   .metric-card.up .mc-val{ color:var(--laranja); }
   .metric-card.down .mc-val{ color:var(--azul); }
 
-  .streak-dots{ display:flex; gap:3px; margin-top:14px; }
+  .streak-dots{ display:flex; flex-wrap:nowrap; gap:3px; margin-top:14px; min-width:0; overflow:hidden; }
   .streak-dots span{
-    flex:1; height:10px; background:var(--areia); border:1px solid var(--linha-forte);
+    flex:1 1 0; min-width:0; height:10px; background:var(--areia); border:1px solid var(--linha-forte);
     border-radius:3px;
   }
   .streak-dots span.on{ background:var(--laranja); border-color:var(--borda); }
@@ -3119,7 +3119,7 @@ window.addEventListener('error', function(ev){
 })();
 </script>
 
-    <script src="/admin.js?v=20260710h"></script>
+    <script src="/admin.js?v=20260710i"></script>
 <script src="/admin-mei.js?v=20260704e"></script>
 
 <!-- CHICO — popup expandido -->

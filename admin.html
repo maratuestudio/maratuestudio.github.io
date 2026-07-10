@@ -1169,7 +1169,7 @@ window.addEventListener('error', function(ev){
 .dc-sw.dc-clear{ background:var(--areia); color:var(--preto); font-weight:900; }
 .mcell.dc-azul{ background:#2E6FC4; } .mcell.dc-verde{ background:#3E8A5F; }
 .mcell.dc-amarelo{ background:#E0A31A; } .mcell.dc-laranja{ background:#C8501A; }
-.mcell.dc-off{ background:repeating-linear-gradient(45deg, rgba(0,0,0,0.05), rgba(0,0,0,0.05) 6px, rgba(0,0,0,0.10) 6px, rgba(0,0,0,0.10) 12px); }
+.mcell.dc-off{ background:#D8D4CD; }
 .mcell.dc-off .mcell-d{ opacity:0.5; text-decoration:line-through; }
 /* cores/indisponivel do dia na SEMANA — espelha o mensal (cor no cabecalho do dia + coluna
    listrada quando indisponivel). Prefixo #calWeek pra ganhar de .today/.drop-target/:hover. */
@@ -1180,14 +1180,10 @@ window.addEventListener('error', function(ev){
 #calWeek .wk-daycol-head.dc-verde,  #calWeek .wk-ad-col.dc-verde{  background:#3E8A5F; }
 #calWeek .wk-daycol-head.dc-amarelo,#calWeek .wk-ad-col.dc-amarelo{ background:#E0A31A; }
 #calWeek .wk-daycol-head.dc-laranja,#calWeek .wk-ad-col.dc-laranja{ background:#C8501A; }
-/* listras OPACAS (nao rgba): tom identico no cabecalho, "dia todo" e horas, sem variar com o fundo.
-   VERTICAL (90deg): listra vertical independe do offset vertical de cada faixa, entao fica contínua
-   atraves dos 3 elementos empilhados SEM emenda/corte — e sem depender de background-attachment:fixed
-   (que quebra no Safari). background-origin:border-box alinha as barras apesar do padding do cabecalho. */
-#calWeek .wk-daycol-head.dc-off, #calWeek .wk-ad-col.dc-off, #calWeek .wk-daycol.dc-off{ background:repeating-linear-gradient(90deg, #E4E0D9, #E4E0D9 6px, #D8D4CD 6px, #D8D4CD 12px); background-origin:border-box; }
+/* cinza sólido no dia indisponivel (mesmo tom nos 3 elementos empilhados: cabecalho, "dia todo" e horas) */
+#calWeek .wk-daycol-head.dc-off, #calWeek .wk-ad-col.dc-off, #calWeek .wk-daycol.dc-off{ background:#D8D4CD; }
 #calWeek .wk-daycol-head.dc-off .wh-d{ opacity:0.5; text-decoration:line-through; }
-/* na coluna de horas do dia indisponivel, some com as linhas de hora e o hover: a listra
-   diagonal fica limpa e uniforme (senao as bordas dos slots cruzam e viram um padrao "dobrado") */
+/* na coluna de horas do dia indisponivel, some com as linhas de hora e o hover pro cinza ficar liso */
 #calWeek .wk-daycol.dc-off .wk-slot{ border-bottom-color:transparent; }
 #calWeek .wk-daycol.dc-off .wk-slot:hover{ background:transparent; }
 /* some com o separador "dia todo"/horas no dia indisponivel (movido pro topo da coluna),

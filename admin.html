@@ -1717,9 +1717,11 @@ window.addEventListener('error', function(ev){
   /* Modal overlay */
   .modal-back{
     position:fixed; inset:0; background:rgba(13,13,11,0.55); z-index:9998;
-    display:none; align-items:flex-start; justify-content:center; padding:40px 16px; overflow-y:auto;
+    display:none; align-items:flex-start; justify-content:center; overflow-y:auto;
+    /* respeita o notch/status bar do iPhone (PWA em standalone) — senao o topo do card cola na barra de icones */
+    padding:max(env(safe-area-inset-top), 40px) 16px 40px;
   }
-  @media (max-width:560px){ .modal-back{ padding:16px 10px; } .modal-back .modal-card{ padding:16px; } }
+  @media (max-width:560px){ .modal-back{ padding:calc(env(safe-area-inset-top) + 16px) 10px 16px; } .modal-back .modal-card{ padding:16px; } }
   .modal-back.on{ display:flex; }
   .modal-back .modal-card{
     background:var(--areia); border:1.5px solid var(--borda); border-radius:10px;

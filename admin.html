@@ -387,8 +387,13 @@ window.addEventListener('error', function(ev){
   /* ── INPUTS ── */
   input, select, textarea{
     background:var(--areia); border:1.5px solid var(--borda); color:var(--preto);
-    border-radius:8px; padding:12px 14px; font-size:0.95rem; width:100%;
+    border-radius:8px; padding:12px 14px; font-size:0.95rem; width:100%; max-width:100%;
     font-family:var(--clother);
+  }
+  /* iOS Safari: date/time nativos tem largura intrinseca grande e ignoram width:100%,
+     estourando o card no mobile. appearance:none + min-width:0 faz respeitarem o container. */
+  input[type="date"], input[type="time"], input[type="datetime-local"]{
+    -webkit-appearance:none; appearance:none; min-width:0;
   }
   input::placeholder, textarea::placeholder{ color:var(--muted); opacity:0.7; }
   input:focus, select:focus, textarea:focus{ outline:none; border-color:var(--laranja); box-shadow:0 0 0 3px rgba(var(--acento-rgb),0.12); }
@@ -455,10 +460,13 @@ window.addEventListener('error', function(ev){
   .pn-grid{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
   @media (max-width:720px){ .pn-grid{ grid-template-columns:1fr; } }
   /* Painel principal: Notas grande à esquerda; métricas compactas (2 lado a lado) + Hoje à direita */
-  .pn-main-grid{ display:grid; grid-template-columns:1.55fr 1fr; gap:14px; align-items:stretch; }
-  .pn-main-grid .pn-right-col{ display:flex; flex-direction:column; gap:14px; }
-  .pn-main-grid .pn-metrics-row{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-  .pn-main-grid .pn-notas-big{ height:100%; }
+  /* minmax(0,...) em TODAS as colunas: sem isso, 1fr=minmax(auto,1fr) e o conteudo (PRIMEIRO,
+     pontinhos) empurra o card pra fora da direita no desktop. min-width:0 nos filhos idem. */
+  .pn-main-grid{ display:grid; grid-template-columns:minmax(0,1.55fr) minmax(0,1fr); gap:14px; align-items:stretch; }
+  .pn-main-grid .pn-right-col{ display:flex; flex-direction:column; gap:14px; min-width:0; }
+  .pn-main-grid .pn-metrics-row{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:12px; }
+  .pn-main-grid .pn-metrics-row > .metric-card{ min-width:0; overflow:hidden; }
+  .pn-main-grid .pn-notas-big{ height:100%; min-width:0; }
   @media (max-width:720px){ .pn-main-grid{ grid-template-columns:1fr; } }
   /* MOBILE: métricas empilham (1 por linha) — lado a lado nao cabe no celular e o 2o card saia da tela */
   @media (max-width:560px){ .pn-main-grid .pn-metrics-row{ grid-template-columns:1fr; } }
@@ -3039,7 +3047,7 @@ window.addEventListener('error', function(ev){
 })();
 </script>
 
-    <script src="/admin.js?v=20260710d"></script>
+    <script src="/admin.js?v=20260710e"></script>
 <script src="/admin-mei.js?v=20260704e"></script>
 
 <!-- CHICO — popup expandido -->

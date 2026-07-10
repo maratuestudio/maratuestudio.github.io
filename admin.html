@@ -1044,7 +1044,7 @@ window.addEventListener('error', function(ev){
     font-size:0.78rem;
   }
   .cal-week .wk-timecol{
-    background:var(--areia); border-right:1px solid var(--linha);
+    background:var(--areia); border-right:1px solid var(--linha); border-top:1.5px solid var(--linha);
     display:flex; flex-direction:column;
   }
   .cal-week .wk-timelabel{
@@ -1052,7 +1052,7 @@ window.addEventListener('error', function(ev){
     text-align:right; padding:2px 8px 0 0; height:52px; letter-spacing:0.02em;
   }
   .cal-week .wk-daycol{
-    display:flex; flex-direction:column; border-left:1px solid var(--linha); position:relative;
+    display:flex; flex-direction:column; border-left:1px solid var(--linha); border-top:1.5px solid var(--linha); position:relative;
   }
   .cal-week .wk-slot{
     height:52px; border-bottom:1px solid var(--linha); cursor:pointer;
@@ -1070,7 +1070,7 @@ window.addEventListener('error', function(ev){
   }
   .cal-week .wk-allday{
     grid-column:2 / -1; display:grid; grid-template-columns:repeat(7, minmax(0,1fr));
-    border-bottom:1.5px solid var(--linha); background:var(--areia-sombra);
+    background:var(--areia-sombra);
     min-height:6px;
   }
   .cal-week .wk-ad-col{
@@ -1079,7 +1079,7 @@ window.addEventListener('error', function(ev){
   }
   .cal-week .wk-ad-col:first-child{ border-left:none; }
   .cal-week .wk-allday-lbl{
-    grid-column:1; background:var(--areia-sombra); border-bottom:1.5px solid var(--linha);
+    grid-column:1; background:var(--areia-sombra);
   }
   .cal-week .wk-ev{
     position:absolute; left:4px; right:4px; padding:4px 8px;
@@ -1160,6 +1160,9 @@ window.addEventListener('error', function(ev){
    diagonal fica limpa e uniforme (senao as bordas dos slots cruzam e viram um padrao "dobrado") */
 #calWeek .wk-daycol.dc-off .wk-slot{ border-bottom-color:transparent; }
 #calWeek .wk-daycol.dc-off .wk-slot:hover{ background:transparent; }
+/* some com o separador "dia todo"/horas no dia indisponivel (movido pro topo da coluna),
+   pra listra correr contínua sem a linha cortando ao meio */
+#calWeek .wk-daycol.dc-off{ border-top-color:transparent; }
 .mev.post{ background:rgba(46,111,196,0.14); border-left-color:#2E6FC4; }
 .mev.projeto{ background:rgba(62,138,95,0.14); border-left-color:#3E8A5F; }
 .ev-tag.post{ background:#2E6FC4; } .ev-tag.projeto{ background:#3E8A5F; }
@@ -3018,7 +3021,7 @@ window.addEventListener('error', function(ev){
 })();
 </script>
 
-    <script src="/admin.js?v=20260709f"></script>
+    <script src="/admin.js?v=20260709g"></script>
 <script src="/admin-mei.js?v=20260704e"></script>
 
 <!-- CHICO — popup expandido -->

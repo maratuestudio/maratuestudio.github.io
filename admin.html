@@ -1146,10 +1146,13 @@ window.addEventListener('error', function(ev){
 .mcell.dc-off .mcell-d{ opacity:0.5; text-decoration:line-through; }
 /* cores/indisponivel do dia na SEMANA — espelha o mensal (cor no cabecalho do dia + coluna
    listrada quando indisponivel). Prefixo #calWeek pra ganhar de .today/.drop-target/:hover. */
-#calWeek .wk-daycol-head.dc-azul{ background:#2E6FC4; } #calWeek .wk-daycol-head.dc-verde{ background:#3E8A5F; }
-#calWeek .wk-daycol-head.dc-amarelo{ background:#E0A31A; } #calWeek .wk-daycol-head.dc-laranja{ background:#C8501A; }
-/* cor SO no cabecalho (aba solida); faixa de eventos e horas ficam neutras — evento nunca
-   sobre cor solida e sem corte alem do divisor normal do cabecalho (escolha do Rapha) */
+/* cor sólida no cabecalho E na faixa "dia todo" (mesma cor) -> bloco contínuo, a cor nao CORTA
+   ao chegar nos eventos dia-inteiro; o pill do evento fica por cima com seu fundo claro. As horas
+   ficam neutras (corte natural cai no divisor abaixo dos eventos). */
+#calWeek .wk-daycol-head.dc-azul,   #calWeek .wk-ad-col.dc-azul{   background:#2E6FC4; }
+#calWeek .wk-daycol-head.dc-verde,  #calWeek .wk-ad-col.dc-verde{  background:#3E8A5F; }
+#calWeek .wk-daycol-head.dc-amarelo,#calWeek .wk-ad-col.dc-amarelo{ background:#E0A31A; }
+#calWeek .wk-daycol-head.dc-laranja,#calWeek .wk-ad-col.dc-laranja{ background:#C8501A; }
 /* listras OPACAS (nao rgba): tom identico no cabecalho, "dia todo" e horas, sem variar com o fundo.
    VERTICAL (90deg): listra vertical independe do offset vertical de cada faixa, entao fica contínua
    atraves dos 3 elementos empilhados SEM emenda/corte — e sem depender de background-attachment:fixed
@@ -3021,7 +3024,7 @@ window.addEventListener('error', function(ev){
 })();
 </script>
 
-    <script src="/admin.js?v=20260709i"></script>
+    <script src="/admin.js?v=20260709j"></script>
 <script src="/admin-mei.js?v=20260704e"></script>
 
 <!-- CHICO — popup expandido -->

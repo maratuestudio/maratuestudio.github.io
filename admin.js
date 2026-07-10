@@ -49,9 +49,20 @@ const DEFAULT_PARAMS={filamento:140,maquina:5,maodeobra:30,margem:2,fixo:267,ret
     try { renderUpcoming(); } catch(e){}
   }
 
-  /* ---- wrap renderCal: pinta/acinzenta os blocos do dia ---- */
+  /* ---- wrap renderCal + renderWeek + renderMonth: pinta/acinzenta os blocos do dia ----
+     renderWeek/renderMonth sao chamados DIRETO em varios lugares (navegar semana, fechar
+     painel do dia, novo evento, drag) sem passar por renderCal — por isso wrapeamos os tres,
+     senao a cor/indisponivel some no grid da semana ao re-renderizar. */
   var _renderCal = renderCal;
   renderCal = function(){ _renderCal.apply(this, arguments); try { paintDays(); } catch(e){} };
+  if (typeof renderWeek === "function"){
+    var _renderWeek = renderWeek;
+    renderWeek = function(){ _renderWeek.apply(this, arguments); try { paintDays(); } catch(e){} };
+  }
+  if (typeof renderMonth === "function"){
+    var _renderMonth = renderMonth;
+    renderMonth = function(){ _renderMonth.apply(this, arguments); try { paintDays(); } catch(e){} };
+  }
   function paintDays(){
     var byIso = {};
     MaratuStore.getDayMarks().forEach(function(m){ byIso[m.data] = m; });

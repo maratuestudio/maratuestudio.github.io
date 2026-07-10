@@ -1150,11 +1150,11 @@ window.addEventListener('error', function(ev){
 #calWeek .wk-daycol-head.dc-amarelo{ background:#E0A31A; } #calWeek .wk-daycol-head.dc-laranja{ background:#C8501A; }
 /* cor SO no cabecalho (aba solida); faixa de eventos e horas ficam neutras — evento nunca
    sobre cor solida e sem corte alem do divisor normal do cabecalho (escolha do Rapha) */
-/* listras OPACAS (nao rgba): a hachura fica identica no cabecalho, "dia todo" e coluna de horas,
-   sem variar de tom conforme o fundo (areia-sombra vs claro) de cada faixa */
-/* background-attachment:fixed ancora a hachura na viewport, entao as diagonais continuam
-   contínuas atraves dos 3 elementos empilhados (cabecalho + dia-todo + horas) sem emenda/corte */
-#calWeek .wk-daycol-head.dc-off, #calWeek .wk-ad-col.dc-off, #calWeek .wk-daycol.dc-off{ background:repeating-linear-gradient(45deg, #E4E0D9, #E4E0D9 6px, #D8D4CD 6px, #D8D4CD 12px); background-attachment:fixed; }
+/* listras OPACAS (nao rgba): tom identico no cabecalho, "dia todo" e horas, sem variar com o fundo.
+   VERTICAL (90deg): listra vertical independe do offset vertical de cada faixa, entao fica contínua
+   atraves dos 3 elementos empilhados SEM emenda/corte — e sem depender de background-attachment:fixed
+   (que quebra no Safari). background-origin:border-box alinha as barras apesar do padding do cabecalho. */
+#calWeek .wk-daycol-head.dc-off, #calWeek .wk-ad-col.dc-off, #calWeek .wk-daycol.dc-off{ background:repeating-linear-gradient(90deg, #E4E0D9, #E4E0D9 6px, #D8D4CD 6px, #D8D4CD 12px); background-origin:border-box; }
 #calWeek .wk-daycol-head.dc-off .wh-d{ opacity:0.5; text-decoration:line-through; }
 /* na coluna de horas do dia indisponivel, some com as linhas de hora e o hover: a listra
    diagonal fica limpa e uniforme (senao as bordas dos slots cruzam e viram um padrao "dobrado") */
@@ -3021,7 +3021,7 @@ window.addEventListener('error', function(ev){
 })();
 </script>
 
-    <script src="/admin.js?v=20260709h"></script>
+    <script src="/admin.js?v=20260709i"></script>
 <script src="/admin-mei.js?v=20260704e"></script>
 
 <!-- CHICO — popup expandido -->

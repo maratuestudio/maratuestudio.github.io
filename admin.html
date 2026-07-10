@@ -644,6 +644,23 @@ window.addEventListener('error', function(ev){
     font-family:var(--clother); font-weight:900; font-size:0.95rem;
     letter-spacing:-0.005em; color:var(--preto); margin-bottom:12px;
   }
+  /* cabeçalho do bloco de Lembretes: título + botão "+" que abre o popup */
+  .sc-head{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:12px; }
+  .sc-head .sc-title{ margin-bottom:0; }
+  .sc-add{
+    flex:0 0 auto; width:28px; height:28px; display:flex; align-items:center; justify-content:center;
+    background:var(--areia); border:1.5px solid var(--borda); border-radius:999px;
+    box-shadow:2px 2px 0 0 var(--sombra-hard); cursor:pointer;
+    font-family:var(--clother); font-weight:900; font-size:1.1rem; line-height:1; color:var(--preto);
+    transition:transform .1s, box-shadow .1s, background .14s, color .14s;
+  }
+  .sc-add:hover{ background:var(--preto); color:var(--areia); }
+  .sc-add:active{ transform:translate(2px,2px); box-shadow:0 0 0 0 var(--sombra-hard); }
+  /* notas do bloco viram clicáveis (abrem o popup pra checar/editar/apagar) */
+  #pnNotasLista li.pn-note{ cursor:pointer; border-radius:6px; transition:background .14s; }
+  #pnNotasLista li.pn-note:hover{ background:var(--areia-sombra, rgba(0,0,0,0.04)); }
+  /* popup de Lembretes reutiliza o modal padrão; largura um pouco maior pro grid lista+filtros */
+  .modal-card-notas{ max-width:760px; }
 
   /* ── Pendentes de ontem ── */
   .pn-pend{
@@ -2286,7 +2303,6 @@ window.addEventListener('error', function(ev){
     <button class="tab" role="tab" data-tab="orcamento" aria-selected="false"><svg class="tab-ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="6" width="19" height="12" rx="2"/><circle cx="12" cy="12" r="2.6"/><path d="M6 12h.01M18 12h.01"/></svg><span class="tab-lbl">Orçamento</span></button>
     <button class="tab" role="tab" data-tab="agenda" aria-selected="false"><svg class="tab-ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4.5" width="18" height="16.5" rx="2"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4"/></svg><span class="tab-lbl">Agenda</span></button>
     <button class="tab" role="tab" data-tab="marketing" aria-selected="false"><svg class="tab-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3l5-4v13l-5-4H4z"/><path d="M16 9a4.5 4.5 0 0 1 0 6"/><path d="M18.5 7a8 8 0 0 1 0 10"/></svg><span class="tab-lbl">Marketing</span></button>
-    <button class="tab" role="tab" data-tab="notas" aria-selected="false"><svg class="tab-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3.5h9l5 5v12H5z"/><path d="M14 3.5v5h5"/><path d="M8 13h8M8 16.5h5"/></svg><span class="tab-lbl">Notas</span></button>
     <div class="gear-wrap">
           <div class="head-menu" id="headMenu" role="menu">
           <span class="hm-lbl">Modo de cor</span>
@@ -2386,7 +2402,10 @@ window.addEventListener('error', function(ev){
     <!-- Painel: Notas grande à esquerda; métricas compactas + Hoje à direita -->
     <div class="pn-main-grid">
       <div class="side-card pn-notas-big">
-        <div class="sc-title">Notas</div>
+        <div class="sc-head">
+          <div class="sc-title">Lembretes</div>
+          <button type="button" class="sc-add" id="pnNotasAdd" aria-label="Novo lembrete" title="Novo lembrete">+</button>
+        </div>
         <ul class="list" id="pnNotasLista"></ul>
       </div>
       <div class="pn-right-col">
@@ -2925,10 +2944,12 @@ window.addEventListener('error', function(ev){
   </section>
 
   <!-- ================= NOTAS ================= -->
-  <section class="panel" id="panel-notas">
+  <div class="modal-back" id="notasModal">
+   <div class="modal-card modal-card-notas">
+    <div class="modal-head"><h3>Lembretes</h3><button type="button" class="modal-close" id="notasClose" aria-label="Fechar">&times;</button></div>
     <div class="quick-cap">
       <div class="qc-plus">+</div>
-      <input id="notQuick" placeholder="Nova nota. Use #tag pra categorizar, #hoje ou #amanha pra agendar" autocomplete="off" />
+      <input id="notQuick" placeholder="Novo lembrete. Use #tag pra categorizar, #hoje ou #amanha pra agendar" autocomplete="off" />
       <span class="qc-hint">Enter</span>
     </div>
 
@@ -2967,7 +2988,8 @@ window.addEventListener('error', function(ev){
         <div id="notLista"></div>
       </div>
     </div>
-  </section>
+   </div>
+  </div>
 
   <div class="foot" id="foot">MARATU &middot; est. 2026 &middot; Aracaju &middot; sync D1</div>
 </div>
@@ -3083,7 +3105,7 @@ window.addEventListener('error', function(ev){
 })();
 </script>
 
-    <script src="/admin.js?v=20260710f"></script>
+    <script src="/admin.js?v=20260710g"></script>
 <script src="/admin-mei.js?v=20260704e"></script>
 
 <!-- CHICO — popup expandido -->

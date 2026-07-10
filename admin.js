@@ -55,7 +55,7 @@ const DEFAULT_PARAMS={filamento:140,maquina:5,maodeobra:30,margem:2,fixo:267,ret
   function paintDays(){
     var byIso = {};
     MaratuStore.getDayMarks().forEach(function(m){ byIso[m.data] = m; });
-    document.querySelectorAll("#calGrid .mcell[data-iso]").forEach(function(cell){
+    document.querySelectorAll("#calGrid .mcell[data-iso], #calWeek .wk-daycol-head[data-iso], #calWeek .wk-daycol[data-iso], #calWeek .wk-ad-col[data-iso]").forEach(function(cell){
       cell.classList.remove("dc-off","dc-azul","dc-verde","dc-amarelo","dc-laranja");
       var m = byIso[cell.dataset.iso];
       if (!m) return;

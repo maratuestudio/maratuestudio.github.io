@@ -350,6 +350,7 @@ window.addEventListener('error', function(ev){
   .tab:focus-visible{ outline:2px solid var(--azul-claro); outline-offset:2px; }
   /* ícones só aparecem no rodapé mobile (abaixo); no desktop a aba segue sendo pill de texto */
   .tab-ico{ display:none; fill:none; stroke:currentColor; stroke-width:1.9; stroke-linecap:round; stroke-linejoin:round; }
+  .head-menu-btn .tab-lbl{ display:none; } /* rótulo "Ajustes" só no rodapé mobile */
 
   /* MOBILE: a navegação vira um balão flutuante fixo no rodapé — mais alcançável no polegar
      e libera o topo. Mantém o estilo vintage (areia + borda + sombra dura), sem liquid glass.
@@ -365,7 +366,7 @@ window.addEventListener('error', function(ev){
       bottom:calc(env(safe-area-inset-bottom) + 10px);
       display:flex; align-items:stretch; gap:2px; padding:6px;
       background:var(--areia); border:1.5px solid var(--borda);
-      border-radius:22px; box-shadow:4px 4px 0 0 var(--sombra-hard);
+      border-radius:999px; box-shadow:4px 4px 0 0 var(--sombra-hard);
       overflow:visible;
     }
     .tab{
@@ -377,8 +378,8 @@ window.addEventListener('error', function(ev){
     .tab:active{ transform:scale(0.92); box-shadow:none; }
     .tab-ico{ display:block; width:20px; height:20px; }
     .tab-lbl{ line-height:1; white-space:nowrap; }
-    .gear-wrap{ flex:0 0 auto; align-self:center; }
-    .head-menu-btn{ width:34px !important; height:34px !important; }
+    /* engrenagem padronizada como as abas — ver bloco #mrt-ajustes-css (precisa de #tabs pra vencer o !important de lá) */
+    .gear-wrap{ flex:1 1 0; min-width:0; align-self:stretch; }
     /* espaço no fim do conteúdo pra nada ficar escondido atrás da barra */
     .wrap{ padding-bottom:calc(env(safe-area-inset-bottom) + 84px); }
   }
@@ -2102,6 +2103,19 @@ window.addEventListener('error', function(ev){
     .head-menu .hm-list{ display:flex; flex-direction:column; gap:4px; font-size:0.72rem; color:var(--preto); }
     .head-menu-btn{ display:inline-flex !important; align-items:center; justify-content:center; width:38px; height:38px; padding:0; background:var(--areia); border:1.5px solid var(--borda); color:var(--preto); border-radius:999px; box-shadow:2px 2px 0 0 var(--sombra-hard); cursor:pointer; }
     .head-menu-btn:active{ transform:translate(2px,2px); box-shadow:0 0 0 0 var(--sombra-hard); }
+    /* MOBILE: engrenagem vira uma célula igual às abas de ícone (sem círculo/borda/sombra).
+       #tabs eleva a especificidade pra vencer o !important do .head-menu-btn acima. */
+    @media (max-width:720px){
+      #tabs .head-menu-btn{
+        display:flex !important; flex-direction:column; align-items:center; justify-content:center; gap:3px;
+        width:100%; height:auto; padding:7px 3px;
+        border:none; border-radius:15px; background:transparent; box-shadow:none;
+        font-family:var(--clother); font-weight:700; font-size:0.44rem; letter-spacing:0.05em; text-transform:uppercase; color:var(--preto);
+      }
+      #tabs .head-menu-btn svg{ width:20px; height:20px; }
+      #tabs .head-menu-btn .tab-lbl{ display:block; line-height:1; white-space:nowrap; }
+      #tabs .head-menu-btn:active{ transform:scale(0.92); box-shadow:none; }
+    }
   </style>
 </head>
 <body>
@@ -2292,7 +2306,7 @@ window.addEventListener('error', function(ev){
           <span class="hm-lbl">Sessão</span>
           <button class="sair" id="btnSair" type="button">Sair</button>
         </div>
-        <button class="head-menu-btn" id="headMenuBtn" type="button" aria-label="Ajustes" aria-expanded="false"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg></button>
+        <button class="head-menu-btn" id="headMenuBtn" type="button" aria-label="Ajustes" aria-expanded="false"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg><span class="tab-lbl">Ajustes</span></button>
         <div class="head-menu-back" id="headMenuBack" aria-hidden="true"></div>
         </div>
   </nav>

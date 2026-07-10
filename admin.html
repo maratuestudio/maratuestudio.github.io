@@ -348,6 +348,8 @@ window.addEventListener('error', function(ev){
   .tab[aria-selected="true"]{ background:var(--preto); color:var(--areia); }
   .tab:active{ transform:translate(2px,2px); box-shadow:0 0 0 0 var(--sombra-hard); }
   .tab:focus-visible{ outline:2px solid var(--azul-claro); outline-offset:2px; }
+  /* ícones só aparecem no rodapé mobile (abaixo); no desktop a aba segue sendo pill de texto */
+  .tab-ico{ display:none; fill:none; stroke:currentColor; stroke-width:1.9; stroke-linecap:round; stroke-linejoin:round; }
 
   /* MOBILE: a navegação vira um balão flutuante fixo no rodapé — mais alcançável no polegar
      e libera o topo. Mantém o estilo vintage (areia + borda + sombra dura), sem liquid glass.
@@ -355,25 +357,29 @@ window.addEventListener('error', function(ev){
      quebraria o dropdown de Ajustes, que é position:fixed centralizado). Rola na horizontal
      como fallback porque os rótulos são longos. */
   @media (max-width:720px){
+    /* barra full-width com 5 abas de ícone + a engrenagem, todas visíveis (flex:1), sem scroll.
+       left/right em vez de transform pra não virar containing-block do dropdown de Ajustes. */
     .tabs{
       position:fixed; z-index:1001;
-      left:0; right:0; margin:0 auto;
+      left:10px; right:10px; margin:0;
       bottom:calc(env(safe-area-inset-bottom) + 10px);
-      width:max-content; max-width:calc(100vw - 20px);
-      gap:4px; padding:6px;
+      display:flex; align-items:stretch; gap:2px; padding:6px;
       background:var(--areia); border:1.5px solid var(--borda);
-      border-radius:999px; box-shadow:4px 4px 0 0 var(--sombra-hard);
-      overflow-x:auto; -webkit-overflow-scrolling:touch;
-      scroll-snap-type:x proximity; scrollbar-width:none;
+      border-radius:22px; box-shadow:4px 4px 0 0 var(--sombra-hard);
+      overflow:visible;
     }
-    .tabs::-webkit-scrollbar{ display:none; }
     .tab{
-      flex:0 0 auto; scroll-snap-align:center; white-space:nowrap;
-      padding:9px 15px; font-size:0.62rem; letter-spacing:0.1em;
-      box-shadow:none;
+      flex:1 1 0; min-width:0;
+      display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px;
+      padding:7px 3px; border:none; border-radius:15px; background:transparent;
+      font-size:0.44rem; letter-spacing:0.05em; box-shadow:none;
     }
-    .tab:active{ transform:scale(0.95); box-shadow:none; }
-    /* espaço no fim do conteúdo pra nada ficar escondido atrás do balão */
+    .tab:active{ transform:scale(0.92); box-shadow:none; }
+    .tab-ico{ display:block; width:20px; height:20px; }
+    .tab-lbl{ line-height:1; white-space:nowrap; }
+    .gear-wrap{ flex:0 0 auto; align-self:center; }
+    .head-menu-btn{ width:34px !important; height:34px !important; }
+    /* espaço no fim do conteúdo pra nada ficar escondido atrás da barra */
     .wrap{ padding-bottom:calc(env(safe-area-inset-bottom) + 84px); }
   }
 
@@ -2262,11 +2268,11 @@ window.addEventListener('error', function(ev){
   </header>
 
   <nav class="tabs" role="tablist" id="tabs">
-    <button class="tab" role="tab" data-tab="painel" aria-selected="true">Painel</button>
-    <button class="tab" role="tab" data-tab="orcamento" aria-selected="false">Orçamento</button>
-    <button class="tab" role="tab" data-tab="agenda" aria-selected="false">Agenda</button>
-    <button class="tab" role="tab" data-tab="marketing" aria-selected="false">Marketing</button>
-    <button class="tab" role="tab" data-tab="notas" aria-selected="false">Notas</button>
+    <button class="tab" role="tab" data-tab="painel" aria-selected="true"><svg class="tab-ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7.5" height="7.5" rx="1.5"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="1.5"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="1.5"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1.5"/></svg><span class="tab-lbl">Painel</span></button>
+    <button class="tab" role="tab" data-tab="orcamento" aria-selected="false"><svg class="tab-ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="6" width="19" height="12" rx="2"/><circle cx="12" cy="12" r="2.6"/><path d="M6 12h.01M18 12h.01"/></svg><span class="tab-lbl">Orçamento</span></button>
+    <button class="tab" role="tab" data-tab="agenda" aria-selected="false"><svg class="tab-ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4.5" width="18" height="16.5" rx="2"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4"/></svg><span class="tab-lbl">Agenda</span></button>
+    <button class="tab" role="tab" data-tab="marketing" aria-selected="false"><svg class="tab-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3l5-4v13l-5-4H4z"/><path d="M16 9a4.5 4.5 0 0 1 0 6"/><path d="M18.5 7a8 8 0 0 1 0 10"/></svg><span class="tab-lbl">Marketing</span></button>
+    <button class="tab" role="tab" data-tab="notas" aria-selected="false"><svg class="tab-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3.5h9l5 5v12H5z"/><path d="M14 3.5v5h5"/><path d="M8 13h8M8 16.5h5"/></svg><span class="tab-lbl">Notas</span></button>
     <div class="gear-wrap">
           <div class="head-menu" id="headMenu" role="menu">
           <span class="hm-lbl">Modo de cor</span>

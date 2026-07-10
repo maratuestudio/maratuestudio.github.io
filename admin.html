@@ -1148,11 +1148,8 @@ window.addEventListener('error', function(ev){
    listrada quando indisponivel). Prefixo #calWeek pra ganhar de .today/.drop-target/:hover. */
 #calWeek .wk-daycol-head.dc-azul{ background:#2E6FC4; } #calWeek .wk-daycol-head.dc-verde{ background:#3E8A5F; }
 #calWeek .wk-daycol-head.dc-amarelo{ background:#E0A31A; } #calWeek .wk-daycol-head.dc-laranja{ background:#C8501A; }
-/* cor preenche a coluna toda (horas + faixa "dia todo") num tom suave; cabecalho fica solido acima */
-#calWeek .wk-daycol.dc-azul,   #calWeek .wk-ad-col.dc-azul{   background:rgba(46,111,196,0.15); }
-#calWeek .wk-daycol.dc-verde,  #calWeek .wk-ad-col.dc-verde{  background:rgba(62,138,95,0.15); }
-#calWeek .wk-daycol.dc-amarelo,#calWeek .wk-ad-col.dc-amarelo{ background:rgba(224,163,26,0.18); }
-#calWeek .wk-daycol.dc-laranja,#calWeek .wk-ad-col.dc-laranja{ background:rgba(200,80,26,0.15); }
+/* cor SO no cabecalho (aba solida); faixa de eventos e horas ficam neutras — evento nunca
+   sobre cor solida e sem corte alem do divisor normal do cabecalho (escolha do Rapha) */
 /* listras OPACAS (nao rgba): a hachura fica identica no cabecalho, "dia todo" e coluna de horas,
    sem variar de tom conforme o fundo (areia-sombra vs claro) de cada faixa */
 /* background-attachment:fixed ancora a hachura na viewport, entao as diagonais continuam
@@ -3021,7 +3018,7 @@ window.addEventListener('error', function(ev){
 })();
 </script>
 
-    <script src="/admin.js?v=20260709e"></script>
+    <script src="/admin.js?v=20260709f"></script>
 <script src="/admin-mei.js?v=20260704e"></script>
 
 <!-- CHICO — popup expandido -->

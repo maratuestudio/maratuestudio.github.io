@@ -454,6 +454,12 @@ window.addEventListener('error', function(ev){
   /* ── PAINEL — Gentler Streak vibe ── */
   .pn-grid{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
   @media (max-width:720px){ .pn-grid{ grid-template-columns:1fr; } }
+  /* Painel principal: Notas grande à esquerda; métricas compactas (2 lado a lado) + Hoje à direita */
+  .pn-main-grid{ display:grid; grid-template-columns:1.55fr 1fr; gap:14px; align-items:stretch; }
+  .pn-main-grid .pn-right-col{ display:flex; flex-direction:column; gap:14px; }
+  .pn-main-grid .pn-metrics-row{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .pn-main-grid .pn-notas-big{ height:100%; }
+  @media (max-width:720px){ .pn-main-grid{ grid-template-columns:1fr; } }
 
   .wellbeing{
     background:var(--areia); border:1.5px solid var(--borda); border-radius:12px;
@@ -2331,34 +2337,30 @@ window.addEventListener('error', function(ev){
       <button class="mei-detail-btn" id="meiDetailBtn" type="button">ver detalhes do ano ↓</button>
     </div>
 
-    <!-- Metric cards row -->
-    <div class="pn-grid">
-      <div class="metric-card" id="pnStreakCard">
-        <div class="mc-cap">Dias ativos</div>
-        <div class="mc-val"><span id="pnStreak">0</span><small>de <span id="pnStreakOf">30</span></small></div>
-        <div class="mc-sub" id="pnStreakSub">com lançamento no mês</div>
-        <div class="streak-dots" id="pnStreakDots"></div>
-      </div>
-      <div class="metric-card" id="pnTrendCard">
-        <div class="mc-cap">Vs. mês anterior</div>
-        <div class="mc-val" id="pnTrend">—</div>
-        <div class="mc-sub" id="pnTrendSub">nenhuma comparação ainda</div>
-      </div>
-    </div>
-
-    <div class="spacer"></div>
-
-    
-
-    <!-- Notas pendentes + Eventos de hoje -->
-    <div class="pn-grid">
-      <div class="side-card">
+    <!-- Painel: Notas grande à esquerda; métricas compactas + Hoje à direita -->
+    <div class="pn-main-grid">
+      <div class="side-card pn-notas-big">
         <div class="sc-title">Notas</div>
         <ul class="list" id="pnNotasLista"></ul>
       </div>
-      <div class="side-card">
-        <div class="sc-title">Hoje</div>
-        <ul class="list" id="pnHojeLista"></ul>
+      <div class="pn-right-col">
+        <div class="pn-metrics-row">
+          <div class="metric-card" id="pnStreakCard">
+            <div class="mc-cap">Dias ativos</div>
+            <div class="mc-val"><span id="pnStreak">0</span><small>de <span id="pnStreakOf">30</span></small></div>
+            <div class="mc-sub" id="pnStreakSub">com lançamento no mês</div>
+            <div class="streak-dots" id="pnStreakDots"></div>
+          </div>
+          <div class="metric-card" id="pnTrendCard">
+            <div class="mc-cap">Vs. mês anterior</div>
+            <div class="mc-val" id="pnTrend">—</div>
+            <div class="mc-sub" id="pnTrendSub">nenhuma comparação ainda</div>
+          </div>
+        </div>
+        <div class="side-card">
+          <div class="sc-title">Hoje</div>
+          <ul class="list" id="pnHojeLista"></ul>
+        </div>
       </div>
     </div>
 
@@ -3035,7 +3037,7 @@ window.addEventListener('error', function(ev){
 })();
 </script>
 
-    <script src="/admin.js?v=20260710a"></script>
+    <script src="/admin.js?v=20260710b"></script>
 <script src="/admin-mei.js?v=20260704e"></script>
 
 <!-- CHICO — popup expandido -->

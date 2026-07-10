@@ -298,15 +298,17 @@ window.addEventListener('error', function(ev){
     }
     .chico-bubble{ max-width:calc(100vw - 120px); }
   }
-  .head .sair{
+  /* .sair sem escopo .head — o menu Ajustes vive no <body> (fix mobile), entao o botao
+     precisa do estilo MARATU (borda/sombra/pilula) independente de estar dentro de .head */
+  .sair{
     background:var(--areia); border:1.5px solid var(--borda); color:var(--preto);
     padding:8px 16px; font-family:var(--clother); font-weight:700;
     font-size:0.62rem; letter-spacing:0.2em; text-transform:uppercase;
     cursor:pointer; transition:transform .12s, box-shadow .12s, background .15s, color .15s;
     border-radius:999px; box-shadow:2px 2px 0 0 var(--sombra-hard);
   }
-  .head .sair:hover{ background:var(--preto); color:var(--areia); }
-  .head .sair:active{ transform:translate(2px,2px); box-shadow:0 0 0 0 var(--sombra-hard); }
+  .sair:hover{ background:var(--preto); color:var(--areia); }
+  .sair:active{ transform:translate(2px,2px); box-shadow:0 0 0 0 var(--sombra-hard); }
   @keyframes pulse{ 0%,100%{opacity:1} 50%{opacity:0.35} }
 
   /* Menu de temas — 3 chips lado a lado (segmentado circular) */
@@ -684,6 +686,15 @@ window.addEventListener('error', function(ev){
     padding:8px 10px; text-align:center; justify-content:center;
   }
   .pp-pop .pp-apply:hover{ background:var(--preto); opacity:0.85; }
+  /* MOBILE: os popups de reagendar/hora (.pp-pop/.when-pop) sao position:absolute dentro da
+     linha do evento -> no mobile saiam da tela e o botao Aplicar ficava inalcancavel.
+     Viram bottom-sheet ancorado na viewport: sempre visivel e rolavel. */
+  @media (max-width:560px){
+    .pp-pop, .when-pop{
+      position:fixed; left:10px; right:10px; bottom:10px; top:auto; width:auto; min-width:0;
+      max-height:78vh; overflow-y:auto; z-index:9995;
+    }
+  }
 
   .quick-lanc{
     background:var(--areia); border:1.5px dashed var(--linha-forte); border-radius:10px;
@@ -1790,7 +1801,7 @@ window.addEventListener('error', function(ev){
      ficava muito berrante. Suaviza. */
   :root[data-theme="noite"] .btn:hover{ background:var(--selected-bg); color:var(--selected-fg); border-color:var(--selected-bg); }
   :root[data-theme="noite"] .btn.ghost:hover{ background:var(--selected-bg); color:var(--selected-fg); border-color:var(--selected-bg); }
-  :root[data-theme="noite"] .head .sair:hover{ background:var(--selected-bg); color:var(--selected-fg); border-color:var(--selected-bg); }
+  :root[data-theme="noite"] .sair:hover{ background:var(--selected-bg); color:var(--selected-fg); border-color:var(--selected-bg); }
 
   /* ── ARATU (mascote em cima da linha do header — linha passa por trás) ── */
   .crab-admin{
@@ -3024,7 +3035,7 @@ window.addEventListener('error', function(ev){
 })();
 </script>
 
-    <script src="/admin.js?v=20260709j"></script>
+    <script src="/admin.js?v=20260710a"></script>
 <script src="/admin-mei.js?v=20260704e"></script>
 
 <!-- CHICO — popup expandido -->

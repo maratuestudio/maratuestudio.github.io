@@ -656,9 +656,23 @@ window.addEventListener('error', function(ev){
   }
   .sc-add:hover{ background:var(--preto); color:var(--areia); }
   .sc-add:active{ transform:translate(2px,2px); box-shadow:0 0 0 0 var(--sombra-hard); }
-  /* notas do bloco viram clicáveis (abrem o popup pra checar/editar/apagar) */
-  #pnNotasLista li.pn-note{ cursor:pointer; border-radius:6px; transition:background .14s; }
+  /* notas do bloco: bolinha de check + clique abre o popup na nota (editar/apagar) */
+  #pnNotasLista li.pn-note{ cursor:pointer; justify-content:flex-start; border-radius:6px; transition:background .14s; }
   #pnNotasLista li.pn-note:hover{ background:var(--areia-sombra, rgba(0,0,0,0.04)); }
+  #pnNotasLista li.pn-note .lil.val{ margin-left:auto; }
+  .pn-check{
+    flex:0 0 auto; width:18px; height:18px; padding:0; cursor:pointer;
+    border:2px solid var(--linha-forte); border-radius:999px; background:transparent;
+    position:relative; transition:background .14s, border-color .14s;
+  }
+  .pn-check:hover{ border-color:var(--preto); }
+  .pn-check:hover::after{
+    content:""; position:absolute; inset:2px; border-radius:999px; background:var(--preto); opacity:0.35;
+  }
+  .pn-check:active{ transform:scale(0.9); }
+  /* destaque temporário ao abrir uma nota específica no popup */
+  .note-row.nr-flash{ animation:nrFlash 1.5s ease-out; }
+  @keyframes nrFlash{ 0%{ background:rgba(200,80,26,0.20); } 100%{ background:transparent; } }
   /* popup de Lembretes reutiliza o modal padrão; largura um pouco maior pro grid lista+filtros */
   .modal-card-notas{ max-width:760px; }
 
@@ -2302,7 +2316,7 @@ window.addEventListener('error', function(ev){
     <button class="tab" role="tab" data-tab="painel" aria-selected="true"><svg class="tab-ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7.5" height="7.5" rx="1.5"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="1.5"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="1.5"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1.5"/></svg><span class="tab-lbl">Painel</span></button>
     <button class="tab" role="tab" data-tab="orcamento" aria-selected="false"><svg class="tab-ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="6" width="19" height="12" rx="2"/><circle cx="12" cy="12" r="2.6"/><path d="M6 12h.01M18 12h.01"/></svg><span class="tab-lbl">Orçamento</span></button>
     <button class="tab" role="tab" data-tab="agenda" aria-selected="false"><svg class="tab-ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4.5" width="18" height="16.5" rx="2"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4"/></svg><span class="tab-lbl">Agenda</span></button>
-    <button class="tab" role="tab" data-tab="marketing" aria-selected="false"><svg class="tab-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3l5-4v13l-5-4H4z"/><path d="M16 9a4.5 4.5 0 0 1 0 6"/><path d="M18.5 7a8 8 0 0 1 0 10"/></svg><span class="tab-lbl">Marketing</span></button>
+    <button class="tab" role="tab" data-tab="marketing" aria-selected="false"><svg class="tab-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg><span class="tab-lbl">Marketing</span></button>
     <div class="gear-wrap">
           <div class="head-menu" id="headMenu" role="menu">
           <span class="hm-lbl">Modo de cor</span>
@@ -3105,7 +3119,7 @@ window.addEventListener('error', function(ev){
 })();
 </script>
 
-    <script src="/admin.js?v=20260710g"></script>
+    <script src="/admin.js?v=20260710h"></script>
 <script src="/admin-mei.js?v=20260704e"></script>
 
 <!-- CHICO — popup expandido -->

@@ -460,6 +460,8 @@ window.addEventListener('error', function(ev){
   .pn-main-grid .pn-metrics-row{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
   .pn-main-grid .pn-notas-big{ height:100%; }
   @media (max-width:720px){ .pn-main-grid{ grid-template-columns:1fr; } }
+  /* MOBILE: métricas empilham (1 por linha) — lado a lado nao cabe no celular e o 2o card saia da tela */
+  @media (max-width:560px){ .pn-main-grid .pn-metrics-row{ grid-template-columns:1fr; } }
 
   .wellbeing{
     background:var(--areia); border:1.5px solid var(--borda); border-radius:12px;
@@ -3037,7 +3039,7 @@ window.addEventListener('error', function(ev){
 })();
 </script>
 
-    <script src="/admin.js?v=20260710b"></script>
+    <script src="/admin.js?v=20260710c"></script>
 <script src="/admin-mei.js?v=20260704e"></script>
 
 <!-- CHICO — popup expandido -->

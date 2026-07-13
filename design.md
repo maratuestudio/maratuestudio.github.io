@@ -18,7 +18,7 @@
 |--------------|--------------|----------------------------------|
 | `--jack`     | Jack         | Display, logotipo, títulos hero  |
 | `--clother`  | Clother      | Corpo, UI labels, headings       |
-| `--mono`     | Space Mono   | Dados técnicos, badges, displays |
+| `--mono`     | Clother      | Alias de Clother para labels tecnicos (Space Mono descontinuada) |
 
 Pesos Clother disponíveis: 400, 700, 900 (Black), 400 italic.
 
@@ -34,39 +34,36 @@ Pesos Clother disponíveis: 400, 700, 900 (Black), 400 italic.
 
 ### Rádio (`components/radio/`)
 
-Widget de rádio fixo no canto inferior direito. Exibe player embed da playlist MARATU no Spotify ao ser ativado.
+Botão de rádio no header (`#mr-btn`): speaker de pontos (4×2), display `88.5 FM` / `NO AR` e um LED. Ao ligar, abre o painel `#mr-drop` com o embed do Spotify da playlist MARATU e toca um efeito de estática (WebAudio) na transição ligar/desligar. Fecha ao clicar fora.
 
 **Arquivos:**
-- `components/radio/radio.css` — estilos com tokens do design system
-- `components/radio/radio.js` — lógica toggle + embed Spotify
+- `components/radio/radio.css?v=7` — estilos com tokens do design system
+- `components/radio/radio.js?v=5` — toggle + embed Spotify + estática WebAudio
 - `components/radio/radio.html` — snippet HTML de referência
 
 **Playlist Spotify:** `1JwBGozDx60NsCv4e4oalJ`
 
-**Incluir em cada página:**
+**Estrutura (no index):**
 ```html
-<!-- <head> -->
-<link rel="stylesheet" href="components/radio/radio.css">
+<!-- no header -->
+<button class="btn-radio" id="mr-btn" aria-expanded="false">
+  <div class="mr-btn-speaker">…8 pontos…</div>
+  <div class="mr-btn-display" id="mr-display">88.5 FM</div>
+  <span class="mr-btn-led"></span>
+</button>
 
-<!-- antes de </body> -->
-<div class="maratu-radio" id="maratu-radio">...</div>
-<script src="components/radio/radio.js" defer></script>
+<!-- painel, antes dos scripts -->
+<div class="mr-drop" id="mr-drop"><div class="mr-drop-inner" id="mr-drop-inner"></div></div>
 ```
 
-**Estados:**
-- Desligado: fundo `--dourado`, display `88.5 FM`, label `DESLIGADO`
-- Ligado (`.on`): fundo `--laranja`, display `NO AR`, label `TOCANDO`, painel Spotify visível
+**Estados:** desligado mostra `88.5 FM`; ligado mostra `NO AR`, LED aceso e painel Spotify visível.
 
-**Mobile (≤768px):** widget reduz para 160px de largura, painel ocupa `100vw - 30px` (max 320px).
+**Tokens em uso:** `--dourado` / `--laranja` (fundo), `--preto` (bordas/sombras), `--areia` (dots), `--clother` (base).
 
-**Tokens em uso:**
-| Elemento            | Token           |
-|---------------------|-----------------|
-| Fundo (off)         | `--dourado`     |
-| Fundo (on)          | `--laranja`     |
-| Bordas / sombras    | `--preto`       |
-| Speaker dots (on)   | `--areia`       |
-| Display text (off)  | `--dourado`     |
-| Brand font          | `--jack`        |
-| UI labels           | `--mono`        |
-| Base font           | `--clother`     |
+### Mascote Aratu
+
+Caranguejo SVG (`data-aratu`) no footer do index. Anda pelo rodapé, foge do mouse/toque e pisca os olhos.
+
+**Arquivos:**
+- CSS inline no próprio `index.html` (bloco `/* aratu-mascote inline */`) — o antigo `aratu-mascote.css` foi removido por ser órfão.
+- `aratu-mascote.js?v=8` — animação (caminhada, fuga do cursor, piscada).

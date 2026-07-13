@@ -1846,6 +1846,27 @@
 
     var PRECOS_BASE = { 'A4': 49, 'A3': 79, 'A2': 119, 'A1': 179 }; // fallback; hydrateCatalog sobrescreve com /api/catalog.precos_base
 
+    var WA_NUM = '5579991957415';
+    function linkPedidoPoster(nome, tam, preco) {
+      var msg = 'Olá! Tenho interesse no pôster: ' + nome + ' - ' + tam + ' - R$ ' + preco;
+      return 'https://wa.me/' + WA_NUM + '?text=' + encodeURIComponent(msg);
+    }
+    function precoPoster(pid, tam) {
+      var hydrated = (window.__POSTERES || {})[pid];
+      if (hydrated) {
+        var custom = hydrated.precos_custom && hydrated.precos_custom[tam];
+        return custom != null ? Math.round(custom / 100) : Math.round(PRECOS_BASE[tam] * hydrated.discount);
+      }
+      var poster = POSTERES.find(function(p) { return p.id === pid; });
+      return poster ? calcPreco(PRECOS_BASE[tam], poster.desconto) : PRECOS_BASE[tam];
+    }
+    function nomePoster(pid) {
+      var hydrated = (window.__POSTERES || {})[pid];
+      if (hydrated && hydrated.nome) return hydrated.nome;
+      var poster = POSTERES.find(function(p) { return p.id === pid; });
+      return poster ? poster.nome : pid;
+    }
+
     var POSTERES = [
       { id: 'pordosol',  nome: 'Pôr do Sol',        img: 'poster-pordosol.png',  mockup: 'mockup-pordosol.webp',  desconto: false, colecao: 'manguehaus' },
       { id: 'atalaia',   nome: 'Sol de Atalaia',     img: 'poster-atalaia.png',   mockup: 'mockup-atalaia.webp',   desconto: false, colecao: 'origens' },
@@ -1900,31 +1921,19 @@
     function selecionarTam(btn) {
       var pid = btn.dataset.poster;
       var tam = btn.dataset.tam;
-      var hydrated = (window.__POSTERES || {})[pid];
       document.getElementById('tam-' + pid).querySelectorAll('.tam-btn').forEach(function(b) { b.classList.remove('selected'); });
       btn.classList.add('selected');
-      var reais;
-      if (hydrated) {
-        var custom = hydrated.precos_custom && hydrated.precos_custom[tam];
-        reais = custom != null ? Math.round(custom / 100) : Math.round(PRECOS_BASE[tam] * hydrated.discount);
-      } else {
-        var poster = POSTERES.find(function(p) { return p.id === pid; });
-        reais = poster ? calcPreco(PRECOS_BASE[tam], poster.desconto) : PRECOS_BASE[tam];
-      }
-      // Atualiza preço no card: procura .preco-valor DENTRO do card (o span sem id atrapalhava)
+      var reais = precoPoster(pid, tam);
       var container = btn.closest('.produto-card');
       var precoEl = container && container.querySelector('.preco-valor');
-      if (precoEl) {
-        precoEl.innerHTML = '<span class="preco-cifrao">R$</span>' + reais;
-      }
+      if (precoEl) precoEl.innerHTML = '<span class="preco-cifrao">R$</span>' + reais;
+      atualizarLink(pid, tam);
     }
 
     function atualizarLink(pid, tam) {
-      var poster = POSTERES.find(function(p) { return p.id === pid; });
-      var preco = calcPreco(PRECOS_BASE[tam], poster.desconto);
-      var msg = encodeURIComponent('Olá! Tenho interesse no produto: ' + poster.nome + ' - ' + tam + ' - R$ ' + preco);
       var btn = document.getElementById('btn-' + pid);
-      if (btn) btn.href = 'https://wa.me/c/5579991957415';
+      if (!btn) return;
+      btn.href = linkPedidoPoster(nomePoster(pid), tam, precoPoster(pid, tam));
     }
 
     function applyVisibility() {
@@ -2096,7 +2105,7 @@
             }).join('') +
             '</div>' +
             '<button class="tam-info-btn" onclick="abrirTamPopup()">Ficou na dúvida do tamanho? Ver tabela</button>';
-          btn = '<a href="' + esc(waHref(p.sku_whatsapp)) + '" id="btn-' + esc(p.id) + '" target="_blank" rel="noopener" class="btn-encomendar" data-produto="' + nomeAttr + '">' + cfg.btnLabel + '</a>';
+          btn = '<a href="' + esc(linkPedidoPoster(p.nome, 'A4', precoReais)) + '" id="btn-' + esc(p.id) + '" target="_blank" rel="noopener" class="btn-encomendar" data-produto="' + nomeAttr + '">' + cfg.btnLabel + '</a>';
         } else {
           btn = '<a href="' + esc(waHref(p.sku_whatsapp)) + '" target="_blank" rel="noopener" class="btn-encomendar" data-produto="' + nomeAttr + '">' + cfg.btnLabel + '</a>';
         }

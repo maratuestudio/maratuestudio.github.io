@@ -1198,7 +1198,7 @@
   @media (max-width:640px){.aratu-mascote{width:40px;height:20px;bottom:4px}}
   </style>
   <link rel="stylesheet" href="components/radio/radio.css?v=7">
-  <link rel="preconnect" href="https://pub-33d995a6b2b8438fac0996c21b3a13c3.r2.dev" crossorigin>
+  <link rel="preconnect" href="https://maratu-api.raphaelnascimento.workers.dev" crossorigin>
   <link rel="preconnect" href="https://www.googletagmanager.com">
   <link rel="preconnect" href="https://www.google-analytics.com">
   <!-- Google tag (gtag.js) -->
@@ -1405,7 +1405,7 @@
           <button class="tam-btn tam-esgotado" disabled>G</button>
           <button class="tam-btn tam-esgotado" disabled>GG</button>
         </div>
-        <button type="button" onclick="abrirQaPopup()" class="btn-encomendar btn-disponivel">Disponível na <img src="logo-qa.png" alt="QA"></button>
+        <button type="button" onclick="abrirQaPopup()" class="btn-encomendar btn-disponivel" data-produto="Azulejo Português">Disponível na <img src="logo-qa.png" alt="QA"></button>
       </div>
       <div class="produto-card" data-tipo="blusa" data-faixa="blusas">
         <div class="produto-img-wrap quadrado" onclick="abrirLightbox('blusa-maratu-frente.jpg?v=6','Maratu')">
@@ -1424,7 +1424,7 @@
           <button class="tam-btn tam-esgotado" disabled>G</button>
           <button class="tam-btn tam-esgotado" disabled>GG</button>
         </div>
-        <button type="button" onclick="abrirQaPopup()" class="btn-encomendar btn-disponivel">Disponível na <img src="logo-qa.png" alt="QA"></button>
+        <button type="button" onclick="abrirQaPopup()" class="btn-encomendar btn-disponivel" data-produto="Maratu">Disponível na <img src="logo-qa.png" alt="QA"></button>
       </div>
       </div>
     </div>
@@ -1536,7 +1536,7 @@
       <p class="nl-vintage__tag">NEWSLETTER</p>
       <form id="nl-contato-form" class="nl-vintage__form">
         <div class="nl-vintage__row">
-          <input type="email" name="email" placeholder="seu@email.com" required class="nl-vintage__input" id="nl-contato-email">
+          <input type="email" name="email" placeholder="seu@email.com" aria-label="Seu e-mail para a newsletter" required class="nl-vintage__input" id="nl-contato-email">
           <button type="submit" class="nl-vintage__btn">
             <span>ASSINAR</span><span class="nl-divisor"></span><span class="nl-seta">↗</span>
           </button>
@@ -1827,8 +1827,9 @@
     }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
     reveals.forEach(function(el) { observer.observe(el); });
 
-    // GRADE (tecla G)
+    // GRADE (tecla G) — ignora quando o foco está num campo de texto
     document.addEventListener('keydown', function(e) {
+      if (e.target && /INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) return;
       if (e.key === 'g' || e.key === 'G') document.body.classList.toggle('grid-visible');
     });
 

@@ -315,7 +315,7 @@
       </form>
     </div>
 
-    <footer class="rodape">MARATU Estúdio · Aracaju, SE · Est. 2025</footer>
+    <footer class="rodape">MARATU Estúdio · Aracaju, SE · Est. 2026</footer>
   </div>
 
   <script>
@@ -325,6 +325,11 @@
     document.querySelectorAll(".pills").forEach((grupo) => {
       const nomeGrupo = grupo.dataset.group;
       grupo.querySelectorAll(".pill").forEach((pill) => {
+        pill.setAttribute("role", "button");
+        pill.setAttribute("tabindex", "0");
+        pill.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pill.click(); }
+        });
         pill.addEventListener("click", () => {
           grupo.querySelectorAll(".pill").forEach((p) => p.classList.remove("selected"));
           pill.classList.add("selected");
@@ -374,6 +379,6 @@
       }
     });
   </script>
-  <script src="js/tracking.js"></script>
+  <script src="/js/tracking.js?v=2"></script>
 </body>
 </html>

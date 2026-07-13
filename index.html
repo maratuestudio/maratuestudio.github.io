@@ -1196,7 +1196,6 @@
     @media (prefers-reduced-motion: reduce) { .vaso-slide { transition: none; } }
     .vaso-slide.ativo { opacity: 1; }
   </style>
-  <meta name="theme-color" content="#C8501A">
   <style>
   /* aratu-mascote inline */
   .aratu-mascote{position:absolute;left:0;bottom:4px;width:48px;height:24px;pointer-events:none;z-index:10;overflow:visible}
@@ -1732,17 +1731,6 @@
       }, 5000);
     }
 
-    // SLIDESHOW FEIRA
-    var slides = document.querySelectorAll('#feira-slideshow .slideshow-img');
-    var atual = 0;
-    if (slides.length) {
-      setInterval(function() {
-        slides[atual].classList.remove('ativo');
-        atual = (atual + 1) % slides.length;
-        slides[atual].classList.add('ativo');
-      }, 2000);
-    }
-
     // HEADER HIDE ON SCROLL
     var header = document.querySelector('.header');
     var lastScroll = 0;
@@ -1994,16 +1982,7 @@
         document.getElementById('lightbox').classList.remove('open'); document.body.style.overflow = '';
       }
     }
-    document.addEventListener('keydown', function(e) { if (e.key === 'Escape') { fecharLightbox(); fecharTamPopup(); } });
-
-    var header = document.querySelector('.header');
-    var lastScroll = 0;
-    window.addEventListener('scroll', function() {
-      var current = window.pageYOffset;
-      header.classList.toggle('hidden', current > 80 && current > lastScroll);
-      lastScroll = current <= 0 ? 0 : current;
-    });
-
+    document.addEventListener('keydown', function(e) { if (e.key === 'Escape') { fecharLightbox(); fecharTamPopup(); fecharQaPopup(); } });
 
     function selecionarCor(btn, id, idx) {
       btn.parentElement.querySelectorAll('.cor-btn').forEach(function(b) { b.classList.remove('selected'); });

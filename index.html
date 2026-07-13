@@ -1260,14 +1260,14 @@
   <section class="hero">
     <div class="hero__bg">
       <div class="hero__bg-slide ativo" style="background-image: url('Artboard 1@300x.webp');"></div>
-      <div class="hero__bg-slide" style="background-image: url('blusa-destrua-frente.webp'); background-position: center 60%;"></div>
-      <div class="hero__bg-slide" style="background-image: url('blusa-destrua-costas.webp'); background-position: center 60%;"></div>
-      <div class="hero__bg-slide" style="background-image: url('blusa-azulejos-costas.webp'); background-position: center 60%;"></div>
-      <div class="hero__bg-slide" style="background-image: url('blusa-maratu-print.webp'); background-position: center 60%;"></div>
-      <div class="hero__bg-slide" style="background-image: url('Artboard 4@300x.webp');"></div>
-      <div class="hero__bg-slide" style="background-image: url('Artboard 5@300x.webp');"></div>
-      <div class="hero__bg-slide" style="background-image: url('vaso-pinda-cinza.webp');"></div>
-      <div class="hero__bg-slide" style="background-image: url('kit-cobogo-praia.webp');"></div>
+      <div class="hero__bg-slide" data-bg="blusa-destrua-frente.webp" style="background-position: center 60%;"></div>
+      <div class="hero__bg-slide" data-bg="blusa-destrua-costas.webp" style="background-position: center 60%;"></div>
+      <div class="hero__bg-slide" data-bg="blusa-azulejos-costas.webp" style="background-position: center 60%;"></div>
+      <div class="hero__bg-slide" data-bg="blusa-maratu-print.webp" style="background-position: center 60%;"></div>
+      <div class="hero__bg-slide" data-bg="Artboard 4@300x.webp"></div>
+      <div class="hero__bg-slide" data-bg="Artboard 5@300x.webp"></div>
+      <div class="hero__bg-slide" data-bg="vaso-pinda-cinza.webp"></div>
+      <div class="hero__bg-slide" data-bg="kit-cobogo-praia.webp"></div>
     </div>
     <div class="hero__label-tl">
       <span class="mono">EST. 2026 — Aracaju, SE</span>
@@ -1709,13 +1709,23 @@
       });
     }
 
-    // HERO SLIDESHOW
+    // HERO SLIDESHOW (lazy: aplica o background so quando o slide vai entrar)
     var heroSlides = document.querySelectorAll('.hero__bg-slide');
     var heroAtual = 0;
+    function heroEnsureBg(slide) {
+      if (slide && slide.dataset.bg) {
+        slide.style.backgroundImage = "url('" + slide.dataset.bg + "')";
+        delete slide.dataset.bg;
+      }
+    }
     if (heroSlides.length > 1) {
+      heroEnsureBg(heroSlides[1]); // aquece o proximo antes da primeira troca
       setInterval(function() {
+        var prox = (heroAtual + 1) % heroSlides.length;
+        heroEnsureBg(heroSlides[prox]);
+        heroEnsureBg(heroSlides[(prox + 1) % heroSlides.length]); // aquece o seguinte
         heroSlides[heroAtual].classList.remove('ativo');
-        heroAtual = (heroAtual + 1) % heroSlides.length;
+        heroAtual = prox;
         heroSlides[heroAtual].classList.add('ativo');
       }, 5000);
     }

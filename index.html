@@ -1982,6 +1982,23 @@
       });
     }
 
+    function a11yCards() {
+      document.querySelectorAll('.produto-img-wrap[onclick], .vaso-slideshow').forEach(function (el) {
+        if (el.getAttribute('role')) return;
+        el.setAttribute('role', 'button');
+        if (!el.hasAttribute('tabindex')) el.setAttribute('tabindex', '0');
+        var card = el.closest('.produto-card');
+        var nome = card && card.querySelector('.produto-nome') ? card.querySelector('.produto-nome').textContent : '';
+        el.setAttribute('aria-label', 'Ampliar imagem' + (nome ? ' de ' + nome : ''));
+      });
+    }
+    document.addEventListener('keydown', function (e) {
+      if ((e.key === 'Enter' || e.key === ' ') && e.target.matches && e.target.matches('.produto-img-wrap[role="button"]')) {
+        e.preventDefault();
+        e.target.click();
+      }
+    });
+
     function filtrar(tipo) { state.filtro = tipo; applyVisibility(); }
     function verTodos(faixa) { state[faixa] = true; applyVisibility(); }
 
@@ -1997,7 +2014,7 @@
         document.getElementById('qa-popup-overlay').classList.remove('open'); document.body.style.overflow = '';
       }
     }
-    function abrirLightbox(img, nome) { document.getElementById('lightbox-img').src = img; document.getElementById('lightbox-nome').textContent = nome; document.getElementById('lightbox').classList.add('open'); document.body.style.overflow = 'hidden'; }
+    function abrirLightbox(img, nome) { document.getElementById('lightbox-img').src = img; document.getElementById('lightbox-img').alt = nome; document.getElementById('lightbox-nome').textContent = nome; document.getElementById('lightbox').classList.add('open'); document.body.style.overflow = 'hidden'; }
     function fecharLightbox(e) {
       if (!e || e.target === document.getElementById('lightbox') || (e.currentTarget && e.currentTarget.classList.contains('lightbox-close'))) {
         document.getElementById('lightbox').classList.remove('open'); document.body.style.overflow = '';
@@ -2015,6 +2032,7 @@
     buildPosters();
     applyVisibility();
     atualizarContadores();
+    a11yCards();
 
     // Hidrata catálogo do D1 (chaveiros, adesivos, blusas). Se fetch falhar, HTML hardcoded fica.
     (function hydrateCatalog() {
@@ -2160,6 +2178,7 @@
           });
           if (typeof applyVisibility === 'function') applyVisibility();
           if (typeof atualizarContadores === 'function') atualizarContadores();
+          if (typeof a11yCards === 'function') a11yCards();
           // Injeta JSON-LD Product por produto (SEO — Google mostra rich snippets)
           try {
             var itemList = { "@context": "https://schema.org", "@type": "ItemList", "itemListElement": produtos.map(function(p, i) {

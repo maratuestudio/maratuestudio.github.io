@@ -1961,6 +1961,27 @@
       });
     }
 
+    function atualizarContadores() {
+      var cards = Array.from(document.querySelectorAll('.produto-card'));
+      function conta(f) {
+        if (f === 'todos') return cards.length;
+        if (f === 'usemaratu')  return cards.filter(function(c){ return ['chaveiro','adesivo','blusa'].indexOf(c.dataset.tipo) !== -1; }).length;
+        if (f === 'casamaratu') return cards.filter(function(c){ return ['poster','essenciais'].indexOf(c.dataset.tipo) !== -1; }).length;
+        return cards.filter(function(c){ return c.dataset.tipo === f; }).length;
+      }
+      document.querySelectorAll('.filtro-btn').forEach(function(b){
+        var n = conta(b.dataset.filtro);
+        var el = b.querySelector('.filtro-count');
+        if (el) el.textContent = n;
+        b.style.display = n ? '' : 'none';
+      });
+      ['chaveiros','posteres'].forEach(function(faixa){
+        var btn = document.getElementById('btn-ver-' + faixa);
+        var faixaEl = document.getElementById('faixa-' + faixa);
+        if (btn && faixaEl) btn.textContent = 'VER TODOS (' + faixaEl.querySelectorAll('.produto-card').length + ') ↗';
+      });
+    }
+
     function filtrar(tipo) { state.filtro = tipo; applyVisibility(); }
     function verTodos(faixa) { state[faixa] = true; applyVisibility(); }
 
@@ -1993,6 +2014,7 @@
 
     buildPosters();
     applyVisibility();
+    atualizarContadores();
 
     // Hidrata catálogo do D1 (chaveiros, adesivos, blusas). Se fetch falhar, HTML hardcoded fica.
     (function hydrateCatalog() {
@@ -2137,6 +2159,7 @@
             grid.innerHTML = items.map(function(p, i) { return cardHTML(p, cfg, i >= cfg.extraFrom); }).join('');
           });
           if (typeof applyVisibility === 'function') applyVisibility();
+          if (typeof atualizarContadores === 'function') atualizarContadores();
           // Injeta JSON-LD Product por produto (SEO — Google mostra rich snippets)
           try {
             var itemList = { "@context": "https://schema.org", "@type": "ItemList", "itemListElement": produtos.map(function(p, i) {

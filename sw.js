@@ -1,5 +1,5 @@
 /* MARATU Admin Service Worker — offline + instant open */
-const VERSION = 'maratu-admin-v22';
+const VERSION = 'maratu-admin-v23';
 const STATIC_CACHE = 'static-' + VERSION;
 const RUNTIME_CACHE = 'runtime-' + VERSION;
 
@@ -48,7 +48,13 @@ function freshFirst(req) {
       caches.open(RUNTIME_CACHE).then((c) => c.put(req, clone));
     }
     return resp;
-  }).catch(() => caches.match(req).then((cached) => cached || caches.match('/login.html')));
+  }).catch(() => caches.match(req).then((cached) => {
+    if (cached) return cached;
+    if (/\/(admin|login)\.html$/.test(new URL(req.url).pathname)) {
+      return caches.match('/login.html');
+    }
+    return Response.error();
+  }));
 }
 
 self.addEventListener('fetch', (event) => {

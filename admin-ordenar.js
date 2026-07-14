@@ -136,15 +136,23 @@
     });
   }
 
-  /* ---------------- drag (pointer events) ---------------- */
+  /* ---------------- drag (pointer events) ----------------
+     IMPORTANTE: NÃO usar setPointerCapture no handle — a linha (que contém o
+     handle) é movida no DOM durante o arraste, e mover o elemento capturado
+     solta a captura → pointerup não dispara → clone vira fantasma. Em vez disso:
+     ouvir move/up na window (no touch a captura implícita fica na linha e os
+     eventos sobem por bubbling mesmo com a linha se movendo). */
   var drag = null;
   function onDown(e) {
-    var handle = e.currentTarget;
-    var row = handle.closest(".ord-row");
+    if (drag) return;
+    var row = e.currentTarget.closest(".ord-row");
     if (!row) return;
     e.preventDefault();
+    // limpa qualquer clone órfão de um arraste anterior mal terminado
+    Array.prototype.slice.call(document.querySelectorAll(".ord-clone")).forEach(function (c) { c.remove(); });
     var rect = row.getBoundingClientRect();
     var clone = row.cloneNode(true);
+    var cp = clone.querySelector(".ord-pos"); if (cp) cp.remove(); // sem número congelado
     clone.classList.remove("ord-row");
     clone.classList.add("ord-clone");
     clone.style.width = rect.width + "px";
@@ -152,15 +160,14 @@
     clone.style.top = rect.top + "px";
     document.body.appendChild(clone);
     row.classList.add("ord-holder");
-    drag = { row: row, clone: clone, offY: e.clientY - rect.top, handle: handle };
-    try { handle.setPointerCapture(e.pointerId); } catch (err) {}
-    handle.addEventListener("pointermove", onMove);
-    handle.addEventListener("pointerup", onUp);
-    handle.addEventListener("pointercancel", onUp);
+    drag = { row: row, clone: clone, offY: e.clientY - rect.top };
+    window.addEventListener("pointermove", onMove, { passive: false });
+    window.addEventListener("pointerup", onUp);
+    window.addEventListener("pointercancel", onUp);
   }
   function onMove(e) {
     if (!drag) return;
-    e.preventDefault();
+    if (e.cancelable) e.preventDefault();
     drag.clone.style.top = e.clientY - drag.offY + "px";
     var rows = Array.prototype.slice.call(listEl.querySelectorAll(".ord-row"));
     var target = null;
@@ -171,19 +178,17 @@
       if (e.clientY < rc.top + rc.height / 2) { target = r; break; }
     }
     if (target) {
-      if (drag.row.nextSibling !== target) { listEl.insertBefore(drag.row, target); renumber(); state.dirty = true; }
+      if (drag.row.nextSibling !== target) { listEl.insertBefore(drag.row, target); renumber(); }
     } else if (listEl.lastElementChild !== drag.row) {
-      listEl.appendChild(drag.row); renumber(); state.dirty = true;
+      listEl.appendChild(drag.row); renumber();
     }
   }
-  function onUp(e) {
+  function onUp() {
     if (!drag) return;
-    var h = drag.handle;
-    h.removeEventListener("pointermove", onMove);
-    h.removeEventListener("pointerup", onUp);
-    h.removeEventListener("pointercancel", onUp);
-    try { h.releasePointerCapture(e.pointerId); } catch (err) {}
-    drag.clone.remove();
+    window.removeEventListener("pointermove", onMove);
+    window.removeEventListener("pointerup", onUp);
+    window.removeEventListener("pointercancel", onUp);
+    if (drag.clone) drag.clone.remove();
     drag.row.classList.remove("ord-holder");
     drag = null;
   }

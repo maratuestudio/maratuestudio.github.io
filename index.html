@@ -362,6 +362,10 @@
       text-transform: uppercase;
       line-height: 1;
     }
+    /* Subtitulo "Estudio" como GIF animado (sketch). Dimensionado pra casar tamanho/posicao
+       do texto original: altura 1.16em (=cap-height do texto), alinhado a esquerda sob o M. */
+    .hero__title .offset--gif { margin-top: -0.05em; line-height: 0; }
+    .hero__title .offset--gif img { display: block; width: auto; height: 1.16em; margin-left: -0.12em; }
     .hero__subtitle {
       grid-column: 1 / span 7; grid-row: 3;
       font-size: clamp(0.9rem, 1.3vw, 1.1rem);
@@ -1299,7 +1303,7 @@
       <span class="mono">em atividade</span>
     </div>
     <h1 class="hero__title reveal">
-      MARATU<span class="offset">Estúdio</span>
+      MARATU<span class="offset offset--gif"><img src="estudio-anim.gif?v=1" alt="Estúdio" width="1313" height="340"></span>
     </h1>
 <div class="hero__scroll">
       <span class="mono">scroll</span>

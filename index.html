@@ -1183,6 +1183,14 @@
     .tam-popup-close:hover { background: rgba(13,13,11,0.08); }
     .tam-popup-title { font-family: 'Clother', sans-serif; font-weight: 900; font-size: 1.1rem; color: var(--preto); text-transform: uppercase; margin-bottom: 6px; }
     .tam-popup-sub { font-family: 'Clother', sans-serif; font-size: 0.58rem; color: rgba(13,13,11,0.35); letter-spacing: 0.1em; margin-bottom: 24px; }
+    .cor-popup { max-width: 540px; }
+    .cor-popup-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; max-height: 62vh; overflow-y: auto; }
+    @media (max-width: 480px) { .cor-popup-grid { grid-template-columns: repeat(2, 1fr); } }
+    .cor-opcao { display: flex; flex-direction: column; gap: 6px; text-decoration: none; }
+    .cor-opcao-img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 10px; border: 1.5px solid var(--preto); background: rgba(13,13,11,0.05); transition: transform 0.15s ease, box-shadow 0.15s ease; }
+    .cor-opcao:hover .cor-opcao-img { transform: translate(-2px, -2px); box-shadow: 3px 3px 0 0 var(--preto); }
+    .cor-opcao-nome { display: flex; align-items: center; gap: 6px; font-family: 'Clother', sans-serif; font-weight: 700; font-size: 0.72rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--preto); }
+    .cor-opcao-dot { width: 12px; height: 12px; border-radius: 50%; border: 1.5px solid rgba(13,13,11,0.3); flex-shrink: 0; }
     .tam-tabela { width: 100%; border-collapse: collapse; }
     .tam-tabela th { font-family: 'Clother', sans-serif; font-size: 0.5rem; color: var(--laranja); letter-spacing: 0.18em; text-transform: uppercase; text-align: left; padding: 0 0 10px; border-bottom: 1px solid rgba(13,13,11,0.08); }
     .tam-tabela td { padding: 12px 0; border-bottom: 1px solid rgba(13,13,11,0.05); vertical-align: middle; }
@@ -1657,6 +1665,15 @@
     <img class="lightbox-img" id="lightbox-img" src="" alt="">
   </div>
 
+  <div class="tam-popup-overlay cor-popup-overlay" id="cor-popup-overlay" onclick="fecharCorPopup(event)">
+    <div class="tam-popup cor-popup">
+      <button class="tam-popup-close" onclick="fecharCorPopup()">fechar ✕</button>
+      <p class="tam-popup-title" id="cor-popup-title">Escolha a cor</p>
+      <p class="tam-popup-sub">Toque na cor pra pedir no WhatsApp</p>
+      <div class="cor-popup-grid" id="cor-popup-grid"></div>
+    </div>
+  </div>
+
   <!-- FOOTER -->
   <footer class="footer">
     <div class="footer__topo">
@@ -2074,7 +2091,27 @@
         document.getElementById('lightbox').classList.remove('open'); document.body.style.overflow = '';
       }
     }
-    document.addEventListener('keydown', function(e) { if (e.key === 'Escape') { fecharLightbox(); fecharTamPopup(); fecharQaPopup(); } });
+    document.addEventListener('keydown', function(e) { if (e.key === 'Escape') { fecharLightbox(); fecharTamPopup(); fecharQaPopup(); fecharCorPopup(); } });
+    document.addEventListener('click', function(e) { var t = e.target.closest && e.target.closest('[data-cor-id]'); if (t) { e.preventDefault(); abrirCorPopup(t.getAttribute('data-cor-id')); } });
+    function abrirCorPopup(id) {
+      var d = (window.__CORES || {})[id]; if (!d) return;
+      document.getElementById('cor-popup-title').textContent = d.nome;
+      var grid = document.getElementById('cor-popup-grid'); grid.innerHTML = '';
+      d.cores.forEach(function(c) {
+        var msg = 'Olá! Tenho interesse no ' + d.nome + ' na cor ' + c.nome + (d.preco ? ' - R$ ' + d.preco : '');
+        var a = document.createElement('a'); a.className = 'cor-opcao'; a.href = 'https://wa.me/' + WA_NUM + '?text=' + encodeURIComponent(msg); a.target = '_blank'; a.rel = 'noopener'; a.setAttribute('data-produto', d.nome + ' — ' + c.nome);
+        var im = document.createElement('img'); im.className = 'cor-opcao-img'; im.src = c.img; im.alt = d.nome + ' na cor ' + c.nome; im.loading = 'lazy';
+        var nm = document.createElement('span'); nm.className = 'cor-opcao-nome';
+        var dot = document.createElement('span'); dot.className = 'cor-opcao-dot'; dot.style.background = c.hex;
+        nm.appendChild(dot); nm.appendChild(document.createTextNode(c.nome));
+        a.appendChild(im); a.appendChild(nm); grid.appendChild(a);
+      });
+      document.getElementById('cor-popup-overlay').classList.add('open'); document.body.style.overflow = 'hidden';
+    }
+    function fecharCorPopup(e) {
+      if (e && e.type === 'click' && e.target.id !== 'cor-popup-overlay' && !(e.target.closest && e.target.closest('.tam-popup-close'))) return;
+      document.getElementById('cor-popup-overlay').classList.remove('open'); document.body.style.overflow = '';
+    }
 
     function selecionarCor(btn, id, idx) {
       btn.parentElement.querySelectorAll('.cor-btn').forEach(function(b) { b.classList.remove('selected'); });
@@ -2184,23 +2221,11 @@
         }
 
         var extraAttr = isExtra ? ' data-extra="1"' : '';
-        // Essenciais com cores: renderiza figure.vaso-slideshow + cor-btns em vez do wrap padrão
+        // Essenciais com cores: card padrão; o botão abre o popup de cores (delegação via data-cor-id)
         if (cfg.tipo === 'essenciais' && hasCores) {
-          var slideId = esc(p.id) + '-slide';
-          var slides = p.cores.map(function(c, i) {
-            return '<img class="vaso-slide' + (i === 0 ? ' ativo' : '') + '" src="' + esc(R2 + c.img) + '" alt="' + nomeAttr + ' na cor ' + esc(c.nome) + '" loading="lazy">';
-          }).join('');
-          var corBtns = p.cores.map(function(c, i) {
-            return '<button class="cor-btn' + (i === 0 ? ' selected' : '') + '" style="background:' + esc(c.hex) + ';" onclick="selecionarCor(this,\''+ jsStr(slideId) +'\','+ i +')" title="' + esc(c.nome) + '"></button>';
-          }).join('');
-          return '<div class="produto-card" data-tipo="' + cfg.tipo + '" data-faixa="' + esc(p.subcategoria) + '"' + extraAttr + '>' +
-            '<figure class="vaso-slideshow" id="' + slideId + '" tabindex="0" aria-label="' + nomeAttr + ' — deslize para ver cores">' +
-              badges + slides + precoSelo +
-            '</figure>' +
-            info +
-            '<div class="cor-selector">' + corBtns + '</div>' +
-            btn +
-          '</div>';
+          window.__CORES = (window.__CORES || {});
+          window.__CORES[p.id] = { nome: p.nome, preco: precoReais, cores: p.cores.map(function(c){ return { nome: c.nome, hex: c.hex, img: R2 + c.img }; }) };
+          btn = '<button type="button" class="btn-encomendar" data-cor-id="' + esc(p.id) + '" data-produto="' + nomeAttr + '">' + (cfg.btnLabel || 'Encomendar') + '</button>';
         }
         return '<div class="produto-card" data-tipo="' + cfg.tipo + '" data-faixa="' + esc(p.subcategoria) + '"' + extraAttr + '>' +
           '<div class="' + wrapClass + '"' + wrapStyle + wrapOnclick + '>' +

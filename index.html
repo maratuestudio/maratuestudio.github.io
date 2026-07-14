@@ -2188,6 +2188,31 @@
         '</div>';
       }
 
+      // Ordem das faixas (dentro de cada marca) e das marcas — controlada pelo admin (settings.catalog_layout)
+      function applyLayout(layout) {
+        if (!layout) return;
+        var brandEl = { casa: 'marca-casamaratu', use: 'marca-usemaratu' };
+        try {
+          var faixas = layout.faixas || {};
+          Object.keys(faixas).forEach(function(marca) {
+            var block = document.getElementById(brandEl[marca]);
+            if (!block || !Array.isArray(faixas[marca])) return;
+            faixas[marca].forEach(function(f) {
+              var el = document.getElementById('faixa-' + f);
+              if (el && el.parentNode === block) block.appendChild(el); // reanexa na ordem desejada
+            });
+          });
+          if (Array.isArray(layout.marcas) && layout.marcas.length) {
+            var first = document.getElementById(brandEl[layout.marcas[0]]);
+            var parent = first && first.parentNode;
+            if (parent) layout.marcas.forEach(function(m) {
+              var b = document.getElementById(brandEl[m]);
+              if (b && b.parentNode === parent) parent.appendChild(b);
+            });
+          }
+        } catch (e) { console.warn('[layout] falhou:', e); }
+      }
+
       fetch(API, { cache: 'no-store' })
         .then(function(r) { return r.ok ? r.json() : Promise.reject(new Error('HTTP ' + r.status)); })
         .then(function(data) {
@@ -2212,6 +2237,7 @@
             if (!items.length) return;
             grid.innerHTML = items.map(function(p) { return cardHTML(p, cfg, !!p.oculto); }).join('');
           });
+          applyLayout(data.layout);
           if (typeof applyVisibility === 'function') applyVisibility();
           if (typeof atualizarContadores === 'function') atualizarContadores();
           if (typeof a11yCards === 'function') a11yCards();

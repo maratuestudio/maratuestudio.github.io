@@ -994,6 +994,17 @@
       text-decoration: line-through;
       text-decoration-color: var(--areia);
     }
+    /* Selo de parcelamento: produtos acima de R$150 (3x sem juros). Dobro da pílula riscada, laranja, texto branco, canto inferior-esquerdo */
+    .preco-parcela {
+      position: absolute; bottom: 12px; left: 12px; z-index: 2;
+      background: var(--laranja); color: #fff;
+      border: 1.5px solid var(--preto);
+      border-radius: 999px;
+      padding: 4px 16px;
+      font-family: 'Clother', sans-serif; font-weight: 700;
+      font-size: 18px; line-height: 1;
+      white-space: nowrap;
+    }
 
     /* TAMANHOS */
     .tam-selector { display: flex; gap: 4px; margin-bottom: 6px; flex-wrap: wrap; }
@@ -2212,6 +2223,47 @@
   </div>
   <script src="components/radio/radio.js?v=5"  defer></script>
   <script src="js/tracking.js?v=2"></script>
+
+  <!-- Parcelamento automático: produtos com preço > R$150 ganham selo "3x sem juros" -->
+  <script>
+    (function(){
+      var LIMIAR = 150; // reais; acima disso mostra parcelamento em 3x
+      function precoDoSelo(selo){
+        var v = selo.querySelector('.preco-valor');
+        if(!v) return 0;
+        return parseInt(v.textContent.replace(/[^0-9]/g,''), 10) || 0;
+      }
+      function aplicar(){
+        document.querySelectorAll('.produto-img-wrap').forEach(function(wrap){
+          var selo = wrap.querySelector('.preco-selo');
+          var pill = wrap.querySelector('.preco-parcela');
+          if(selo && precoDoSelo(selo) > LIMIAR){
+            if(!pill){
+              pill = document.createElement('div');
+              pill.className = 'preco-parcela';
+              pill.textContent = '3x sem juros';
+              wrap.appendChild(pill);
+            }
+          } else if(pill){
+            pill.remove();
+          }
+        });
+      }
+      function init(){
+        aplicar();
+        // cards são re-renderizados de forma assíncrona (hydrateCatalog / buildPosters)
+        var alvo = document.querySelector('main') || document.body;
+        var obs = new MutationObserver(function(){
+          obs.disconnect();
+          aplicar();
+          obs.observe(alvo, {childList:true, subtree:true});
+        });
+        obs.observe(alvo, {childList:true, subtree:true});
+      }
+      if(document.readyState !== 'loading') init();
+      else document.addEventListener('DOMContentLoaded', init);
+    })();
+  </script>
 
 </body>
 </html>

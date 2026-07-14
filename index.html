@@ -983,6 +983,12 @@
       font-family: 'Clother', sans-serif; font-weight: 700;
       font-size: 11px;
     }
+    .preco-selo .preco-valor--parcela .preco-3x {
+      font-size: 10px; font-weight: 900; align-self: flex-start; margin-top: 2px;
+    }
+    .preco-selo .preco-valor--parcela .preco-cents {
+      font-size: 10px; font-weight: 700; align-self: flex-start; margin-top: 2px;
+    }
     .preco-selo .preco-riscado {
       position: absolute; top: -6px; right: -4px;
       background: var(--preto); color: var(--areia);
@@ -1305,20 +1311,88 @@
   <div class="filtros-wrap">
     <div class="filtros">
       <button class="filtro-btn active" data-filtro="todos" onclick="filtrar('todos')">Todos <span class="filtro-count">25</span></button>
-      <button class="filtro-btn" data-filtro="usemaratu" onclick="filtrar('usemaratu')">Use MARATU <span class="filtro-count">8</span></button>
       <button class="filtro-btn" data-filtro="casamaratu" onclick="filtrar('casamaratu')">Casa MARATU <span class="filtro-count">17</span></button>
-      <button class="filtro-btn" data-filtro="chaveiro" onclick="filtrar('chaveiro')">Chaveiros <span class="filtro-count">5</span></button>
-      <button class="filtro-btn" data-filtro="adesivo" onclick="filtrar('adesivo')">Adesivos <span class="filtro-count">1</span></button>
-      <button class="filtro-btn" data-filtro="blusa" onclick="filtrar('blusa')">Blusas <span class="filtro-count">2</span></button>
+      <button class="filtro-btn" data-filtro="usemaratu" onclick="filtrar('usemaratu')">Use MARATU <span class="filtro-count">8</span></button>
       <button class="filtro-btn" data-filtro="poster" onclick="filtrar('poster')">Pôsteres <span class="filtro-count">10</span></button>
       <button class="filtro-btn" data-filtro="essenciais" onclick="filtrar('essenciais')">Decor <span class="filtro-count">7</span></button>
+      <button class="filtro-btn" data-filtro="blusa" onclick="filtrar('blusa')">Blusas <span class="filtro-count">2</span></button>
+      <button class="filtro-btn" data-filtro="chaveiro" onclick="filtrar('chaveiro')">Chaveiros <span class="filtro-count">5</span></button>
+      <button class="filtro-btn" data-filtro="adesivo" onclick="filtrar('adesivo')">Adesivos <span class="filtro-count">1</span></button>
     </div>
   </div>
 
 
+  <!-- CASA MARATU -->
+  <section class="marca-bloco" id="marca-casamaratu">
+    <h2 class="marca-titulo">CASA MARATU</h2>
+
+    <div class="sub-faixa" id="faixa-posteres">
+      <div class="sub-faixa-header">
+        <h3 class="sub-faixa-nome">PÔSTERES</h3>
+        <button class="faixa-ver-todos" id="btn-ver-posteres" onclick="verTodos('posteres')">VER TODOS (10) ↗</button>
+      </div>
+      <div class="produtos-grid" id="grid-posteres"></div>
+    </div>
+
+    <div class="sub-faixa" id="faixa-essenciais">
+      <div class="sub-faixa-header">
+        <h3 class="sub-faixa-nome">DECOR</h3>
+        <button class="faixa-ver-todos" id="btn-ver-essenciais" onclick="verTodos('essenciais')" style="display:none">VER TODOS</button>
+      </div>
+      <div class="produtos-grid" id="grid-essenciais"></div>
+    </div>
+  </section>
+
   <!-- USE MARATU -->
   <section class="marca-bloco" id="marca-usemaratu">
     <h2 class="marca-titulo">USE MARATU</h2>
+
+    <div class="sub-faixa" id="faixa-blusas">
+      <div class="sub-faixa-header">
+        <h3 class="sub-faixa-nome">BLUSAS</h3>
+        <button class="faixa-ver-todos" id="btn-ver-blusas" onclick="verTodos('blusas')" style="display:none">VER TODOS</button>
+      </div>
+      <div class="produtos-grid" id="grid-blusas">
+      <div class="produto-card" data-tipo="blusa" data-faixa="blusas">
+        <div class="produto-img-wrap quadrado" onclick="abrirLightbox('blusa-azulejo-frente.jpg?v=6','Azulejo Português')">
+          <div class="tag-badge"><div class="tag-novo"><span>NOVO</span></div><span class="pill-colecao pill-origens">Origens</span></div>
+          <img class="img-principal com-hover" src="blusa-azulejo-frente.jpg?v=6" alt="Azulejo Português Blusa Preta" loading="lazy" width="701" height="701">
+          <img class="img-hover" src="blusa-azulejo-costas.jpg?v=6" alt="Azulejo Português costas" loading="lazy" width="692" height="693">
+          <div class="preco-selo"><span class="preco-valor"><span class="preco-cifrao">R$</span>229</span></div>
+        </div>
+        <div class="produto-info">
+          <div><p class="produto-nome">Azulejo Portugu&ecirc;s</p><p class="produto-tipo">Blusa &middot; Preta</p></div>
+        </div>
+        <div class="tam-selector">
+          <button class="tam-btn tam-esgotado" disabled>PP</button>
+          <button class="tam-btn tam-esgotado" disabled>P</button>
+          <button class="tam-btn selected">M</button>
+          <button class="tam-btn tam-esgotado" disabled>G</button>
+          <button class="tam-btn tam-esgotado" disabled>GG</button>
+        </div>
+        <button type="button" onclick="abrirQaPopup()" class="btn-encomendar btn-disponivel" data-produto="Azulejo Português">Disponível na <img src="logo-qa.png" alt="QA"></button>
+      </div>
+      <div class="produto-card" data-tipo="blusa" data-faixa="blusas">
+        <div class="produto-img-wrap quadrado" onclick="abrirLightbox('blusa-maratu-frente.jpg?v=6','Maratu')">
+          <div class="tag-badge"><div class="tag-novo"><span>NOVO</span></div><span class="pill-colecao pill-origens">Origens</span></div>
+          <img class="img-principal com-hover" src="blusa-maratu-frente.jpg?v=6" alt="Maratu Blusa Branca" loading="lazy" width="833" height="832">
+          <img class="img-hover" src="blusa-maratu-costas.jpg?v=6" alt="Maratu costas" loading="lazy" width="1022" height="1022">
+          <div class="preco-selo"><span class="preco-valor"><span class="preco-cifrao">R$</span>229</span></div>
+        </div>
+        <div class="produto-info">
+          <div><p class="produto-nome">Maratu</p><p class="produto-tipo">Blusa &middot; Branca</p></div>
+        </div>
+        <div class="tam-selector">
+          <button class="tam-btn tam-esgotado" disabled>PP</button>
+          <button class="tam-btn tam-esgotado" disabled>P</button>
+          <button class="tam-btn selected">M</button>
+          <button class="tam-btn tam-esgotado" disabled>G</button>
+          <button class="tam-btn tam-esgotado" disabled>GG</button>
+        </div>
+        <button type="button" onclick="abrirQaPopup()" class="btn-encomendar btn-disponivel" data-produto="Maratu">Disponível na <img src="logo-qa.png" alt="QA"></button>
+      </div>
+      </div>
+    </div>
 
     <div class="sub-faixa" id="faixa-chaveiros">
       <div class="sub-faixa-header">
@@ -1404,73 +1478,6 @@
       </div>
     </div>
 
-    <div class="sub-faixa" id="faixa-blusas">
-      <div class="sub-faixa-header">
-        <h3 class="sub-faixa-nome">BLUSAS</h3>
-        <button class="faixa-ver-todos" id="btn-ver-blusas" onclick="verTodos('blusas')" style="display:none">VER TODOS</button>
-      </div>
-      <div class="produtos-grid" id="grid-blusas">
-      <div class="produto-card" data-tipo="blusa" data-faixa="blusas">
-        <div class="produto-img-wrap quadrado" onclick="abrirLightbox('blusa-azulejo-frente.jpg?v=6','Azulejo Português')">
-          <div class="tag-badge"><div class="tag-novo"><span>NOVO</span></div><span class="pill-colecao pill-origens">Origens</span></div>
-          <img class="img-principal com-hover" src="blusa-azulejo-frente.jpg?v=6" alt="Azulejo Português Blusa Preta" loading="lazy" width="701" height="701">
-          <img class="img-hover" src="blusa-azulejo-costas.jpg?v=6" alt="Azulejo Português costas" loading="lazy" width="692" height="693">
-          <div class="preco-selo"><span class="preco-valor"><span class="preco-cifrao">R$</span>229</span></div>
-        </div>
-        <div class="produto-info">
-          <div><p class="produto-nome">Azulejo Portugu&ecirc;s</p><p class="produto-tipo">Blusa &middot; Preta</p></div>
-        </div>
-        <div class="tam-selector">
-          <button class="tam-btn tam-esgotado" disabled>PP</button>
-          <button class="tam-btn tam-esgotado" disabled>P</button>
-          <button class="tam-btn selected">M</button>
-          <button class="tam-btn tam-esgotado" disabled>G</button>
-          <button class="tam-btn tam-esgotado" disabled>GG</button>
-        </div>
-        <button type="button" onclick="abrirQaPopup()" class="btn-encomendar btn-disponivel" data-produto="Azulejo Português">Disponível na <img src="logo-qa.png" alt="QA"></button>
-      </div>
-      <div class="produto-card" data-tipo="blusa" data-faixa="blusas">
-        <div class="produto-img-wrap quadrado" onclick="abrirLightbox('blusa-maratu-frente.jpg?v=6','Maratu')">
-          <div class="tag-badge"><div class="tag-novo"><span>NOVO</span></div><span class="pill-colecao pill-origens">Origens</span></div>
-          <img class="img-principal com-hover" src="blusa-maratu-frente.jpg?v=6" alt="Maratu Blusa Branca" loading="lazy" width="833" height="832">
-          <img class="img-hover" src="blusa-maratu-costas.jpg?v=6" alt="Maratu costas" loading="lazy" width="1022" height="1022">
-          <div class="preco-selo"><span class="preco-valor"><span class="preco-cifrao">R$</span>229</span></div>
-        </div>
-        <div class="produto-info">
-          <div><p class="produto-nome">Maratu</p><p class="produto-tipo">Blusa &middot; Branca</p></div>
-        </div>
-        <div class="tam-selector">
-          <button class="tam-btn tam-esgotado" disabled>PP</button>
-          <button class="tam-btn tam-esgotado" disabled>P</button>
-          <button class="tam-btn selected">M</button>
-          <button class="tam-btn tam-esgotado" disabled>G</button>
-          <button class="tam-btn tam-esgotado" disabled>GG</button>
-        </div>
-        <button type="button" onclick="abrirQaPopup()" class="btn-encomendar btn-disponivel" data-produto="Maratu">Disponível na <img src="logo-qa.png" alt="QA"></button>
-      </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- CASA MARATU -->
-  <section class="marca-bloco" id="marca-casamaratu">
-    <h2 class="marca-titulo">CASA MARATU</h2>
-
-    <div class="sub-faixa" id="faixa-posteres">
-      <div class="sub-faixa-header">
-        <h3 class="sub-faixa-nome">PÔSTERES</h3>
-        <button class="faixa-ver-todos" id="btn-ver-posteres" onclick="verTodos('posteres')">VER TODOS (10) ↗</button>
-      </div>
-      <div class="produtos-grid" id="grid-posteres"></div>
-    </div>
-
-    <div class="sub-faixa" id="faixa-essenciais">
-      <div class="sub-faixa-header">
-        <h3 class="sub-faixa-nome">DECOR</h3>
-        <button class="faixa-ver-todos" id="btn-ver-essenciais" onclick="verTodos('essenciais')" style="display:none">VER TODOS</button>
-      </div>
-      <div class="produtos-grid" id="grid-essenciais"></div>
-    </div>
   </section>
 
   </section>
@@ -2243,8 +2250,9 @@
   <!-- Parcelamento automático: produtos com preço > R$150 ganham selo "3x sem juros" -->
   <script>
     (function(){
-      var LIMIAR = 150; // reais; acima disso mostra parcelamento em 3x
-      function precoDoSelo(selo){
+      var LIMIAR = 150; // reais; acima disso o selo vira a parcela e a pilula mostra o total
+      function totalDoSelo(selo){
+        if(selo.dataset.total) return parseInt(selo.dataset.total, 10) || 0;
         var v = selo.querySelector('.preco-valor');
         if(!v) return 0;
         return parseInt(v.textContent.replace(/[^0-9]/g,''), 10) || 0;
@@ -2253,14 +2261,24 @@
         document.querySelectorAll('.produto-img-wrap').forEach(function(wrap){
           var selo = wrap.querySelector('.preco-selo');
           var pill = wrap.querySelector('.preco-parcela');
-          var preco = selo ? precoDoSelo(selo) : 0;
-          if(preco > LIMIAR){
+          var total = selo ? totalDoSelo(selo) : 0;
+          if(total > LIMIAR){
+            if(selo && !selo.dataset.total) selo.dataset.total = total;
+            var valorEl = selo.querySelector('.preco-valor');
+            if(valorEl && !valorEl.classList.contains('preco-valor--parcela')){
+              var cent = Math.round(total * 100 / 3);
+              var reais = Math.floor(cent / 100);
+              var cc = cent % 100;
+              var ccStr = (cc < 10 ? '0' : '') + cc;
+              valorEl.classList.add('preco-valor--parcela');
+              valorEl.innerHTML = '<span class="preco-3x">3x</span>' + reais + '<span class="preco-cents">,' + ccStr + '</span>';
+            }
             if(!pill){
               pill = document.createElement('div');
               pill.className = 'preco-parcela';
               wrap.appendChild(pill);
             }
-            pill.textContent = '3x de R$' + (preco/3).toFixed(2).replace('.', ',');
+            pill.textContent = 'ou R$' + total;
           } else if(pill){
             pill.remove();
           }

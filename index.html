@@ -1183,7 +1183,11 @@
     .tam-popup-close:hover { background: rgba(13,13,11,0.08); }
     .tam-popup-title { font-family: 'Clother', sans-serif; font-weight: 900; font-size: 1.1rem; color: var(--preto); text-transform: uppercase; margin-bottom: 6px; }
     .tam-popup-sub { font-family: 'Clother', sans-serif; font-size: 0.58rem; color: rgba(13,13,11,0.35); letter-spacing: 0.1em; margin-bottom: 24px; }
-    .cor-popup { max-width: 540px; }
+    /* Popup de cores no padrao neubrutalista do site (borda grossa + sombra dura + cantos arredondados) */
+    .cor-popup { max-width: 540px; border: 1.5px solid var(--preto); border-radius: 16px; box-shadow: 6px 6px 0 0 var(--preto); padding: 28px; }
+    .cor-popup .tam-popup-title { font-size: 1.25rem; margin-bottom: 4px; }
+    .cor-popup .tam-popup-close { border: 1.5px solid var(--preto); color: var(--preto); box-shadow: 2px 2px 0 0 var(--preto); border-radius: 999px; font-weight: 700; transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease; }
+    .cor-popup .tam-popup-close:hover { background: var(--dourado); transform: translate(1px, 1px); box-shadow: 1px 1px 0 0 var(--preto); }
     .cor-popup-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; max-height: 62vh; overflow-y: auto; }
     @media (max-width: 480px) { .cor-popup-grid { grid-template-columns: repeat(2, 1fr); } }
     .cor-opcao { display: flex; flex-direction: column; gap: 6px; text-decoration: none; }

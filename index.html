@@ -996,14 +996,15 @@
     }
     /* Selo de parcelamento: produtos acima de R$150 (3x sem juros). Dobro da pílula riscada, laranja, texto branco, canto inferior-esquerdo */
     .preco-parcela {
-      position: absolute; bottom: 12px; left: 12px; z-index: 2;
+      position: absolute; right: 74px; bottom: 26px; z-index: 1;
+      transform: rotate(-8deg);
       background: var(--laranja); color: #fff;
       border: 1.5px solid var(--preto);
       border-radius: 999px;
-      padding: 4px 16px;
-      font-family: 'Clother', sans-serif; font-weight: 700;
-      font-size: 18px; line-height: 1;
-      white-space: nowrap;
+      padding: 5px 22px 5px 12px;
+      font-family: 'Clother', sans-serif; font-weight: 800;
+      font-size: 13px; line-height: 1; white-space: nowrap;
+      box-shadow: 2px 2px 0 0 var(--preto);
     }
 
     /* TAMANHOS */
@@ -2237,13 +2238,14 @@
         document.querySelectorAll('.produto-img-wrap').forEach(function(wrap){
           var selo = wrap.querySelector('.preco-selo');
           var pill = wrap.querySelector('.preco-parcela');
-          if(selo && precoDoSelo(selo) > LIMIAR){
+          var preco = selo ? precoDoSelo(selo) : 0;
+          if(preco > LIMIAR){
             if(!pill){
               pill = document.createElement('div');
               pill.className = 'preco-parcela';
-              pill.textContent = '3x sem juros';
               wrap.appendChild(pill);
             }
+            pill.textContent = '3x de R$' + (preco/3).toFixed(2).replace('.', ',');
           } else if(pill){
             pill.remove();
           }

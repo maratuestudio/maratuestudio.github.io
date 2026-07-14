@@ -2186,7 +2186,7 @@
               if (isFinite(v) && v > 0) PRECOS_BASE[t] = Math.round(v / 100);
             });
           }
-          var produtos = (data.produtos || []).filter(function(p) { return p.ativo && !p.oculto; });
+          var produtos = (data.produtos || []).filter(function(p) { return p.ativo; }) /* "Sem destaque" (oculto) NAO some da loja; esconder e funcao do inativo (ativo:0) */;
           Object.keys(GRIDS).forEach(function(sub) {
             var cfg = GRIDS[sub];
             var grid = document.getElementById(cfg.el);

@@ -364,8 +364,9 @@
     }
     /* Subtitulo "Estudio" como GIF animado (sketch). Dimensionado pra casar tamanho/posicao
        do texto original: altura 1.16em (=cap-height do texto), alinhado a esquerda sob o M. */
-    .hero__title .offset--gif { margin-top: -0.05em; line-height: 0; }
-    .hero__title .offset--gif img, .hero__title .offset--gif video { display: block; width: auto; height: 1.16em; margin-left: -0.12em; }
+    .hero__title .estudio-boil-wrap { margin-top: -0.05em; line-height: 0; overflow: hidden; width: 4.48em; height: 1.16em; margin-left: -0.12em; }
+    .hero__title .estudio-boil { display: block; height: 100%; width: 400%; max-width: none; animation: estudio-boil 0.28s steps(4) infinite; }
+    @keyframes estudio-boil { to { transform: translateX(-100%); } }
     .hero__title .hero__logo { display: block; width: 6em; height: auto; }
     .hero__subtitle {
       grid-column: 1 / span 7; grid-row: 3;
@@ -1304,7 +1305,7 @@
       <span class="mono">em atividade</span>
     </div>
     <h1 class="hero__title reveal">
-      <img class="hero__logo" src="maratu-logo.svg?v=1" alt="MARATU"><span class="offset offset--gif"><video src="estudio-anim.mp4?v=1" autoplay muted loop playsinline width="1314" height="340" aria-label="Estúdio"></video></span>
+      <img class="hero__logo" src="maratu-logo.svg?v=1" alt="MARATU"><span class="offset estudio-boil-wrap" aria-label="Estúdio"><img class="estudio-boil" src="estudio-sprite.webp?v=1" alt="Estúdio"></span>
     </h1>
 <div class="hero__scroll">
       <span class="mono">scroll</span>

@@ -819,6 +819,23 @@
     /* FILTROS */
     .filtros-wrap { padding-top: 24px; border-bottom: 0.5px solid rgba(13,13,11,0.1); }
     .filtros { display: flex; flex-wrap: wrap; gap: 8px; padding: 16px var(--margem); }
+    /* Filtros no mobile: dropdown (menu suspenso) em vez de chips que quebram em varias linhas */
+    .filtro-mobile { display: none; }
+    @media (max-width: 768px) {
+      .filtros { display: none; }
+      .filtro-mobile { display: block; position: relative; padding: 16px var(--margem); }
+      .filtro-mobile-trigger { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 8px; font-family: 'Clother', sans-serif; font-weight: 700; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; padding: 12px 16px; border-radius: 999px; border: 1.5px solid var(--preto); background: var(--areia); color: var(--preto); box-shadow: 3px 3px 0 0 var(--preto); cursor: pointer; -webkit-tap-highlight-color: transparent; }
+      .filtro-mobile-trigger strong { font-weight: 900; }
+      .filtro-mobile-chevron { transition: transform 0.2s ease; font-size: 14px; }
+      .filtro-mobile-trigger[aria-expanded="true"] .filtro-mobile-chevron { transform: rotate(180deg); }
+      .filtro-mobile-menu { display: none; position: absolute; left: var(--margem); right: var(--margem); top: calc(100% - 12px); z-index: 60; background: var(--areia); border: 1.5px solid var(--preto); border-radius: 14px; box-shadow: 5px 5px 0 0 var(--preto); padding: 6px; max-height: 60vh; overflow-y: auto; }
+      .filtro-mobile-menu.open { display: block; }
+      .filtro-mobile-item { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 10px; font-family: 'Clother', sans-serif; font-weight: 700; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; padding: 12px 14px; border: none; background: transparent; color: var(--preto); border-radius: 10px; cursor: pointer; text-align: left; -webkit-tap-highlight-color: transparent; }
+      .filtro-mobile-item:hover { background: rgba(13,13,11,0.05); }
+      .filtro-mobile-item.active { background: var(--dourado); }
+      .filtro-mobile-count { font-weight: 700; color: rgba(13,13,11,0.4); font-size: 11px; }
+      .filtro-mobile-item.active .filtro-mobile-count { color: rgba(13,13,11,0.55); }
+    }
     .filtro-btn {
       font-family: 'Clother', sans-serif; font-weight: 700;
       font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
@@ -1345,6 +1362,13 @@
   <!-- ② LOJA -->
   <section id="loja" class="loja-secao reveal">
   <div class="filtros-wrap">
+    <div class="filtro-mobile" id="filtro-mobile">
+      <button type="button" class="filtro-mobile-trigger" id="filtro-mobile-trigger" onclick="toggleFiltroMenu()" aria-haspopup="listbox" aria-expanded="false">
+        <span class="filtro-mobile-txt">Filtrar: <strong id="filtro-mobile-label">Todos</strong></span>
+        <span class="filtro-mobile-chevron">▾</span>
+      </button>
+      <div class="filtro-mobile-menu" id="filtro-mobile-menu" role="listbox"></div>
+    </div>
     <div class="filtros">
       <button class="filtro-btn active" data-filtro="todos" onclick="filtrar('todos')">Todos <span class="filtro-count">25</span></button>
       <button class="filtro-btn" data-filtro="casamaratu" onclick="filtrar('casamaratu')">Casa MARATU <span class="filtro-count">17</span></button>
@@ -2076,6 +2100,39 @@
     });
 
     function filtrar(tipo) { state.filtro = tipo; applyVisibility(); }
+    function buildFiltroMenu() {
+      var menu = document.getElementById('filtro-mobile-menu'); if (!menu) return;
+      menu.innerHTML = '';
+      document.querySelectorAll('.filtros .filtro-btn').forEach(function(b) {
+        var tipo = b.getAttribute('data-filtro');
+        var label = (b.childNodes[0] && b.childNodes[0].textContent || '').trim();
+        var cntEl = b.querySelector('.filtro-count'); var cnt = cntEl ? cntEl.textContent.trim() : '';
+        var it = document.createElement('button');
+        it.type = 'button'; it.className = 'filtro-mobile-item'; it.setAttribute('data-filtro', tipo);
+        it.innerHTML = '<span>' + label + '</span><span class="filtro-mobile-count">' + cnt + '</span>';
+        it.onclick = function() { filtrar(tipo); syncFiltroMobile(); fecharFiltroMenu(); };
+        menu.appendChild(it);
+      });
+      syncFiltroMobile();
+    }
+    function syncFiltroMobile() {
+      var active = document.querySelector('.filtros .filtro-btn.active');
+      var tipo = active ? active.getAttribute('data-filtro') : 'todos';
+      var label = active ? (active.childNodes[0] && active.childNodes[0].textContent || '').trim() : 'Todos';
+      var lbl = document.getElementById('filtro-mobile-label'); if (lbl) lbl.textContent = label;
+      document.querySelectorAll('.filtro-mobile-item').forEach(function(it) { it.classList.toggle('active', it.getAttribute('data-filtro') === tipo); });
+    }
+    function toggleFiltroMenu() {
+      var menu = document.getElementById('filtro-mobile-menu'); if (!menu) return;
+      if (menu.classList.contains('open')) { fecharFiltroMenu(); return; }
+      buildFiltroMenu(); menu.classList.add('open');
+      var t = document.getElementById('filtro-mobile-trigger'); if (t) t.setAttribute('aria-expanded', 'true');
+    }
+    function fecharFiltroMenu() {
+      var menu = document.getElementById('filtro-mobile-menu'); if (menu) menu.classList.remove('open');
+      var t = document.getElementById('filtro-mobile-trigger'); if (t) t.setAttribute('aria-expanded', 'false');
+    }
+    document.addEventListener('click', function(e) { var fm = document.getElementById('filtro-mobile'); if (fm && !fm.contains(e.target)) fecharFiltroMenu(); });
     function verTodos(faixa) { state[faixa] = true; applyVisibility(); }
 
     function abrirTamPopup() { document.getElementById('tam-popup-overlay').classList.add('open'); document.body.style.overflow = 'hidden'; }
@@ -2096,7 +2153,7 @@
         document.getElementById('lightbox').classList.remove('open'); document.body.style.overflow = '';
       }
     }
-    document.addEventListener('keydown', function(e) { if (e.key === 'Escape') { fecharLightbox(); fecharTamPopup(); fecharQaPopup(); fecharCorPopup(); } });
+    document.addEventListener('keydown', function(e) { if (e.key === 'Escape') { fecharLightbox(); fecharTamPopup(); fecharQaPopup(); fecharCorPopup(); fecharFiltroMenu(); } });
     document.addEventListener('click', function(e) { var t = e.target.closest && e.target.closest('[data-cor-id]'); if (t) { e.preventDefault(); abrirCorPopup(t.getAttribute('data-cor-id')); } });
     function abrirCorPopup(id) {
       var d = (window.__CORES || {})[id]; if (!d) return;

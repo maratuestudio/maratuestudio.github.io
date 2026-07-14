@@ -1,8 +1,12 @@
-/* MARATU admin — módulo "Ordenar produtos" (Plano A).
+/* MARATU admin — módulo "Ordenar" (Plano A).
    Anexado ao admin (não toca no admin.js minificado). Usa o shim de fetch que já
-   injeta o Bearer token. Reordena produtos DENTRO de uma faixa (subcategoria) via
-   drag-and-drop (pointer events → funciona no touch do iPhone) e salva em
-   POST /api/catalog/reorder { ids:[...] }. */
+   injeta o Bearer token. Dois modos no mesmo modal:
+   - "Produtos": reordena produtos DENTRO de uma faixa (subcategoria) via drag →
+     POST /api/catalog/reorder { ids:[...] }.
+   - "Faixas": reordena as próprias faixas dentro de cada marca (ex: Decor antes de
+     Pôster; Chaveiro antes de Adesivo) via drag → POST /api/catalog/layout
+     { marcas:[...], faixas:{ marca:[subcats...] } }.
+   Drag por pointer events → funciona no touch do iPhone. */
 (function () {
   "use strict";
   if (window.__maratuOrdenar) return;
@@ -17,7 +21,8 @@
     { v: "chaveiros", l: "Chaveiros" },
     { v: "adesivos", l: "Adesivos" }
   ];
-  var state = { produtos: [], faixa: "posteres", dirty: false };
+  var MARCA_LABEL = { casa: "MARATU CASA", use: "MARATU USE" };
+  var state = { produtos: [], layout: { marcas: [], faixas: {} }, faixa: "posteres", mode: "produtos", dirty: false };
 
   function esc(s) {
     return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
@@ -28,6 +33,11 @@
     if (!v) return "";
     return /^https?:/.test(v) ? v : IMG + v;
   }
+  function faixaLabel(v) {
+    for (var i = 0; i < FAIXAS.length; i++) if (FAIXAS[i].v === v) return FAIXAS[i].l;
+    return String(v).charAt(0).toUpperCase() + String(v).slice(1);
+  }
+  function marcaLabel(m) { return MARCA_LABEL[m] || ("MARATU " + String(m).toUpperCase()); }
 
   /* ---------------- estilos ---------------- */
   var css =
@@ -40,12 +50,19 @@
     ".ordm-head{display:flex;align-items:center;justify-content:space-between;padding:16px 18px 10px}" +
     ".ordm-head h3{font-size:1rem;font-weight:900;letter-spacing:.02em;margin:0}" +
     ".ordm-close{background:none;border:none;font-size:1.5rem;line-height:1;cursor:pointer;color:var(--preto,#0D0D0B);padding:0 4px}" +
+    ".ordm-modes{display:flex;gap:6px;padding:0 18px 12px}" +
+    ".ordm-mode{flex:1;background:transparent;border:1.5px solid rgba(13,13,11,.3);border-radius:999px;padding:6px 10px;" +
+    "font-family:inherit;font-size:.72rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:rgba(13,13,11,.6);cursor:pointer}" +
+    ".ordm-mode.on{background:var(--preto,#0D0D0B);color:var(--areia,#F0ECE4);border-color:var(--preto,#0D0D0B)}" +
+    ".ordm-scroll{overflow-y:auto;flex:1;min-height:60px}" +
     ".ordm-faixas{display:flex;gap:6px;flex-wrap:wrap;padding:0 18px 12px}" +
     ".ordm-fx{background:transparent;border:1.5px solid rgba(13,13,11,.3);border-radius:999px;padding:4px 12px;" +
     "font-family:inherit;font-size:.66rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(13,13,11,.6);cursor:pointer}" +
     ".ordm-fx.on{background:var(--preto,#0D0D0B);color:var(--areia,#F0ECE4);border-color:var(--preto,#0D0D0B)}" +
     ".ordm-hint{padding:0 18px 8px;font-size:.68rem;color:rgba(13,13,11,.55);font-weight:700}" +
-    ".ordm-list{list-style:none;margin:0;padding:4px 14px 6px;overflow-y:auto;flex:1;min-height:60px}" +
+    ".ordm-list{list-style:none;margin:0;padding:4px 14px 6px}" +
+    ".ordm-marca{padding:0 4px 6px}" +
+    ".ordm-marca-h{padding:6px 18px 2px;font-size:.66rem;font-weight:900;letter-spacing:.14em;color:rgba(13,13,11,.5)}" +
     ".ord-row{display:flex;align-items:center;gap:10px;background:#fff;border:1.5px solid var(--preto,#0D0D0B);" +
     "border-radius:12px;padding:7px 10px;margin:0 0 8px;user-select:none}" +
     ".ord-row.ord-holder{opacity:.35}" +
@@ -70,19 +87,35 @@
   var back = document.createElement("div");
   back.className = "ordm-back";
   back.innerHTML =
-    '<div class="ordm-card" role="dialog" aria-modal="true" aria-label="Ordenar produtos">' +
-    '<div class="ordm-head"><h3>Ordenar produtos</h3><button type="button" class="ordm-close" aria-label="Fechar">×</button></div>' +
+    '<div class="ordm-card" role="dialog" aria-modal="true" aria-label="Ordenar">' +
+    '<div class="ordm-head"><h3>Ordenar</h3><button type="button" class="ordm-close" aria-label="Fechar">×</button></div>' +
+    '<div class="ordm-modes">' +
+    '<button type="button" class="ordm-mode on" data-mode="produtos">Produtos</button>' +
+    '<button type="button" class="ordm-mode" data-mode="faixas">Faixas</button>' +
+    "</div>" +
+    '<div class="ordm-scroll">' +
+    '<div class="ordm-prodview">' +
     '<div class="ordm-faixas"></div>' +
     '<div class="ordm-hint">Arraste pelo ⠿ pra mudar a ordem. O 1º aparece primeiro no site.</div>' +
-    '<ul class="ordm-list"></ul>' +
+    '<ul class="ordm-list ordm-prodlist"></ul>' +
+    "</div>" +
+    '<div class="ordm-faixasview" style="display:none">' +
+    '<div class="ordm-hint">Arraste as listas pra mudar a ordem em que aparecem no site (dentro de cada marca).</div>' +
+    '<div class="ordm-marcas"></div>' +
+    "</div>" +
+    "</div>" +
     '<div class="ordm-foot"><span class="ordm-msg"></span><button type="button" class="ordm-save">Salvar ordem</button></div>' +
     "</div>";
   document.body.appendChild(back);
 
   var faixasEl = back.querySelector(".ordm-faixas");
-  var listEl = back.querySelector(".ordm-list");
+  var prodView = back.querySelector(".ordm-prodview");
+  var faixasView = back.querySelector(".ordm-faixasview");
+  var marcasEl = back.querySelector(".ordm-marcas");
+  var listEl = back.querySelector(".ordm-prodlist");
   var msgEl = back.querySelector(".ordm-msg");
   var saveBtn = back.querySelector(".ordm-save");
+  var modeBtns = Array.prototype.slice.call(back.querySelectorAll(".ordm-mode"));
 
   FAIXAS.forEach(function (f) {
     var b = document.createElement("button");
@@ -99,6 +132,10 @@
     faixasEl.appendChild(b);
   });
 
+  modeBtns.forEach(function (b) {
+    b.addEventListener("click", function () { setMode(b.dataset.mode); });
+  });
+
   back.querySelector(".ordm-close").addEventListener("click", close);
   back.addEventListener("click", function (e) { if (e.target === back) close(); });
   saveBtn.addEventListener("click", save);
@@ -107,7 +144,18 @@
   function show() { back.classList.add("on"); }
   function close() { back.classList.remove("on"); }
 
-  /* ---------------- render ---------------- */
+  function setMode(mode) {
+    if (state.mode === mode) return;
+    state.mode = mode;
+    modeBtns.forEach(function (b) { b.classList.toggle("on", b.dataset.mode === mode); });
+    prodView.style.display = mode === "produtos" ? "" : "none";
+    faixasView.style.display = mode === "faixas" ? "" : "none";
+    saveBtn.textContent = mode === "faixas" ? "Salvar ordem das faixas" : "Salvar ordem";
+    msg("");
+    if (mode === "produtos") render(); else renderFaixas();
+  }
+
+  /* ---------------- render: produtos dentro da faixa ---------------- */
   function render() {
     var items = state.produtos
       .filter(function (p) { return p.subcategoria === state.faixa; })
@@ -124,29 +172,69 @@
         '<span class="ord-name">' + esc(p.nome) + "</span>" +
         '<span class="ord-pos"></span></li>';
     }).join("");
-    renumber();
+    renumber(listEl);
     listEl.querySelectorAll(".ord-handle").forEach(function (h) {
       h.addEventListener("pointerdown", onDown);
     });
   }
-  function renumber() {
-    Array.prototype.slice.call(listEl.querySelectorAll(".ord-row")).forEach(function (r, i) {
+
+  /* ---------------- render: faixas dentro de cada marca ---------------- */
+  function renderFaixas() {
+    // agrupa subcategorias presentes por marca (a partir dos produtos carregados)
+    var byMarca = {};
+    state.produtos.forEach(function (p) {
+      if (!p.marca || !p.subcategoria) return;
+      (byMarca[p.marca] = byMarca[p.marca] || {})[p.subcategoria] = true;
+    });
+    // ordem das marcas: respeita o layout salvo, acrescenta as que faltarem
+    var marcaOrder = (state.layout.marcas || []).filter(function (m) { return byMarca[m]; });
+    Object.keys(byMarca).forEach(function (m) { if (marcaOrder.indexOf(m) < 0) marcaOrder.push(m); });
+    if (!marcaOrder.length) {
+      marcasEl.innerHTML = '<div class="ordm-empty">Nenhuma faixa encontrada.</div>';
+      return;
+    }
+    marcasEl.innerHTML = marcaOrder.map(function (m) {
+      var present = byMarca[m];
+      // ordem das faixas: layout salvo primeiro (só as presentes), depois as que faltarem
+      var order = (((state.layout.faixas || {})[m]) || []).filter(function (f) { return present[f]; });
+      Object.keys(present).forEach(function (f) { if (order.indexOf(f) < 0) order.push(f); });
+      var rows = order.map(function (f) {
+        return '<li class="ord-row" data-faixa="' + esc(f) + '">' +
+          '<span class="ord-handle" aria-label="arrastar">⠿</span>' +
+          '<span class="ord-name">' + esc(faixaLabel(f)) + "</span>" +
+          '<span class="ord-pos"></span></li>';
+      }).join("");
+      return '<div class="ordm-marca">' +
+        '<div class="ordm-marca-h">' + esc(marcaLabel(m)) + "</div>" +
+        '<ul class="ordm-list ordm-fxlist" data-marca="' + esc(m) + '">' + rows + "</ul>" +
+        "</div>";
+    }).join("");
+    marcasEl.querySelectorAll(".ordm-fxlist").forEach(function (ul) { renumber(ul); });
+    marcasEl.querySelectorAll(".ord-handle").forEach(function (h) {
+      h.addEventListener("pointerdown", onDown);
+    });
+  }
+
+  function renumber(list) {
+    Array.prototype.slice.call(list.querySelectorAll(".ord-row")).forEach(function (r, i) {
       var pos = r.querySelector(".ord-pos");
       if (pos) pos.textContent = i + 1 + "º";
     });
   }
 
   /* ---------------- drag (pointer events) ----------------
-     IMPORTANTE: NÃO usar setPointerCapture no handle — a linha (que contém o
-     handle) é movida no DOM durante o arraste, e mover o elemento capturado
-     solta a captura → pointerup não dispara → clone vira fantasma. Em vez disso:
-     ouvir move/up na window (no touch a captura implícita fica na linha e os
-     eventos sobem por bubbling mesmo com a linha se movendo). */
+     Genérico: arrasta dentro da própria lista (row.parentElement). Assim, no modo
+     Faixas cada marca tem sua lista e uma faixa não pula pra outra marca.
+     IMPORTANTE: NÃO usar setPointerCapture no handle — a linha (que contém o handle)
+     é movida no DOM durante o arraste, e mover o elemento capturado solta a captura →
+     pointerup não dispara → clone vira fantasma. Ouvir move/up na window. */
   var drag = null;
   function onDown(e) {
     if (drag) return;
     var row = e.currentTarget.closest(".ord-row");
     if (!row) return;
+    var list = row.parentElement;
+    if (!list) return;
     e.preventDefault();
     // limpa qualquer clone órfão de um arraste anterior mal terminado
     Array.prototype.slice.call(document.querySelectorAll(".ord-clone")).forEach(function (c) { c.remove(); });
@@ -160,7 +248,7 @@
     clone.style.top = rect.top + "px";
     document.body.appendChild(clone);
     row.classList.add("ord-holder");
-    drag = { row: row, clone: clone, offY: e.clientY - rect.top };
+    drag = { row: row, list: list, clone: clone, offY: e.clientY - rect.top };
     window.addEventListener("pointermove", onMove, { passive: false });
     window.addEventListener("pointerup", onUp);
     window.addEventListener("pointercancel", onUp);
@@ -169,7 +257,7 @@
     if (!drag) return;
     if (e.cancelable) e.preventDefault();
     drag.clone.style.top = e.clientY - drag.offY + "px";
-    var rows = Array.prototype.slice.call(listEl.querySelectorAll(".ord-row"));
+    var rows = Array.prototype.slice.call(drag.list.querySelectorAll(".ord-row"));
     var target = null;
     for (var i = 0; i < rows.length; i++) {
       var r = rows[i];
@@ -178,9 +266,9 @@
       if (e.clientY < rc.top + rc.height / 2) { target = r; break; }
     }
     if (target) {
-      if (drag.row.nextSibling !== target) { listEl.insertBefore(drag.row, target); renumber(); }
-    } else if (listEl.lastElementChild !== drag.row) {
-      listEl.appendChild(drag.row); renumber();
+      if (drag.row.nextSibling !== target) { drag.list.insertBefore(drag.row, target); renumber(drag.list); }
+    } else if (drag.list.lastElementChild !== drag.row) {
+      drag.list.appendChild(drag.row); renumber(drag.list);
     }
   }
   function onUp() {
@@ -195,6 +283,11 @@
 
   /* ---------------- salvar ---------------- */
   function save() {
+    if (state.mode === "faixas") return saveFaixas();
+    return saveProdutos();
+  }
+
+  function saveProdutos() {
     var ids = Array.prototype.slice.call(listEl.querySelectorAll(".ord-row")).map(function (r) { return r.dataset.id; });
     if (!ids.length) { msg("Nada pra salvar."); return; }
     saveBtn.disabled = true;
@@ -222,17 +315,50 @@
       .catch(function () { saveBtn.disabled = false; msg("Falha de rede."); });
   }
 
+  function saveFaixas() {
+    var lists = Array.prototype.slice.call(marcasEl.querySelectorAll(".ordm-fxlist"));
+    if (!lists.length) { msg("Nada pra salvar."); return; }
+    var marcas = lists.map(function (ul) { return ul.dataset.marca; });
+    var faixas = {};
+    lists.forEach(function (ul) {
+      faixas[ul.dataset.marca] = Array.prototype.slice.call(ul.querySelectorAll(".ord-row")).map(function (r) { return r.dataset.faixa; });
+    });
+    saveBtn.disabled = true;
+    msg("Salvando…");
+    fetch(API + "/api/catalog/layout", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ marcas: marcas, faixas: faixas })
+    })
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        saveBtn.disabled = false;
+        if (d && d.ok) {
+          state.layout = { marcas: marcas, faixas: faixas };
+          msg("Ordem das faixas salva ✓");
+        } else {
+          msg("Erro: " + ((d && d.error) || "desconhecido"));
+        }
+      })
+      .catch(function () { saveBtn.disabled = false; msg("Falha de rede."); });
+  }
+
   /* ---------------- abrir ---------------- */
   function open() {
     show();
     msg("Carregando…");
     listEl.innerHTML = "";
+    marcasEl.innerHTML = "";
     fetch(API + "/api/catalog/all")
       .then(function (r) { return r.json(); })
       .then(function (d) {
         state.produtos = (d && d.produtos) || [];
+        state.layout = (d && d.layout && typeof d.layout === "object") ? {
+          marcas: Array.isArray(d.layout.marcas) ? d.layout.marcas : [],
+          faixas: (d.layout.faixas && typeof d.layout.faixas === "object") ? d.layout.faixas : {}
+        } : { marcas: [], faixas: {} };
         msg("");
-        render();
+        if (state.mode === "produtos") render(); else renderFaixas();
       })
       .catch(function () { msg("Falha ao carregar produtos."); });
   }

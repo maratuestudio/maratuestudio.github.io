@@ -1387,6 +1387,7 @@
     <div class="sub-faixa" id="faixa-adesivos">
       <div class="sub-faixa-header">
         <h3 class="sub-faixa-nome">ADESIVOS</h3>
+        <button class="faixa-ver-todos" id="btn-ver-adesivos" onclick="verTodos('adesivos')" style="display:none">VER TODOS</button>
       </div>
       <div class="produtos-grid" id="grid-adesivos">
       <div class="produto-card" data-tipo="adesivo" data-faixa="adesivos">
@@ -1406,6 +1407,7 @@
     <div class="sub-faixa" id="faixa-blusas">
       <div class="sub-faixa-header">
         <h3 class="sub-faixa-nome">BLUSAS</h3>
+        <button class="faixa-ver-todos" id="btn-ver-blusas" onclick="verTodos('blusas')" style="display:none">VER TODOS</button>
       </div>
       <div class="produtos-grid" id="grid-blusas">
       <div class="produto-card" data-tipo="blusa" data-faixa="blusas">
@@ -1465,6 +1467,7 @@
     <div class="sub-faixa" id="faixa-essenciais">
       <div class="sub-faixa-header">
         <h3 class="sub-faixa-nome">DECOR</h3>
+        <button class="faixa-ver-todos" id="btn-ver-essenciais" onclick="verTodos('essenciais')" style="display:none">VER TODOS</button>
       </div>
       <div class="produtos-grid" id="grid-essenciais"></div>
     </div>
@@ -1996,7 +1999,7 @@
         if (el) el.textContent = n;
         b.style.display = n ? '' : 'none';
       });
-      ['chaveiros','posteres'].forEach(function(faixa){
+      ['chaveiros','adesivos','blusas','posteres','essenciais'].forEach(function(faixa){
         var btn = document.getElementById('btn-ver-' + faixa);
         var faixaEl = document.getElementById('faixa-' + faixa);
         if (btn && faixaEl) btn.textContent = 'VER TODOS (' + faixaEl.querySelectorAll('.produto-card').length + ') ↗';
@@ -2186,16 +2189,20 @@
               if (isFinite(v) && v > 0) PRECOS_BASE[t] = Math.round(v / 100);
             });
           }
-          var produtos = (data.produtos || []).filter(function(p) { return p.ativo; }) /* "Sem destaque" (oculto) NAO some da loja; esconder e funcao do inativo (ativo:0) */;
+          var produtos = (data.produtos || []).filter(function(p) { return p.ativo; }); // "sem destaque" (oculto) fica no "ver todos", nao some; esconder de vez = inativo (ativo:0)
           Object.keys(GRIDS).forEach(function(sub) {
             var cfg = GRIDS[sub];
             var grid = document.getElementById(cfg.el);
             if (!grid) return;
             var items = produtos
               .filter(function(p) { return p.subcategoria === sub; })
-              .sort(function(a, b) { return (a.ordem || 0) - (b.ordem || 0); });
+              .sort(function(a, b) {
+                var oa = a.oculto ? 1 : 0, ob = b.oculto ? 1 : 0;
+                if (oa !== ob) return oa - ob; // destaque primeiro; "sem destaque" vai pro fim (ver todos)
+                return (a.ordem || 0) - (b.ordem || 0);
+              });
             if (!items.length) return;
-            grid.innerHTML = items.map(function(p, i) { return cardHTML(p, cfg, i >= cfg.extraFrom); }).join('');
+            grid.innerHTML = items.map(function(p) { return cardHTML(p, cfg, !!p.oculto); }).join('');
           });
           if (typeof applyVisibility === 'function') applyVisibility();
           if (typeof atualizarContadores === 'function') atualizarContadores();

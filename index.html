@@ -1091,6 +1091,12 @@
       .produto-card:not(:has(.tam-selector)):not(:has(.cor-selector)) .produto-info > div { min-width: 0; }
       .produto-card:not(:has(.tam-selector)):not(:has(.cor-selector)) .produto-nome { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
       .produto-card:not(:has(.tam-selector)):not(:has(.cor-selector)) > .btn-encomendar { width: auto; margin-top: 0; white-space: nowrap; font-size: 10px; letter-spacing: 0.03em; padding: 7px 11px; }
+      /* Decor COM cores: pilula de cores a esquerda + botao Encomendar a direita (mesma linha), como os outros */
+      .produto-card:has(.cor-selector) { display: grid; grid-template-columns: 1fr auto; grid-template-areas: "img img" "info info" "cores btn"; column-gap: 10px; align-items: center; }
+      .produto-card:has(.cor-selector) > .produto-img-wrap, .produto-card:has(.cor-selector) > figure.vaso-slideshow { grid-area: img; }
+      .produto-card:has(.cor-selector) > .produto-info { grid-area: info; }
+      .produto-card:has(.cor-selector) > .cor-selector { grid-area: cores; margin: 0; justify-self: start; justify-content: flex-start; }
+      .produto-card:has(.cor-selector) > .btn-encomendar { grid-area: btn; width: auto; margin-top: 0; white-space: nowrap; font-size: 10px; letter-spacing: 0.03em; padding: 7px 11px; }
     }
 
     /* BOTÃO DISPONÍVEL NA QA */

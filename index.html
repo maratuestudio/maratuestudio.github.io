@@ -1082,6 +1082,16 @@
     }
     .btn-encomendar:hover { box-shadow: 1px 1px 0 0 var(--preto); transform: translate(2px, 2px); }
     .btn-encomendar:active { box-shadow: 0 0 0 0 var(--preto); transform: translate(3px, 3px); }
+    /* Botao de compra compacto a direita — so cards de botao unico (sem seletor de tamanho/cor).
+       >=600px (desktop/tablet); no mobile empilha embaixo (largura total). */
+    @media (min-width: 600px) {
+      .produto-card:not(:has(.tam-selector)):not(:has(.cor-selector)) { display: grid; grid-template-columns: 1fr auto; column-gap: 10px; align-items: center; }
+      .produto-card:not(:has(.tam-selector)):not(:has(.cor-selector)) > .produto-img-wrap, .produto-card:not(:has(.tam-selector)):not(:has(.cor-selector)) > figure.vaso-slideshow { grid-column: 1 / -1; }
+      .produto-card:not(:has(.tam-selector)):not(:has(.cor-selector)) > .produto-info { margin-bottom: 0; min-width: 0; }
+      .produto-card:not(:has(.tam-selector)):not(:has(.cor-selector)) .produto-info > div { min-width: 0; }
+      .produto-card:not(:has(.tam-selector)):not(:has(.cor-selector)) .produto-nome { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .produto-card:not(:has(.tam-selector)):not(:has(.cor-selector)) > .btn-encomendar { width: auto; margin-top: 0; white-space: nowrap; font-size: 10px; letter-spacing: 0.03em; padding: 7px 11px; }
+    }
 
     /* BOTÃO DISPONÍVEL NA QA */
     .btn-disponivel { display: flex; align-items: center; justify-content: center; gap: 8px; background: var(--areia); font-family: 'Clother', sans-serif; font-weight: 700; }

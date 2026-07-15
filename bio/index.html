@@ -26,18 +26,20 @@
     .bio-head { margin-bottom: 36px; }
     .lockup { font-size: clamp(34px, 9.5vw, 46px); line-height: 0.88; }
     .lockup-logo { display: block; width: 6em; max-width: 100%; height: auto; }
-    .lockup-estudio { display: block; font-size: 0.42em; width: 4.48em; height: 1.16em; overflow: hidden;
-      margin-top: -0.05em; margin-left: -0.14em; line-height: 0; }
-    /* ESTUDIO e um sketch branco; no fundo claro invertemos pra escuro (mantem o mesmo desenho) */
-    .lockup-estudio img { display: block; height: 100%; width: 400%; max-width: none; filter: invert(1);
+    /* sprite CORTADO (sem margem transparente) -> alinha flush com margin-left:0, robusto em qualquer browser */
+    .lockup-estudio { display: block; width: 1.9em; aspect-ratio: 4.4801; overflow: hidden;
+      margin-top: 0.02em; margin-left: 0; line-height: 0; }
+    /* ESTUDIO e um sketch branco; no fundo claro invertemos pra escuro (mantem o mesmo desenho).
+       Sprite VERTICAL (frames empilhados) -> anima em Y, sem borda lateral/sliver. */
+    .lockup-estudio img { display: block; width: 100%; height: 400%; max-width: none; filter: invert(1);
       animation: estudio-boil 0.28s steps(4) infinite; }
-    @keyframes estudio-boil { to { transform: translateX(-100%); } }
+    @keyframes estudio-boil { to { transform: translateY(-100%); } }
     .bio-tag { margin-top: 18px; font-weight: 700; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(13,13,11,0.5); }
 
     /* LINKS — pills no MESMO estilo do site (.btn-encomendar): 999px, borda 1.5px preta, sombra dura 3px */
     .bio-links { display: flex; flex-direction: column; gap: 12px; }
     .bio-btn { display: block; width: 100%; text-align: center; text-decoration: none;
-      font-family: 'Clother', sans-serif; font-weight: 900; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;
+      font-family: 'Clother', sans-serif; font-weight: 700; font-size: 12px; letter-spacing: 0.11em; text-transform: uppercase;
       color: var(--preto); background: #fff;
       padding: 14px 20px; border-radius: 999px;
       border: 1.5px solid var(--preto); box-shadow: 3px 3px 0 0 var(--preto);
@@ -61,7 +63,7 @@
     <header class="bio-head">
       <h1 class="lockup">
         <img class="lockup-logo" src="/maratu-logo.svg" alt="MARATU">
-        <span class="lockup-estudio"><img src="/estudio-sprite.webp?v=1" alt="Estúdio"></span>
+        <span class="lockup-estudio"><img src="/estudio-bio.webp?v=1" alt="Estúdio"></span>
       </h1>
       <p class="bio-tag">Impressão 3D · Design · Arte · Aracaju/SE</p>
     </header>

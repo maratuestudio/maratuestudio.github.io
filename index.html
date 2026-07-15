@@ -823,9 +823,9 @@
     .filtro-mobile { display: none; }
     @media (max-width: 768px) {
       .filtros { display: none; }
-      .filtro-mobile { display: block; position: relative; padding: 16px var(--margem); }
-      .filtro-mobile-trigger { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 8px; font-family: 'Clother', sans-serif; font-weight: 700; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; padding: 12px 16px; border-radius: 999px; border: 1.5px solid var(--preto); background: var(--areia); color: var(--preto); box-shadow: 3px 3px 0 0 var(--preto); cursor: pointer; -webkit-tap-highlight-color: transparent; }
-      .filtro-mobile-trigger strong { font-weight: 900; }
+      .filtro-mobile { display: block; position: relative; padding: 12px var(--margem); }
+      .filtro-mobile-trigger { display: inline-flex; align-items: center; gap: 8px; font-family: 'Clother', sans-serif; font-weight: 700; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; padding: 7px 14px; border-radius: 999px; border: 1px solid rgba(13,13,11,0.3); background: transparent; color: rgba(13,13,11,0.7); cursor: pointer; -webkit-tap-highlight-color: transparent; }
+      .filtro-mobile-trigger strong { font-weight: 900; color: var(--preto); }
       .filtro-mobile-chevron { transition: transform 0.2s ease; font-size: 14px; }
       .filtro-mobile-trigger[aria-expanded="true"] .filtro-mobile-chevron { transform: rotate(180deg); }
       .filtro-mobile-menu { display: none; position: absolute; left: var(--margem); right: var(--margem); top: calc(100% - 12px); z-index: 60; background: var(--areia); border: 1.5px solid var(--preto); border-radius: 14px; box-shadow: 5px 5px 0 0 var(--preto); padding: 6px; max-height: 60vh; overflow-y: auto; }
@@ -1925,6 +1925,13 @@
       });
     }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
     reveals.forEach(function(el) { observer.observe(el); });
+    // revela na hora o que ja esta (mesmo parcialmente) visivel no load — senao fica em branco ate rolar
+    requestAnimationFrame(function() {
+      reveals.forEach(function(el) {
+        var r = el.getBoundingClientRect();
+        if (r.top < window.innerHeight && r.bottom > 0) { el.classList.add('in'); observer.unobserve(el); }
+      });
+    });
 
     // GRADE (tecla G) — ignora quando o foco está num campo de texto
     document.addEventListener('keydown', function(e) {

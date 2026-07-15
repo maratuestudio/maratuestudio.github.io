@@ -17,36 +17,38 @@
 
     /* FUNDO — provisorio (escuro c/ leve brilho no topo). Aqui vai entrar o video/GIF depois. */
     .bio-bg { position: fixed; inset: 0; z-index: 0; overflow: hidden;
-      background: radial-gradient(120% 70% at 50% 0%, #241d17 0%, #14100c 45%, #0D0D0B 100%); }
-    /* quando tiver o video: <video class="bio-bg__video" ...> aqui, com object-fit:cover + um scrim por cima */
+      background: radial-gradient(120% 70% at 30% 0%, #241d17 0%, #14100c 45%, #0D0D0B 100%); }
 
     .bio { position: relative; z-index: 1; max-width: 460px; margin: 0 auto; min-height: 100vh; min-height: 100dvh;
-      display: flex; flex-direction: column; align-items: center;
-      padding: calc(54px + env(safe-area-inset-top)) 22px calc(28px + env(safe-area-inset-bottom)); }
+      display: flex; flex-direction: column;
+      padding: calc(56px + env(safe-area-inset-top)) 24px calc(28px + env(safe-area-inset-bottom)); }
 
-    /* HEADER: logo + ESTUDIO animado */
-    .bio-head { text-align: center; margin-bottom: 34px; }
-    .bio-logo { display: block; width: 232px; max-width: 74vw; height: auto; margin: 0 auto; }
-    .bio-estudio { display: block; width: 132px; height: 34px; overflow: hidden; margin: 12px auto 0; }
-    .bio-estudio img { display: block; height: 100%; width: 400%; max-width: none; animation: estudio-boil 0.28s steps(4) infinite; }
+    /* HEADER — lockup OFICIAL do hero: MARATU + ESTUDIO pequeno, alinhado a ESQUERDA */
+    .bio-head { margin-bottom: 36px; }
+    .lockup { font-size: clamp(34px, 9.5vw, 46px); line-height: 0.88; }
+    .lockup-logo { display: block; width: 6em; max-width: 100%; height: auto; }
+    .lockup-estudio { display: block; font-size: 0.42em; width: 4.48em; height: 1.16em; overflow: hidden;
+      margin-top: -0.05em; margin-left: -0.12em; line-height: 0; }
+    .lockup-estudio img { display: block; height: 100%; width: 400%; max-width: none; animation: estudio-boil 0.28s steps(4) infinite; }
     @keyframes estudio-boil { to { transform: translateX(-100%); } }
-    .bio-tag { margin-top: 16px; font-weight: 700; font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(240,236,228,0.55); }
+    .bio-tag { margin-top: 18px; font-weight: 700; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(240,236,228,0.55); }
 
-    /* LINKS */
-    .bio-links { width: 100%; display: flex; flex-direction: column; gap: 14px; }
-    .bio-btn { display: block; width: 100%; padding: 17px 20px; border-radius: 14px;
-      border: 1.5px solid var(--preto); box-shadow: 4px 4px 0 0 var(--preto);
-      background: var(--areia); color: var(--preto);
-      font-family: 'Clother', sans-serif; font-weight: 900; font-size: 14px; letter-spacing: 0.06em; text-transform: uppercase;
-      text-align: center; text-decoration: none; transition: transform 0.12s ease, box-shadow 0.12s ease; }
-    .bio-btn:hover { transform: translate(-1px,-1px); box-shadow: 5px 5px 0 0 var(--preto); }
-    .bio-btn:active { transform: translate(2px,2px); box-shadow: 2px 2px 0 0 var(--preto); }
-    .bio-btn--primary { background: var(--dourado); font-size: 15px; padding: 19px 20px; }
+    /* LINKS — pills no MESMO estilo do site (.btn-encomendar): 999px, borda 1.5px preta, sombra dura 3px */
+    .bio-links { display: flex; flex-direction: column; gap: 12px; }
+    .bio-btn { display: block; width: 100%; text-align: center; text-decoration: none;
+      font-family: 'Clother', sans-serif; font-weight: 900; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--preto); background: var(--areia);
+      padding: 14px 20px; border-radius: 999px;
+      border: 1.5px solid var(--preto); box-shadow: 3px 3px 0 0 var(--preto);
+      transition: transform 0.15s ease, box-shadow 0.15s ease; }
+    .bio-btn:hover { transform: translate(-1px,-1px); box-shadow: 4px 4px 0 0 var(--preto); }
+    .bio-btn:active { transform: translate(2px,2px); box-shadow: 1px 1px 0 0 var(--preto); }
+    .bio-btn--primary { background: var(--dourado); }
 
-    .bio-social { display: flex; gap: 12px; margin-top: 2px; }
-    .bio-social .bio-btn { padding: 14px 12px; font-size: 12px; }
+    .bio-social { display: flex; gap: 12px; }
+    .bio-social .bio-btn { padding: 12px 14px; font-size: 11px; }
 
-    .bio-foot { margin-top: auto; padding-top: 34px; text-align: center;
+    .bio-foot { margin-top: auto; padding-top: 34px;
       font-weight: 700; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(240,236,228,0.4); }
     .bio-foot a { color: inherit; text-decoration: none; }
   </style>
@@ -56,8 +58,10 @@
 
   <main class="bio">
     <header class="bio-head">
-      <img class="bio-logo" src="/maratu-logo.svg" alt="MARATU">
-      <span class="bio-estudio"><img src="/estudio-sprite.webp?v=1" alt="Estúdio"></span>
+      <h1 class="lockup">
+        <img class="lockup-logo" src="/maratu-logo.svg" alt="MARATU">
+        <span class="lockup-estudio"><img src="/estudio-sprite.webp?v=1" alt="Estúdio"></span>
+      </h1>
       <p class="bio-tag">Impressão 3D · Design · Arte · Aracaju/SE</p>
     </header>
 

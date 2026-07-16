@@ -13,17 +13,16 @@
   function $id(x) { return document.getElementById(x); }
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
 
-  /* ---- botao na aba Marketing (pedido do Rapha: la, nao em Ajustes) ---- */
+  /* ---- botao na aba Marketing: preto (.mkt-new), do lado do "+ nova ideia" ---- */
   function addMarketingBtn() {
-    var panel = $id("panel-marketing");
-    if (!panel || $id("mktNews")) return;
-    var bar = document.createElement("div");
-    bar.id = "mktNewsBar";
-    bar.style.cssText = "display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 14px;";
-    bar.innerHTML = '<h2 class="title" style="margin:0;">Newsletter</h2>'
-      + '<button type="button" class="btn blue" id="mktNews">✉️ Contatos &amp; envio</button>';
-    panel.insertBefore(bar, panel.firstElementChild);
-    bar.querySelector("#mktNews").addEventListener("click", openNews);
+    var novaIdeia = $id("mktToggleNew");
+    if (!novaIdeia || $id("mktNews")) return;
+    var btn = document.createElement("button");
+    btn.type = "button"; btn.id = "mktNews"; btn.className = "mkt-new";
+    btn.textContent = "✉️ newsletter";
+    btn.style.marginRight = "8px";
+    novaIdeia.parentNode.insertBefore(btn, novaIdeia);
+    btn.addEventListener("click", openNews);
   }
 
   /* ---- modal ---- */

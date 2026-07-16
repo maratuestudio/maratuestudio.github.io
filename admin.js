@@ -461,3 +461,23 @@ const DEFAULT_PARAMS={filamento:140,maquina:5,maodeobra:30,margem:2,fixo:267,ret
     document.getElementById("delConfBack").classList.add("on");
   }, true);
 })();
+
+/* ===== MARATU: bloco da semana estica ate a hora_fim (2026-07-16) ===== */
+(function(){
+  if (typeof renderWeek !== "function" || typeof MaratuStore === "undefined") return;
+  function toH(h){ var p = String(h).split(":"); return (parseInt(p[0], 10) || 0) + (parseInt(p[1], 10) || 0) / 60; }
+  var _rw = renderWeek;
+  renderWeek = function(){
+    _rw.apply(this, arguments);
+    document.querySelectorAll('#calWeek .wk-ev[data-kind="evento"]').forEach(function(el){
+      var ev = MaratuStore.getEventos().find(function(x){ return String(x.id) === String(el.dataset.id); });
+      if (!ev || !ev.hora) return;
+      var start = toH(ev.hora), end = null;
+      if (ev.data_fim && ev.data_fim > ev.data) end = WK_HOUR_END; /* segue pro dia seguinte -> vai ate o fim do grid */
+      else if (ev.hora_fim) end = Math.min(toH(ev.hora_fim), WK_HOUR_END);
+      if (end == null || end <= start) return;
+      var px = (end - start) * WK_SLOT_PX - 4;
+      if (px > 44) el.style.height = px + "px";
+    });
+  };
+})();

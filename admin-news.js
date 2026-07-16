@@ -20,8 +20,12 @@
     var btn = document.createElement("button");
     btn.type = "button"; btn.id = "mktNews"; btn.className = "mkt-new";
     btn.textContent = "✉️ newsletter";
-    btn.style.marginRight = "8px";
-    novaIdeia.parentNode.insertBefore(btn, novaIdeia);
+    /* agrupa com o "+ nova ideia" num flex colado (o head e space-between e separava os dois) */
+    var grp = document.createElement("div");
+    grp.style.cssText = "display:flex;gap:8px;align-items:center;flex:0 0 auto;";
+    novaIdeia.parentNode.insertBefore(grp, novaIdeia);
+    grp.appendChild(btn);
+    grp.appendChild(novaIdeia);
     btn.addEventListener("click", openNews);
   }
 

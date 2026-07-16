@@ -17,7 +17,7 @@
 
     /* FUNDO — cobogó da MARATU (azul) + degradê areia por cima pra leitura dos botões */
     .bio-bg { position: fixed; inset: 0; z-index: 0; overflow: hidden;
-      background: var(--areia) url('/bio-bg.svg?v=4') top center / cover no-repeat; }
+      background: var(--areia) url('/bio-bg.svg?v=5') top center / cover no-repeat; }
     .bio-bg::after { content: ''; position: absolute; inset: 0;
       background: linear-gradient(to top,
         rgba(240,236,228,0.05) 0%,
@@ -48,13 +48,13 @@
     .bio-links { display: flex; flex-direction: column; gap: 12px; }
     .bio-btn { display: block; width: 100%; text-align: center; text-decoration: none;
       font-family: 'Clother', sans-serif; font-weight: 700; font-size: 12px; letter-spacing: 0.11em; text-transform: uppercase;
-      color: var(--preto); background: #fff;
+      color: var(--preto); background: var(--areia);
       padding: 14px 20px; border-radius: 999px;
       border: 1.5px solid var(--preto); box-shadow: 3px 3px 0 0 var(--preto);
       transition: transform 0.15s ease, box-shadow 0.15s ease; }
     .bio-btn:hover { transform: translate(-1px,-1px); box-shadow: 4px 4px 0 0 var(--preto); }
     .bio-btn:active { transform: translate(2px,2px); box-shadow: 1px 1px 0 0 var(--preto); }
-    .bio-btn--primary { background: var(--dourado); }
+    .bio-btn--primary { background: var(--areia); }
 
     .bio-social { display: flex; gap: 12px; }
     .bio-social .bio-btn { padding: 12px 14px; font-size: 11px; }

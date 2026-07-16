@@ -26,16 +26,16 @@
     if (!wrap) {
       wrap = document.createElement("label");
       wrap.id = "edPublicoWrap";
-      wrap.style.cssText = "display:flex;align-items:center;gap:9px;margin:14px 0 2px;padding:12px 14px;" +
-        "border:1.5px solid #0D0D0B;border-radius:12px;background:#fff;cursor:pointer;font-family:inherit;" +
+      wrap.style.cssText = "display:flex;align-items:center;gap:9px;margin:14px 0 2px;padding:12px 18px;" +
+        "border:1.5px solid #0D0D0B;border-radius:999px;background:#F0ECE4;cursor:pointer;font-family:inherit;" +
         "font-size:12px;font-weight:700;color:#0D0D0B;box-shadow:2px 2px 0 0 #0D0D0B;-webkit-tap-highlight-color:transparent;";
       wrap.innerHTML =
         '<input type="checkbox" id="edPublico" style="width:19px;height:19px;flex:0 0 auto;accent-color:#C8501A;cursor:pointer;">' +
         '<span>Mostrar na Agenda pública <span style="opacity:.5;font-weight:400">(link da bio)</span></span>' +
         '<span id="edPublicoMsg" style="margin-left:auto;font-weight:700;font-size:11px;opacity:.6"></span>';
-      var tipoRow = document.getElementById("edTipo");
-      var anchor = tipoRow ? tipoRow.parentNode : null;
-      if (anchor && anchor.parentNode) anchor.parentNode.insertBefore(wrap, anchor.nextSibling);
+      /* ACIMA do form-actions (Apagar/Cancelar/Salvar), dentro do body do editor */
+      var fa = body.querySelector(".form-actions");
+      if (fa) body.insertBefore(wrap, fa);
       else body.appendChild(wrap);
     }
     var cb = wrap.querySelector("#edPublico");

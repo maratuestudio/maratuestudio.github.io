@@ -410,3 +410,54 @@ const DEFAULT_PARAMS={filamento:140,maquina:5,maodeobra:30,margem:2,fixo:267,ret
     return out.replace(/\r\nDTEND[^\r]*/, "\r\n" + line);
   };
 })();
+
+/* ===== MARATU: confirm de apagar evento com layout (substitui o confirm() nativo, 2026-07-16) ===== */
+(function(){
+  if (typeof MaratuStore === "undefined" || typeof openEvDetail !== "function") return;
+  var lastEvId = null;
+  var _o = openEvDetail;
+  openEvDetail = function(kind, id){ if (kind === "evento") lastEvId = id; _o.apply(this, arguments); };
+
+  function ensureModal(){
+    var back = document.getElementById("delConfBack");
+    if (back) return back;
+    back = document.createElement("div");
+    back.className = "modal-back"; back.id = "delConfBack";
+    back.style.zIndex = "10050"; /* acima do #evDetail */
+    back.innerHTML = '<div class="modal-card" style="max-width:360px;">'
+      + '<div class="modal-head"><h3>Apagar evento</h3>'
+      +   '<button type="button" class="modal-close" id="delConfX" aria-label="Fechar">&times;</button></div>'
+      + '<p id="delConfMsg" style="margin:4px 2px 18px; font-family:var(--clother); color:var(--muted); font-size:0.92rem; line-height:1.5;"></p>'
+      + '<div class="form-actions"><div></div><div class="actions-right">'
+      +   '<button type="button" class="btn ghost" id="delConfNo">Cancelar</button>'
+      +   '<button type="button" class="btn danger" id="delConfYes">Apagar</button>'
+      + '</div></div></div>';
+    document.body.appendChild(back);
+    back.querySelector("#delConfX").onclick = closeConf;
+    back.querySelector("#delConfNo").onclick = closeConf;
+    back.addEventListener("click", function(e){ if (e.target === back) closeConf(); });
+    return back;
+  }
+  function closeConf(){ var b = document.getElementById("delConfBack"); if (b) b.classList.remove("on"); }
+  function delEvento(id){
+    var evs = MaratuStore.getEventos().filter(function(e){ return String(e.id) !== String(id); });
+    MaratuStore.setEventos(evs);
+    if (typeof closeEvDetail === "function") closeEvDetail();
+    renderCal(); renderDay(); renderPainel(); renderUpcoming();
+  }
+  /* captura ANTES do listener do core no #edDel -> confirm() nativo nunca roda */
+  document.addEventListener("click", function(e){
+    var t = e.target;
+    if (!t || !t.closest) return;
+    var btn = t.closest("#edDel");
+    if (!btn) return;
+    e.preventDefault(); e.stopPropagation();
+    var id = lastEvId;
+    var ev = MaratuStore.getEventos().find(function(x){ return String(x.id) === String(id); });
+    if (!ev) return;
+    ensureModal();
+    document.getElementById("delConfMsg").textContent = 'Apagar "' + (ev.titulo || "este evento") + '"? Essa ação não tem volta.';
+    document.getElementById("delConfYes").onclick = function(){ closeConf(); delEvento(id); };
+    document.getElementById("delConfBack").classList.add("on");
+  }, true);
+})();

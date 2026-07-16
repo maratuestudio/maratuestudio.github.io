@@ -51,7 +51,7 @@
       color: var(--preto); background: var(--areia);
       padding: 14px 20px; border-radius: 999px;
       border: 1.5px solid var(--preto); box-shadow: 3px 3px 0 0 var(--preto);
-      transition: transform 0.15s ease, box-shadow 0.15s ease; }
+      transition: transform 0.15s ease, box-shadow 0.15s ease; cursor: pointer; -webkit-appearance: none; appearance: none; }
     .bio-btn:hover { transform: translate(-1px,-1px); box-shadow: 4px 4px 0 0 var(--preto); }
     .bio-btn:active { transform: translate(2px,2px); box-shadow: 1px 1px 0 0 var(--preto); }
     .bio-btn--primary { background: var(--areia); }
@@ -62,6 +62,30 @@
     .bio-foot { margin-top: auto; padding-top: 34px; text-align: center;
       font-weight: 700; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(13,13,11,0.45); }
     .bio-foot a { color: inherit; text-decoration: none; }
+
+    /* MODAIS (newsletter / parceiros) — padrao neubrutalista do site */
+    .bio-modal { display: none; position: fixed; inset: 0; z-index: 100; align-items: center; justify-content: center; padding: 20px;
+      background: rgba(13,13,11,0.55); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); }
+    .bio-modal.open { display: flex; }
+    .bio-modal-card { position: relative; background: var(--areia); width: 100%; max-width: 400px; max-height: 86vh; overflow-y: auto;
+      border: 1.5px solid var(--preto); border-radius: 16px; box-shadow: 6px 6px 0 0 var(--preto); padding: 28px 24px; }
+    .bio-modal-close { position: absolute; top: 14px; right: 14px; width: 32px; height: 32px; border-radius: 999px;
+      border: 1.5px solid var(--preto); background: var(--areia); color: var(--preto); font-size: 18px; line-height: 1; cursor: pointer;
+      box-shadow: 2px 2px 0 0 var(--preto); }
+    .bio-modal-title { font-family: 'Clother', sans-serif; font-weight: 900; font-size: 1.15rem; text-transform: uppercase; letter-spacing: 0.03em; margin-bottom: 6px; }
+    .bio-modal-sub { font-family: 'Clother', sans-serif; font-weight: 700; font-size: 0.66rem; letter-spacing: 0.05em; text-transform: uppercase; color: rgba(13,13,11,0.5); line-height: 1.6; margin-bottom: 20px; }
+    .bio-news-form { display: flex; flex-direction: column; gap: 10px; }
+    .bio-news-form input { width: 100%; padding: 13px 18px; border: 1.5px solid var(--preto); border-radius: 999px; background: #fff;
+      font-family: 'Clother', sans-serif; font-weight: 700; font-size: 13px; color: var(--preto); }
+    .bio-news-form button { width: 100%; padding: 14px; border-radius: 999px; border: 1.5px solid var(--preto); box-shadow: 3px 3px 0 0 var(--preto);
+      background: var(--dourado); color: var(--preto); font-family: 'Clother', sans-serif; font-weight: 900; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; }
+    .bio-news-msg { margin-top: 12px; text-align: center; font-family: 'Clother', sans-serif; font-weight: 700; font-size: 12px; min-height: 16px; }
+    .bio-parc-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .bio-parc { display: flex; flex-direction: column; align-items: center; gap: 6px; text-decoration: none; color: var(--preto); }
+    .bio-parc-circ { width: 100%; aspect-ratio: 1; border-radius: 999px; border: 1.5px solid var(--preto); background: #fff; overflow: hidden; display: flex; align-items: center; justify-content: center; box-shadow: 2px 2px 0 0 var(--preto); }
+    .bio-parc-circ img { width: 74%; height: 74%; object-fit: contain; }
+    .bio-parc-nome { font-family: 'Clother', sans-serif; font-weight: 900; font-size: 10px; text-transform: uppercase; letter-spacing: 0.02em; text-align: center; line-height: 1.1; }
+    .bio-parc-cat { font-family: 'Clother', sans-serif; font-weight: 700; font-size: 8px; letter-spacing: 0.06em; text-transform: uppercase; color: rgba(13,13,11,0.45); text-align: center; }
   </style>
 </head>
 <body>
@@ -79,9 +103,9 @@
     <nav class="bio-links">
       <a class="bio-btn bio-btn--primary" href="/go/loja?s=maratu">Conheça a loja</a>
       <a class="bio-btn" href="/go/wpp?s=maratu">Peça sua encomenda personalizada</a>
-      <a class="bio-btn" href="/go/news?s=maratu">Assine nossa newsletter</a>
+      <button type="button" class="bio-btn" onclick="bioNews()">Assine nossa newsletter</button>
       <a class="bio-btn" href="/go/agenda?s=maratu">Agenda cultural · onde vamos estar</a>
-      <a class="bio-btn" href="/go/parceiros?s=maratu">Nossos parceiros</a>
+      <button type="button" class="bio-btn" onclick="bioParceiros()">Nossos parceiros</button>
       <div class="bio-social">
         <a class="bio-btn" href="/go/ig?s=maratu">Instagram</a>
         <a class="bio-btn" href="/go/tiktok?s=maratu">TikTok</a>
@@ -90,5 +114,56 @@
 
     <footer class="bio-foot"><a href="/go/loja?s=maratu">maratu.com.br</a> · 2026 · Projeta o Mangue!</footer>
   </main>
+
+  <div class="bio-modal" id="modal-news">
+    <div class="bio-modal-card">
+      <button type="button" class="bio-modal-close" onclick="bioClose('modal-news')" aria-label="Fechar">&times;</button>
+      <h3 class="bio-modal-title">Newsletter</h3>
+      <p class="bio-modal-sub">Novidades, lançamentos e bastidores da MARATU no seu e-mail.</p>
+      <form class="bio-news-form" id="bio-news-form">
+        <input type="email" id="bio-news-email" placeholder="seu@email.com" required autocomplete="email">
+        <button type="submit">Quero assinar</button>
+      </form>
+      <p class="bio-news-msg" id="bio-news-msg"></p>
+    </div>
+  </div>
+
+  <div class="bio-modal" id="modal-parceiros">
+    <div class="bio-modal-card">
+      <button type="button" class="bio-modal-close" onclick="bioClose('modal-parceiros')" aria-label="Fechar">&times;</button>
+      <h3 class="bio-modal-title">Nossos parceiros</h3>
+      <p class="bio-modal-sub">Marcas e pessoas de Sergipe que caminham com a gente.</p>
+      <div class="bio-parc-grid">
+        <a class="bio-parc" href="https://www.qabrand.com.br" target="_blank" rel="noopener"><span class="bio-parc-circ"><img src="/logo-qa.png" alt="QA"></span><span class="bio-parc-nome">QA</span><span class="bio-parc-cat">moda</span></a>
+        <a class="bio-parc" href="https://www.instagram.com/vilacajuse/" target="_blank" rel="noopener"><span class="bio-parc-circ"><img src="/logo-vilacaju.png" alt="Vila Caju"></span><span class="bio-parc-nome">Vila Caju</span><span class="bio-parc-cat">café · arte</span></a>
+        <a class="bio-parc" href="https://www.instagram.com/flo.streetwear/" target="_blank" rel="noopener"><span class="bio-parc-circ"><img src="/logo-flo.png?v=2" alt="FLO"></span><span class="bio-parc-nome">FLO</span><span class="bio-parc-cat">streetwear</span></a>
+        <a class="bio-parc" href="https://estudiogece.com.br" target="_blank" rel="noopener"><span class="bio-parc-circ"><img src="/logo-gece.png" alt="GECÊ"></span><span class="bio-parc-nome">GECÊ</span><span class="bio-parc-cat">arquitetura</span></a>
+        <a class="bio-parc" href="https://www.instagram.com/winebarbellclub/" target="_blank" rel="noopener"><span class="bio-parc-circ"><img src="/logo-wbc.png?v=2" alt="WBC"></span><span class="bio-parc-nome">WBC</span><span class="bio-parc-cat">academia</span></a>
+        <a class="bio-parc" href="https://www.instagram.com/robertoqueirozfotografia/" target="_blank" rel="noopener"><span class="bio-parc-circ"><img src="/logo-roberto.png?v=2" alt="Roberto Queiroz"></span><span class="bio-parc-nome">Roberto Queiroz</span><span class="bio-parc-cat">fotografia</span></a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function bioLog(slug){ try{ fetch('/go/'+slug+'?s=maratu',{mode:'no-cors'}); }catch(e){} }
+    function bioOpen(id){ document.getElementById(id).classList.add('open'); document.body.style.overflow='hidden'; }
+    function bioClose(id){ document.getElementById(id).classList.remove('open'); document.body.style.overflow=''; }
+    function bioNews(){ bioLog('news'); bioOpen('modal-news'); }
+    function bioParceiros(){ bioLog('parceiros'); bioOpen('modal-parceiros'); }
+    (function(){
+      var form=document.getElementById('bio-news-form');
+      form.addEventListener('submit', function(e){
+        e.preventDefault();
+        var email=document.getElementById('bio-news-email').value;
+        var msg=document.getElementById('bio-news-msg');
+        msg.style.color='rgba(13,13,11,0.55)'; msg.textContent='Enviando\u2026';
+        fetch('https://maratu-newsletter.raphaelnascimento.workers.dev',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email})})
+          .then(function(res){ msg.style.color='#C8501A'; if(res.ok){ msg.textContent='Inscrito! Bem-vindo \u00e0 MARATU \ud83c\udf3f'; form.reset(); } else { msg.textContent='Algo deu errado, tenta de novo.'; } })
+          .catch(function(){ msg.style.color='#C8501A'; msg.textContent='Erro de conex\u00e3o, tenta de novo.'; });
+      });
+      document.querySelectorAll('.bio-modal').forEach(function(m){ m.addEventListener('click', function(e){ if(e.target===m) bioClose(m.id); }); });
+      document.addEventListener('keydown', function(e){ if(e.key==='Escape'){ document.querySelectorAll('.bio-modal.open').forEach(function(m){ bioClose(m.id); }); } });
+    })();
+  </script>
 </body>
 </html>

@@ -141,6 +141,10 @@ const DEFAULT_PARAMS={filamento:140,maquina:5,maodeobra:30,margem:2,fixo:267,ret
       +     '<label class="f"><span>Data</span><input type="date" id="nvData" /></label>'
       +     '<label class="f"><span>Hora</span><input type="time" id="nvHora" /></label>'
       +   '</div>'
+      +   '<div class="grid2" style="margin-top:8px;">'
+      +     '<label class="f"><span>Termina dia (opcional)</span><input type="date" id="nvDataFim" /></label>'
+      +     '<label class="f"><span>Hora fim</span><input type="time" id="nvHoraFim" /></label>'
+      +   '</div>'
       +   '<label class="opt-toggle" style="margin-top:10px;"><input type="checkbox" id="nvDia" checked /><span class="opt-toggle-lbl"><b>Dia inteiro</b></span></label>'
       +   '<label class="f"><span>Cliente</span><input id="nvCli" /></label>'
       +   '<label class="f"><span>Notas</span><textarea id="nvNotas" rows="2"></textarea></label>'
@@ -156,8 +160,8 @@ const DEFAULT_PARAMS={filamento:140,maquina:5,maodeobra:30,margem:2,fixo:267,ret
         c.setAttribute("aria-pressed","true");
       };
     });
-    var dia = back.querySelector("#nvDia"), hora = back.querySelector("#nvHora");
-    dia.onchange = function(){ hora.disabled = dia.checked; if (dia.checked) hora.value = ""; };
+    var dia = back.querySelector("#nvDia"), hora = back.querySelector("#nvHora"), horaFim = back.querySelector("#nvHoraFim");
+    dia.onchange = function(){ hora.disabled = dia.checked; horaFim.disabled = dia.checked; if (dia.checked){ hora.value = ""; horaFim.value = ""; } };
     back.querySelector("#nvClose").onclick = closeNew;
     back.querySelector("#nvCancel").onclick = closeNew;
     back.addEventListener("click", function(e){ if (e.target === back) closeNew(); });
@@ -170,6 +174,8 @@ const DEFAULT_PARAMS={filamento:140,maquina:5,maodeobra:30,margem:2,fixo:267,ret
     back.querySelector("#nvTit").value = "";
     back.querySelector("#nvData").value = iso || (typeof todayStr === "function" ? todayStr() : "");
     var hora = back.querySelector("#nvHora"); hora.value = ""; hora.disabled = true;
+    var horaF = back.querySelector("#nvHoraFim"); if (horaF){ horaF.value = ""; horaF.disabled = true; }
+    var dataF = back.querySelector("#nvDataFim"); if (dataF) dataF.value = "";
     back.querySelector("#nvDia").checked = true;
     back.querySelector("#nvCli").value = "";
     back.querySelector("#nvNotas").value = "";
@@ -192,6 +198,10 @@ const DEFAULT_PARAMS={filamento:140,maquina:5,maodeobra:30,margem:2,fixo:267,ret
       cliente: back.querySelector("#nvCli").value.trim(),
       notas: back.querySelector("#nvNotas").value.trim()
     };
+    var dataFim = back.querySelector("#nvDataFim").value || "";
+    var horaFimV = diaInteiro ? "" : (back.querySelector("#nvHoraFim").value || "");
+    ev.data_fim = (dataFim && dataFim > data) ? dataFim : null;
+    ev.hora_fim = horaFimV || null;
     MaratuStore.setEventos(MaratuStore.getEventos().concat([ev]));
     closeNew();
     refresh();
@@ -296,4 +306,107 @@ const DEFAULT_PARAMS={filamento:140,maquina:5,maodeobra:30,margem:2,fixo:267,ret
   document.addEventListener("keydown", function(e){
     if (e.key === "Escape" && m && m.classList.contains("on")) closeNotas();
   });
+})();
+
+/* ===== MARATU: fim de evento — hora de terminar + evento multi-dia (2026-07-16) ===== */
+(function(){
+  if (typeof openEvDetail !== "function" || typeof MaratuStore === "undefined") return;
+  function evById(id){ return MaratuStore.getEventos().find(function(e){ return String(e.id) === String(id); }); }
+
+  /* calItems: carrega data_fim/hora_fim pros itens de evento (o core descarta) */
+  var _ci = calItems;
+  calItems = function(){
+    var items = _ci.apply(this, arguments);
+    var map = {};
+    MaratuStore.getEventos().forEach(function(e){ map[String(e.id)] = e; });
+    items.forEach(function(it){
+      if (it.kind !== "evento") return;
+      var e = map[String(it.id)];
+      if (e){ it.data_fim = e.data_fim || null; it.hora_fim = e.hora_fim || null; }
+    });
+    return items;
+  };
+
+  /* eventsByDay: evento multi-dia aparece em TODOS os dias do intervalo (mês/semana/dia).
+     Cópias dos dias seguintes vão como "dia inteiro" (__cont) pra não flutuar em hora errada na semana. */
+  var _ebd = eventsByDay;
+  eventsByDay = function(){
+    var by = _ebd.apply(this, arguments);
+    Object.keys(by).forEach(function(iso){
+      by[iso].forEach(function(it){
+        if (it.kind !== "evento" || it.__cont) return;
+        if (!it.data_fim || it.data_fim <= it.data || iso !== it.data) return;
+        var d = addDayISO(it.data), guard = 0;
+        while (d <= it.data_fim && guard++ < 120){
+          var cp = Object.assign({}, it, { hora: "", __cont: true });
+          (by[d] = by[d] || []).push(cp);
+          d = addDayISO(d);
+        }
+      });
+    });
+    return by;
+  };
+
+  /* editor de evento: campos de término (opcional) */
+  var _oed = openEvDetail;
+  openEvDetail = function(kind, id){
+    _oed.apply(this, arguments);
+    if (kind !== "evento") return;
+    var horaInp = document.getElementById("edHora");
+    if (!horaInp || document.getElementById("edDataFim")) return;
+    var ev = evById(id) || {};
+    var grid = horaInp.closest(".grid2");
+    if (!grid || !grid.parentNode) return;
+    var div = document.createElement("div");
+    div.className = "grid2"; div.style.marginTop = "8px";
+    div.innerHTML = '<label class="f"><span>Termina dia (opcional)</span><input type="date" id="edDataFim" value="' + (ev.data_fim || "") + '" /></label>'
+      + '<label class="f"><span>Hora fim</span><input type="time" id="edHoraFim" value="' + (ev.hora_fim || "") + '" /></label>';
+    grid.parentNode.insertBefore(div, grid.nextSibling);
+    var diaCk = document.getElementById("edDiaInteiro"), hf = document.getElementById("edHoraFim");
+    function syncHF(){ if (diaCk && diaCk.checked){ hf.value = ""; hf.disabled = true; } else hf.disabled = false; }
+    if (diaCk) diaCk.addEventListener("change", syncHF);
+    syncHF();
+    var btn = document.getElementById("edSalvar");
+    if (btn) btn.addEventListener("click", function(){
+      var df = (document.getElementById("edDataFim") || {}).value || "";
+      var hfv = (document.getElementById("edHoraFim") || {}).value || "";
+      if (diaCk && diaCk.checked) hfv = "";
+      var evs = MaratuStore.getEventos().map(function(e){
+        if (String(e.id) !== String(id)) return e;
+        return Object.assign({}, e, { data_fim: (df && df > e.data) ? df : null, hora_fim: hfv || null });
+      });
+      MaratuStore.setEventos(evs);
+      renderCal(); renderDay(); renderPainel(); renderUpcoming();
+    });
+  };
+
+  /* painel do dia: mostra o término no meta ("· até 18:00" / "· até 20/07 18:00") */
+  var _rd = renderDay;
+  renderDay = function(){
+    _rd.apply(this, arguments);
+    var list = document.getElementById("dayEvents");
+    if (!list) return;
+    list.querySelectorAll("[data-ics]").forEach(function(b){
+      var e = evById(b.dataset.ics);
+      if (!e || (!e.hora_fim && !e.data_fim)) return;
+      var row = b.closest(".ev"); if (!row) return;
+      var meta = row.querySelector(".meta"); if (!meta || meta.querySelector(".ev-fim")) return;
+      var txt = "até " + (e.data_fim ? fmtDia(e.data_fim) + (e.hora_fim ? " " + e.hora_fim : "") : e.hora_fim);
+      var s = document.createElement("span");
+      s.className = "ev-fim"; s.textContent = " · " + txt;
+      meta.appendChild(s);
+    });
+  };
+
+  /* .ics: DTEND real a partir de data_fim/hora_fim */
+  var _bics = buildICS;
+  buildICS = function(e){
+    var out = _bics.apply(this, arguments);
+    if (!e || (!e.data_fim && !e.hora_fim)) return out;
+    var endDate = (e.data_fim || e.data).replace(/-/g, "");
+    var line;
+    if (e.hora) line = "DTEND:" + endDate + "T" + (e.hora_fim || e.hora).replace(":", "") + "00";
+    else line = "DTEND;VALUE=DATE:" + addDayISO(e.data_fim || e.data).replace(/-/g, "");
+    return out.replace(/\r\nDTEND[^\r]*/, "\r\n" + line);
+  };
 })();

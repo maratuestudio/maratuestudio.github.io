@@ -185,7 +185,11 @@
           var evs=(d&&d.eventos)||[]; if(!evs.length) return;
           var html=evs.slice(0,6).map(function(ev){
             var p=String(ev.data).split('-'); var dia=p[2], mes=MESES[(+p[1])-1]||'';
-            var hora=(!ev.diaInteiro&&ev.hora)?ev.hora+'h':'Dia inteiro';
+            function fmtH(h){ var q=String(h).split(':'); return (+q[0])+'h'+(q[1]&&q[1]!=='00'?q[1]:''); }
+            var ate='';
+            if(ev.dataFim){ var pf=String(ev.dataFim).split('-'); ate='Até '+pf[2]+' '+(MESES[(+pf[1])-1]||'')+' · '; }
+            var hora=(!ev.diaInteiro&&ev.hora)?(fmtH(ev.hora)+(ev.horaFim?'–'+fmtH(ev.horaFim):'')):'Dia inteiro';
+            hora=ate+hora;
             return '<div class="bio-ag-item"><div class="bio-ag-data"><span class="bio-ag-dia">'+dia+'</span><span class="bio-ag-mes">'+mes+'</span></div><div class="bio-ag-info"><span class="bio-ag-nome">'+esc(ev.titulo)+'</span><span class="bio-ag-hora">'+hora+'</span></div></div>';
           }).join('');
           document.getElementById('bio-agenda-lista').innerHTML=html;

@@ -13,20 +13,17 @@
   function $id(x) { return document.getElementById(x); }
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
 
-  /* ---- item no menu Ajustes ---- */
-  function addMenuItem() {
-    var menu = $id("headMenu");
-    if (!menu || $id("hmNews")) return;
-    var lbl = document.createElement("span"); lbl.className = "hm-lbl"; lbl.textContent = "Newsletter";
-    var btn = document.createElement("button"); btn.id = "hmNews"; btn.className = "hm-btn"; btn.type = "button"; btn.textContent = "Contatos & envio";
-    var anchor = null;
-    menu.querySelectorAll(".hm-lbl").forEach(function (l) { if (!anchor && l.textContent.trim() === "Manutenção") anchor = l; });
-    if (anchor) { menu.insertBefore(lbl, anchor); menu.insertBefore(btn, anchor); }
-    else { menu.appendChild(lbl); menu.appendChild(btn); }
-    btn.addEventListener("click", function () {
-      var back = $id("headMenuBack"); if (back) back.click();
-      openNews();
-    });
+  /* ---- botao na aba Marketing (pedido do Rapha: la, nao em Ajustes) ---- */
+  function addMarketingBtn() {
+    var panel = $id("panel-marketing");
+    if (!panel || $id("mktNews")) return;
+    var bar = document.createElement("div");
+    bar.id = "mktNewsBar";
+    bar.style.cssText = "display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 14px;";
+    bar.innerHTML = '<h2 class="title" style="margin:0;">Newsletter</h2>'
+      + '<button type="button" class="btn blue" id="mktNews">✉️ Contatos &amp; envio</button>';
+    panel.insertBefore(bar, panel.firstElementChild);
+    bar.querySelector("#mktNews").addEventListener("click", openNews);
   }
 
   /* ---- modal ---- */
@@ -185,8 +182,7 @@
   }
 
   /* boot */
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", addMenuItem);
-  else addMenuItem();
-  // o menu pode ser re-montado/movido pro body por outro modulo — garante o item depois do load tambem
-  setTimeout(addMenuItem, 1500);
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", addMarketingBtn);
+  else addMarketingBtn();
+  setTimeout(addMarketingBtn, 1500);
 })();

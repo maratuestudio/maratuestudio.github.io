@@ -215,27 +215,42 @@
       .then(function () { btns.forEach(function (b) { b.disabled = false; }); resetEnviarTodos(); });
   }
 
-  /* "Enviar pra todos" pede confirmacao no 2o clique */
-  var confirmando = false, confirmTimer = null;
+  /* "Enviar pra todos" abre popup de confirmacao (pedido do Rapha: quase clicou sem querer) */
+  function ensureConfirm() {
+    var back = $id("nwConfBack");
+    if (back) return back;
+    back = document.createElement("div");
+    back.className = "modal-back"; back.id = "nwConfBack";
+    back.style.zIndex = "10060"; /* acima do modal da newsletter */
+    back.innerHTML = '<div class="modal-card" style="max-width:370px;">'
+      + '<div class="modal-head"><h3>Enviar pra todos?</h3>'
+      + '<button type="button" class="modal-close" id="nwConfX" aria-label="Fechar">&times;</button></div>'
+      + '<p id="nwConfMsg" style="margin:4px 2px 18px;font-family:var(--clother);color:var(--muted);font-size:0.92rem;line-height:1.55;"></p>'
+      + '<div class="form-actions"><div></div><div class="actions-right">'
+      + '<button type="button" class="btn ghost" id="nwConfNo">Cancelar</button>'
+      + '<button type="button" class="btn blue" id="nwConfYes">Enviar agora</button>'
+      + '</div></div></div>';
+    document.body.appendChild(back);
+    back.querySelector("#nwConfX").onclick = closeConf;
+    back.querySelector("#nwConfNo").onclick = closeConf;
+    back.addEventListener("click", function (e) { if (e.target === back) closeConf(); });
+    return back;
+  }
+  function closeConf() { var b = $id("nwConfBack"); if (b) b.classList.remove("on"); }
   function wireEnviarTodos(btn) {
     btn.addEventListener("click", function () {
-      if (!confirmando) {
-        var p = payload(false);
-        if (!p.assunto || !p.texto) { $id("nwMsg").textContent = "precisa de assunto e texto"; return; }
-        confirmando = true;
-        btn.textContent = "Confirmar envio?";
-        btn.style.background = "var(--laranja, #C8501A)";
-        confirmTimer = setTimeout(resetEnviarTodos, 5000);
-        return;
-      }
-      clearTimeout(confirmTimer);
-      enviar(false);
+      var p = payload(false);
+      if (!p.assunto || !p.texto) { $id("nwMsg").textContent = "precisa de assunto e texto"; return; }
+      var back = ensureConfirm();
+      var n = cache ? cache.ativos : 0;
+      back.querySelector("#nwConfMsg").textContent = 'Vai disparar "' + p.assunto + '" pra ' + n + " inscrito" + (n === 1 ? "" : "s") + ". Tem certeza? Depois de enviado não tem volta.";
+      back.querySelector("#nwConfYes").onclick = function () { closeConf(); enviar(false); };
+      back.classList.add("on");
     });
   }
   function resetEnviarTodos() {
-    confirmando = false;
     var btn = $id("nwEnviar");
-    if (btn) { btn.textContent = "Enviar pra todos" + (cache ? " (" + cache.ativos + ")" : ""); btn.style.background = ""; }
+    if (btn) btn.textContent = "Enviar pra todos" + (cache ? " (" + cache.ativos + ")" : "");
   }
 
   /* boot */

@@ -86,6 +86,19 @@
     .bio-parc-circ img { width: 74%; height: 74%; object-fit: contain; }
     .bio-parc-nome { font-family: 'Clother', sans-serif; font-weight: 900; font-size: 10px; text-transform: uppercase; letter-spacing: 0.02em; text-align: center; line-height: 1.1; }
     .bio-parc-cat { font-family: 'Clother', sans-serif; font-weight: 700; font-size: 8px; letter-spacing: 0.06em; text-transform: uppercase; color: rgba(13,13,11,0.45); text-align: center; }
+
+    /* AGENDA inline no bio — so aparece se tiver evento publico */
+    .bio-agenda { margin-top: 30px; }
+    .bio-agenda-tit { text-align: center; font-weight: 900; font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; }
+    .bio-agenda-sub { text-align: center; margin-top: 5px; margin-bottom: 16px; font-weight: 700; font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(13,13,11,0.5); }
+    .bio-agenda-lista { display: flex; flex-direction: column; gap: 10px; }
+    .bio-ag-item { display: flex; align-items: stretch; gap: 12px; background: var(--areia); border: 1.5px solid var(--preto); border-radius: 12px; box-shadow: 3px 3px 0 0 var(--preto); padding: 11px 14px; }
+    .bio-ag-data { flex: 0 0 auto; width: 44px; text-align: center; border-right: 1.5px solid rgba(13,13,11,0.14); padding-right: 10px; display: flex; flex-direction: column; justify-content: center; }
+    .bio-ag-dia { font-weight: 900; font-size: 19px; line-height: 1; }
+    .bio-ag-mes { font-weight: 700; font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--laranja); margin-top: 2px; }
+    .bio-ag-info { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center; }
+    .bio-ag-nome { font-weight: 900; font-size: 12px; line-height: 1.2; text-transform: uppercase; letter-spacing: 0.02em; }
+    .bio-ag-hora { margin-top: 3px; font-weight: 700; font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(13,13,11,0.5); }
   </style>
 </head>
 <body>
@@ -104,13 +117,18 @@
       <a class="bio-btn bio-btn--primary" href="/go/loja?s=maratu">Conheça a loja</a>
       <a class="bio-btn" href="/go/wpp?s=maratu">Peça sua encomenda personalizada</a>
       <button type="button" class="bio-btn" onclick="bioNews()">Assine nossa newsletter</button>
-      <a class="bio-btn" href="/go/agenda?s=maratu">Agenda cultural · onde vamos estar</a>
       <button type="button" class="bio-btn" onclick="bioParceiros()">Nossos parceiros</button>
       <div class="bio-social">
         <a class="bio-btn" href="/go/ig?s=maratu">Instagram</a>
         <a class="bio-btn" href="/go/tiktok?s=maratu">TikTok</a>
       </div>
     </nav>
+
+    <section class="bio-agenda" id="bio-agenda" hidden>
+      <h2 class="bio-agenda-tit">Agenda cultural</h2>
+      <p class="bio-agenda-sub">Onde a gente vai estar</p>
+      <div class="bio-agenda-lista" id="bio-agenda-lista"></div>
+    </section>
 
     <footer class="bio-foot"><a href="/go/loja?s=maratu">maratu.com.br</a> · 2026 · Projeta o Mangue!</footer>
   </main>
@@ -163,6 +181,23 @@
       });
       document.querySelectorAll('.bio-modal').forEach(function(m){ m.addEventListener('click', function(e){ if(e.target===m) bioClose(m.id); }); });
       document.addEventListener('keydown', function(e){ if(e.key==='Escape'){ document.querySelectorAll('.bio-modal.open').forEach(function(m){ bioClose(m.id); }); } });
+    })();
+
+    (function(){
+      var MESES=['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ'];
+      function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
+      fetch('https://maratu-api.raphaelnascimento.workers.dev/api/agenda?_='+Date.now(),{cache:'no-store'})
+        .then(function(r){return r.json();})
+        .then(function(d){
+          var evs=(d&&d.eventos)||[]; if(!evs.length) return;
+          var html=evs.slice(0,6).map(function(ev){
+            var p=String(ev.data).split('-'); var dia=p[2], mes=MESES[(+p[1])-1]||'';
+            var hora=(!ev.diaInteiro&&ev.hora)?ev.hora+'h':'Dia inteiro';
+            return '<div class="bio-ag-item"><div class="bio-ag-data"><span class="bio-ag-dia">'+dia+'</span><span class="bio-ag-mes">'+mes+'</span></div><div class="bio-ag-info"><span class="bio-ag-nome">'+esc(ev.titulo)+'</span><span class="bio-ag-hora">'+hora+'</span></div></div>';
+          }).join('');
+          document.getElementById('bio-agenda-lista').innerHTML=html;
+          document.getElementById('bio-agenda').hidden=false;
+        }).catch(function(){});
     })();
   </script>
 </body>

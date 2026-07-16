@@ -40,7 +40,14 @@
       + '<label class="f"><span>Assunto do email</span><input id="nwAssunto" placeholder="ex: Novidades fresquinhas do mangue 🦀" /></label>'
       + '<label class="f"><span>Título (opcional)</span><input id="nwTitulo" placeholder="ex: Chegou a coleção nova" /></label>'
       + '<label class="f"><span>Texto</span><textarea id="nwTexto" rows="6" placeholder="Escreve como quiser — linha em branco separa parágrafos."></textarea></label>'
-      + '<label class="f"><span>URL da imagem (opcional)</span><input id="nwImagem" placeholder="cola o link de uma imagem (R2/site)" /></label>'
+      + '<label class="f"><span>Imagem (opcional)</span>'
+      + '<div style="display:flex;gap:8px;align-items:center;">'
+      + '<input id="nwImagem" placeholder="toca em 📷 ou cola um link" style="flex:1;min-width:0;" />'
+      + '<button type="button" class="btn ghost" id="nwImgBtn" style="flex:0 0 auto;white-space:nowrap;">📷 Escolher</button>'
+      + '</div>'
+      + '<input type="file" id="nwImgFile" accept="image/*" style="display:none;">'
+      + '<img id="nwImgPrev" alt="" style="display:none;margin-top:8px;max-width:150px;max-height:110px;object-fit:cover;border-radius:10px;border:1.5px solid rgba(13,13,11,0.25);">'
+      + '</label>'
       + '<div class="grid2">'
       + '<label class="f"><span>Texto do botão (opcional)</span><input id="nwBtnTexto" placeholder="ex: Ver na loja" /></label>'
       + '<label class="f"><span>Link do botão</span><input id="nwBtnLink" placeholder="https://maratu.com.br/…" /></label>'
@@ -62,6 +69,16 @@
     back.querySelector("#nwClose").onclick = closeNews;
     back.addEventListener("click", function (e) { if (e.target === back) closeNews(); });
     back.querySelector("#nwCSV").onclick = exportCSV;
+    back.querySelector("#nwImgBtn").onclick = function () { back.querySelector("#nwImgFile").click(); };
+    back.querySelector("#nwImgFile").addEventListener("change", function () {
+      if (this.files && this.files[0]) uploadImagem(this.files[0]);
+      this.value = "";
+    });
+    back.querySelector("#nwImagem").addEventListener("change", function () {
+      var pv = $id("nwImgPrev");
+      if (this.value.trim()) { pv.src = this.value.trim(); pv.style.display = "block"; }
+      else pv.style.display = "none";
+    });
     back.querySelector("#nwEnviarTeste").onclick = function () { enviar(true); };
     wireEnviarTodos(back.querySelector("#nwEnviar"));
     return back;
@@ -123,6 +140,43 @@
     a.download = "maratu-newsletter.csv";
     a.click();
     setTimeout(function () { URL.revokeObjectURL(a.href); }, 5000);
+  }
+
+  /* ---- imagem: redimensiona no navegador (foto de celular e gigante/HEIC; email quer JPEG leve) e sobe pro R2 ---- */
+  function resizeToJpeg(file) {
+    return new Promise(function (res, rej) {
+      var url = URL.createObjectURL(file);
+      var img = new Image();
+      img.onload = function () {
+        var MAX = 1200, w = img.naturalWidth, h = img.naturalHeight;
+        var k = Math.min(1, MAX / Math.max(w, h));
+        var c = document.createElement("canvas");
+        c.width = Math.max(1, Math.round(w * k)); c.height = Math.max(1, Math.round(h * k));
+        c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+        URL.revokeObjectURL(url);
+        c.toBlob(function (b) { b ? res(b) : rej(new Error("canvas")); }, "image/jpeg", 0.85);
+      };
+      img.onerror = function () { URL.revokeObjectURL(url); rej(new Error("formato de imagem não suportado")); };
+      img.src = url;
+    });
+  }
+  function uploadImagem(file) {
+    var msg = $id("nwMsg");
+    msg.textContent = "preparando imagem…";
+    resizeToJpeg(file)
+      .then(function (blob) {
+        msg.textContent = "enviando imagem…";
+        return fetch(API + "/api/newsletter/upload?filename=news.jpg", { method: "POST", headers: { "Content-Type": "image/jpeg" }, body: blob });
+      })
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        if (d && d.url) {
+          $id("nwImagem").value = d.url;
+          var pv = $id("nwImgPrev"); pv.src = d.url; pv.style.display = "block";
+          msg.textContent = "imagem pronta ✓";
+        } else msg.textContent = "erro no upload";
+      })
+      .catch(function (e) { msg.textContent = "falha: " + e.message; });
   }
 
   /* ---- envio ---- */

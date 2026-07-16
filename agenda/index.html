@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>MARATU · Agenda cultural</title>
+  <meta name="description" content="Agenda cultural da MARATU Estúdio — onde vamos estar.">
+  <link rel="icon" href="/favicon-v6.png">
+  <meta name="robots" content="noindex">
+  <style>
+    @font-face { font-family: 'Clother'; src: url('/TRYClother-Bold.woff2') format('woff2'), url('/TRYClother-Bold.ttf') format('truetype'); font-weight: 700; font-display: swap; }
+    @font-face { font-family: 'Clother'; src: url('/TRYClother-Black.woff2') format('woff2'), url('/TRYClother-Black.ttf') format('truetype'); font-weight: 900; font-display: swap; }
+    :root { --areia:#F0ECE4; --preto:#0D0D0B; --laranja:#C8501A; --dourado:#D4960A; --azul:#0E3272; }
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    html, body { min-height: 100%; }
+    body { background: var(--areia); font-family: 'Clother', 'Helvetica Neue', sans-serif; color: var(--preto); }
+    .bio-bg { position: fixed; inset: 0; z-index: 0; overflow: hidden;
+      background: var(--areia) url('/bio-bg.svg?v=6') top center / cover no-repeat; }
+    .bio-bg::after { content: ''; position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(240,236,228,0.05) 0%, rgba(240,236,228,0.30) 34%, rgba(240,236,228,0.72) 58%, rgba(240,236,228,0.92) 82%, rgba(240,236,228,0.94) 100%); }
+    .wrap { position: relative; z-index: 1; max-width: 460px; margin: 0 auto; min-height: 100vh; min-height: 100dvh;
+      display: flex; flex-direction: column;
+      padding: calc(52px + env(safe-area-inset-top)) 24px calc(28px + env(safe-area-inset-bottom)); }
+    .ag-logo { display: block; width: 62%; max-width: 240px; height: auto; filter: brightness(0); margin: 0 auto 14px; }
+    .ag-titulo { text-align: center; font-weight: 900; font-size: 15px; letter-spacing: 0.16em; text-transform: uppercase; }
+    .ag-sub { text-align: center; margin-top: 8px; font-weight: 700; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(13,13,11,0.5); }
+
+    .ag-lista { margin-top: 30px; display: flex; flex-direction: column; gap: 12px; }
+    .ag-item { display: flex; align-items: stretch; gap: 14px; background: #fff; border: 1.5px solid var(--preto);
+      border-radius: 14px; box-shadow: 3px 3px 0 0 var(--preto); padding: 14px 16px; }
+    .ag-data { flex: 0 0 auto; width: 52px; text-align: center; border-right: 1.5px solid rgba(13,13,11,0.12); padding-right: 12px; display: flex; flex-direction: column; justify-content: center; }
+    .ag-dia { font-weight: 900; font-size: 22px; line-height: 1; }
+    .ag-mes { font-weight: 700; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--laranja); margin-top: 3px; }
+    .ag-info { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center; }
+    .ag-nome { font-weight: 900; font-size: 14px; line-height: 1.25; text-transform: uppercase; letter-spacing: 0.02em; }
+    .ag-hora { margin-top: 4px; font-weight: 700; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(13,13,11,0.5); }
+
+    .ag-vazio { margin-top: 30px; text-align: center; background: #fff; border: 1.5px solid var(--preto); border-radius: 14px;
+      box-shadow: 3px 3px 0 0 var(--preto); padding: 30px 22px; font-weight: 700; font-size: 12px; letter-spacing: 0.04em; color: rgba(13,13,11,0.6); line-height: 1.6; }
+
+    .ag-voltar { margin-top: auto; padding-top: 30px; text-align: center; }
+    .ag-voltar a { font-weight: 700; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--preto);
+      text-decoration: none; border: 1.5px solid var(--preto); box-shadow: 3px 3px 0 0 var(--preto); background: var(--areia);
+      border-radius: 999px; padding: 11px 22px; display: inline-block; }
+  </style>
+</head>
+<body>
+  <div class="bio-bg"></div>
+  <main class="wrap">
+    <img class="ag-logo" src="/maratu-logo.svg" alt="MARATU">
+    <h1 class="ag-titulo">Agenda cultural</h1>
+    <p class="ag-sub">Onde a gente vai estar</p>
+    <div class="ag-lista" id="ag-lista"><p class="ag-vazio">Carregando…</p></div>
+    <nav class="ag-voltar"><a href="/bio">← Voltar</a></nav>
+  </main>
+
+  <script>
+    var API = 'https://maratu-api.raphaelnascimento.workers.dev/api/agenda';
+    var MESES = ['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ'];
+    function fmt(ev) {
+      var p = String(ev.data).split('-'); var dia = p[2], mes = MESES[(+p[1]) - 1] || '';
+      var hora = (!ev.diaInteiro && ev.hora) ? ev.hora + 'h' : 'Dia inteiro';
+      return '<div class="ag-item"><div class="ag-data"><span class="ag-dia">' + dia + '</span><span class="ag-mes">' + mes + '</span></div>' +
+             '<div class="ag-info"><span class="ag-nome">' + esc(ev.titulo) + '</span><span class="ag-hora">' + hora + '</span></div></div>';
+    }
+    function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
+    fetch(API + '?_=' + Date.now(), { cache: 'no-store' })
+      .then(function(r){ return r.json(); })
+      .then(function(d){
+        var evs = (d && d.eventos) || [];
+        var el = document.getElementById('ag-lista');
+        if (!evs.length) { el.innerHTML = '<p class="ag-vazio">Nenhum evento marcado por enquanto.<br>Fica de olho — em breve tem novidade! 🌿</p>'; return; }
+        el.innerHTML = evs.map(fmt).join('');
+      })
+      .catch(function(){ document.getElementById('ag-lista').innerHTML = '<p class="ag-vazio">Não deu pra carregar a agenda agora. Tenta de novo daqui a pouco.</p>'; });
+  </script>
+</body>
+</html>

@@ -1231,41 +1231,36 @@
     .lightbox-close:hover { box-shadow: 1px 1px 0 0 var(--areia); transform: translate(1px, 1px); }
     .lightbox-nome { position: absolute; top: 18px; left: 18px; font-family: 'Clother', sans-serif; font-weight: 900; font-size: 0.8rem; color: rgba(13,13,11,0.5); letter-spacing: 0.12em; text-transform: uppercase; }
 
-    /* BAND SERVIÇOS — faixa laranja entre CASA e USE MARATU (padrao .bg-laranja + pill do site) */
+    /* BAND SERVIÇOS — faixa preta (mangue) entre CASA e USE MARATU, texto areia */
     .servicos-band {
-      display: block; text-decoration: none; color: var(--preto);
-      background: var(--laranja);
-      border-top: 0.5px solid rgba(13,13,11,0.12);
-      border-bottom: 0.5px solid rgba(13,13,11,0.12);
+      display: block; text-decoration: none; color: var(--areia);
+      background: var(--preto);
     }
     .servicos-band__inner {
       padding: clamp(28px, 4vw, 40px) var(--margem);
       display: flex; align-items: center; justify-content: space-between;
       gap: 20px 32px; flex-wrap: wrap;
     }
-    .servicos-band__txt { display: flex; flex-direction: column; min-width: 0; }
-    .servicos-band__eyebrow {
-      font-family: var(--mono); font-size: 0.58rem;
-      letter-spacing: 0.2em; text-transform: uppercase;
-      color: rgba(13,13,11,0.5);
-      display: flex; align-items: center; gap: 10px; margin-bottom: 12px;
+    .servicos-band__txt { display: flex; flex-direction: column; min-width: 0; gap: 2px; }
+    /* duas linhas em Clother, MESMO tamanho: a 1ª leve, a 2ª grossa */
+    .servicos-band__linha1,
+    .servicos-band__linha2 {
+      font-family: var(--clother); font-size: clamp(1.4rem, 3.2vw, 2.4rem);
+      line-height: 1.05; letter-spacing: -0.01em; text-transform: uppercase; color: var(--areia);
     }
-    .servicos-band__eyebrow::before { content: ''; display: block; width: 22px; height: 1px; background: currentColor; }
-    .servicos-band__titulo {
-      font-family: var(--clother); font-weight: 900; font-size: clamp(1.4rem, 3.2vw, 2.4rem);
-      line-height: 1.02; letter-spacing: -0.01em; text-transform: uppercase; color: var(--preto);
-    }
+    .servicos-band__linha1 { font-weight: 400; }
+    .servicos-band__linha2 { font-weight: 900; }
     .servicos-band__cta {
       display: inline-flex; align-items: center; gap: 12px; flex-shrink: 0;
       font-family: var(--clother); font-weight: 900; font-size: 0.85rem;
       letter-spacing: 0.05em; text-transform: uppercase; color: var(--preto);
-      background: var(--areia); border: 1.5px solid var(--preto);
-      border-radius: 999px; box-shadow: 3px 3px 0 0 var(--preto);
+      background: var(--areia); border: 1.5px solid var(--areia);
+      border-radius: 999px; box-shadow: 3px 3px 0 0 var(--laranja);
       padding: 14px 24px; transition: transform 0.15s ease, box-shadow 0.15s ease;
     }
     .servicos-band__arrow { font-size: 1rem; line-height: 1; }
-    .servicos-band:hover .servicos-band__cta { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 0 var(--preto); }
-    .servicos-band:active .servicos-band__cta { transform: translate(2px, 2px); box-shadow: 1px 1px 0 0 var(--preto); }
+    .servicos-band:hover .servicos-band__cta { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 0 var(--laranja); }
+    .servicos-band:active .servicos-band__cta { transform: translate(2px, 2px); box-shadow: 1px 1px 0 0 var(--laranja); }
     @media (max-width: 600px) {
       .servicos-band__inner { flex-direction: column; align-items: flex-start; }
       .servicos-band__cta { width: 100%; justify-content: center; }
@@ -1451,8 +1446,8 @@
   <a class="servicos-band" href="/servicos?utm_source=site&amp;utm_medium=card_loja" data-servico="geral" data-origem="card_loja">
     <div class="servicos-band__inner">
       <div class="servicos-band__txt">
-        <span class="servicos-band__eyebrow">Gostou desse site?</span>
-        <span class="servicos-band__titulo">A gente fez. E faz o seu.</span>
+        <span class="servicos-band__linha1">Gostou desse site?</span>
+        <span class="servicos-band__linha2">A gente fez. E faz o seu.</span>
       </div>
       <span class="servicos-band__cta">Ver serviços <span class="servicos-band__arrow">↗</span></span>
     </div>

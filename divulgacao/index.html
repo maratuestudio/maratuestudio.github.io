@@ -253,18 +253,20 @@
     .lj-card.ativo{opacity:1;transform:translateX(0);pointer-events:auto}
     .lj-card__img{position:relative;width:clamp(220px,28vw,400px);aspect-ratio:1/1;flex-shrink:0;border-radius:18px;overflow:hidden;background:var(--areia);border:2px solid var(--preto);box-shadow:7px 7px 0 0 var(--preto)}
     .lj-card__img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
-    .lj-card__img--fit img{object-fit:contain;padding:12px}
+    .lj-card__img--sticker{width:auto;height:clamp(240px,44vh,430px);aspect-ratio:875/1241}
+    .lj-card__img--a3{width:auto;height:clamp(300px,56vh,540px);aspect-ratio:1131/1600}
+    .lj-card__img--a4{width:auto;height:clamp(200px,38vh,370px);aspect-ratio:1131/1600}
     .lj-card__info{display:flex;flex-direction:row;align-items:center;gap:clamp(16px,2.4vw,34px)}
     .lj-card__txt{display:flex;flex-direction:column;align-items:flex-start}
     .lj-card__preco{display:flex;align-items:baseline;gap:4px;font-family:var(--clother);font-weight:900;font-size:clamp(3.2rem,8vw,6.4rem);line-height:.9;color:var(--areia);text-shadow:.055em .055em 0 var(--preto)}
     .lj-card__preco small{font-family:var(--clother);font-weight:700;font-size:.28em}
-    .lj-card__nome{font-family:var(--clother);font-weight:700;font-size:clamp(1.1rem,1.9vw,1.6rem);text-transform:uppercase;color:var(--areia)}
+    .lj-card__nome{font-family:var(--clother);font-weight:700;font-size:clamp(1.1rem,1.9vw,1.6rem);text-transform:uppercase;color:var(--areia);text-shadow:3px 3px 0 var(--preto)}
     .lj-card__tipo{font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(240,236,228,.6);margin-top:2px}
     .loja__dots{position:absolute;bottom:64px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:3}
     .loja__dots span{width:6px;height:6px;border-radius:50%;background:rgba(240,236,228,.35)}
     .loja__dots span.ativo{background:var(--areia)}
     @media (max-width:680px){ .lj-card{flex-direction:column;text-align:center} .lj-card__info{align-items:center} }
-    .brand-corner{position:fixed;left:var(--margem);bottom:clamp(20px,4vh,40px);z-index:20;font-size:clamp(15px,1.8vw,24px);pointer-events:none}
+    .brand-corner{position:fixed;left:var(--margem);bottom:clamp(20px,4vh,40px);z-index:20;font-size:clamp(22px,2.9vw,38px);pointer-events:none}
     .brand-corner__logo{display:block;width:6em;height:auto;filter:brightness(0) invert(1)}
     .brand-corner__est{display:block;overflow:hidden;width:4.48em;height:1.16em;margin-top:-0.05em;margin-left:-0.12em;line-height:0}
     .brand-corner__est .estudio-boil{display:block;height:100%;width:400%;max-width:none;animation:estudio-boil .28s steps(4) infinite}
@@ -301,15 +303,15 @@
           <div class="lj-card__info"><p class="lj-card__preco"><small>R$</small>19</p><div class="lj-card__txt"><p class="lj-card__nome">Chaveiro</p><p class="lj-card__tipo">Chaveiro · 3D</p></div></div>
         </div>
         <div class="lj-card">
-          <div class="lj-card__img lj-card__img--fit"><img src="/adesivos-origens.webp" alt="Adesivos Origens"></div>
+          <div class="lj-card__img lj-card__img--sticker"><img src="/adesivos-origens.webp" alt="Adesivos Origens"></div>
           <div class="lj-card__info"><p class="lj-card__preco"><small>R$</small>19</p><div class="lj-card__txt"><p class="lj-card__nome">Adesivos</p><p class="lj-card__tipo">Adesivos · 12 un</p></div></div>
         </div>
         <div class="lj-card">
-          <div class="lj-card__img lj-card__img--fit"><img src="/poster-destrua.webp" alt="Pôster Destrua o Império A3"></div>
+          <div class="lj-card__img lj-card__img--a3"><img src="/poster-destrua.webp" alt="Pôster Destrua o Império A3"></div>
           <div class="lj-card__info"><p class="lj-card__preco"><small>R$</small>69</p><div class="lj-card__txt"><p class="lj-card__nome">Pôster A3</p><p class="lj-card__tipo">Pôster · A3</p></div></div>
         </div>
         <div class="lj-card">
-          <div class="lj-card__img lj-card__img--fit"><img src="/poster-destrua.webp" alt="Pôster Destrua o Império A4"></div>
+          <div class="lj-card__img lj-card__img--a4"><img src="/poster-destrua.webp" alt="Pôster Destrua o Império A4"></div>
           <div class="lj-card__info"><p class="lj-card__preco"><small>R$</small>39</p><div class="lj-card__txt"><p class="lj-card__nome">Pôster A4</p><p class="lj-card__tipo">Pôster · A4</p></div></div>
         </div>
         <div class="lj-card">

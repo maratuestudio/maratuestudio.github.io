@@ -244,24 +244,24 @@
     @keyframes shbL{0%,100%{transform:translateX(0)}50%{transform:translateX(-7px)}}
     @keyframes shR{0%,100%{transform:translateX(0)}50%{transform:translateX(7px)}}
 
-    /* ── LOJA (painel 3) — 1 bloco de produto por vez, troca com fade+slide ── */
-    .panel--loja{background:var(--azul);display:flex;align-items:center;justify-content:center}
-    .loja{display:flex;flex-direction:column;align-items:center;gap:clamp(20px,3.4vh,40px);padding:clamp(24px,4vh,64px) clamp(24px,4vw,72px);width:100%}
-    .loja__eyebrow{font-family:var(--mono);font-size:clamp(.62rem,1vw,.8rem);letter-spacing:.28em;text-transform:uppercase;color:var(--areia);opacity:.75}
-    .loja__title{font-family:var(--clother);font-weight:900;font-size:clamp(1.6rem,3.4vw,2.8rem);letter-spacing:-.01em;text-transform:uppercase;color:var(--areia);margin-top:4px}
-    .loja__stage{position:relative;width:clamp(220px,20vw,290px);height:clamp(300px,42vh,400px)}
-    .lj-card{position:absolute;inset:0;background:var(--areia);border:2px solid var(--preto);border-radius:16px;box-shadow:6px 6px 0 0 var(--preto);padding:clamp(12px,1.2vw,16px);display:flex;flex-direction:column;opacity:0;transform:translateX(28px);transition:opacity .6s ease,transform .6s ease;pointer-events:none}
+    /* ── LOJA (painel 3) — produto grande a esquerda, valor grande a direita ── */
+    .panel--loja{background:var(--azul)}
+    .loja__label-tr{position:absolute;top:64px;right:var(--margem);text-align:right;z-index:3;display:flex;flex-direction:column;gap:4px}
+    .loja__label-tr .loja__titulo{font-family:var(--clother);font-weight:900;font-size:clamp(1.1rem,1.9vw,1.7rem);letter-spacing:-.01em;text-transform:uppercase;color:var(--areia)}
+    .loja__stage{position:absolute;inset:0}
+    .lj-card{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:clamp(28px,5vw,80px);padding:clamp(24px,5vw,80px);opacity:0;transform:translateX(28px);transition:opacity .6s ease,transform .6s ease;pointer-events:none}
     .lj-card.ativo{opacity:1;transform:translateX(0);pointer-events:auto}
-    .lj-card__img{position:relative;flex:1;border-radius:9px;overflow:hidden;background:#e4dfd6;margin-bottom:10px}
+    .lj-card__img{position:relative;width:clamp(220px,28vw,400px);aspect-ratio:1/1;flex-shrink:0;border-radius:18px;overflow:hidden;background:var(--areia);border:2px solid var(--preto);box-shadow:7px 7px 0 0 var(--preto)}
     .lj-card__img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
-    .lj-card__preco{position:absolute;bottom:8px;right:8px;width:clamp(48px,5vw,64px);height:clamp(48px,5vw,64px);background:var(--areia);border:1.5px solid var(--preto);border-radius:50%;box-shadow:2px 2px 0 0 var(--preto);display:flex;align-items:center;justify-content:center;transform:rotate(-8deg);z-index:2}
-    .lj-card__preco .valor{display:flex;align-items:baseline;gap:1px;font-family:var(--clother);font-weight:900;font-size:clamp(.95rem,1.5vw,1.3rem);color:var(--preto);line-height:1}
-    .lj-card__preco small{font-family:var(--clother);font-weight:700;font-size:.5em}
-    .lj-card__nome{font-family:var(--clother);font-weight:700;font-size:clamp(.8rem,1.1vw,1rem);text-transform:uppercase;color:var(--preto);line-height:1.2}
-    .lj-card__tipo{font-family:var(--mono);font-size:.62rem;color:rgba(13,13,11,.5);letter-spacing:.08em;text-transform:uppercase;margin-top:2px}
-    .loja__dots{display:flex;gap:8px}
+    .lj-card__info{display:flex;flex-direction:column;align-items:flex-start;gap:2px}
+    .lj-card__preco{display:flex;align-items:baseline;gap:4px;font-family:var(--clother);font-weight:900;font-size:clamp(3.2rem,8vw,6.4rem);line-height:.9;color:var(--areia)}
+    .lj-card__preco small{font-family:var(--clother);font-weight:700;font-size:.28em}
+    .lj-card__nome{font-family:var(--clother);font-weight:700;font-size:clamp(1.1rem,1.9vw,1.6rem);text-transform:uppercase;color:var(--areia);margin-top:10px}
+    .lj-card__tipo{font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(240,236,228,.6);margin-top:2px}
+    .loja__dots{position:absolute;bottom:64px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:3}
     .loja__dots span{width:6px;height:6px;border-radius:50%;background:rgba(240,236,228,.35)}
     .loja__dots span.ativo{background:var(--areia)}
+    @media (max-width:680px){ .lj-card{flex-direction:column;text-align:center} .lj-card__info{align-items:center} }
   </style>
 </head>
 <body>
@@ -317,56 +317,54 @@
       <button class="swipe-hint fwd" id="toLoja" type="button">arraste para os produtos &rarr;</button>
     </section>
     <section class="panel panel--loja" id="loja">
-      <div class="loja">
-        <div>
-          <span class="loja__eyebrow">MARATU Estúdio</span>
-          <h1 class="loja__title">Peças à venda</h1>
-        </div>
-        <div class="loja__stage" id="ljStage">
-          <div class="lj-card ativo">
-            <div class="lj-card__img">
-              <img src="/carranca-chaveiro.webp" alt="Chaveiro">
-              <div class="lj-card__preco"><span class="valor"><small>R$</small>19</span></div>
-            </div>
+      <div class="loja__label-tr">
+        <span class="mono">MARATU Estúdio</span>
+        <h1 class="loja__titulo">Peças à venda</h1>
+      </div>
+      <div class="loja__stage" id="ljStage">
+        <div class="lj-card ativo">
+          <div class="lj-card__img"><img src="/carranca-chaveiro.webp" alt="Chaveiro"></div>
+          <div class="lj-card__info">
+            <p class="lj-card__preco"><small>R$</small>19</p>
             <p class="lj-card__nome">Chaveiro</p>
             <p class="lj-card__tipo">Chaveiro · 3D</p>
           </div>
-          <div class="lj-card">
-            <div class="lj-card__img">
-              <img src="/adesivos-origens.webp" alt="Adesivos Origens">
-              <div class="lj-card__preco"><span class="valor"><small>R$</small>19</span></div>
-            </div>
+        </div>
+        <div class="lj-card">
+          <div class="lj-card__img"><img src="/adesivos-origens.webp" alt="Adesivos Origens"></div>
+          <div class="lj-card__info">
+            <p class="lj-card__preco"><small>R$</small>19</p>
             <p class="lj-card__nome">Adesivos</p>
             <p class="lj-card__tipo">Adesivos · 12 un</p>
           </div>
-          <div class="lj-card">
-            <div class="lj-card__img">
-              <img src="/poster-pordosol.webp" alt="Pôster Pôr do Sol A3">
-              <div class="lj-card__preco"><span class="valor"><small>R$</small>69</span></div>
-            </div>
+        </div>
+        <div class="lj-card">
+          <div class="lj-card__img"><img src="/poster-pordosol.webp" alt="Pôster Pôr do Sol A3"></div>
+          <div class="lj-card__info">
+            <p class="lj-card__preco"><small>R$</small>69</p>
             <p class="lj-card__nome">Pôster A3</p>
             <p class="lj-card__tipo">Pôster · A3</p>
           </div>
-          <div class="lj-card">
-            <div class="lj-card__img">
-              <img src="/poster-pordosol.webp" alt="Pôster Pôr do Sol A4">
-              <div class="lj-card__preco"><span class="valor"><small>R$</small>39</span></div>
-            </div>
+        </div>
+        <div class="lj-card">
+          <div class="lj-card__img"><img src="/poster-pordosol.webp" alt="Pôster Pôr do Sol A4"></div>
+          <div class="lj-card__info">
+            <p class="lj-card__preco"><small>R$</small>39</p>
             <p class="lj-card__nome">Pôster A4</p>
             <p class="lj-card__tipo">Pôster · A4</p>
           </div>
-          <div class="lj-card">
-            <div class="lj-card__img">
-              <img src="/kit-cobogo-praia.webp" alt="Cobogó">
-              <div class="lj-card__preco"><span class="valor"><small>R$</small>49</span></div>
-            </div>
+        </div>
+        <div class="lj-card">
+          <div class="lj-card__img"><img src="/kit-cobogo-praia.webp" alt="Cobogó"></div>
+          <div class="lj-card__info">
+            <p class="lj-card__preco"><small>R$</small>49</p>
             <p class="lj-card__nome">Cobogó</p>
             <p class="lj-card__tipo">Cobogó · 15×15cm</p>
           </div>
         </div>
-        <div class="loja__dots" id="ljDots"></div>
-        <button class="swipe-hint back" id="toPixFromLoja" type="button">&larr; pix</button>
       </div>
+      <div class="loja__dots" id="ljDots"></div>
+      <button class="swipe-hint back" id="toPixFromLoja" type="button">&larr; pix</button>
     </section>
   </div>
   <script>

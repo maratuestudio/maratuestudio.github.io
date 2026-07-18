@@ -244,23 +244,24 @@
     @keyframes shbL{0%,100%{transform:translateX(0)}50%{transform:translateX(-7px)}}
     @keyframes shR{0%,100%{transform:translateX(0)}50%{transform:translateX(7px)}}
 
-    /* ── LOJA (painel 3) ── */
+    /* ── LOJA (painel 3) — 1 bloco de produto por vez, troca com fade+slide ── */
     .panel--loja{background:var(--azul);display:flex;align-items:center;justify-content:center}
     .loja{display:flex;flex-direction:column;align-items:center;gap:clamp(20px,3.4vh,40px);padding:clamp(24px,4vh,64px) clamp(24px,4vw,72px);width:100%}
     .loja__eyebrow{font-family:var(--mono);font-size:clamp(.62rem,1vw,.8rem);letter-spacing:.28em;text-transform:uppercase;color:var(--areia);opacity:.75}
     .loja__title{font-family:var(--clother);font-weight:900;font-size:clamp(1.6rem,3.4vw,2.8rem);letter-spacing:-.01em;text-transform:uppercase;color:var(--areia);margin-top:4px}
-    .loja__grid{display:flex;align-items:center;justify-content:center;gap:clamp(14px,2vw,28px);flex-wrap:nowrap}
-    .lj-card{background:var(--areia);border:2px solid var(--preto);border-radius:16px;box-shadow:6px 6px 0 0 var(--preto);padding:clamp(10px,1vw,14px);display:flex;flex-direction:column;width:clamp(140px,15vw,206px)}
-    .lj-card__img{position:relative;aspect-ratio:1/1;border-radius:9px;overflow:hidden;background:#e4dfd6;margin-bottom:9px}
-    .lj-card__img.poster{aspect-ratio:3/4}
-    .lj-card__img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;opacity:0;transform:translateX(14px);transition:opacity .6s ease,transform .6s ease}
-    .lj-card__img img.ativo{opacity:1;transform:translateX(0)}
-    .lj-card__preco{position:absolute;bottom:8px;right:8px;width:clamp(44px,4.6vw,58px);height:clamp(44px,4.6vw,58px);background:var(--areia);border:1.5px solid var(--preto);border-radius:50%;box-shadow:2px 2px 0 0 var(--preto);display:flex;align-items:center;justify-content:center;transform:rotate(-8deg);z-index:2}
-    .lj-card__preco .valor{display:flex;align-items:baseline;gap:1px;font-family:var(--clother);font-weight:900;font-size:clamp(.85rem,1.3vw,1.2rem);color:var(--preto);line-height:1}
+    .loja__stage{position:relative;width:clamp(220px,20vw,290px);height:clamp(300px,42vh,400px)}
+    .lj-card{position:absolute;inset:0;background:var(--areia);border:2px solid var(--preto);border-radius:16px;box-shadow:6px 6px 0 0 var(--preto);padding:clamp(12px,1.2vw,16px);display:flex;flex-direction:column;opacity:0;transform:translateX(28px);transition:opacity .6s ease,transform .6s ease;pointer-events:none}
+    .lj-card.ativo{opacity:1;transform:translateX(0);pointer-events:auto}
+    .lj-card__img{position:relative;flex:1;border-radius:9px;overflow:hidden;background:#e4dfd6;margin-bottom:10px}
+    .lj-card__img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+    .lj-card__preco{position:absolute;bottom:8px;right:8px;width:clamp(48px,5vw,64px);height:clamp(48px,5vw,64px);background:var(--areia);border:1.5px solid var(--preto);border-radius:50%;box-shadow:2px 2px 0 0 var(--preto);display:flex;align-items:center;justify-content:center;transform:rotate(-8deg);z-index:2}
+    .lj-card__preco .valor{display:flex;align-items:baseline;gap:1px;font-family:var(--clother);font-weight:900;font-size:clamp(.95rem,1.5vw,1.3rem);color:var(--preto);line-height:1}
     .lj-card__preco small{font-family:var(--clother);font-weight:700;font-size:.5em}
-    .lj-card__nome{font-family:var(--clother);font-weight:700;font-size:clamp(.68rem,.95vw,.84rem);text-transform:uppercase;color:var(--preto);line-height:1.2}
-    .lj-card__tipo{font-family:var(--mono);font-size:.56rem;color:rgba(13,13,11,.5);letter-spacing:.08em;text-transform:uppercase;margin-top:2px}
-    @media (max-width:900px){ .loja__grid{flex-wrap:wrap} }
+    .lj-card__nome{font-family:var(--clother);font-weight:700;font-size:clamp(.8rem,1.1vw,1rem);text-transform:uppercase;color:var(--preto);line-height:1.2}
+    .lj-card__tipo{font-family:var(--mono);font-size:.62rem;color:rgba(13,13,11,.5);letter-spacing:.08em;text-transform:uppercase;margin-top:2px}
+    .loja__dots{display:flex;gap:8px}
+    .loja__dots span{width:6px;height:6px;border-radius:50%;background:rgba(240,236,228,.35)}
+    .loja__dots span.ativo{background:var(--areia)}
   </style>
 </head>
 <body>
@@ -321,14 +322,10 @@
           <span class="loja__eyebrow">MARATU Estúdio</span>
           <h1 class="loja__title">Peças à venda</h1>
         </div>
-        <div class="loja__grid">
-          <div class="lj-card">
-            <div class="lj-card__img" id="ljChaveiro">
-              <img class="ativo" src="/carranca-chaveiro.webp" alt="Kit Chaveiro">
-              <img src="/arcos-chaveiro.webp" alt="">
-              <img src="/relogio-chaveiro.webp" alt="">
-              <img src="/kit-aracaju-chaveiro.webp" alt="">
-              <img src="/maratu-chaveiro-tag.jpg" alt="">
+        <div class="loja__stage" id="ljStage">
+          <div class="lj-card ativo">
+            <div class="lj-card__img">
+              <img src="/carranca-chaveiro.webp" alt="Chaveiro">
               <div class="lj-card__preco"><span class="valor"><small>R$</small>19</span></div>
             </div>
             <p class="lj-card__nome">Chaveiro</p>
@@ -336,23 +333,23 @@
           </div>
           <div class="lj-card">
             <div class="lj-card__img">
-              <img class="ativo" src="/adesivos-origens.webp" alt="Adesivos Origens">
+              <img src="/adesivos-origens.webp" alt="Adesivos Origens">
               <div class="lj-card__preco"><span class="valor"><small>R$</small>19</span></div>
             </div>
             <p class="lj-card__nome">Adesivos</p>
             <p class="lj-card__tipo">Adesivos · 12 un</p>
           </div>
           <div class="lj-card">
-            <div class="lj-card__img poster">
-              <img class="ativo" src="/poster-pordosol.webp" alt="Pôster Pôr do Sol A3">
+            <div class="lj-card__img">
+              <img src="/poster-pordosol.webp" alt="Pôster Pôr do Sol A3">
               <div class="lj-card__preco"><span class="valor"><small>R$</small>69</span></div>
             </div>
             <p class="lj-card__nome">Pôster A3</p>
             <p class="lj-card__tipo">Pôster · A3</p>
           </div>
           <div class="lj-card">
-            <div class="lj-card__img poster">
-              <img class="ativo" src="/poster-pordosol.webp" alt="Pôster Pôr do Sol A4">
+            <div class="lj-card__img">
+              <img src="/poster-pordosol.webp" alt="Pôster Pôr do Sol A4">
               <div class="lj-card__preco"><span class="valor"><small>R$</small>39</span></div>
             </div>
             <p class="lj-card__nome">Pôster A4</p>
@@ -360,13 +357,14 @@
           </div>
           <div class="lj-card">
             <div class="lj-card__img">
-              <img class="ativo" src="/kit-cobogo-praia.webp" alt="Cobogó">
+              <img src="/kit-cobogo-praia.webp" alt="Cobogó">
               <div class="lj-card__preco"><span class="valor"><small>R$</small>49</span></div>
             </div>
             <p class="lj-card__nome">Cobogó</p>
             <p class="lj-card__tipo">Cobogó · 15×15cm</p>
           </div>
         </div>
+        <div class="loja__dots" id="ljDots"></div>
         <button class="swipe-hint back" id="toPixFromLoja" type="button">&larr; pix</button>
       </div>
     </section>
@@ -400,12 +398,19 @@
     document.getElementById('toLoja').addEventListener('click',function(){ goTo(2); });
     document.getElementById('toPixFromLoja').addEventListener('click',function(){ goTo(1); });
 
-    // LOJA: slide das fotos do kit chaveiro
+    // LOJA: troca os blocos de produto um por vez (fade+slide)
     (function(){
-      var wrap=document.getElementById('ljChaveiro'); if(!wrap)return;
-      var imgs=wrap.querySelectorAll('img'); if(imgs.length<2)return;
+      var stage=document.getElementById('ljStage'); if(!stage)return;
+      var cards=stage.querySelectorAll('.lj-card'); if(cards.length<2)return;
+      var dotsWrap=document.getElementById('ljDots');
+      cards.forEach(function(_,idx){ var d=document.createElement('span'); if(idx===0)d.className='ativo'; dotsWrap.appendChild(d); });
+      var dots=dotsWrap.querySelectorAll('span');
       var i=0;
-      setInterval(function(){ imgs[i].classList.remove('ativo'); i=(i+1)%imgs.length; imgs[i].classList.add('ativo'); },2200);
+      setInterval(function(){
+        cards[i].classList.remove('ativo'); dots[i].classList.remove('ativo');
+        i=(i+1)%cards.length;
+        cards[i].classList.add('ativo'); dots[i].classList.add('ativo');
+      },3400);
     })();
 
     // ARATU respira + pisca 2x a cada 5s

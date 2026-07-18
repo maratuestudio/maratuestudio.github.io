@@ -326,11 +326,10 @@
     var _wl=null; async function lock(){ try{ if('wakeLock' in navigator){ _wl=await navigator.wakeLock.request('screen'); } }catch(e){} }
     document.addEventListener('visibilitychange',function(){ if(document.visibilityState==='visible')lock(); }); lock();
     window.addEventListener('pointerdown',function o(){ lock(); window.removeEventListener('pointerdown',o); });
-    // TELA CHEIA no 1o toque (iPadOS mostra barra de titulo com hora/data mesmo em standalone; so a Fullscreen API remove)
+    // TELA CHEIA no 1o toque (fora do PWA)
     function full(){ var el=document.documentElement,r=el.requestFullscreen||el.webkitRequestFullscreen; if(r){ try{ var p=r.call(el); if(p&&p.catch)p.catch(function(){}); }catch(e){} } }
-    var jaTelaCheia=matchMedia('(display-mode: fullscreen)').matches||document.fullscreenElement;
-    if(!jaTelaCheia){ window.addEventListener('pointerdown',function o(){ full(); window.removeEventListener('pointerdown',o); }); }
-    document.addEventListener('visibilitychange',function(){ if(document.visibilityState==='visible'&&!document.fullscreenElement&&!matchMedia('(display-mode: fullscreen)').matches){ window.addEventListener('pointerdown',function o(){ full(); window.removeEventListener('pointerdown',o); },{once:true}); } });
+    var st=matchMedia('(display-mode: fullscreen)').matches||matchMedia('(display-mode: standalone)').matches||navigator.standalone;
+    if(!st){ window.addEventListener('pointerdown',function o(){ full(); window.removeEventListener('pointerdown',o); }); }
     // copiar chave
     var pk=document.getElementById('pixKey'),pc=document.getElementById('pixCopied');
     if(pk){ pk.addEventListener('click',function(){ try{ navigator.clipboard.writeText('estudio@maratu.com.br'); pc.classList.add('on'); setTimeout(function(){pc.classList.remove('on')},1600); }catch(e){} }); }

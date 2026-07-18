@@ -1,4 +1,4 @@
-const C='maratu-divulg-v2';
+const C='maratu-divulg-v3';
 self.addEventListener('install', e=>{ self.skipWaiting(); });
 self.addEventListener('activate', e=>{ e.waitUntil(self.clients.claim()); });
 self.addEventListener('fetch', e=>{

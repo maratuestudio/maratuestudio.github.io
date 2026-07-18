@@ -220,9 +220,10 @@
     @keyframes sh{0%,100%{transform:translateX(-50%)}50%{transform:translateX(calc(-50% + 7px))}}
     .swipe-hint.back{animation:shb 1.8s ease-in-out infinite}
     @keyframes shb{0%,100%{transform:translateX(-50%)}50%{transform:translateX(calc(-50% - 7px))}}
-    .panel--pix{background:var(--laranja);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(14px,2.4vh,30px);padding:clamp(24px,5vw,80px);text-align:center}
+    .panel--pix{background:var(--laranja);display:flex;flex-direction:row;align-items:center;justify-content:center;gap:clamp(30px,5vw,84px);padding:clamp(24px,5vw,80px);text-align:left}
+    .pix__left{display:flex;flex-direction:column;align-items:flex-start;gap:clamp(12px,2.2vh,24px);max-width:min(46vw,560px)}
     .pix__eyebrow{font-family:var(--mono);font-size:clamp(.62rem,1vw,.8rem);letter-spacing:.28em;text-transform:uppercase;color:var(--areia);opacity:.9}
-    .pix__title{font-family:var(--clother);font-weight:900;font-size:clamp(2.2rem,7vw,5.4rem);line-height:.92;letter-spacing:-.02em;text-transform:uppercase;color:var(--areia)}
+    .pix__title{font-family:var(--clother);font-weight:900;font-size:clamp(2.2rem,6.5vw,5.6rem);line-height:.9;letter-spacing:-.02em;text-transform:uppercase;color:var(--areia);text-align:left}
     .pix__card{background:var(--areia);border:2px solid var(--preto);border-radius:24px;box-shadow:8px 8px 0 0 var(--preto);padding:clamp(16px,2vw,30px);line-height:0}
     .pix__card img{width:clamp(190px,30vw,330px);height:auto;display:block;border-radius:8px}
     .pix__key{font-family:var(--mono);font-size:clamp(.7rem,1.4vw,1rem);letter-spacing:.1em;text-transform:uppercase;color:var(--areia);font-weight:700;cursor:pointer}
@@ -233,6 +234,8 @@
     .aratu-pix svg{width:100%;height:auto;overflow:visible;display:block}
     .aratu-pix path{fill:var(--areia)}
 
+
+    @media (max-width:680px){ .panel--pix{flex-direction:column;text-align:center;gap:clamp(14px,2.4vh,28px)} .pix__left{align-items:center;max-width:none} .pix__title{text-align:center} .aratu-pix{margin-left:auto;margin-right:auto} }
   </style>
 </head>
 <body>
@@ -268,12 +271,12 @@
       <button class="swipe-hint" id="toPix" type="button">arraste para o pix &rarr;</button>
     </section>
     <section class="panel panel--pix" id="pix">
-      <span class="pix__eyebrow">MARATU Estúdio</span>
-      <h1 class="pix__title">Pague<br>com Pix</h1>
-      <div class="pix__card"><img src="/divulgacao/pix-qr.png?v=2" alt="QR de pagamento Pix" width="583" height="583"></div>
-      <div class="pix__key" id="pixKey" title="toque para copiar a chave"><span>chave</span> estudio@maratu.com.br</div>
-      <div class="pix__copied" id="pixCopied">chave copiada</div>
-      <div class="aratu-pix" id="aratuPix" aria-hidden="true">
+      <div class="pix__left">
+        <span class="pix__eyebrow">MARATU Estúdio</span>
+        <h1 class="pix__title">Pague<br>com Pix</h1>
+        <div class="pix__key" id="pixKey" title="toque para copiar a chave"><span>chave</span> estudio@maratu.com.br</div>
+        <div class="pix__copied" id="pixCopied">chave copiada</div>
+        <div class="aratu-pix" id="aratuPix" aria-hidden="true">
         <svg viewBox="0 0 318.24 152.9" xmlns="http://www.w3.org/2000/svg">
           <g data-aratu="claw-left"><path d="M0,104.77c0,26.58,21.55,48.13,48.13,48.13V56.65C21.55,56.65,0,78.19,0,104.77Z"/></g>
           <g data-aratu="claw-right"><path d="M270.11,56.65v96.26c26.58,0,48.13-21.55,48.13-48.13s-21.55-48.13-48.13-48.13Z"/></g>
@@ -282,7 +285,9 @@
           <g data-aratu="eye-left"><path d="M117.49,48.16V0c-13.3,0-24.08,10.78-24.08,24.08s10.78,24.08,24.08,24.08Z"/></g>
         </svg>
       </div>
-      <button class="swipe-hint back" id="toHome" type="button">&larr; início</button>
+      </div>
+      <div class="pix__card"><img src="/divulgacao/pix-qr.png?v=2" alt="QR de pagamento Pix" width="583" height="583"></div>
+      <button class="swipe-hint back" id="toHome">&larr; início</button>
     </section>
   </div>
   <script>

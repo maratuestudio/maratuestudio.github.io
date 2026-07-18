@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>MARATU · Divulgação</title>
+  <meta name="robots" content="noindex">
+  <link rel="manifest" href="/divulgacao/divulgacao.webmanifest">
+  <meta name="theme-color" content="#0D0D0B">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="MARATU">
+  <link rel="apple-touch-icon" href="/apple-touch-icon-v6.png">
+  <link rel="icon" type="image/png" href="/favicon-v6.png">
+  <style>
+
+    /* ── FONTES ── */
+    @font-face { font-family: 'Jack'; src: url('TRYJackAlpha-Regular.woff2?v=2') format('woff2'), url('TRYJackAlpha-Regular.ttf') format('truetype'); font-weight: 400; font-display: swap; }
+
+    @font-face { font-family: 'Clother'; src: url('TRYClother-Regular.woff2') format('woff2'), url('TRYClother-Regular.ttf') format('truetype'); font-weight: 400; font-display: swap; }
+
+    @font-face { font-family: 'Clother'; src: url('TRYClother-Bold.woff2') format('woff2'), url('TRYClother-Bold.ttf') format('truetype'); font-weight: 700; font-display: swap; }
+
+    @font-face { font-family: 'Clother'; src: url('TRYClother-Black.woff2') format('woff2'), url('TRYClother-Black.ttf') format('truetype'); font-weight: 900; font-display: swap; }
+
+    @font-face { font-family: 'Clother'; src: url('TRYClother-Italic.woff2') format('woff2'), url('TRYClother-Italic.ttf') format('truetype'); font-weight: 400; font-style: italic; font-display: optional; }
+
+
+    /* ── VARIÁVEIS ── */
+    :root {
+      --laranja: #C8501A;
+      --azul: #0E3272;
+      --azul-claro: #2E6FC4;
+      --areia: #F0ECE4;
+      --areia-sombra: #E5DFD3;
+      --preto: #0D0D0B;
+      --dourado: #D4960A;
+      --mono: 'Clother', sans-serif;
+      --jack: 'Jack', 'Arial Black', sans-serif;
+      --clother: 'Clother', 'Helvetica Neue', sans-serif;
+      --gutter: clamp(16px, 2vw, 32px);
+      --margem: clamp(20px, 4vw, 56px);
+      --secao-padding: clamp(56px, 9vh, 120px);
+    }
+
+    html {
+      scroll-behavior: smooth;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      background: var(--areia);
+      scrollbar-color: rgba(200,80,26,0.6) transparent;
+      scrollbar-width: thin;
+      scroll-padding-top: 80px;
+    }
+
+    body {
+      font-family: var(--clother);
+      background: var(--areia);
+      color: var(--preto);
+      line-height: 1.5;
+    }
+
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      padding: 0 var(--margem);
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      grid-template-rows: 1fr auto;
+      gap: var(--gutter);
+      padding-top: 120px;
+      padding-bottom: 72px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero__bg {
+      position: absolute; inset: 0;
+      overflow: hidden;
+    }
+
+    .hero__bg::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(to bottom, rgba(13,13,11,0.15) 0%, rgba(13,13,11,0.96) 65%);
+      z-index: 1;
+    }
+
+    .hero__bg-slide {
+      position: absolute; inset: 0;
+      background-size: cover; background-position: center; background-repeat: no-repeat;
+      opacity: 0; transition: opacity 1.2s ease;
+    }
+
+    .hero__bg-slide.ativo { opacity: 1; }
+
+    .hero__label-tl {
+      position: absolute; top: 64px; left: var(--margem);
+      display: flex; flex-direction: column; gap: 4px;
+      z-index: 2;
+    }
+
+    .hero__label-tr {
+      position: absolute; top: 64px; right: var(--margem);
+      text-align: right; z-index: 2;
+    }
+
+    .hero__title {
+      grid-column: 1 / span 12; grid-row: 2;
+      font-family: var(--jack);
+      font-size: clamp(3rem, 11vw, 10rem);
+      line-height: 0.88;
+      letter-spacing: -0.02em;
+      text-transform: uppercase;
+      color: var(--laranja);
+      align-self: end;
+      position: relative; z-index: 2;
+    }
+
+    .hero__title .offset {
+      display: block;
+      margin-top: 0.08em;
+      transform: translateX(0.02em);
+      color: var(--areia);
+      font-size: 0.42em;
+      font-family: var(--clother);
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      line-height: 1;
+    }
+
+    /* Subtitulo "Estudio" como GIF animado (sketch). Dimensionado pra casar tamanho/posicao
+       do texto original: altura 1.16em (=cap-height do texto), alinhado a esquerda sob o M. */
+    .hero__title .estudio-boil-wrap { margin-top: -0.05em; line-height: 0; overflow: hidden; width: 4.48em; height: 1.16em; margin-left: -0.12em; }
+
+    .hero__title .estudio-boil { display: block; height: 100%; width: 400%; max-width: none; animation: estudio-boil 0.28s steps(4) infinite; }
+
+    @keyframes estudio-boil { to { transform: translateX(-100%); } }
+
+    .hero__title .hero__logo { display: block; width: 6em; height: auto; }
+
+    .hero__subtitle {
+      grid-column: 1 / span 7; grid-row: 3;
+      font-size: clamp(0.9rem, 1.3vw, 1.1rem);
+      color: rgba(240,236,228,0.6);
+      line-height: 1.75;
+      max-width: 52ch;
+      align-self: end;
+      position: relative; z-index: 2;
+    }
+
+    .hero__scroll {
+      position: absolute; right: var(--margem); bottom: 32px;
+      text-align: right;
+      display: flex; flex-direction: column;
+      align-items: flex-end; gap: 12px;
+      z-index: 2;
+    }
+
+    .hero__scroll-line {
+      width: 1px; height: 56px;
+      background: rgba(240,236,228,0.2);
+      position: relative; overflow: hidden;
+    }
+
+    .hero__scroll-line::before {
+      content: ''; position: absolute;
+      top: -100%; left: 0; right: 0; height: 100%;
+      background: var(--laranja);
+      animation: scroll-tick 2.5s cubic-bezier(0.4,0,0.2,1) infinite;
+    }
+
+
+    /* ── MONO (utilitário) ── */
+    .mono {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(240,236,228,0.4);
+    }
+
+
+
+
+    /* ── SCROLL REVEAL (fade puro) ── */
+    .reveal {
+      opacity: 0;
+      transition: opacity 0.9s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    .reveal.in { opacity: 1; }
+
+    .reveal[data-delay="1"] { transition-delay: 0.15s; }
+
+    .reveal[data-delay="2"] { transition-delay: 0.3s; }
+
+    .reveal[data-delay="3"] { transition-delay: 0.45s; }
+
+    @keyframes scroll-tick {
+      0%   { top: -100%; }
+      100% { top: 100%; }
+    }
+
+    /* ===== DIVULGACAO (kiosk) ===== */
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+    html,body{height:100%;overflow:hidden;background:var(--preto);overscroll-behavior:none}
+    .deck{display:flex;width:100vw;height:100dvh;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+    .deck::-webkit-scrollbar{display:none}
+    .panel{flex:0 0 100vw;width:100vw;height:100dvh;scroll-snap-align:start;position:relative;overflow:hidden}
+    .panel--hero .hero{min-height:100dvh;height:100dvh;padding-top:clamp(40px,7vh,90px)}
+    .qr-card{position:absolute;right:clamp(20px,5vw,80px);top:50%;transform:translateY(-64%);z-index:6;background:var(--areia);border:2px solid var(--preto);border-radius:22px;box-shadow:7px 7px 0 0 var(--preto);padding:clamp(16px,1.8vw,26px);display:flex;flex-direction:column;align-items:center;gap:12px;max-width:min(36vw,340px);text-decoration:none;color:var(--preto)}
+    .qr-card svg{width:clamp(150px,20vw,280px);height:auto;display:block}
+    .qr-card__lbl{font-family:var(--mono);font-size:clamp(.58rem,1vw,.72rem);letter-spacing:.16em;text-transform:uppercase;text-align:center;line-height:1.5}
+    .qr-card__lbl b{font-weight:900}
+    .swipe-hint{position:absolute;bottom:clamp(16px,3vh,32px);left:50%;z-index:6;font-family:var(--mono);font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;display:flex;align-items:center;gap:10px;color:var(--areia);opacity:.9;animation:sh 1.8s ease-in-out infinite}
+    @keyframes sh{0%,100%{transform:translateX(-50%)}50%{transform:translateX(calc(-50% - 8px))}}
+    .panel--pix{background:var(--laranja);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(18px,3vh,38px);padding:clamp(24px,5vw,80px);text-align:center}
+    .pix__eyebrow{font-family:var(--mono);font-size:clamp(.62rem,1vw,.8rem);letter-spacing:.28em;text-transform:uppercase;color:var(--areia);opacity:.9}
+    .pix__title{font-family:var(--clother);font-weight:900;font-size:clamp(2.4rem,8vw,6rem);line-height:.92;letter-spacing:-.02em;text-transform:uppercase;color:var(--areia)}
+    .pix__card{background:var(--areia);border:2px solid var(--preto);border-radius:24px;box-shadow:8px 8px 0 0 var(--preto);padding:clamp(20px,2.4vw,34px);line-height:0}
+    .pix__card svg{width:clamp(200px,32vw,360px);height:auto;display:block}
+    .pix__key{font-family:var(--mono);font-size:clamp(.7rem,1.4vw,1rem);letter-spacing:.1em;text-transform:uppercase;color:var(--areia);font-weight:700;cursor:pointer}
+    .pix__key span{opacity:.75;font-weight:400}
+    .pix__copied{font-family:var(--mono);font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--areia);height:1em;opacity:0;transition:opacity .2s}
+    .pix__copied.on{opacity:1}
+
+  </style>
+</head>
+<body>
+  <div class="deck" id="deck">
+
+    <section class="panel panel--hero">
+      <section class="hero">
+    <div class="hero__bg">
+      <div class="hero__bg-slide ativo" style="background-image: url('/Artboard 1@300x.webp');"></div>
+      <div class="hero__bg-slide" data-bg="/blusa-destrua-frente.webp" style="background-position: center 60%;"></div>
+      <div class="hero__bg-slide" data-bg="/blusa-destrua-costas.webp" style="background-position: center 60%;"></div>
+      <div class="hero__bg-slide" data-bg="/blusa-azulejos-costas.webp" style="background-position: center 60%;"></div>
+      <div class="hero__bg-slide" data-bg="/blusa-maratu-print.webp" style="background-position: center 60%;"></div>
+      <div class="hero__bg-slide" data-bg="/Artboard 4@300x.webp"></div>
+      <div class="hero__bg-slide" data-bg="/Artboard 5@300x.webp"></div>
+      <div class="hero__bg-slide" data-bg="/vaso-pinda-cinza.webp"></div>
+      <div class="hero__bg-slide" data-bg="/kit-cobogo-praia.webp"></div>
+    </div>
+    <div class="hero__label-tl">
+      <span class="mono">EST. 2026 — Aracaju, SE</span>
+      <span class="mono">Impressão 3D · Design · Arte</span>
+    </div>
+    <div class="hero__label-tr">
+      <span class="mono">em atividade</span>
+    </div>
+    <h1 class="hero__title reveal">
+      <img class="hero__logo" src="/maratu-logo.svg?v=1" alt="MARATU"><span class="offset estudio-boil-wrap" aria-label="Estúdio"><img class="estudio-boil" src="/estudio-sprite.webp?v=1" alt="Estúdio"></span>
+    </h1>
+</div>
+  </section>
+      <a class="qr-card" href="https://instagram.com/maratuestudio" target="_blank" rel="noopener" aria-label="Siga a MARATU no Instagram">
+        <svg width="330" height="330" class="segno"><path transform="scale(10)" class="qrline" stroke="#0d0d0b" d="M0 0.5h7m1 0h1m3 0h2m1 0h1m1 0h3m3 0h1m2 0h7m-33 1h1m5 0h1m3 0h1m1 0h2m3 0h1m2 0h1m1 0h1m3 0h1m5 0h1m-33 1h1m1 0h3m1 0h1m2 0h1m1 0h1m1 0h2m1 0h3m1 0h1m3 0h1m1 0h1m1 0h3m1 0h1m-33 1h1m1 0h3m1 0h1m2 0h2m3 0h1m4 0h4m1 0h1m1 0h1m1 0h3m1 0h1m-33 1h1m1 0h3m1 0h1m1 0h2m3 0h1m1 0h1m1 0h2m2 0h1m2 0h1m1 0h1m1 0h3m1 0h1m-33 1h1m5 0h1m1 0h1m1 0h1m2 0h1m1 0h1m1 0h1m2 0h1m1 0h1m1 0h1m1 0h1m5 0h1m-33 1h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7m-24 1h1m1 0h1m2 0h3m4 0h2m1 0h1m-24 1h7m3 0h4m2 0h1m4 0h1m1 0h1m2 0h2m3 0h1m-33 1h3m1 0h2m2 0h2m1 0h2m1 0h1m3 0h6m2 0h2m1 0h2m1 0h1m-33 1h2m4 0h1m2 0h1m3 0h1m1 0h2m1 0h1m1 0h2m2 0h2m2 0h1m1 0h2m-32 1h1m1 0h2m1 0h1m1 0h1m2 0h3m1 0h1m1 0h1m2 0h4m5 0h3m1 0h1m-33 1h2m4 0h1m4 0h1m2 0h2m2 0h2m1 0h1m2 0h2m2 0h2m-27 1h3m3 0h2m2 0h1m1 0h1m4 0h3m1 0h3m3 0h3m-28 1h4m1 0h2m3 0h3m1 0h1m5 0h2m1 0h4m-31 1h3m1 0h1m1 0h1m2 0h2m1 0h2m1 0h6m1 0h1m1 0h3m1 0h2m-31 1h2m1 0h1m1 0h2m1 0h2m2 0h1m6 0h1m2 0h2m1 0h1m1 0h3m2 0h1m-32 1h1m1 0h1m4 0h2m2 0h2m3 0h4m2 0h1m2 0h2m1 0h4m-28 1h3m1 0h1m1 0h2m1 0h1m2 0h2m1 0h1m1 0h1m2 0h1m1 0h2m1 0h2m-32 1h1m3 0h2m2 0h6m2 0h4m3 0h3m1 0h5m-30 1h1m1 0h3m3 0h2m2 0h1m1 0h1m3 0h3m1 0h2m2 0h2m-30 1h2m6 0h1m2 0h3m2 0h1m4 0h1m1 0h1m2 0h1m2 0h2m1 0h1m-33 1h1m5 0h1m2 0h3m2 0h5m1 0h2m4 0h1m3 0h2m-32 1h1m1 0h4m1 0h1m2 0h1m1 0h6m3 0h2m1 0h2m3 0h4m-33 1h1m1 0h1m2 0h3m4 0h1m1 0h1m1 0h1m1 0h1m3 0h8m-22 1h1m2 0h3m1 0h1m1 0h5m1 0h2m3 0h1m1 0h1m1 0h1m-33 1h7m1 0h3m1 0h2m1 0h1m1 0h1m3 0h1m1 0h2m1 0h1m1 0h1m1 0h2m-32 1h1m5 0h1m1 0h2m4 0h1m1 0h1m1 0h7m3 0h4m-32 1h1m1 0h3m1 0h1m1 0h3m1 0h1m1 0h4m1 0h1m1 0h1m2 0h6m1 0h2m-33 1h1m1 0h3m1 0h1m1 0h1m2 0h3m1 0h2m1 0h1m1 0h1m1 0h1m2 0h1m2 0h3m1 0h1m-33 1h1m1 0h3m1 0h1m1 0h1m1 0h2m1 0h1m1 0h1m2 0h2m1 0h3m2 0h2m1 0h2m-31 1h1m5 0h1m1 0h4m4 0h1m1 0h5m2 0h1m2 0h3m-31 1h7m2 0h1m1 0h1m3 0h1m3 0h1m3 0h2m2 0h1m3 0h1"/></svg>
+        <span class="qr-card__lbl">Siga no Instagram<br><b>@maratuestudio</b></span>
+      </a>
+      <div class="swipe-hint" style="transform:translateX(-50%)">arraste para o pix &rarr;</div>
+    </section>
+
+    <section class="panel panel--pix" id="pix">
+      <span class="pix__eyebrow">MARATU Estúdio</span>
+      <h1 class="pix__title">Pague<br>com Pix</h1>
+      <div class="pix__card">
+        <svg width="450" height="450" class="segno"><path transform="scale(10)" class="qrline" stroke="#0d0d0b" d="M0 0.5h7m4 0h6m2 0h5m2 0h2m2 0h4m2 0h1m1 0h7m-45 1h1m5 0h1m1 0h3m2 0h6m3 0h1m1 0h1m6 0h1m1 0h1m1 0h1m2 0h1m5 0h1m-45 1h1m1 0h3m1 0h1m1 0h1m1 0h1m1 0h1m3 0h1m1 0h1m2 0h1m4 0h8m1 0h1m2 0h1m1 0h3m1 0h1m-45 1h1m1 0h3m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h4m1 0h1m2 0h1m3 0h1m1 0h1m1 0h2m1 0h2m1 0h1m1 0h3m1 0h1m-45 1h1m1 0h3m1 0h1m5 0h5m1 0h1m1 0h5m4 0h2m2 0h4m1 0h1m1 0h3m1 0h1m-45 1h1m5 0h1m3 0h1m2 0h1m6 0h1m3 0h1m1 0h4m8 0h1m5 0h1m-45 1h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7m-37 1h2m2 0h2m1 0h2m1 0h1m1 0h1m3 0h2m1 0h2m2 0h3m2 0h1m-37 1h1m5 0h1m1 0h1m2 0h1m2 0h1m3 0h1m1 0h5m1 0h1m2 0h2m2 0h1m1 0h1m1 0h2m2 0h3m-44 1h1m2 0h2m2 0h2m1 0h2m1 0h2m2 0h1m3 0h3m2 0h2m2 0h3m1 0h1m1 0h1m1 0h1m1 0h1m1 0h2m-44 1h1m2 0h1m1 0h4m3 0h2m2 0h1m1 0h3m3 0h1m1 0h1m1 0h2m1 0h1m2 0h1m1 0h4m1 0h2m-43 1h3m6 0h2m7 0h1m2 0h1m1 0h1m1 0h2m1 0h5m4 0h1m1 0h1m1 0h2m-41 1h2m1 0h3m2 0h3m2 0h5m2 0h4m1 0h2m3 0h5m1 0h1m1 0h2m1 0h2m-44 1h1m1 0h1m3 0h1m2 0h1m1 0h1m1 0h1m1 0h2m1 0h1m4 0h2m1 0h2m1 0h2m1 0h1m1 0h3m1 0h1m2 0h3m-45 1h3m3 0h2m1 0h3m2 0h3m1 0h1m2 0h1m1 0h2m1 0h2m1 0h1m3 0h3m2 0h2m1 0h1m-42 1h1m2 0h2m2 0h1m1 0h2m2 0h1m2 0h1m1 0h3m1 0h1m1 0h1m1 0h3m1 0h2m2 0h2m3 0h1m2 0h1m-42 1h1m1 0h6m2 0h1m2 0h3m1 0h2m2 0h1m1 0h2m7 0h1m1 0h1m3 0h1m1 0h1m1 0h1m-44 1h5m3 0h1m5 0h1m1 0h2m1 0h1m1 0h3m1 0h1m1 0h1m1 0h3m4 0h1m2 0h1m2 0h3m-40 1h5m2 0h3m1 0h2m3 0h1m1 0h2m1 0h3m2 0h2m2 0h1m3 0h1m1 0h4m-44 1h1m2 0h2m1 0h4m5 0h3m2 0h1m1 0h2m1 0h1m1 0h5m1 0h3m2 0h2m1 0h2m-44 1h1m1 0h1m1 0h5m4 0h6m1 0h5m1 0h1m2 0h2m2 0h2m1 0h6m1 0h1m-41 1h2m3 0h1m1 0h2m1 0h1m1 0h1m2 0h1m1 0h1m3 0h1m1 0h2m2 0h1m2 0h2m1 0h1m3 0h1m1 0h2m-44 1h5m1 0h1m1 0h1m1 0h3m1 0h1m3 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m6 0h2m1 0h1m1 0h1m1 0h1m-43 1h1m2 0h2m3 0h1m3 0h1m1 0h3m1 0h1m1 0h1m3 0h3m1 0h1m1 0h3m3 0h1m3 0h1m1 0h1m1 0h1m-45 1h1m3 0h5m1 0h4m3 0h2m1 0h6m2 0h1m1 0h3m3 0h5m2 0h2m-44 1h1m1 0h2m4 0h1m6 0h1m1 0h8m1 0h2m1 0h1m1 0h1m2 0h2m1 0h2m1 0h4m-45 1h1m1 0h1m2 0h2m1 0h7m2 0h2m1 0h2m4 0h1m2 0h1m4 0h1m2 0h1m1 0h1m1 0h2m-41 1h3m2 0h1m2 0h1m2 0h3m4 0h1m1 0h3m1 0h2m2 0h1m2 0h1m1 0h2m1 0h5m-43 1h1m2 0h1m2 0h1m3 0h2m1 0h1m1 0h1m2 0h4m1 0h1m2 0h2m2 0h2m8 0h2m2 0h1m-45 1h1m1 0h1m1 0h2m1 0h2m3 0h1m1 0h2m1 0h3m1 0h2m1 0h2m4 0h1m1 0h2m3 0h1m4 0h3m-45 1h1m2 0h1m1 0h4m2 0h2m3 0h7m4 0h2m2 0h3m1 0h5m1 0h4m-44 1h2m1 0h1m2 0h1m2 0h1m10 0h2m1 0h2m4 0h3m2 0h1m1 0h2m3 0h3m-43 1h3m1 0h1m7 0h2m1 0h1m1 0h2m12 0h2m2 0h1m1 0h1m1 0h1m1 0h2m-44 1h2m2 0h1m2 0h2m1 0h3m1 0h2m1 0h1m2 0h8m1 0h1m1 0h3m1 0h1m1 0h3m1 0h2m-40 1h1m1 0h3m2 0h2m2 0h3m7 0h1m2 0h1m4 0h1m1 0h1m1 0h1m2 0h1m1 0h1m-42 1h4m3 0h5m1 0h2m2 0h1m1 0h1m3 0h1m1 0h1m1 0h2m1 0h3m1 0h2m1 0h2m2 0h1m-43 1h1m2 0h2m1 0h2m2 0h4m1 0h11m2 0h2m1 0h2m1 0h7m2 0h2m-37 1h1m3 0h4m2 0h3m3 0h1m2 0h4m1 0h1m3 0h1m3 0h1m1 0h3m-45 1h7m3 0h4m1 0h2m2 0h2m1 0h1m1 0h4m3 0h1m2 0h3m1 0h1m1 0h1m1 0h1m-43 1h1m5 0h1m3 0h4m1 0h2m1 0h1m1 0h1m3 0h1m1 0h1m2 0h4m1 0h1m1 0h1m3 0h1m1 0h3m-45 1h1m1 0h3m1 0h1m7 0h4m2 0h5m1 0h1m3 0h2m1 0h1m2 0h6m-42 1h1m1 0h3m1 0h1m3 0h1m1 0h2m4 0h1m4 0h3m2 0h3m1 0h1m3 0h2m1 0h2m1 0h3m-45 1h1m1 0h3m1 0h1m2 0h3m1 0h3m4 0h1m3 0h2m3 0h4m3 0h2m1 0h2m3 0h1m-45 1h1m5 0h1m2 0h4m1 0h1m3 0h1m1 0h1m2 0h1m3 0h6m2 0h2m2 0h4m-43 1h7m1 0h1m2 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m2 0h1m1 0h2m1 0h3m4 0h4m1 0h1m1 0h1"/></svg>
+      </div>
+      <div class="pix__key" id="pixKey" title="toque para copiar a chave"><span>chave</span> estudio@maratu.com.br</div>
+      <div class="pix__copied" id="pixCopied">chave copiada</div>
+      <div class="swipe-hint" style="transform:translateX(-50%)">&larr; início</div>
+    </section>
+
+  </div>
+  <script>
+
+    var heroSlides = document.querySelectorAll('.hero__bg-slide');
+    var heroAtual = 0;
+    function heroEnsureBg(s){ if(s && s.dataset.bg){ s.style.backgroundImage="url('"+s.dataset.bg+"')"; delete s.dataset.bg; } }
+    if(heroSlides.length>1){
+      heroEnsureBg(heroSlides[1]);
+      setInterval(function(){
+        var prox=(heroAtual+1)%heroSlides.length;
+        heroEnsureBg(heroSlides[prox]); heroEnsureBg(heroSlides[(prox+1)%heroSlides.length]);
+        heroSlides[heroAtual].classList.remove('ativo');
+        heroAtual=prox; heroSlides[heroAtual].classList.add('ativo');
+      },5000);
+    }
+    document.querySelectorAll('.reveal').forEach(function(el){ el.classList.add('in'); });
+
+    var _wl=null;
+    async function lockScreen(){ try{ if('wakeLock' in navigator){ _wl=await navigator.wakeLock.request('screen'); } }catch(e){} }
+    document.addEventListener('visibilitychange', function(){ if(document.visibilityState==='visible') lockScreen(); });
+    lockScreen();
+    window.addEventListener('pointerdown', function once(){ lockScreen(); window.removeEventListener('pointerdown', once); });
+
+    function goFull(){ var el=document.documentElement; var r=el.requestFullscreen||el.webkitRequestFullscreen; if(r){ try{ var p=r.call(el); if(p&&p.catch) p.catch(function(){}); }catch(e){} } }
+    var standalone = window.matchMedia('(display-mode: fullscreen)').matches || window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+    if(!standalone){ window.addEventListener('pointerdown', function onceF(){ goFull(); window.removeEventListener('pointerdown', onceF); }); }
+
+    var pk=document.getElementById('pixKey'), pc=document.getElementById('pixCopied');
+    if(pk){ pk.addEventListener('click', function(){ try{ navigator.clipboard.writeText('estudio@maratu.com.br'); pc.classList.add('on'); setTimeout(function(){pc.classList.remove('on')},1600); }catch(e){} }); }
+
+    if('serviceWorker' in navigator){ navigator.serviceWorker.register('/divulgacao/sw.js',{scope:'/divulgacao/'}).catch(function(){}); }
+
+  </script>
+</body>
+</html>

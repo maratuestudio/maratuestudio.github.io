@@ -221,9 +221,9 @@
     .swipe-hint.back{animation:shb 1.8s ease-in-out infinite}
     @keyframes shb{0%,100%{transform:translateX(-50%)}50%{transform:translateX(calc(-50% - 7px))}}
     .panel--pix{background:var(--laranja);display:flex;flex-direction:row;align-items:center;justify-content:center;gap:clamp(30px,5vw,84px);padding:clamp(24px,5vw,80px);text-align:left}
-    .pix__left{display:flex;flex-direction:column;align-items:flex-start;gap:clamp(12px,2.2vh,24px);max-width:min(46vw,560px)}
+    .pix__left{display:flex;flex-direction:column;align-items:flex-end;gap:clamp(12px,2.2vh,24px);max-width:min(46vw,560px)}
     .pix__eyebrow{font-family:var(--mono);font-size:clamp(.62rem,1vw,.8rem);letter-spacing:.28em;text-transform:uppercase;color:var(--areia);opacity:.9}
-    .pix__title{font-family:var(--clother);font-weight:900;font-size:clamp(2.2rem,6.5vw,5.6rem);line-height:.9;letter-spacing:-.02em;text-transform:uppercase;color:var(--areia);text-align:left}
+    .pix__title{font-family:var(--clother);font-weight:900;font-size:clamp(2.2rem,6.5vw,5.6rem);line-height:.9;letter-spacing:-.02em;text-transform:uppercase;color:var(--areia);text-align:right;text-shadow:.05em .05em 0 var(--preto)}
     .pix__card{background:var(--areia);border:2px solid var(--preto);border-radius:24px;box-shadow:8px 8px 0 0 var(--preto);padding:clamp(16px,2vw,30px);line-height:0}
     .pix__card img{width:clamp(190px,30vw,330px);height:auto;display:block;border-radius:8px}
     .pix__key{font-family:var(--mono);font-size:clamp(.7rem,1.4vw,1rem);letter-spacing:.1em;text-transform:uppercase;color:var(--areia);font-weight:700;cursor:pointer}
@@ -256,7 +256,7 @@
     .lj-card__img--sticker{width:auto;height:clamp(240px,44vh,430px);aspect-ratio:875/1241}
     .lj-card__img--a3{width:auto;height:clamp(300px,56vh,540px);aspect-ratio:1131/1600}
     .lj-card__img--a4{width:auto;height:clamp(200px,38vh,370px);aspect-ratio:1131/1600}
-    .lj-card__info{display:flex;flex-direction:column;align-items:flex-start;gap:clamp(6px,1.2vh,16px);max-width:min(46vw,620px)}
+    .lj-card__info{display:flex;flex-direction:column;align-items:flex-end;text-align:right;gap:clamp(6px,1.2vh,16px);max-width:min(46vw,620px)}
     .lj-card__txt{display:contents}
     .lj-card__preco{display:flex;align-items:baseline;gap:4px;font-family:var(--clother);font-weight:900;font-size:clamp(2.2rem,6.5vw,5.6rem);line-height:.9;letter-spacing:-.02em;color:var(--areia);text-shadow:.05em .05em 0 var(--preto)}
     .lj-card__preco small{font-family:var(--clother);font-weight:700;font-size:.28em}
@@ -268,7 +268,7 @@
     @media (max-width:680px){ .lj-card{flex-direction:column-reverse;text-align:center} .lj-card__info{align-items:center;max-width:none} }
     .brand-corner{position:fixed;left:var(--margem);bottom:clamp(20px,4vh,40px);z-index:20;font-size:clamp(22px,2.9vw,38px);pointer-events:none}
     .brand-corner__logo{display:block;width:6em;height:auto;filter:brightness(0) invert(1)}
-    .brand-corner__est{display:block;overflow:hidden;width:4.48em;height:1.16em;margin-top:-0.05em;margin-left:-0.12em;line-height:0}
+    .brand-corner__est{display:block;overflow:hidden;width:3.3em;height:0.854em;margin-top:-0.05em;margin-left:-0.12em;line-height:0}
     .brand-corner__est .estudio-boil{display:block;height:100%;width:400%;max-width:none;animation:estudio-boil .28s steps(4) infinite}
     .qr-corner{position:fixed;top:clamp(18px,3vh,40px);right:var(--margem);z-index:20;opacity:0;visibility:hidden;transition:opacity .35s ease;background:var(--areia);border:2px solid var(--preto);border-radius:18px;box-shadow:6px 6px 0 0 var(--preto);padding:clamp(10px,1.2vw,16px);display:flex;flex-direction:column;align-items:center;gap:8px;width:clamp(128px,14vw,180px);text-decoration:none;color:var(--preto)}
     .qr-corner img{width:100%;height:auto;display:block;border-radius:5px}
@@ -319,8 +319,8 @@
           <div class="lj-card__info"><p class="lj-card__preco"><small>R$</small>49</p><div class="lj-card__txt"><p class="lj-card__nome">Cobogó</p><p class="lj-card__tipo">Cobogó · 15×15cm</p></div></div>
         </div>
         <div class="lj-card">
-          <div class="lj-card__img"><img src="/relogio-chaveiro.webp" alt="Relógio do Mercado"></div>
-          <div class="lj-card__info"><p class="lj-card__preco"><small>R$</small>19</p><div class="lj-card__txt"><p class="lj-card__nome">Relógio</p><p class="lj-card__tipo">Relógio · 3D</p></div></div>
+          <div class="lj-card__img"><img src="/relogio-farol.webp" alt="Relógio Farol"></div>
+          <div class="lj-card__info"><p class="lj-card__preco"><small>R$</small>329</p><div class="lj-card__txt"><p class="lj-card__nome">Relógio</p><p class="lj-card__tipo">Relógio · Decor</p></div></div>
         </div>
       </div>
       <div class="loja__dots" id="ljDots"></div>

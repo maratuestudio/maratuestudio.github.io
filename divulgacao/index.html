@@ -207,31 +207,36 @@
     /* ===== DIVULGACAO (kiosk) ===== */
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
     html,body{height:100%;overflow:hidden;background:var(--preto);overscroll-behavior:none}
-    .deck{display:flex;width:100vw;height:100dvh;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+    .deck{display:flex;width:100vw;height:100dvh;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;touch-action:pan-x;cursor:grab;user-select:none}
     .deck::-webkit-scrollbar{display:none}
+    .deck.dragging{cursor:grabbing;scroll-snap-type:none}
     .panel{flex:0 0 100vw;width:100vw;height:100dvh;scroll-snap-align:start;position:relative;overflow:hidden}
     .panel--hero .hero{min-height:100dvh;height:100dvh;padding-top:clamp(40px,7vh,90px)}
-    .qr-card{position:absolute;right:clamp(20px,5vw,80px);top:50%;transform:translateY(-64%);z-index:6;background:var(--areia);border:2px solid var(--preto);border-radius:22px;box-shadow:7px 7px 0 0 var(--preto);padding:clamp(16px,1.8vw,26px);display:flex;flex-direction:column;align-items:center;gap:12px;max-width:min(36vw,340px);text-decoration:none;color:var(--preto)}
-    .qr-card svg{width:clamp(150px,20vw,280px);height:auto;display:block}
-    .qr-card__lbl{font-family:var(--mono);font-size:clamp(.58rem,1vw,.72rem);letter-spacing:.16em;text-transform:uppercase;text-align:center;line-height:1.5}
+    .qr-card{position:absolute;right:var(--margem);bottom:72px;z-index:6;background:var(--areia);border:2px solid var(--preto);border-radius:22px;box-shadow:7px 7px 0 0 var(--preto);padding:clamp(14px,1.6vw,22px);display:flex;flex-direction:column;align-items:center;gap:10px;width:clamp(190px,24vw,280px);text-decoration:none;color:var(--preto)}
+    .qr-card img{width:100%;height:auto;display:block;border-radius:6px}
+    .qr-card__lbl{font-family:var(--mono);font-size:clamp(.56rem,.9vw,.7rem);letter-spacing:.16em;text-transform:uppercase;text-align:center;line-height:1.5}
     .qr-card__lbl b{font-weight:900}
-    .swipe-hint{position:absolute;bottom:clamp(16px,3vh,32px);left:50%;z-index:6;font-family:var(--mono);font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;display:flex;align-items:center;gap:10px;color:var(--areia);opacity:.9;animation:sh 1.8s ease-in-out infinite}
-    @keyframes sh{0%,100%{transform:translateX(-50%)}50%{transform:translateX(calc(-50% - 8px))}}
-    .panel--pix{background:var(--laranja);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(18px,3vh,38px);padding:clamp(24px,5vw,80px);text-align:center}
+    .swipe-hint{position:absolute;bottom:clamp(14px,2.6vh,28px);left:50%;transform:translateX(-50%);z-index:7;font-family:var(--mono);font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--areia);opacity:.92;background:none;border:none;cursor:pointer;animation:sh 1.8s ease-in-out infinite}
+    @keyframes sh{0%,100%{transform:translateX(-50%)}50%{transform:translateX(calc(-50% + 7px))}}
+    .swipe-hint.back{animation:shb 1.8s ease-in-out infinite}
+    @keyframes shb{0%,100%{transform:translateX(-50%)}50%{transform:translateX(calc(-50% - 7px))}}
+    .panel--pix{background:var(--laranja);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(14px,2.4vh,30px);padding:clamp(24px,5vw,80px);text-align:center}
     .pix__eyebrow{font-family:var(--mono);font-size:clamp(.62rem,1vw,.8rem);letter-spacing:.28em;text-transform:uppercase;color:var(--areia);opacity:.9}
-    .pix__title{font-family:var(--clother);font-weight:900;font-size:clamp(2.4rem,8vw,6rem);line-height:.92;letter-spacing:-.02em;text-transform:uppercase;color:var(--areia)}
-    .pix__card{background:var(--areia);border:2px solid var(--preto);border-radius:24px;box-shadow:8px 8px 0 0 var(--preto);padding:clamp(20px,2.4vw,34px);line-height:0}
-    .pix__card svg{width:clamp(200px,32vw,360px);height:auto;display:block}
+    .pix__title{font-family:var(--clother);font-weight:900;font-size:clamp(2.2rem,7vw,5.4rem);line-height:.92;letter-spacing:-.02em;text-transform:uppercase;color:var(--areia)}
+    .pix__card{background:var(--areia);border:2px solid var(--preto);border-radius:24px;box-shadow:8px 8px 0 0 var(--preto);padding:clamp(16px,2vw,30px);line-height:0}
+    .pix__card img{width:clamp(190px,30vw,330px);height:auto;display:block;border-radius:8px}
     .pix__key{font-family:var(--mono);font-size:clamp(.7rem,1.4vw,1rem);letter-spacing:.1em;text-transform:uppercase;color:var(--areia);font-weight:700;cursor:pointer}
     .pix__key span{opacity:.75;font-weight:400}
     .pix__copied{font-family:var(--mono);font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--areia);height:1em;opacity:0;transition:opacity .2s}
     .pix__copied.on{opacity:1}
+    .aratu-pix{width:clamp(88px,12vw,150px);height:auto;line-height:0;margin-top:clamp(4px,1vh,12px)}
+    .aratu-pix svg{width:100%;height:auto;overflow:visible;display:block}
+    .aratu-pix path{fill:var(--areia)}
 
   </style>
 </head>
 <body>
   <div class="deck" id="deck">
-
     <section class="panel panel--hero">
       <section class="hero">
     <div class="hero__bg">
@@ -258,53 +263,72 @@
 </div>
   </section>
       <a class="qr-card" href="https://instagram.com/maratuestudio" target="_blank" rel="noopener" aria-label="Siga a MARATU no Instagram">
-        <svg width="330" height="330" class="segno"><path transform="scale(10)" class="qrline" stroke="#0d0d0b" d="M0 0.5h7m1 0h1m3 0h2m1 0h1m1 0h3m3 0h1m2 0h7m-33 1h1m5 0h1m3 0h1m1 0h2m3 0h1m2 0h1m1 0h1m3 0h1m5 0h1m-33 1h1m1 0h3m1 0h1m2 0h1m1 0h1m1 0h2m1 0h3m1 0h1m3 0h1m1 0h1m1 0h3m1 0h1m-33 1h1m1 0h3m1 0h1m2 0h2m3 0h1m4 0h4m1 0h1m1 0h1m1 0h3m1 0h1m-33 1h1m1 0h3m1 0h1m1 0h2m3 0h1m1 0h1m1 0h2m2 0h1m2 0h1m1 0h1m1 0h3m1 0h1m-33 1h1m5 0h1m1 0h1m1 0h1m2 0h1m1 0h1m1 0h1m2 0h1m1 0h1m1 0h1m1 0h1m5 0h1m-33 1h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7m-24 1h1m1 0h1m2 0h3m4 0h2m1 0h1m-24 1h7m3 0h4m2 0h1m4 0h1m1 0h1m2 0h2m3 0h1m-33 1h3m1 0h2m2 0h2m1 0h2m1 0h1m3 0h6m2 0h2m1 0h2m1 0h1m-33 1h2m4 0h1m2 0h1m3 0h1m1 0h2m1 0h1m1 0h2m2 0h2m2 0h1m1 0h2m-32 1h1m1 0h2m1 0h1m1 0h1m2 0h3m1 0h1m1 0h1m2 0h4m5 0h3m1 0h1m-33 1h2m4 0h1m4 0h1m2 0h2m2 0h2m1 0h1m2 0h2m2 0h2m-27 1h3m3 0h2m2 0h1m1 0h1m4 0h3m1 0h3m3 0h3m-28 1h4m1 0h2m3 0h3m1 0h1m5 0h2m1 0h4m-31 1h3m1 0h1m1 0h1m2 0h2m1 0h2m1 0h6m1 0h1m1 0h3m1 0h2m-31 1h2m1 0h1m1 0h2m1 0h2m2 0h1m6 0h1m2 0h2m1 0h1m1 0h3m2 0h1m-32 1h1m1 0h1m4 0h2m2 0h2m3 0h4m2 0h1m2 0h2m1 0h4m-28 1h3m1 0h1m1 0h2m1 0h1m2 0h2m1 0h1m1 0h1m2 0h1m1 0h2m1 0h2m-32 1h1m3 0h2m2 0h6m2 0h4m3 0h3m1 0h5m-30 1h1m1 0h3m3 0h2m2 0h1m1 0h1m3 0h3m1 0h2m2 0h2m-30 1h2m6 0h1m2 0h3m2 0h1m4 0h1m1 0h1m2 0h1m2 0h2m1 0h1m-33 1h1m5 0h1m2 0h3m2 0h5m1 0h2m4 0h1m3 0h2m-32 1h1m1 0h4m1 0h1m2 0h1m1 0h6m3 0h2m1 0h2m3 0h4m-33 1h1m1 0h1m2 0h3m4 0h1m1 0h1m1 0h1m1 0h1m3 0h8m-22 1h1m2 0h3m1 0h1m1 0h5m1 0h2m3 0h1m1 0h1m1 0h1m-33 1h7m1 0h3m1 0h2m1 0h1m1 0h1m3 0h1m1 0h2m1 0h1m1 0h1m1 0h2m-32 1h1m5 0h1m1 0h2m4 0h1m1 0h1m1 0h7m3 0h4m-32 1h1m1 0h3m1 0h1m1 0h3m1 0h1m1 0h4m1 0h1m1 0h1m2 0h6m1 0h2m-33 1h1m1 0h3m1 0h1m1 0h1m2 0h3m1 0h2m1 0h1m1 0h1m1 0h1m2 0h1m2 0h3m1 0h1m-33 1h1m1 0h3m1 0h1m1 0h1m1 0h2m1 0h1m1 0h1m2 0h2m1 0h3m2 0h2m1 0h2m-31 1h1m5 0h1m1 0h4m4 0h1m1 0h5m2 0h1m2 0h3m-31 1h7m2 0h1m1 0h1m3 0h1m3 0h1m3 0h2m2 0h1m3 0h1"/></svg>
+        <img src="/divulgacao/ig-qr.png" alt="QR do Instagram @maratuestudio" width="462" height="462">
         <span class="qr-card__lbl">Siga no Instagram<br><b>@maratuestudio</b></span>
       </a>
-      <div class="swipe-hint" style="transform:translateX(-50%)">arraste para o pix &rarr;</div>
+      <button class="swipe-hint" id="toPix" type="button">arraste para o pix &rarr;</button>
     </section>
-
     <section class="panel panel--pix" id="pix">
       <span class="pix__eyebrow">MARATU Estúdio</span>
       <h1 class="pix__title">Pague<br>com Pix</h1>
-      <div class="pix__card">
-        <svg width="450" height="450" class="segno"><path transform="scale(10)" class="qrline" stroke="#0d0d0b" d="M0 0.5h7m4 0h6m2 0h5m2 0h2m2 0h4m2 0h1m1 0h7m-45 1h1m5 0h1m1 0h3m2 0h6m3 0h1m1 0h1m6 0h1m1 0h1m1 0h1m2 0h1m5 0h1m-45 1h1m1 0h3m1 0h1m1 0h1m1 0h1m1 0h1m3 0h1m1 0h1m2 0h1m4 0h8m1 0h1m2 0h1m1 0h3m1 0h1m-45 1h1m1 0h3m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h4m1 0h1m2 0h1m3 0h1m1 0h1m1 0h2m1 0h2m1 0h1m1 0h3m1 0h1m-45 1h1m1 0h3m1 0h1m5 0h5m1 0h1m1 0h5m4 0h2m2 0h4m1 0h1m1 0h3m1 0h1m-45 1h1m5 0h1m3 0h1m2 0h1m6 0h1m3 0h1m1 0h4m8 0h1m5 0h1m-45 1h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7m-37 1h2m2 0h2m1 0h2m1 0h1m1 0h1m3 0h2m1 0h2m2 0h3m2 0h1m-37 1h1m5 0h1m1 0h1m2 0h1m2 0h1m3 0h1m1 0h5m1 0h1m2 0h2m2 0h1m1 0h1m1 0h2m2 0h3m-44 1h1m2 0h2m2 0h2m1 0h2m1 0h2m2 0h1m3 0h3m2 0h2m2 0h3m1 0h1m1 0h1m1 0h1m1 0h1m1 0h2m-44 1h1m2 0h1m1 0h4m3 0h2m2 0h1m1 0h3m3 0h1m1 0h1m1 0h2m1 0h1m2 0h1m1 0h4m1 0h2m-43 1h3m6 0h2m7 0h1m2 0h1m1 0h1m1 0h2m1 0h5m4 0h1m1 0h1m1 0h2m-41 1h2m1 0h3m2 0h3m2 0h5m2 0h4m1 0h2m3 0h5m1 0h1m1 0h2m1 0h2m-44 1h1m1 0h1m3 0h1m2 0h1m1 0h1m1 0h1m1 0h2m1 0h1m4 0h2m1 0h2m1 0h2m1 0h1m1 0h3m1 0h1m2 0h3m-45 1h3m3 0h2m1 0h3m2 0h3m1 0h1m2 0h1m1 0h2m1 0h2m1 0h1m3 0h3m2 0h2m1 0h1m-42 1h1m2 0h2m2 0h1m1 0h2m2 0h1m2 0h1m1 0h3m1 0h1m1 0h1m1 0h3m1 0h2m2 0h2m3 0h1m2 0h1m-42 1h1m1 0h6m2 0h1m2 0h3m1 0h2m2 0h1m1 0h2m7 0h1m1 0h1m3 0h1m1 0h1m1 0h1m-44 1h5m3 0h1m5 0h1m1 0h2m1 0h1m1 0h3m1 0h1m1 0h1m1 0h3m4 0h1m2 0h1m2 0h3m-40 1h5m2 0h3m1 0h2m3 0h1m1 0h2m1 0h3m2 0h2m2 0h1m3 0h1m1 0h4m-44 1h1m2 0h2m1 0h4m5 0h3m2 0h1m1 0h2m1 0h1m1 0h5m1 0h3m2 0h2m1 0h2m-44 1h1m1 0h1m1 0h5m4 0h6m1 0h5m1 0h1m2 0h2m2 0h2m1 0h6m1 0h1m-41 1h2m3 0h1m1 0h2m1 0h1m1 0h1m2 0h1m1 0h1m3 0h1m1 0h2m2 0h1m2 0h2m1 0h1m3 0h1m1 0h2m-44 1h5m1 0h1m1 0h1m1 0h3m1 0h1m3 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m6 0h2m1 0h1m1 0h1m1 0h1m-43 1h1m2 0h2m3 0h1m3 0h1m1 0h3m1 0h1m1 0h1m3 0h3m1 0h1m1 0h3m3 0h1m3 0h1m1 0h1m1 0h1m-45 1h1m3 0h5m1 0h4m3 0h2m1 0h6m2 0h1m1 0h3m3 0h5m2 0h2m-44 1h1m1 0h2m4 0h1m6 0h1m1 0h8m1 0h2m1 0h1m1 0h1m2 0h2m1 0h2m1 0h4m-45 1h1m1 0h1m2 0h2m1 0h7m2 0h2m1 0h2m4 0h1m2 0h1m4 0h1m2 0h1m1 0h1m1 0h2m-41 1h3m2 0h1m2 0h1m2 0h3m4 0h1m1 0h3m1 0h2m2 0h1m2 0h1m1 0h2m1 0h5m-43 1h1m2 0h1m2 0h1m3 0h2m1 0h1m1 0h1m2 0h4m1 0h1m2 0h2m2 0h2m8 0h2m2 0h1m-45 1h1m1 0h1m1 0h2m1 0h2m3 0h1m1 0h2m1 0h3m1 0h2m1 0h2m4 0h1m1 0h2m3 0h1m4 0h3m-45 1h1m2 0h1m1 0h4m2 0h2m3 0h7m4 0h2m2 0h3m1 0h5m1 0h4m-44 1h2m1 0h1m2 0h1m2 0h1m10 0h2m1 0h2m4 0h3m2 0h1m1 0h2m3 0h3m-43 1h3m1 0h1m7 0h2m1 0h1m1 0h2m12 0h2m2 0h1m1 0h1m1 0h1m1 0h2m-44 1h2m2 0h1m2 0h2m1 0h3m1 0h2m1 0h1m2 0h8m1 0h1m1 0h3m1 0h1m1 0h3m1 0h2m-40 1h1m1 0h3m2 0h2m2 0h3m7 0h1m2 0h1m4 0h1m1 0h1m1 0h1m2 0h1m1 0h1m-42 1h4m3 0h5m1 0h2m2 0h1m1 0h1m3 0h1m1 0h1m1 0h2m1 0h3m1 0h2m1 0h2m2 0h1m-43 1h1m2 0h2m1 0h2m2 0h4m1 0h11m2 0h2m1 0h2m1 0h7m2 0h2m-37 1h1m3 0h4m2 0h3m3 0h1m2 0h4m1 0h1m3 0h1m3 0h1m1 0h3m-45 1h7m3 0h4m1 0h2m2 0h2m1 0h1m1 0h4m3 0h1m2 0h3m1 0h1m1 0h1m1 0h1m-43 1h1m5 0h1m3 0h4m1 0h2m1 0h1m1 0h1m3 0h1m1 0h1m2 0h4m1 0h1m1 0h1m3 0h1m1 0h3m-45 1h1m1 0h3m1 0h1m7 0h4m2 0h5m1 0h1m3 0h2m1 0h1m2 0h6m-42 1h1m1 0h3m1 0h1m3 0h1m1 0h2m4 0h1m4 0h3m2 0h3m1 0h1m3 0h2m1 0h2m1 0h3m-45 1h1m1 0h3m1 0h1m2 0h3m1 0h3m4 0h1m3 0h2m3 0h4m3 0h2m1 0h2m3 0h1m-45 1h1m5 0h1m2 0h4m1 0h1m3 0h1m1 0h1m2 0h1m3 0h6m2 0h2m2 0h4m-43 1h7m1 0h1m2 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m2 0h1m1 0h2m1 0h3m4 0h4m1 0h1m1 0h1"/></svg>
-      </div>
+      <div class="pix__card"><img src="/divulgacao/pix-qr.png" alt="QR de pagamento Pix" width="583" height="583"></div>
       <div class="pix__key" id="pixKey" title="toque para copiar a chave"><span>chave</span> estudio@maratu.com.br</div>
       <div class="pix__copied" id="pixCopied">chave copiada</div>
-      <div class="swipe-hint" style="transform:translateX(-50%)">&larr; início</div>
+      <div class="aratu-pix" id="aratuPix" aria-hidden="true">
+        <svg viewBox="0 0 318.24 152.9" xmlns="http://www.w3.org/2000/svg">
+          <g data-aratu="claw-left"><path d="M0,104.77c0,26.58,21.55,48.13,48.13,48.13V56.65C21.55,56.65,0,78.19,0,104.77Z"/></g>
+          <g data-aratu="claw-right"><path d="M270.11,56.65v96.26c26.58,0,48.13-21.55,48.13-48.13s-21.55-48.13-48.13-48.13Z"/></g>
+          <g data-aratu="body"><path d="M159.12,152.9c53.16,0,96.26-43.1,96.26-96.26H62.86c0,53.16,43.1,96.26,96.26,96.26Z"/></g>
+          <g data-aratu="eye-right"><path d="M224.82,24.08c0-13.3-10.78-24.08-24.08-24.08v48.16c13.3,0,24.08-10.78,24.08-24.08Z"/></g>
+          <g data-aratu="eye-left"><path d="M117.49,48.16V0c-13.3,0-24.08,10.78-24.08,24.08s10.78,24.08,24.08,24.08Z"/></g>
+        </svg>
+      </div>
+      <button class="swipe-hint back" id="toHome" type="button">&larr; início</button>
     </section>
-
   </div>
   <script>
 
-    var heroSlides = document.querySelectorAll('.hero__bg-slide');
-    var heroAtual = 0;
-    function heroEnsureBg(s){ if(s && s.dataset.bg){ s.style.backgroundImage="url('"+s.dataset.bg+"')"; delete s.dataset.bg; } }
-    if(heroSlides.length>1){
-      heroEnsureBg(heroSlides[1]);
-      setInterval(function(){
-        var prox=(heroAtual+1)%heroSlides.length;
-        heroEnsureBg(heroSlides[prox]); heroEnsureBg(heroSlides[(prox+1)%heroSlides.length]);
-        heroSlides[heroAtual].classList.remove('ativo');
-        heroAtual=prox; heroSlides[heroAtual].classList.add('ativo');
-      },5000);
-    }
+    var heroSlides=document.querySelectorAll('.hero__bg-slide'),heroAtual=0;
+    function heroEnsureBg(s){ if(s&&s.dataset.bg){ s.style.backgroundImage="url('"+s.dataset.bg+"')"; delete s.dataset.bg; } }
+    if(heroSlides.length>1){ heroEnsureBg(heroSlides[1]);
+      setInterval(function(){ var p=(heroAtual+1)%heroSlides.length; heroEnsureBg(heroSlides[p]); heroEnsureBg(heroSlides[(p+1)%heroSlides.length]); heroSlides[heroAtual].classList.remove('ativo'); heroAtual=p; heroSlides[heroAtual].classList.add('ativo'); },5000); }
     document.querySelectorAll('.reveal').forEach(function(el){ el.classList.add('in'); });
 
-    var _wl=null;
-    async function lockScreen(){ try{ if('wakeLock' in navigator){ _wl=await navigator.wakeLock.request('screen'); } }catch(e){} }
-    document.addEventListener('visibilitychange', function(){ if(document.visibilityState==='visible') lockScreen(); });
-    lockScreen();
-    window.addEventListener('pointerdown', function once(){ lockScreen(); window.removeEventListener('pointerdown', once); });
+    // SWIPE: toque usa scroll nativo; mouse usa drag-to-scroll
+    var deck=document.getElementById('deck');
+    (function(){
+      var down=false,sx=0,sl=0,moved=false;
+      deck.addEventListener('pointerdown',function(e){ if(e.pointerType!=='mouse')return; down=true;moved=false;sx=e.clientX;sl=deck.scrollLeft;deck.classList.add('dragging'); });
+      window.addEventListener('pointermove',function(e){ if(!down)return; var dx=e.clientX-sx; if(Math.abs(dx)>4)moved=true; deck.scrollLeft=sl-dx; });
+      window.addEventListener('pointerup',function(){ if(!down)return; down=false; deck.classList.remove('dragging'); var w=window.innerWidth; deck.scrollTo({left:Math.round(deck.scrollLeft/w)*w,behavior:'smooth'}); });
+      deck.querySelectorAll('img,a').forEach(function(el){ el.setAttribute('draggable','false'); });
+      // impede clique acidental do link apos arraste
+      deck.querySelector('.qr-card').addEventListener('click',function(e){ if(moved){ e.preventDefault(); } });
+    })();
+    function goTo(i){ deck.scrollTo({left:i*window.innerWidth,behavior:'smooth'}); }
+    document.getElementById('toPix').addEventListener('click',function(){ goTo(1); });
+    document.getElementById('toHome').addEventListener('click',function(){ goTo(0); });
 
-    function goFull(){ var el=document.documentElement; var r=el.requestFullscreen||el.webkitRequestFullscreen; if(r){ try{ var p=r.call(el); if(p&&p.catch) p.catch(function(){}); }catch(e){} } }
-    var standalone = window.matchMedia('(display-mode: fullscreen)').matches || window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
-    if(!standalone){ window.addEventListener('pointerdown', function onceF(){ goFull(); window.removeEventListener('pointerdown', onceF); }); }
+    // ARATU respira + pisca 2x a cada 5s
+    (function(){ var r=document.getElementById('aratuPix'); if(!r)return;
+      var b=r.querySelector('[data-aratu="body"]'),el=r.querySelector('[data-aratu="eye-left"]'),er=r.querySelector('[data-aratu="eye-right"]'); if(!b||!el||!er)return;
+      var t0=performance.now(),P=5000;
+      function eyes(s){ el.setAttribute('transform','translate(105.5 24.08) scale(1 '+s+') translate(-105.5 -24.08)'); er.setAttribute('transform','translate(212.74 24.08) scale(1 '+s+') translate(-212.74 -24.08)'); }
+      function bl(ph,st,d){ if(ph>=st&&ph<st+d){ var pr=(ph-st)/d; return pr<0.5?1-pr*2*0.9:0.1+(pr-0.5)*2*0.9; } return null; }
+      (function f(now){ requestAnimationFrame(f); var br=1+Math.sin(now/600)*0.03; b.setAttribute('transform','translate(159.12 152.9) scale(1 '+br+') translate(-159.12 -152.9)'); var ph=(now-t0)%P; var s=bl(ph,0,150); if(s===null)s=bl(ph,240,150); eyes(s===null?1:s); })(performance.now());
+    })();
 
-    var pk=document.getElementById('pixKey'), pc=document.getElementById('pixCopied');
-    if(pk){ pk.addEventListener('click', function(){ try{ navigator.clipboard.writeText('estudio@maratu.com.br'); pc.classList.add('on'); setTimeout(function(){pc.classList.remove('on')},1600); }catch(e){} }); }
-
+    // ALWAYS ON
+    var _wl=null; async function lock(){ try{ if('wakeLock' in navigator){ _wl=await navigator.wakeLock.request('screen'); } }catch(e){} }
+    document.addEventListener('visibilitychange',function(){ if(document.visibilityState==='visible')lock(); }); lock();
+    window.addEventListener('pointerdown',function o(){ lock(); window.removeEventListener('pointerdown',o); });
+    // TELA CHEIA no 1o toque (fora do PWA)
+    function full(){ var el=document.documentElement,r=el.requestFullscreen||el.webkitRequestFullscreen; if(r){ try{ var p=r.call(el); if(p&&p.catch)p.catch(function(){}); }catch(e){} } }
+    var st=matchMedia('(display-mode: fullscreen)').matches||matchMedia('(display-mode: standalone)').matches||navigator.standalone;
+    if(!st){ window.addEventListener('pointerdown',function o(){ full(); window.removeEventListener('pointerdown',o); }); }
+    // copiar chave
+    var pk=document.getElementById('pixKey'),pc=document.getElementById('pixCopied');
+    if(pk){ pk.addEventListener('click',function(){ try{ navigator.clipboard.writeText('estudio@maratu.com.br'); pc.classList.add('on'); setTimeout(function(){pc.classList.remove('on')},1600); }catch(e){} }); }
     if('serviceWorker' in navigator){ navigator.serviceWorker.register('/divulgacao/sw.js',{scope:'/divulgacao/'}).catch(function(){}); }
 
   </script>

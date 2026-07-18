@@ -310,6 +310,10 @@
       deck.querySelector('.qr-card').addEventListener('click',function(e){ if(moved){ e.preventDefault(); } });
     })();
     function goTo(i){ deck.scrollTo({left:i*window.innerWidth,behavior:'smooth'}); }
+    // body herda a cor do painel visivel (o iPadOS "estende" o bg do body atras da barra de janela)
+    var panelBg=['#0D0D0B','#C8501A'];
+    function syncBg(){ var i=Math.round(deck.scrollLeft/window.innerWidth); document.body.style.background=panelBg[i]||panelBg[0]; }
+    deck.addEventListener('scroll',syncBg,{passive:true}); syncBg();
     document.getElementById('toPix').addEventListener('click',function(){ goTo(1); });
     document.getElementById('toHome').addEventListener('click',function(){ goTo(0); });
 

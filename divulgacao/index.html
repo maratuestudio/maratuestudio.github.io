@@ -6,7 +6,7 @@
   <title>MARATU · Divulgação</title>
   <meta name="robots" content="noindex">
   <link rel="manifest" href="/divulgacao/divulgacao.webmanifest">
-  <meta name="theme-color" content="#0D0D0B">
+  <meta name="theme-color" content="#C8501A">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -253,49 +253,29 @@
     .lj-card.ativo{opacity:1;transform:translateX(0);pointer-events:auto}
     .lj-card__img{position:relative;width:clamp(220px,28vw,400px);aspect-ratio:1/1;flex-shrink:0;border-radius:18px;overflow:hidden;background:var(--areia);border:2px solid var(--preto);box-shadow:7px 7px 0 0 var(--preto)}
     .lj-card__img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
-    .lj-card__info{display:flex;flex-direction:column;align-items:flex-start;gap:2px}
-    .lj-card__preco{display:flex;align-items:baseline;gap:4px;font-family:var(--clother);font-weight:900;font-size:clamp(3.2rem,8vw,6.4rem);line-height:.9;color:var(--areia)}
+    .lj-card__img--fit img{object-fit:contain;padding:12px}
+    .lj-card__info{display:flex;flex-direction:row;align-items:center;gap:clamp(16px,2.4vw,34px)}
+    .lj-card__txt{display:flex;flex-direction:column;align-items:flex-start}
+    .lj-card__preco{display:flex;align-items:baseline;gap:4px;font-family:var(--clother);font-weight:900;font-size:clamp(3.2rem,8vw,6.4rem);line-height:.9;color:var(--areia);text-shadow:.055em .055em 0 var(--preto)}
     .lj-card__preco small{font-family:var(--clother);font-weight:700;font-size:.28em}
-    .lj-card__nome{font-family:var(--clother);font-weight:700;font-size:clamp(1.1rem,1.9vw,1.6rem);text-transform:uppercase;color:var(--areia);margin-top:10px}
+    .lj-card__nome{font-family:var(--clother);font-weight:700;font-size:clamp(1.1rem,1.9vw,1.6rem);text-transform:uppercase;color:var(--areia)}
     .lj-card__tipo{font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(240,236,228,.6);margin-top:2px}
     .loja__dots{position:absolute;bottom:64px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:3}
     .loja__dots span{width:6px;height:6px;border-radius:50%;background:rgba(240,236,228,.35)}
     .loja__dots span.ativo{background:var(--areia)}
     @media (max-width:680px){ .lj-card{flex-direction:column;text-align:center} .lj-card__info{align-items:center} }
+    .brand-corner{position:fixed;left:var(--margem);bottom:clamp(20px,4vh,40px);z-index:20;font-size:clamp(15px,1.8vw,24px);pointer-events:none}
+    .brand-corner__logo{display:block;width:6em;height:auto;filter:brightness(0) invert(1)}
+    .brand-corner__est{display:block;overflow:hidden;width:4.48em;height:1.16em;margin-top:-0.05em;margin-left:-0.12em;line-height:0}
+    .brand-corner__est .estudio-boil{display:block;height:100%;width:400%;max-width:none;animation:estudio-boil .28s steps(4) infinite}
+    .qr-corner{position:fixed;top:clamp(18px,3vh,40px);right:var(--margem);z-index:20;background:var(--areia);border:2px solid var(--preto);border-radius:18px;box-shadow:6px 6px 0 0 var(--preto);padding:clamp(10px,1.2vw,16px);display:flex;flex-direction:column;align-items:center;gap:8px;width:clamp(128px,14vw,180px);text-decoration:none;color:var(--preto)}
+    .qr-corner img{width:100%;height:auto;display:block;border-radius:5px}
+    .qr-corner__lbl{font-family:var(--mono);font-size:clamp(.5rem,.8vw,.62rem);letter-spacing:.14em;text-transform:uppercase;text-align:center;line-height:1.5}
+    .qr-corner__lbl b{font-weight:900}
   </style>
 </head>
 <body>
   <div class="deck" id="deck">
-    <section class="panel panel--hero">
-      <section class="hero">
-    <div class="hero__bg">
-      <div class="hero__bg-slide ativo" style="background-image: url('/Artboard 1@300x.webp');"></div>
-      <div class="hero__bg-slide" data-bg="/blusa-destrua-frente.webp" style="background-position: center 60%;"></div>
-      <div class="hero__bg-slide" data-bg="/blusa-destrua-costas.webp" style="background-position: center 60%;"></div>
-      <div class="hero__bg-slide" data-bg="/blusa-azulejos-costas.webp" style="background-position: center 60%;"></div>
-      <div class="hero__bg-slide" data-bg="/blusa-maratu-print.webp" style="background-position: center 60%;"></div>
-      <div class="hero__bg-slide" data-bg="/Artboard 4@300x.webp"></div>
-      <div class="hero__bg-slide" data-bg="/Artboard 5@300x.webp"></div>
-      <div class="hero__bg-slide" data-bg="/vaso-pinda-cinza.webp"></div>
-      <div class="hero__bg-slide" data-bg="/kit-cobogo-praia.webp"></div>
-    </div>
-    <div class="hero__label-tl">
-      <span class="mono">EST. 2026 — Aracaju, SE</span>
-      <span class="mono">Impressão 3D · Design · Arte</span>
-    </div>
-    <div class="hero__label-tr">
-      <span class="mono">em atividade</span>
-    </div>
-    <h1 class="hero__title reveal">
-      <img class="hero__logo" src="/maratu-logo.svg?v=1" alt="MARATU"><span class="offset estudio-boil-wrap" aria-label="Estúdio"><img class="estudio-boil" src="/estudio-sprite.webp?v=1" alt="Estúdio"></span>
-    </h1>
-  </section>
-      <a class="qr-card" href="https://instagram.com/maratuestudio" target="_blank" rel="noopener" aria-label="Siga a MARATU no Instagram">
-        <img src="/divulgacao/ig-qr.png?v=2" alt="QR do Instagram @maratuestudio" width="462" height="462">
-        <span class="qr-card__lbl">Siga no Instagram<br><b>@maratuestudio</b></span>
-      </a>
-      <button class="swipe-hint" id="toPix" type="button">arraste para o pix &rarr;</button>
-    </section>
     <section class="panel panel--pix" id="pix">
       <div class="pix__left">
         <span class="pix__eyebrow">MARATU Estúdio</span>
@@ -313,60 +293,46 @@
       </div>
       </div>
       <div class="pix__card"><img src="/divulgacao/pix-qr.png?v=2" alt="QR de pagamento Pix" width="583" height="583"></div>
-      <button class="swipe-hint back" id="toHome">&larr; início</button>
       <button class="swipe-hint fwd" id="toLoja" type="button">arraste para os produtos &rarr;</button>
     </section>
-    <section class="panel panel--loja" id="loja">
-      <div class="loja__label-tr">
-        <span class="mono">MARATU Estúdio</span>
-        <h1 class="loja__titulo">Peças à venda</h1>
-      </div>
-      <div class="loja__stage" id="ljStage">
+    <section class="panel panel--loja" id="loja"><div class="loja__stage" id="ljStage">
         <div class="lj-card ativo">
           <div class="lj-card__img"><img src="/carranca-chaveiro.webp" alt="Chaveiro"></div>
-          <div class="lj-card__info">
-            <p class="lj-card__preco"><small>R$</small>19</p>
-            <p class="lj-card__nome">Chaveiro</p>
-            <p class="lj-card__tipo">Chaveiro · 3D</p>
-          </div>
+          <div class="lj-card__info"><p class="lj-card__preco"><small>R$</small>19</p><div class="lj-card__txt"><p class="lj-card__nome">Chaveiro</p><p class="lj-card__tipo">Chaveiro · 3D</p></div></div>
         </div>
         <div class="lj-card">
-          <div class="lj-card__img"><img src="/adesivos-origens.webp" alt="Adesivos Origens"></div>
-          <div class="lj-card__info">
-            <p class="lj-card__preco"><small>R$</small>19</p>
-            <p class="lj-card__nome">Adesivos</p>
-            <p class="lj-card__tipo">Adesivos · 12 un</p>
-          </div>
+          <div class="lj-card__img lj-card__img--fit"><img src="/adesivos-origens.webp" alt="Adesivos Origens"></div>
+          <div class="lj-card__info"><p class="lj-card__preco"><small>R$</small>19</p><div class="lj-card__txt"><p class="lj-card__nome">Adesivos</p><p class="lj-card__tipo">Adesivos · 12 un</p></div></div>
         </div>
         <div class="lj-card">
-          <div class="lj-card__img"><img src="/poster-pordosol.webp" alt="Pôster Pôr do Sol A3"></div>
-          <div class="lj-card__info">
-            <p class="lj-card__preco"><small>R$</small>69</p>
-            <p class="lj-card__nome">Pôster A3</p>
-            <p class="lj-card__tipo">Pôster · A3</p>
-          </div>
+          <div class="lj-card__img lj-card__img--fit"><img src="/poster-destrua.webp" alt="Pôster Destrua o Império A3"></div>
+          <div class="lj-card__info"><p class="lj-card__preco"><small>R$</small>69</p><div class="lj-card__txt"><p class="lj-card__nome">Pôster A3</p><p class="lj-card__tipo">Pôster · A3</p></div></div>
         </div>
         <div class="lj-card">
-          <div class="lj-card__img"><img src="/poster-pordosol.webp" alt="Pôster Pôr do Sol A4"></div>
-          <div class="lj-card__info">
-            <p class="lj-card__preco"><small>R$</small>39</p>
-            <p class="lj-card__nome">Pôster A4</p>
-            <p class="lj-card__tipo">Pôster · A4</p>
-          </div>
+          <div class="lj-card__img lj-card__img--fit"><img src="/poster-destrua.webp" alt="Pôster Destrua o Império A4"></div>
+          <div class="lj-card__info"><p class="lj-card__preco"><small>R$</small>39</p><div class="lj-card__txt"><p class="lj-card__nome">Pôster A4</p><p class="lj-card__tipo">Pôster · A4</p></div></div>
         </div>
         <div class="lj-card">
           <div class="lj-card__img"><img src="/kit-cobogo-praia.webp" alt="Cobogó"></div>
-          <div class="lj-card__info">
-            <p class="lj-card__preco"><small>R$</small>49</p>
-            <p class="lj-card__nome">Cobogó</p>
-            <p class="lj-card__tipo">Cobogó · 15×15cm</p>
-          </div>
+          <div class="lj-card__info"><p class="lj-card__preco"><small>R$</small>49</p><div class="lj-card__txt"><p class="lj-card__nome">Cobogó</p><p class="lj-card__tipo">Cobogó · 15×15cm</p></div></div>
+        </div>
+        <div class="lj-card">
+          <div class="lj-card__img"><img src="/relogio-chaveiro.webp" alt="Relógio do Mercado"></div>
+          <div class="lj-card__info"><p class="lj-card__preco"><small>R$</small>19</p><div class="lj-card__txt"><p class="lj-card__nome">Relógio</p><p class="lj-card__tipo">Relógio · 3D</p></div></div>
         </div>
       </div>
       <div class="loja__dots" id="ljDots"></div>
       <button class="swipe-hint back" id="toPixFromLoja" type="button">&larr; pix</button>
     </section>
   </div>
+  <div class="brand-corner" aria-label="MARATU Estúdio">
+    <img class="brand-corner__logo" src="/maratu-logo.svg?v=1" alt="MARATU">
+    <span class="brand-corner__est"><img class="estudio-boil" src="/estudio-sprite.webp?v=1" alt="Estúdio"></span>
+  </div>
+  <a class="qr-corner" href="https://instagram.com/maratuestudio" target="_blank" rel="noopener" aria-label="Siga a MARATU no Instagram">
+    <img src="/divulgacao/ig-qr.png?v=2" alt="QR do Instagram @maratuestudio" width="462" height="462">
+    <span class="qr-corner__lbl">Siga no Instagram<br><b>@maratuestudio</b></span>
+  </a>
   <script>
 
     var heroSlides=document.querySelectorAll('.hero__bg-slide'),heroAtual=0;
@@ -384,17 +350,14 @@
       window.addEventListener('pointerup',function(){ if(!down)return; down=false; deck.classList.remove('dragging'); var w=window.innerWidth; deck.scrollTo({left:Math.round(deck.scrollLeft/w)*w,behavior:'smooth'}); });
       deck.querySelectorAll('img,a').forEach(function(el){ el.setAttribute('draggable','false'); });
       // impede clique acidental do link apos arraste
-      deck.querySelector('.qr-card').addEventListener('click',function(e){ if(moved){ e.preventDefault(); } });
     })();
     function goTo(i){ deck.scrollTo({left:i*window.innerWidth,behavior:'smooth'}); }
     // body herda a cor do painel visivel (o iPadOS "estende" o bg do body atras da barra de janela)
-    var panelBg=['#0D0D0B','#C8501A','#0E3272'];
+    var panelBg=['#C8501A','#0E3272'];
     function syncBg(){ var i=Math.round(deck.scrollLeft/window.innerWidth); document.body.style.background=panelBg[i]||panelBg[0]; }
     deck.addEventListener('scroll',syncBg,{passive:true}); syncBg();
-    document.getElementById('toPix').addEventListener('click',function(){ goTo(1); });
-    document.getElementById('toHome').addEventListener('click',function(){ goTo(0); });
-    document.getElementById('toLoja').addEventListener('click',function(){ goTo(2); });
-    document.getElementById('toPixFromLoja').addEventListener('click',function(){ goTo(1); });
+    document.getElementById('toLoja').addEventListener('click',function(){ goTo(1); });
+    document.getElementById('toPixFromLoja').addEventListener('click',function(){ goTo(0); });
 
     // LOJA: troca os blocos de produto um por vez (fade+slide)
     (function(){

@@ -270,10 +270,11 @@
     .brand-corner__logo{display:block;width:6em;height:auto;filter:brightness(0) invert(1)}
     .brand-corner__est{display:block;overflow:hidden;width:4.48em;height:1.16em;margin-top:-0.05em;margin-left:-0.12em;line-height:0}
     .brand-corner__est .estudio-boil{display:block;height:100%;width:400%;max-width:none;animation:estudio-boil .28s steps(4) infinite}
-    .qr-corner{position:fixed;top:clamp(18px,3vh,40px);right:var(--margem);z-index:20;background:var(--areia);border:2px solid var(--preto);border-radius:18px;box-shadow:6px 6px 0 0 var(--preto);padding:clamp(10px,1.2vw,16px);display:flex;flex-direction:column;align-items:center;gap:8px;width:clamp(128px,14vw,180px);text-decoration:none;color:var(--preto)}
+    .qr-corner{position:fixed;top:clamp(18px,3vh,40px);right:var(--margem);z-index:20;opacity:0;visibility:hidden;transition:opacity .35s ease;background:var(--areia);border:2px solid var(--preto);border-radius:18px;box-shadow:6px 6px 0 0 var(--preto);padding:clamp(10px,1.2vw,16px);display:flex;flex-direction:column;align-items:center;gap:8px;width:clamp(128px,14vw,180px);text-decoration:none;color:var(--preto)}
     .qr-corner img{width:100%;height:auto;display:block;border-radius:5px}
     .qr-corner__lbl{font-family:var(--mono);font-size:clamp(.5rem,.8vw,.62rem);letter-spacing:.14em;text-transform:uppercase;text-align:center;line-height:1.5}
     .qr-corner__lbl b{font-weight:900}
+    .qr-corner.show{opacity:1;visibility:visible}
   </style>
 </head>
 <body>
@@ -356,7 +357,7 @@
     function goTo(i){ deck.scrollTo({left:i*window.innerWidth,behavior:'smooth'}); }
     // body herda a cor do painel visivel (o iPadOS "estende" o bg do body atras da barra de janela)
     var panelBg=['#C8501A','#0E3272'];
-    function syncBg(){ var i=Math.round(deck.scrollLeft/window.innerWidth); document.body.style.background=panelBg[i]||panelBg[0]; }
+    function syncBg(){ var i=Math.round(deck.scrollLeft/window.innerWidth); document.body.style.background=panelBg[i]||panelBg[0]; var q=document.querySelector('.qr-corner'); if(q) q.classList.toggle('show', i===1); }
     deck.addEventListener('scroll',syncBg,{passive:true}); syncBg();
     document.getElementById('toLoja').addEventListener('click',function(){ goTo(1); });
     document.getElementById('toPixFromLoja').addEventListener('click',function(){ goTo(0); });

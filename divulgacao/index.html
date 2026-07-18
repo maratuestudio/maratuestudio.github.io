@@ -236,6 +236,30 @@
 
 
     @media (max-width:680px){ .panel--pix{flex-direction:column;text-align:center;gap:clamp(14px,2.4vh,28px)} .pix__left{align-items:center;max-width:none} .pix__title{text-align:center} .aratu-pix{margin-left:auto;margin-right:auto} }
+
+    /* painel Pix ganha 2 dicas de arrastar (volta pro inicio / segue pra loja) */
+    .panel--pix .swipe-hint{left:auto;transform:none}
+    .panel--pix .swipe-hint.back{left:var(--margem);animation:shbL 1.8s ease-in-out infinite}
+    .panel--pix .swipe-hint.fwd{right:var(--margem);animation:shR 1.8s ease-in-out infinite}
+    @keyframes shbL{0%,100%{transform:translateX(0)}50%{transform:translateX(-7px)}}
+    @keyframes shR{0%,100%{transform:translateX(0)}50%{transform:translateX(7px)}}
+
+    /* ── LOJA (painel 3) ── */
+    .panel--loja{background:var(--azul);display:flex;align-items:center;justify-content:center}
+    .loja{display:flex;flex-direction:column;align-items:center;gap:clamp(20px,3.4vh,40px);padding:clamp(24px,4vh,64px) clamp(24px,4vw,72px);width:100%}
+    .loja__eyebrow{font-family:var(--mono);font-size:clamp(.62rem,1vw,.8rem);letter-spacing:.28em;text-transform:uppercase;color:var(--areia);opacity:.75}
+    .loja__title{font-family:var(--clother);font-weight:900;font-size:clamp(1.6rem,3.4vw,2.8rem);letter-spacing:-.01em;text-transform:uppercase;color:var(--areia);margin-top:4px}
+    .loja__grid{display:flex;align-items:center;justify-content:center;gap:clamp(14px,2vw,28px);flex-wrap:nowrap}
+    .lj-card{background:var(--areia);border:2px solid var(--preto);border-radius:16px;box-shadow:6px 6px 0 0 var(--preto);padding:clamp(10px,1vw,14px);display:flex;flex-direction:column;width:clamp(140px,15vw,206px)}
+    .lj-card__img{position:relative;aspect-ratio:1/1;border-radius:9px;overflow:hidden;background:#e4dfd6;margin-bottom:9px}
+    .lj-card__img.poster{aspect-ratio:3/4}
+    .lj-card__img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;opacity:0;transition:opacity .7s ease}
+    .lj-card__img img.ativo{opacity:1}
+    .lj-card__preco{position:absolute;bottom:8px;right:8px;width:clamp(44px,4.6vw,58px);height:clamp(44px,4.6vw,58px);background:var(--areia);border:1.5px solid var(--preto);border-radius:50%;box-shadow:2px 2px 0 0 var(--preto);display:flex;align-items:baseline;justify-content:center;gap:1px;transform:rotate(-8deg);font-family:var(--clother);font-weight:900;font-size:clamp(.85rem,1.3vw,1.2rem);color:var(--preto);z-index:2}
+    .lj-card__preco small{font-family:var(--clother);font-weight:700;font-size:.5em}
+    .lj-card__nome{font-family:var(--clother);font-weight:700;font-size:clamp(.68rem,.95vw,.84rem);text-transform:uppercase;color:var(--preto);line-height:1.2}
+    .lj-card__tipo{font-family:var(--mono);font-size:.56rem;color:rgba(13,13,11,.5);letter-spacing:.08em;text-transform:uppercase;margin-top:2px}
+    @media (max-width:900px){ .loja__grid{flex-wrap:wrap} }
   </style>
 </head>
 <body>
@@ -288,6 +312,62 @@
       </div>
       <div class="pix__card"><img src="/divulgacao/pix-qr.png?v=2" alt="QR de pagamento Pix" width="583" height="583"></div>
       <button class="swipe-hint back" id="toHome">&larr; início</button>
+      <button class="swipe-hint fwd" id="toLoja" type="button">arraste para os produtos &rarr;</button>
+    </section>
+    <section class="panel panel--loja" id="loja">
+      <div class="loja">
+        <div>
+          <span class="loja__eyebrow">MARATU Estúdio</span>
+          <h1 class="loja__title">Peças à venda</h1>
+        </div>
+        <div class="loja__grid">
+          <div class="lj-card">
+            <div class="lj-card__img" id="ljChaveiro">
+              <img class="ativo" src="/carranca-chaveiro.webp" alt="Kit Chaveiro">
+              <img src="/arcos-chaveiro.webp" alt="">
+              <img src="/relogio-chaveiro.webp" alt="">
+              <img src="/kit-aracaju-chaveiro.webp" alt="">
+              <img src="/maratu-chaveiro-tag.jpg" alt="">
+              <div class="lj-card__preco"><small>R$</small>19</div>
+            </div>
+            <p class="lj-card__nome">Kit Chaveiro</p>
+            <p class="lj-card__tipo">Chaveiro · 3D</p>
+          </div>
+          <div class="lj-card">
+            <div class="lj-card__img">
+              <img class="ativo" src="/adesivos-origens.webp" alt="Adesivos Origens">
+              <div class="lj-card__preco"><small>R$</small>19</div>
+            </div>
+            <p class="lj-card__nome">Origens</p>
+            <p class="lj-card__tipo">Adesivos · 12 un</p>
+          </div>
+          <div class="lj-card">
+            <div class="lj-card__img poster">
+              <img class="ativo" src="/poster-pordosol.webp" alt="Pôster Pôr do Sol A3">
+              <div class="lj-card__preco"><small>R$</small>69</div>
+            </div>
+            <p class="lj-card__nome">Pôr do Sol</p>
+            <p class="lj-card__tipo">Pôster · A3</p>
+          </div>
+          <div class="lj-card">
+            <div class="lj-card__img poster">
+              <img class="ativo" src="/poster-pordosol.webp" alt="Pôster Pôr do Sol A4">
+              <div class="lj-card__preco"><small>R$</small>39</div>
+            </div>
+            <p class="lj-card__nome">Pôr do Sol</p>
+            <p class="lj-card__tipo">Pôster · A4</p>
+          </div>
+          <div class="lj-card">
+            <div class="lj-card__img">
+              <img class="ativo" src="/kit-cobogo-praia.webp" alt="Cobogó">
+              <div class="lj-card__preco"><small>R$</small>49</div>
+            </div>
+            <p class="lj-card__nome">Cobogó</p>
+            <p class="lj-card__tipo">Cobogó · 15×15cm</p>
+          </div>
+        </div>
+        <button class="swipe-hint back" id="toPixFromLoja" type="button">&larr; pix</button>
+      </div>
     </section>
   </div>
   <script>
@@ -311,11 +391,21 @@
     })();
     function goTo(i){ deck.scrollTo({left:i*window.innerWidth,behavior:'smooth'}); }
     // body herda a cor do painel visivel (o iPadOS "estende" o bg do body atras da barra de janela)
-    var panelBg=['#0D0D0B','#C8501A'];
+    var panelBg=['#0D0D0B','#C8501A','#0E3272'];
     function syncBg(){ var i=Math.round(deck.scrollLeft/window.innerWidth); document.body.style.background=panelBg[i]||panelBg[0]; }
     deck.addEventListener('scroll',syncBg,{passive:true}); syncBg();
     document.getElementById('toPix').addEventListener('click',function(){ goTo(1); });
     document.getElementById('toHome').addEventListener('click',function(){ goTo(0); });
+    document.getElementById('toLoja').addEventListener('click',function(){ goTo(2); });
+    document.getElementById('toPixFromLoja').addEventListener('click',function(){ goTo(1); });
+
+    // LOJA: slide das fotos do kit chaveiro
+    (function(){
+      var wrap=document.getElementById('ljChaveiro'); if(!wrap)return;
+      var imgs=wrap.querySelectorAll('img'); if(imgs.length<2)return;
+      var i=0;
+      setInterval(function(){ imgs[i].classList.remove('ativo'); i=(i+1)%imgs.length; imgs[i].classList.add('ativo'); },2200);
+    })();
 
     // ARATU respira + pisca 2x a cada 5s
     (function(){ var r=document.getElementById('aratuPix'); if(!r)return;

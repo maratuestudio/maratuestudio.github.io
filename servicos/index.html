@@ -135,7 +135,7 @@
     .secao--areia { background: var(--areia); color: var(--preto); }
     .secao__header { display: grid; grid-template-columns: repeat(12, 1fr); gap: var(--gutter); margin-bottom: clamp(28px, 4vh, 48px); }
     .secao__num { grid-column: 1 / span 2; font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; padding-top: 10px; opacity: 0.5; }
-    .secao__titulo { grid-column: 3 / span 9; font-family: var(--clother); font-weight: 900; font-size: clamp(2rem, 5vw, 4.4rem); line-height: 0.98; letter-spacing: -0.01em; text-transform: uppercase; }
+    .secao__titulo { font-family: var(--clother); font-weight: 900; font-size: clamp(2.2rem, 6.8vw, 6rem); line-height: 0.98; letter-spacing: -0.02em; text-transform: uppercase; margin-bottom: clamp(20px, 3.5vh, 40px); }
     @media (max-width: 768px) {
       .secao__num { grid-column: 1 / -1; margin-bottom: 6px; padding-top: 0; }
       .secao__titulo { grid-column: 1 / -1; }
@@ -183,16 +183,16 @@
     /* ── BLOCOS DE SERVIÇO (long-form · 5 níveis tipográficos) ── */
     .ac { color: var(--laranja); }
     .serv-abertura { max-width: 660px; margin-bottom: clamp(8px, 2vh, 24px); }
-    .serv-abertura p { font-family: var(--clother); font-weight: 400; font-size: clamp(0.95rem, 1.2vw, 1.05rem); line-height: 1.75; color: rgba(13,13,11,0.72); margin-bottom: 16px; }
+    .serv-abertura p { font-family: var(--clother); font-weight: 400; font-size: clamp(1.05rem, 1.6vw, 1.35rem); line-height: 1.7; color: var(--preto); margin-bottom: 18px; }
     .serv-abertura p:last-child { margin-bottom: 0; }
-    .serv-abertura strong, .serv-bloco__body strong { font-weight: 700; color: var(--preto); }
+    .serv-abertura strong, .serv-bloco__body strong { font-weight: 900; color: var(--preto); }
 
     .serv-blocos { border-top: 0.5px solid rgba(13,13,11,0.14); margin-top: clamp(32px, 5vh, 56px); }
     .serv-bloco { padding: clamp(40px, 6vh, 72px) 0; border-bottom: 0.5px solid rgba(13,13,11,0.14); }
     .serv-bloco__tag { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--laranja); margin-bottom: 18px; }
     .serv-bloco__h3 { font-family: var(--clother); font-weight: 900; font-size: clamp(1.5rem, 3.4vw, 2.3rem); line-height: 1.06; letter-spacing: -0.01em; color: var(--preto); margin-bottom: clamp(18px, 2.5vh, 28px); }
     .serv-bloco__body { max-width: 660px; }
-    .serv-bloco__body p { font-family: var(--clother); font-weight: 400; font-size: clamp(0.95rem, 1.2vw, 1.05rem); line-height: 1.75; color: rgba(13,13,11,0.72); margin-bottom: 16px; }
+    .serv-bloco__body p { font-family: var(--clother); font-weight: 400; font-size: clamp(1.05rem, 1.6vw, 1.35rem); line-height: 1.7; color: var(--preto); margin-bottom: 18px; }
     .serv-bloco__body p:last-child { margin-bottom: 0; }
     .serv-bloco__preco { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; line-height: 1.7; color: rgba(13,13,11,0.5); margin-top: clamp(20px, 3vh, 28px); }
     .serv-bloco__cta { margin-top: 22px; }
@@ -260,14 +260,10 @@
   <main>
     <!-- 004 — SERVIÇOS -->
     <section class="secao secao--areia" id="servicos" style="padding-top: clamp(112px, 15vh, 156px);">
-      <div class="secao__header">
-        <p class="secao__num">004 — Serviços</p>
-        <h1 class="secao__titulo">Esse site?<br><span class="ac">A gente fez.</span></h1>
-      </div>
+      <h1 class="secao__titulo">Esse site?<br><span class="ac">A gente fez.</span></h1>
 
       <div class="serv-abertura">
-        <p>Rola a página. Olha as fotos, os botões, o jeito que abre no celular. Tudo isso saiu daqui.</p>
-        <p>O sistema que controla os pedidos da MARATU também. As peças da loja foram desenhadas, modeladas, impressas e fotografadas nesse estúdio, uma por uma. Se você chegou aqui gostando do que viu, a boa notícia <strong>é que a gente faz pro seu negócio.</strong></p>
+        <p>O sistema que controla os pedidos da MARATU também. As peças da loja foram desenhadas, modeladas, impressas nesse estúdio, uma por uma. Se você chegou aqui gostando do que viu, a boa notícia <strong>é que a gente faz pro seu negócio.</strong></p>
       </div>
 
       <div class="serv-blocos">

@@ -207,11 +207,11 @@
     /* ===== DIVULGACAO (kiosk) ===== */
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
     html,body{height:100%;overflow:hidden;background:var(--preto);overscroll-behavior:none}
-    .deck{display:flex;width:100vw;height:100dvh;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;touch-action:pan-x;cursor:grab;user-select:none}
+    .deck{position:fixed;inset:0;display:flex;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;touch-action:pan-x;cursor:grab;user-select:none}
     .deck::-webkit-scrollbar{display:none}
     .deck.dragging{cursor:grabbing;scroll-snap-type:none}
-    .panel{flex:0 0 100vw;width:100vw;height:100dvh;scroll-snap-align:start;position:relative;overflow:hidden}
-    .panel--hero .hero{min-height:100dvh;height:100dvh;padding-top:clamp(40px,7vh,90px)}
+    .panel{flex:0 0 100%;width:100%;height:100%;scroll-snap-align:start;position:relative;overflow:hidden}
+    .panel--hero .hero{min-height:100%;height:100%;padding-top:clamp(40px,7vh,90px)}
     .qr-card{position:absolute;right:var(--margem);bottom:72px;z-index:6;background:var(--areia);border:2px solid var(--preto);border-radius:22px;box-shadow:7px 7px 0 0 var(--preto);padding:clamp(14px,1.6vw,22px);display:flex;flex-direction:column;align-items:center;gap:10px;width:clamp(190px,24vw,280px);text-decoration:none;color:var(--preto)}
     .qr-card img{width:100%;height:auto;display:block;border-radius:6px}
     .qr-card__lbl{font-family:var(--mono);font-size:clamp(.56rem,.9vw,.7rem);letter-spacing:.16em;text-transform:uppercase;text-align:center;line-height:1.5}

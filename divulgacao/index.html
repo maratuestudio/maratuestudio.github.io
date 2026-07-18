@@ -253,9 +253,10 @@
     .lj-card{background:var(--areia);border:2px solid var(--preto);border-radius:16px;box-shadow:6px 6px 0 0 var(--preto);padding:clamp(10px,1vw,14px);display:flex;flex-direction:column;width:clamp(140px,15vw,206px)}
     .lj-card__img{position:relative;aspect-ratio:1/1;border-radius:9px;overflow:hidden;background:#e4dfd6;margin-bottom:9px}
     .lj-card__img.poster{aspect-ratio:3/4}
-    .lj-card__img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;opacity:0;transition:opacity .7s ease}
-    .lj-card__img img.ativo{opacity:1}
-    .lj-card__preco{position:absolute;bottom:8px;right:8px;width:clamp(44px,4.6vw,58px);height:clamp(44px,4.6vw,58px);background:var(--areia);border:1.5px solid var(--preto);border-radius:50%;box-shadow:2px 2px 0 0 var(--preto);display:flex;align-items:baseline;justify-content:center;gap:1px;transform:rotate(-8deg);font-family:var(--clother);font-weight:900;font-size:clamp(.85rem,1.3vw,1.2rem);color:var(--preto);z-index:2}
+    .lj-card__img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;opacity:0;transform:translateX(14px);transition:opacity .6s ease,transform .6s ease}
+    .lj-card__img img.ativo{opacity:1;transform:translateX(0)}
+    .lj-card__preco{position:absolute;bottom:8px;right:8px;width:clamp(44px,4.6vw,58px);height:clamp(44px,4.6vw,58px);background:var(--areia);border:1.5px solid var(--preto);border-radius:50%;box-shadow:2px 2px 0 0 var(--preto);display:flex;align-items:center;justify-content:center;transform:rotate(-8deg);z-index:2}
+    .lj-card__preco .valor{display:flex;align-items:baseline;gap:1px;font-family:var(--clother);font-weight:900;font-size:clamp(.85rem,1.3vw,1.2rem);color:var(--preto);line-height:1}
     .lj-card__preco small{font-family:var(--clother);font-weight:700;font-size:.5em}
     .lj-card__nome{font-family:var(--clother);font-weight:700;font-size:clamp(.68rem,.95vw,.84rem);text-transform:uppercase;color:var(--preto);line-height:1.2}
     .lj-card__tipo{font-family:var(--mono);font-size:.56rem;color:rgba(13,13,11,.5);letter-spacing:.08em;text-transform:uppercase;margin-top:2px}
@@ -328,7 +329,7 @@
               <img src="/relogio-chaveiro.webp" alt="">
               <img src="/kit-aracaju-chaveiro.webp" alt="">
               <img src="/maratu-chaveiro-tag.jpg" alt="">
-              <div class="lj-card__preco"><small>R$</small>19</div>
+              <div class="lj-card__preco"><span class="valor"><small>R$</small>19</span></div>
             </div>
             <p class="lj-card__nome">Kit Chaveiro</p>
             <p class="lj-card__tipo">Chaveiro · 3D</p>
@@ -336,7 +337,7 @@
           <div class="lj-card">
             <div class="lj-card__img">
               <img class="ativo" src="/adesivos-origens.webp" alt="Adesivos Origens">
-              <div class="lj-card__preco"><small>R$</small>19</div>
+              <div class="lj-card__preco"><span class="valor"><small>R$</small>19</span></div>
             </div>
             <p class="lj-card__nome">Origens</p>
             <p class="lj-card__tipo">Adesivos · 12 un</p>
@@ -344,7 +345,7 @@
           <div class="lj-card">
             <div class="lj-card__img poster">
               <img class="ativo" src="/poster-pordosol.webp" alt="Pôster Pôr do Sol A3">
-              <div class="lj-card__preco"><small>R$</small>69</div>
+              <div class="lj-card__preco"><span class="valor"><small>R$</small>69</span></div>
             </div>
             <p class="lj-card__nome">Pôr do Sol</p>
             <p class="lj-card__tipo">Pôster · A3</p>
@@ -352,7 +353,7 @@
           <div class="lj-card">
             <div class="lj-card__img poster">
               <img class="ativo" src="/poster-pordosol.webp" alt="Pôster Pôr do Sol A4">
-              <div class="lj-card__preco"><small>R$</small>39</div>
+              <div class="lj-card__preco"><span class="valor"><small>R$</small>39</span></div>
             </div>
             <p class="lj-card__nome">Pôr do Sol</p>
             <p class="lj-card__tipo">Pôster · A4</p>
@@ -360,7 +361,7 @@
           <div class="lj-card">
             <div class="lj-card__img">
               <img class="ativo" src="/kit-cobogo-praia.webp" alt="Cobogó">
-              <div class="lj-card__preco"><small>R$</small>49</div>
+              <div class="lj-card__preco"><span class="valor"><small>R$</small>49</span></div>
             </div>
             <p class="lj-card__nome">Cobogó</p>
             <p class="lj-card__tipo">Cobogó · 15×15cm</p>

@@ -199,7 +199,7 @@
     .serv-bloco__valor { font-family: var(--clother); font-weight: 400; font-size: clamp(1rem, 1.4vw, 1.2rem); line-height: 1.7; color: var(--preto); }
     .serv-bloco__fine { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; line-height: 1.6; color: rgba(13,13,11,0.5); max-width: 560px; }
     .serv-bloco__cta { margin-top: 22px; }
-    .serv-shots { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(16px, 2vw, 24px); margin-top: clamp(28px, 4vh, 40px); }
+    .serv-shots { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(16px, 2vw, 24px); margin-top: clamp(28px, 4vh, 40px); max-width: 920px; }
     .serv-shot { margin: 0; }
     .serv-shot img { width: 100%; height: auto; display: block; border: 1.5px solid var(--preto); border-radius: 14px; box-shadow: 4px 4px 0 0 var(--preto); }
     .serv-shot figcaption { font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(13,13,11,0.5); line-height: 1.5; margin-top: 12px; }
@@ -207,10 +207,10 @@
     .serv-shots__label { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--laranja); margin-top: clamp(28px, 4vh, 40px); margin-bottom: 0; }
     .serv-shots--3 { grid-template-columns: repeat(3, 1fr); margin-top: 14px; align-items: start; }
     @media (max-width: 720px) { .serv-shots--3 { grid-template-columns: 1fr; } }
-    .serv-proof { margin-top: clamp(28px, 4vh, 40px); max-width: 900px; }
+    .serv-proof { margin-top: clamp(24px, 3vh, 32px); max-width: 920px; }
     .serv-proof img { width: 100%; height: auto; display: block; border: 1.5px solid var(--preto); border-radius: 14px; box-shadow: 4px 4px 0 0 var(--preto); }
     .serv-proof figcaption { font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(13,13,11,0.5); line-height: 1.5; margin-top: 12px; }
-    .serv-feature { margin-top: clamp(28px, 4vh, 40px); margin-bottom: 4px; }
+    .serv-feature { margin-top: clamp(28px, 4vh, 40px); margin-bottom: 4px; max-width: 920px; }
     .serv-feature img { width: 100%; height: auto; display: block; border: 1.5px solid var(--preto); border-radius: 14px; box-shadow: 4px 4px 0 0 var(--preto); }
     .cta-final__sub { font-family: var(--clother); font-weight: 400; font-size: clamp(0.95rem, 1.4vw, 1.1rem); line-height: 1.6; color: rgba(13,13,11,0.7); max-width: 460px; margin: 0 auto clamp(28px, 4vh, 40px); }
 
@@ -294,7 +294,11 @@
           </div>
           <figure class="serv-proof">
             <img src="/servicos-google-maratu.webp" alt="Busca por 'maratu' no Google: o resumo da IA descreve o estúdio e o site oficial e o Instagram aparecem no topo" loading="lazy" width="2010" height="860">
-            <figcaption>Busque “maratu” no Google: o próprio resumo da IA já apresenta o estúdio, e o site oficial aparece no topo. Um site bem feito trabalha por você.</figcaption>
+            <figcaption>Busque “maratu” no Google: o resumo da IA já apresenta o estúdio, e o site oficial aparece em primeiro.</figcaption>
+          </figure>
+          <figure class="serv-proof">
+            <img src="/servicos-google-negocio.webp" alt="Busca 'maratu' no Google: site oficial, Instagram e o perfil de negócio verificado, com mapa em Aracaju, no topo dos resultados" loading="lazy" width="2549" height="780">
+            <figcaption>Site, Instagram e o perfil verificado no Google — tudo no topo pra quem procura por você. Isso é feito com o site certo.</figcaption>
           </figure>
           <div class="serv-bloco__preco">
             <span class="serv-bloco__valor">Investimento a partir de R$1.500</span>

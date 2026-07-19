@@ -203,6 +203,9 @@
     .serv-shot img { width: 100%; height: auto; display: block; border: 1.5px solid var(--preto); border-radius: 14px; box-shadow: 4px 4px 0 0 var(--preto); }
     .serv-shot figcaption { font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(13,13,11,0.5); line-height: 1.5; margin-top: 12px; }
     @media (max-width: 720px) { .serv-shots { grid-template-columns: 1fr; } }
+    .serv-shots__label { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--laranja); margin-top: clamp(28px, 4vh, 40px); margin-bottom: 0; }
+    .serv-shots--4 { grid-template-columns: repeat(4, 1fr); margin-top: 14px; }
+    @media (max-width: 720px) { .serv-shots--4 { grid-template-columns: 1fr 1fr; } }
     .cta-final__sub { font-family: var(--clother); font-weight: 400; font-size: clamp(0.95rem, 1.4vw, 1.1rem); line-height: 1.6; color: rgba(13,13,11,0.7); max-width: 460px; margin: 0 auto clamp(28px, 4vh, 40px); }
 
     /* ── CTA FINAL ── */
@@ -334,6 +337,25 @@
             <figure class="serv-shot">
               <img src="/servicos-3d-pecas.webp?v=2" alt="Peças 3D laranja recém-impressas sendo retiradas da mesa de impressão" loading="lazy" width="1400" height="934">
               <figcaption>Peças recém-impressas, uma a uma</figcaption>
+            </figure>
+          </div>
+          <p class="serv-shots__label">Alguns exemplos do que dá pra fazer · simulação em 3D</p>
+          <div class="serv-shots serv-shots--4">
+            <figure class="serv-shot">
+              <img src="/brinde-trofeu.webp" alt="Troféu de premiação impresso em 3D, laranja fosco" loading="lazy" width="768" height="768">
+              <figcaption>Troféu de premiação</figcaption>
+            </figure>
+            <figure class="serv-shot">
+              <img src="/brinde-chaveiro.webp" alt="Chaveiros personalizados impressos em 3D, laranja" loading="lazy" width="768" height="768">
+              <figcaption>Chaveiro com sua marca</figcaption>
+            </figure>
+            <figure class="serv-shot">
+              <img src="/brinde-organizador.webp" alt="Organizador de mesa com porta-canetas impresso em 3D, laranja" loading="lazy" width="768" height="768">
+              <figcaption>Organizador de mesa</figcaption>
+            </figure>
+            <figure class="serv-shot">
+              <img src="/brinde-luminaria.webp" alt="Luminária de mesa impressa em 3D com luz quente" loading="lazy" width="768" height="768">
+              <figcaption>Luminária com logo</figcaption>
             </figure>
           </div>
           <div class="serv-bloco__preco">

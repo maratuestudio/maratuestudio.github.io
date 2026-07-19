@@ -204,6 +204,12 @@
     .serv-shot img { width: 100%; height: auto; display: block; border: 1.5px solid var(--preto); border-radius: 14px; box-shadow: 4px 4px 0 0 var(--preto); }
     .serv-shot figcaption { font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(13,13,11,0.5); line-height: 1.5; margin-top: 12px; }
     @media (max-width: 720px) { .serv-shots { grid-template-columns: 1fr; } }
+    .serv-shots__label { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--laranja); margin-top: clamp(28px, 4vh, 40px); margin-bottom: 0; }
+    .serv-shots--3 { grid-template-columns: repeat(3, 1fr); margin-top: 14px; }
+    @media (max-width: 720px) { .serv-shots--3 { grid-template-columns: 1fr; } }
+    .serv-proof { margin-top: clamp(28px, 4vh, 40px); max-width: 900px; }
+    .serv-proof img { width: 100%; height: auto; display: block; border: 1.5px solid var(--preto); border-radius: 14px; box-shadow: 4px 4px 0 0 var(--preto); }
+    .serv-proof figcaption { font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(13,13,11,0.5); line-height: 1.5; margin-top: 12px; }
     .cta-final__sub { font-family: var(--clother); font-weight: 400; font-size: clamp(0.95rem, 1.4vw, 1.1rem); line-height: 1.6; color: rgba(13,13,11,0.7); max-width: 460px; margin: 0 auto clamp(28px, 4vh, 40px); }
 
     /* ── CTA FINAL ── */
@@ -284,6 +290,10 @@
             <p>Wix e Squarespace cobram de <strong>R$40 a R$100 todo mês</strong>, pelo resto da vida, e o site nunca fica seu. <strong>Aqui a hospedagem é gratuita e não expira.</strong> Seu único custo é o domínio, R$40 por ano, pago direto por você no Registro.br.</p>
             <p>Faz a conta: em oito meses de plataforma você já gastou o preço de um site nosso. O nosso continua no ar no ano seguinte, e no outro, rápido, bonito no celular e <strong>com a sua cara</strong>.</p>
           </div>
+          <figure class="serv-proof">
+            <img src="/servicos-google-maratu.webp" alt="Busca por 'maratu' no Google: o resumo da IA descreve o estúdio e o site oficial e o Instagram aparecem no topo" loading="lazy" width="2010" height="860">
+            <figcaption>Busque “maratu” no Google: o próprio resumo da IA já apresenta o estúdio, e o site oficial aparece no topo. Um site bem feito trabalha por você.</figcaption>
+          </figure>
           <div class="serv-bloco__preco">
             <span class="serv-bloco__valor">Investimento a partir de R$1.500</span>
             <span class="serv-bloco__fine">inclui 1 mês de ajustes grátis após a entrega · + bônus: ebook de boas práticas e dicas de gestão</span>
@@ -310,6 +320,14 @@
               <img src="/servicos-admin-agenda.webp?v=2" alt="Agenda semanal da MARATU com encomendas, entregas e eventos" loading="lazy" width="1400" height="965">
               <figcaption>Agenda — encomendas, entregas e eventos da semana</figcaption>
             </figure>
+            <figure class="serv-shot">
+              <img src="/servicos-admin-lembretes.webp" alt="Tela de exemplo: lembretes do dia no painel — entregas, compras e contas a resolver, com uma tarefa já concluída" loading="lazy" width="1420" height="900">
+              <figcaption>Lembretes — o que resolver hoje, sem esquecer nada · exemplo</figcaption>
+            </figure>
+            <figure class="serv-shot">
+              <img src="/servicos-admin-analytics.webp" alt="Tela de exemplo: analytics do site no painel — visitantes, sessões, cliques no WhatsApp e páginas mais vistas" loading="lazy" width="1420" height="1130">
+              <figcaption>Analytics — quantas pessoas visitam o site e de onde vêm · exemplo</figcaption>
+            </figure>
           </div>
           <div class="serv-bloco__preco">
             <span class="serv-bloco__valor">Investimento a partir de R$1.500</span>
@@ -335,6 +353,21 @@
             <figure class="serv-shot">
               <img src="/servicos-3d-pecas.webp?v=2" alt="Peças 3D laranja recém-impressas sendo retiradas da mesa de impressão" loading="lazy" width="1400" height="934">
               <figcaption>Peças recém-impressas, uma a uma</figcaption>
+            </figure>
+          </div>
+          <p class="serv-shots__label">Produção em massa, peça repetida · imagens ilustrativas</p>
+          <div class="serv-shots serv-shots--3">
+            <figure class="serv-shot">
+              <img src="/servicos-3d-massa-engrenagens.webp" alt="Várias engrenagens 3D iguais impressas em série, empilhadas numa bancada" loading="lazy" width="1400" height="2100">
+              <figcaption>Peça repetida em série</figcaption>
+            </figure>
+            <figure class="serv-shot">
+              <img src="/servicos-3d-massa-pecas.webp" alt="Peças 3D azuis recém-impressas na mesa da impressora" loading="lazy" width="1400" height="2100">
+              <figcaption>Lotes saindo da impressora</figcaption>
+            </figure>
+            <figure class="serv-shot">
+              <img src="/servicos-3d-massa-farm.webp" alt="Duas impressoras 3D rodando ao mesmo tempo numa prateleira" loading="lazy" width="1000" height="1500">
+              <figcaption>Vários equipamentos rodando juntos</figcaption>
             </figure>
           </div>
           <div class="serv-bloco__preco">

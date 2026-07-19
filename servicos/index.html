@@ -203,6 +203,9 @@
     .serv-shot img { width: 100%; height: auto; display: block; border: 1.5px solid var(--preto); border-radius: 14px; box-shadow: 4px 4px 0 0 var(--preto); }
     .serv-shot figcaption { font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(13,13,11,0.5); line-height: 1.5; margin-top: 12px; }
     @media (max-width: 720px) { .serv-shots { grid-template-columns: 1fr; } }
+    .serv-shots__label { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--laranja); margin-top: clamp(28px, 4vh, 40px); margin-bottom: 0; }
+    .serv-shots--4 { grid-template-columns: repeat(4, 1fr); margin-top: 14px; }
+    @media (max-width: 720px) { .serv-shots--4 { grid-template-columns: 1fr 1fr; } }
     .cta-final__sub { font-family: var(--clother); font-weight: 400; font-size: clamp(0.95rem, 1.4vw, 1.1rem); line-height: 1.6; color: rgba(13,13,11,0.7); max-width: 460px; margin: 0 auto clamp(28px, 4vh, 40px); }
 
     /* ── CTA FINAL ── */
@@ -334,6 +337,25 @@
             <figure class="serv-shot">
               <img src="/servicos-3d-pecas.webp?v=2" alt="Peças 3D laranja recém-impressas sendo retiradas da mesa de impressão" loading="lazy" width="1400" height="934">
               <figcaption>Peças recém-impressas, uma a uma</figcaption>
+            </figure>
+          </div>
+          <p class="serv-shots__label">Alguns brindes que já saíram daqui</p>
+          <div class="serv-shots serv-shots--4">
+            <figure class="serv-shot">
+              <img src="/relogio-farol.webp" alt="Relógio Farol impresso em 3D, preto e branco com ponteiros vermelhos" loading="lazy" width="800" height="800">
+              <figcaption>Relógio decorativo</figcaption>
+            </figure>
+            <figure class="serv-shot">
+              <img src="/carranca-chaveiro.webp" alt="Chaveiro de carranca impresso em 3D" loading="lazy" width="1200" height="1200">
+              <figcaption>Chaveiro autoral</figcaption>
+            </figure>
+            <figure class="serv-shot">
+              <img src="/cobogo-arcos.webp" alt="Cobogó decorativo Arcos impresso em 3D, amarelo" loading="lazy" width="1024" height="1024">
+              <figcaption>Cobogó decorativo</figcaption>
+            </figure>
+            <figure class="serv-shot">
+              <img src="/vaso-pinda.webp" alt="Vaso Pindá impresso em 3D, cinza com textura torcida e pratinho" loading="lazy" width="1024" height="1024">
+              <figcaption>Vaso com pratinho</figcaption>
             </figure>
           </div>
           <div class="serv-bloco__preco">

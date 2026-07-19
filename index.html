@@ -2068,8 +2068,25 @@
       btn.classList.add('selected');
       var reais = precoPoster(pid, tam);
       var container = btn.closest('.produto-card');
-      var precoEl = container && container.querySelector('.preco-valor');
-      if (precoEl) precoEl.innerHTML = '<span class="preco-cifrao">R$</span>' + reais;
+      if (container) {
+        // Reseta o selo pro estado base ANTES de reescrever o preço. Sem isso, ao voltar de um
+        // tamanho >R$150 (que virou "3x") pra um menor, sobravam a classe --parcela, o canto "3x"
+        // e o data-total cacheado, e o script de parcelamento montava o híbrido "3x R$119 / ou R$179".
+        var selo = container.querySelector('.preco-selo');
+        var precoEl = selo && selo.querySelector('.preco-valor');
+        if (precoEl) {
+          precoEl.classList.remove('preco-valor--parcela');
+          precoEl.innerHTML = '<span class="preco-cifrao">R$</span>' + reais;
+        }
+        if (selo) {
+          selo.removeAttribute('data-total');
+          var corner = selo.querySelector('.preco-3x-corner');
+          if (corner) corner.remove();
+        }
+        var pill = container.querySelector('.preco-parcela');
+        if (pill) pill.remove();
+        // o observer do bloco de parcelamento reaplica o selo "3x" se o novo preço passar de R$150
+      }
       atualizarLink(pid, tam);
     }
 

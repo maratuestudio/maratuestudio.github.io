@@ -215,6 +215,9 @@
     /* ── CTA FINAL ── */
     .cta-final { border-top: 0.5px solid rgba(13,13,11,0.1); text-align: center; }
     .cta-final__titulo { font-family: var(--clother); font-weight: 900; font-size: clamp(1.9rem, 5.5vw, 4rem); line-height: 1; letter-spacing: -0.01em; text-transform: uppercase; margin-bottom: 16px; color: var(--preto); }
+    .cta-final__lockup { display: inline-block; text-align: left; margin: 0 auto clamp(22px, 3.2vh, 34px); }
+    .cta-final__logo { display: block; width: clamp(158px, 24vw, 248px); height: auto; }
+    .cta-final__logo-sub { display: block; font-family: var(--clother); font-weight: 700; text-transform: uppercase; letter-spacing: 0.14em; font-size: clamp(0.6rem, 1.05vw, 0.78rem); color: var(--preto); margin-top: 0.55em; margin-left: 0.12em; }
     .cta-final__btn {
       display: inline-flex; align-items: center; gap: 14px;
       font-family: var(--clother); font-weight: 900; font-size: 0.95rem; letter-spacing: 0.06em; text-transform: uppercase;
@@ -333,6 +336,21 @@
               <figcaption>Analytics — visitas, cliques por produto e de onde vieram</figcaption>
             </figure>
           </div>
+          <p class="serv-shots__label">Adaptado pro Estúdio Gecê — arquitetura</p>
+          <div class="serv-shots serv-shots--3">
+            <figure class="serv-shot">
+              <img src="/servicos-gece-portal.webp?v=1" alt="Portal do cliente do Estúdio Gecê: etapas do projeto, arquivos e próximos compromissos" loading="lazy" width="929" height="576">
+              <figcaption>Portal do cliente — etapas do projeto, arquivos e agenda</figcaption>
+            </figure>
+            <figure class="serv-shot">
+              <img src="/servicos-gece-crm.webp?v=1" alt="Painel de leads do Estúdio Gecê: contatos, origem, interesse, status da negociação e valor estimado" loading="lazy" width="1400" height="927">
+              <figcaption>Leads e clientes — origem, status e valor de cada contato</figcaption>
+            </figure>
+            <figure class="serv-shot">
+              <img src="/servicos-gece-financeiro.webp?v=1" alt="Financeiro do Estúdio Gecê: custos fixos, margem, comissão e precificação final do projeto" loading="lazy" width="1400" height="927">
+              <figcaption>Financeiro — custos, margem e preço final do projeto</figcaption>
+            </figure>
+          </div>
           <div class="serv-bloco__preco">
             <span class="serv-bloco__valor">Investimento a partir de R$1.500</span>
             <span class="serv-bloco__fine">inclui 1 mês de ajustes grátis após a entrega · + bônus: ebook de boas práticas e dicas de gestão</span>
@@ -395,7 +413,11 @@
 
     <!-- CTA FINAL -->
     <section class="secao secao--areia cta-final">
-      <h2 class="cta-final__titulo">Bora fazer <span class="ac">o seu?</span></h2>
+      <div class="cta-final__lockup">
+        <img class="cta-final__logo" src="/maratu-logo.svg?v=1" alt="MARATU" width="440" height="54">
+        <span class="cta-final__logo-sub">Para empresas</span>
+      </div>
+      <h2 class="cta-final__titulo">Bora impulsionar <span class="ac">o seu negócio?</span></h2>
       <p class="cta-final__sub">Chama no WhatsApp e conta o que você faz.</p>
       <a class="cta-final__btn" href="https://wa.me/5579991957415?text=Oi!%20Vim%20pela%20p%C3%A1gina%20de%20servi%C3%A7os%20da%20MARATU" target="_blank" rel="noopener" data-servico="geral" data-origem="pagina_servicos">Chamar no WhatsApp ↗</a>
     </section>

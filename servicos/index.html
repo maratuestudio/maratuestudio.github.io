@@ -278,6 +278,16 @@
     .serv-proof { margin-top: clamp(24px, 3vh, 32px); max-width: 920px; }
     .serv-proof img { width: 100%; height: auto; display: block; border: 1.5px solid var(--preto); border-radius: 14px; box-shadow: 4px 4px 0 0 var(--preto); }
     .serv-proof figcaption { font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(13,13,11,0.5); line-height: 1.5; margin-top: 12px; }
+    .serv-faq { border-top: 0.5px solid rgba(13,13,11,0.1); }
+    .serv-faq__title { font-family: var(--clother); font-weight: 900; font-size: clamp(1.6rem, 4vw, 2.6rem); line-height: 1.05; letter-spacing: -0.01em; color: var(--preto); margin-bottom: clamp(24px, 4vh, 40px); }
+    .serv-faq__list { max-width: 800px; }
+    .serv-faq__item { border-bottom: 1px solid rgba(13,13,11,0.12); }
+    .serv-faq__item summary { font-family: var(--clother); font-weight: 700; font-size: clamp(1.05rem, 1.7vw, 1.3rem); color: var(--preto); cursor: pointer; padding: clamp(18px, 2.4vh, 24px) 0; list-style: none; display: flex; justify-content: space-between; align-items: center; gap: 20px; }
+    .serv-faq__item summary::-webkit-details-marker { display: none; }
+    .serv-faq__item summary::after { content: '+'; font-family: var(--clother); font-weight: 400; font-size: 1.6em; line-height: 1; color: var(--laranja); flex-shrink: 0; }
+    .serv-faq__item[open] summary::after { content: '\2212'; }
+    .serv-faq__item p { font-family: var(--clother); font-weight: 400; font-size: clamp(0.98rem, 1.4vw, 1.15rem); line-height: 1.7; color: var(--preto); max-width: 68ch; padding: 0 0 clamp(20px, 2.6vh, 26px); margin: 0; }
+    .serv-faq__item p strong { font-weight: 900; }
     .cta-final__sub { font-family: var(--clother); font-weight: 400; font-size: clamp(0.95rem, 1.4vw, 1.1rem); line-height: 1.6; color: rgba(13,13,11,0.7); max-width: 460px; margin: 0 auto clamp(28px, 4vh, 40px); }
 
     /* ── CTA FINAL ── */
@@ -306,6 +316,21 @@
     .footer__baseline a:hover { color: var(--laranja); }
     @media (max-width: 640px) { .footer__baseline { flex-direction: column; } }
   </style>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "@id": "https://maratu.com.br/servicos#faq",
+    "mainEntity": [
+      { "@type": "Question", "name": "Preciso pagar mensalidade pelo site?", "acceptedAnswer": { "@type": "Answer", "text": "Não. A hospedagem é gratuita e não expira. Você paga só o domínio, R$40 por ano, direto no Registro.br. As plataformas de mensalidade cobram pra sempre e o site nunca fica seu. O nosso é seu." } },
+      { "@type": "Question", "name": "Vocês fazem sistema de gestão pra MEI?", "acceptedAnswer": { "@type": "Answer", "text": "Fazemos. A gente adapta o nosso painel ao seu negócio, com os nomes que você já usa no dia a dia. Pedido, orçamento, agenda e financeiro ficam num lugar só. Abre no navegador, roda no celular, sem servidor cobrando por mês." } },
+      { "@type": "Question", "name": "Quanto custa um site pra pequeno negócio?", "acceptedAnswer": { "@type": "Answer", "text": "Começa em R$1.500, com um mês de ajustes incluído. O valor final depende do tamanho do site e do que você precisa dentro dele. Manda o que tem em mente que a gente fecha o escopo com você." } },
+      { "@type": "Question", "name": "A MARATU atende fora de Aracaju?", "acceptedAnswer": { "@type": "Answer", "text": "Atende o Brasil inteiro. Site, sistema e design a gente entrega de qualquer lugar, tudo por WhatsApp e chamada. As peças de impressão 3D saem do estúdio e vão pro seu endereço pelos Correios." } },
+      { "@type": "Question", "name": "Vocês fazem a identidade visual completa?", "acceptedAnswer": { "@type": "Answer", "text": "Fazemos. Entra logo, cores, tipografia e as regras que mantêm tudo coerente quando você mesmo for postar depois. Fazemos também embalagem, rótulo, cardápio, cartaz e arte de Instagram. E ilustração quando a marca precisa de uma imagem que ninguém mais tem." } },
+      { "@type": "Question", "name": "Dá pra imprimir poucas peças em 3D?", "acceptedAnswer": { "@type": "Answer", "text": "Dá, de uma unidade a um lote. Você aprova o modelo em 3D antes de imprimir. Se algo não ficou como imaginou, a gente ajusta e só então imprime. Serve pra brinde, troféu, protótipo e peça de reposição que saiu de linha." } }
+    ]
+  }
+  </script>
 </head>
 <body>
 
@@ -469,6 +494,38 @@
           </div>
           <a class="serv-item__cta serv-bloco__cta" href="https://wa.me/5579991957415?text=Oi!%20Quero%20um%20or%C3%A7amento%20de%20design%20e%20ilustra%C3%A7%C3%A3o" target="_blank" rel="noopener" data-servico="design" data-origem="pagina_servicos">Pedir orçamento</a>
         </article>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="secao secao--areia serv-faq">
+      <p class="serv-bloco__tag">Perguntas frequentes</p>
+      <h2 class="serv-faq__title">Dúvidas antes de <span class="ac">chamar no WhatsApp</span></h2>
+      <div class="serv-faq__list">
+        <details class="serv-faq__item">
+          <summary>Preciso pagar mensalidade pelo site?</summary>
+          <p>Não. A hospedagem é <strong>gratuita e não expira</strong>. Você paga só o domínio, R$40 por ano, direto no Registro.br. As plataformas de mensalidade cobram pra sempre e o site nunca fica seu. O nosso é seu.</p>
+        </details>
+        <details class="serv-faq__item">
+          <summary>Vocês fazem sistema de gestão pra MEI?</summary>
+          <p>Fazemos. A gente adapta o nosso painel ao seu negócio, com os nomes que você já usa no dia a dia. Pedido, orçamento, agenda e financeiro ficam num lugar só. Abre no navegador, roda no celular, <strong>sem servidor cobrando por mês</strong>.</p>
+        </details>
+        <details class="serv-faq__item">
+          <summary>Quanto custa um site pra pequeno negócio?</summary>
+          <p>Começa em <strong>R$1.500</strong>, com um mês de ajustes incluído. O valor final depende do tamanho do site e do que você precisa dentro dele. Manda o que tem em mente que a gente fecha o escopo com você.</p>
+        </details>
+        <details class="serv-faq__item">
+          <summary>A MARATU atende fora de Aracaju?</summary>
+          <p>Atende o <strong>Brasil inteiro</strong>. Site, sistema e design a gente entrega de qualquer lugar, tudo por WhatsApp e chamada. As peças de impressão 3D saem do estúdio e vão pro seu endereço pelos Correios.</p>
+        </details>
+        <details class="serv-faq__item">
+          <summary>Vocês fazem a identidade visual completa?</summary>
+          <p>Fazemos. Entra logo, cores, tipografia e <strong>as regras que mantêm tudo coerente</strong> quando você mesmo for postar depois. Fazemos também embalagem, rótulo, cardápio, cartaz e arte de Instagram. E ilustração quando a marca precisa de uma imagem que ninguém mais tem.</p>
+        </details>
+        <details class="serv-faq__item">
+          <summary>Dá pra imprimir poucas peças em 3D?</summary>
+          <p>Dá, de <strong>uma unidade a um lote</strong>. Você aprova o modelo em 3D antes de imprimir. Se algo não ficou como imaginou, a gente ajusta e só então imprime. Serve pra brinde, troféu, protótipo e peça de reposição que saiu de linha.</p>
+        </details>
       </div>
     </section>
 

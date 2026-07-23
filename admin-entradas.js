@@ -34,24 +34,29 @@
     setTimeout(function () { t.style.transition = "opacity .3s"; t.style.opacity = "0"; setTimeout(function () { t.remove(); }, 320); }, 2600);
   }
 
-  function sync(manual) {
-    return fetch(API + "/api/btg/entradas", { headers: { Authorization: "Bearer " } })
+  function fonte(url) {
+    return fetch(API + url, { headers: { Authorization: "Bearer " } })
       .then(function (r) { return r.ok ? r.json() : null; })
-      .then(function (d) {
-        if (!d || !d.entradas) { if (manual) toast("Não consegui ler a planilha do BTG"); return; }
+      .catch(function () { return null; });
+  }
+  function sync(manual) {
+    return Promise.all([fonte("/api/btg/entradas"), fonte("/api/mp/entradas")])
+      .then(function (res) {
+        var entradas = [];
+        res.forEach(function (d) { if (d && d.entradas) entradas = entradas.concat(d.entradas); });
         var atuais = getLancs();
         if (atuais === null) { if (manual) toast("Recarregue a página"); return; }
         var ids = {};
         atuais.forEach(function (l) { ids[String(l.id)] = 1; });
-        var novos = d.entradas
-          .filter(function (e) { return e.id && !ids[String(e.id)]; })
+        var novos = entradas
+          .filter(function (e) { return e && e.id && !ids[String(e.id)]; })
           .map(function (e) { return { id: e.id, data: e.data, label: e.label, valor: e.valor }; });
         if (!novos.length) { if (manual) toast("Nenhuma entrada nova"); return; }
         setLancs(atuais.concat(novos));
         rerender();
-        toast(novos.length + " entrada" + (novos.length > 1 ? "s" : "") + " do BTG importada" + (novos.length > 1 ? "s" : "") + " ✓");
+        toast(novos.length + " entrada" + (novos.length > 1 ? "s" : "") + " importada" + (novos.length > 1 ? "s" : "") + " ✓");
       })
-      .catch(function () { if (manual) toast("Erro ao sincronizar o BTG"); });
+      .catch(function () { if (manual) toast("Erro ao sincronizar"); });
   }
 
   function injectBtn() {
@@ -61,7 +66,7 @@
     if (!host) return false;
     var b = document.createElement("button");
     b.id = "btgSyncBtn"; b.type = "button";
-    b.innerHTML = "🔄 Sincronizar entradas do BTG <span style='opacity:.65;font-weight:600'>(Pix recebido)</span>";
+    b.innerHTML = "🔄 Sincronizar entradas <span style='opacity:.65;font-weight:600'>(BTG + Mercado Pago)</span>";
     b.style.cssText = "display:block;width:100%;margin:10px 0 0;padding:12px 14px;border:1.5px solid " + PRETO + ";" +
       "border-radius:12px;background:#fff;color:" + PRETO + ";font-family:inherit;font-weight:800;font-size:13.5px;" +
       "cursor:pointer;box-shadow:2px 2px 0 0 " + PRETO + ";-webkit-tap-highlight-color:transparent;text-align:left;";

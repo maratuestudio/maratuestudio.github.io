@@ -123,7 +123,7 @@
     var quando = dias === 0 ? "vence hoje" : dias === 1 ? "vence amanha" :
       dias > 1 ? "vence em " + dias + " dias (" + fmtBR(ev.data) + ")" :
       "venceu em " + fmtBR(ev.data);
-    var prod = p.prod ? " do seu " + p.prod : "";
+    var prod = p.prod ? " (" + p.prod + ")" : "";
     var val = p.valor ? money(parseFloat(p.valor)) : "";
     return "Oi " + (ev.cliente || "") + "! Passando pra lembrar da parcela " + (p.parc || "") +
       prod + ": R$ " + val + ", " + quando + ". Pode pagar no Pix: " + PIX + ". Qualquer coisa me chama!";

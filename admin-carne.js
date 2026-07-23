@@ -63,6 +63,44 @@
     } catch (e) {}
     return null;
   }
+  function setEventoFeito(id, feito) {
+    function mapa(arr) {
+      return (arr || []).map(function (e) { return String(e.id) === String(id) ? Object.assign({}, e, { feito: feito ? 1 : 0 }) : e; });
+    }
+    try {
+      if (typeof MaratuStore !== "undefined" && MaratuStore.getEventos && MaratuStore.setEventos) {
+        MaratuStore.setEventos(mapa(MaratuStore.getEventos())); return true;
+      }
+    } catch (e) {}
+    try {
+      if (typeof getEventos === "function" && typeof setEventos === "function") { setEventos(mapa(getEventos())); return true; }
+    } catch (e) {}
+    return false;
+  }
+
+  /* ---------- lancamentos (faturamento entra so quando paga) ---------- */
+  function getLancs() {
+    try { if (typeof MaratuStore !== "undefined" && MaratuStore.getLancamentos) return MaratuStore.getLancamentos() || []; } catch (e) {}
+    return null;
+  }
+  function setLancs(arr) {
+    try { if (typeof MaratuStore !== "undefined" && MaratuStore.setLancamentos) { MaratuStore.setLancamentos(arr); return true; } } catch (e) {}
+    return false;
+  }
+  function lancId(ev) { return "lanc-" + ev.id; }
+  function jaFaturada(ev) { var l = getLancs() || []; return l.some(function (x) { return String(x.id) === lancId(ev); }); }
+  function marcarPaga(ev) {
+    var p = parseParcela(ev.notas), val = parseFloat(p.valor) || 0, l = getLancs();
+    if (l === null) return false;
+    if (!l.some(function (x) { return String(x.id) === lancId(ev); }))
+      l = l.concat([{ id: lancId(ev), data: todayISO(), label: "Carnê " + (ev.cliente || "") + " " + (p.parc || ""), valor: val }]);
+    setLancs(l); setEventoFeito(ev.id, true); rerender(); return true;
+  }
+  function estornar(ev) {
+    var l = getLancs(); if (l === null) return false;
+    setLancs(l.filter(function (x) { return String(x.id) !== lancId(ev); }));
+    setEventoFeito(ev.id, false); rerender(); return true;
+  }
   function rerender() {
     ["renderCal", "renderPainel", "renderUpcoming"].forEach(function (fn) {
       try { if (typeof window[fn] === "function") window[fn](); } catch (e) {}
@@ -240,23 +278,25 @@
   }
   function closeModal() { if (modal) modal.style.display = "none"; }
 
-  /* ---------- botao "Novo carne" (depois do #calQuick) ---------- */
+  /* ---------- botao "Novo carne" (em Orcamento > Lancamentos) ---------- */
   function injectBtn() {
     if (document.getElementById("carneBtn")) return true;
-    var q = document.getElementById("calQuick");
-    if (!q || !q.parentNode) return false;
+    var ql = document.querySelector("#sub-vendas .quick-lanc");
+    var host = ql || document.getElementById("sub-vendas");
+    if (!host) return false;
     var b = document.createElement("button");
     b.id = "carneBtn"; b.type = "button";
-    b.innerHTML = "💰 Novo carnê <span style='opacity:.65;font-weight:600'>(compra parcelada)</span>";
-    b.style.cssText = "display:block;width:100%;margin:0 0 12px;padding:12px 14px;border:1.5px solid " + PRETO + ";" +
+    b.innerHTML = "💰 Novo carnê <span style='opacity:.65;font-weight:600'>(venda parcelada no Pix)</span>";
+    b.style.cssText = "display:block;width:100%;margin:12px 0 0;padding:12px 14px;border:1.5px solid " + PRETO + ";" +
       "border-radius:12px;background:" + AREIA + ";color:" + PRETO + ";font-family:inherit;font-weight:800;font-size:13.5px;" +
       "cursor:pointer;box-shadow:2px 2px 0 0 " + PRETO + ";-webkit-tap-highlight-color:transparent;text-align:left;";
     b.addEventListener("click", openModal);
-    q.parentNode.insertBefore(b, q.nextSibling);
+    if (ql) ql.parentNode.insertBefore(b, ql.nextSibling);
+    else host.insertBefore(b, host.firstChild);
     return true;
   }
 
-  /* ---------- botao "Cobrar no WhatsApp" no editor de evento ---------- */
+  /* ---------- secao de cobranca no editor do evento (WhatsApp + recebida) ---------- */
   function injectCobrarBtn(id) {
     var body = document.getElementById("evDetailBody");
     if (!body) return;
@@ -264,18 +304,26 @@
     if (old) old.remove();
     var ev = findEvento(id);
     if (!ev || ev.tipo !== "cobranca") return;
+    var p = parseParcela(ev.notas), val = parseFloat(p.valor) || 0, faturada = jaFaturada(ev);
     var wrap = document.createElement("div");
     wrap.id = "cnCobrarWrap";
     wrap.style.cssText = "margin:14px 0 2px;";
-    var pago = ev.feito == 1 || ev.feito === true;
+    var pago = faturada
+      ? '<div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:9px;padding:11px;border:1.5px solid ' + PRETO + ';border-radius:12px;background:#DDEBD6;font-family:inherit;font-size:12.5px;font-weight:700;color:' + PRETO + ';">' +
+          '✓ Recebida · R$ ' + money(val) + ' no faturamento <a href="#" id="cnEstornar" style="color:' + LARANJA + ';font-weight:800;">estornar</a></div>'
+      : '<button type="button" id="cnPagaBtn" style="width:100%;margin-top:9px;padding:12px;border:2px solid ' + PRETO + ';border-radius:12px;' +
+          'background:' + AREIA + ';color:' + PRETO + ';font-family:inherit;font-weight:900;font-size:13.5px;cursor:pointer;box-shadow:3px 3px 0 0 ' + PRETO + ';">✓ Marcar como recebida (R$ ' + money(val) + ')</button>';
     wrap.innerHTML =
       '<a href="' + waLink(ev) + '" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;gap:8px;' +
         'padding:13px;border:2px solid ' + PRETO + ';border-radius:12px;background:#25D366;color:#0b3d1f;font-family:inherit;' +
-        'font-weight:900;font-size:14px;text-decoration:none;box-shadow:3px 3px 0 0 ' + PRETO + ';">💬 Cobrar no WhatsApp</a>' +
-      '<div style="font-family:inherit;font-size:11px;color:' + PRETO + ';opacity:.55;text-align:center;margin-top:7px;">' +
-        (pago ? "✓ marcada como paga" : "marque “feito” quando ela pagar") + "</div>";
+        'font-weight:900;font-size:14px;text-decoration:none;box-shadow:3px 3px 0 0 ' + PRETO + ';">💬 Cobrar no WhatsApp</a>' + pago;
     var fa = body.querySelector(".form-actions");
     if (fa) body.insertBefore(wrap, fa); else body.appendChild(wrap);
+
+    var pb = wrap.querySelector("#cnPagaBtn");
+    if (pb) pb.addEventListener("click", function () { if (marcarPaga(ev)) { toast("Recebida · entrou no faturamento ✓"); injectCobrarBtn(id); } });
+    var es = wrap.querySelector("#cnEstornar");
+    if (es) es.addEventListener("click", function (e) { e.preventDefault(); if (estornar(ev)) { toast("Estornada do faturamento"); injectCobrarBtn(id); } });
   }
 
   function wrapEditor() {

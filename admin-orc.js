@@ -62,8 +62,15 @@
     return true;
   }
 
+  // move o bloco de KPIs (.orc-hero) do topo do Orcamento pra dentro de Precificar peca
+  function moveHero() {
+    var hero = document.querySelector("#panel-orcamento > .orc-hero");
+    var med = document.getElementById("sub-medida");
+    if (hero && med && hero.parentNode !== med) { med.insertBefore(hero, med.firstChild); return true; }
+    return !!document.querySelector("#sub-medida > .orc-hero");
+  }
   function boot() {
-    var t = 0, iv = setInterval(function () { t++; if (injectGear() || t > 60) clearInterval(iv); }, 300);
+    var t = 0, iv = setInterval(function () { t++; var a = injectGear(), b = moveHero(); if ((a && b) || t > 60) clearInterval(iv); }, 300);
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
   else boot();

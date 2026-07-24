@@ -243,16 +243,36 @@
     var total = leads.length;
     var taxa = total ? Math.round(fech / total * 100) : 0;
     var pend = leads.filter(function (l) { return aberto(l) && l.followup && l.followup <= todayISO(); }).length;
+    var arrow = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="13" height="13" style="vertical-align:-2px"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+    var bell = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12" style="vertical-align:-1px;margin-right:4px"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>';
+    var eyebrow = '<div style="font-family:inherit;font-weight:800;font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:' + PRETO + ';opacity:.55;">Leads</div>';
+
+    if (!total) {
+      card.innerHTML =
+        '<div style="display:flex;align-items:center;justify-content:space-between;">' + eyebrow +
+        '<span style="font-family:inherit;font-size:12px;font-weight:800;color:' + LARANJA + ';">Ver ' + arrow + '</span></div>' +
+        '<div style="font-family:inherit;font-size:13px;color:' + PRETO + ';opacity:.6;margin-top:10px;">Nenhum lead ainda. Anote quem te chamou no Direct, na feira, no WhatsApp.</div>';
+      return;
+    }
+
+    var segs = [[novos, LARANJA], [conv, "#2E6BB8"], [fech, "#3E7D4F"], [perd, "#8A8577"]];
+    var bar = segs.map(function (s) { return s[0] > 0 ? '<span style="width:' + (s[0] / total * 100) + '%;background:' + s[1] + '"></span>' : ""; }).join("");
     function tile(n, lbl, cor) {
-      return '<div style="flex:1;text-align:center;"><div style="font-family:inherit;font-weight:900;font-size:22px;line-height:1;color:' + cor + ';">' + n + '</div><div style="font-family:inherit;font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:' + PRETO + ';opacity:.55;margin-top:4px;">' + lbl + '</div></div>';
+      return '<div style="flex:1;border:1.5px solid ' + PRETO + ';border-radius:12px;padding:12px 5px;text-align:center;">' +
+        '<div style="font-family:inherit;font-weight:900;font-size:25px;line-height:1;color:' + cor + ';">' + n + '</div>' +
+        '<div style="font-family:inherit;font-size:9.5px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:' + PRETO + ';opacity:.55;margin-top:6px;">' + lbl + '</div></div>';
     }
     card.innerHTML =
-      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">' +
-        '<div style="font-family:inherit;font-weight:800;font-size:13px;letter-spacing:.02em;text-transform:uppercase;color:' + PRETO + ';">Leads</div>' +
-        (pend ? '<div style="font-family:inherit;font-size:11.5px;font-weight:800;color:' + LARANJA + ';"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="11" height="11" style="vertical-align:-1px;margin-right:3px"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>' + pend + ' follow-up' + (pend > 1 ? 's' : '') + ' pra hoje</div>' : '<div style="font-family:inherit;font-size:11.5px;font-weight:700;color:' + PRETO + ';opacity:.4;">' + taxa + '% de conversão</div>') +
+      '<div style="display:flex;align-items:center;justify-content:space-between;">' + eyebrow +
+        (pend ? '<div style="font-family:inherit;font-size:11.5px;font-weight:800;color:' + LARANJA + ';">' + bell + pend + ' follow-up' + (pend > 1 ? 's' : '') + ' pra hoje</div>' : '') +
       '</div>' +
-      '<div style="display:flex;gap:6px;">' +
+      '<div style="display:flex;height:8px;border-radius:20px;overflow:hidden;border:1.5px solid ' + PRETO + ';margin:12px 0 13px;">' + bar + '</div>' +
+      '<div style="display:flex;gap:9px;">' +
         tile(novos, "Novos", LARANJA) + tile(conv, "Conversando", "#2E6BB8") + tile(fech, "Fechados", "#3E7D4F") + tile(perd, "Perdidos", "#8A8577") +
+      '</div>' +
+      '<div style="display:flex;align-items:center;justify-content:space-between;margin-top:13px;padding-top:11px;border-top:1px solid rgba(13,13,11,.12);font-family:inherit;font-size:11.5px;font-weight:700;color:' + PRETO + ';">' +
+        '<span style="opacity:.55;">' + total + ' lead' + (total > 1 ? 's' : '') + ' · ' + taxa + '% de conversão</span>' +
+        '<span style="color:' + LARANJA + ';font-weight:800;">Ver todos ' + arrow + '</span>' +
       '</div>';
   }
 

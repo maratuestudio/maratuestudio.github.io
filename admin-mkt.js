@@ -243,7 +243,7 @@
     con.innerHTML =
       '<div class="mk-resumo"><div class="mk-cap">Conteúdo</div><div class="mk-tiles">' + tiles + '</div><button class="mk-rbtn" id="mkNova">' + svg(IC.plus, 17) + "Nova ideia</button></div>" +
       proxHtml +
-      '<div style="margin-top:2px"><div class="mk-pipeseg">' +
+      '<div style="margin-top:18px"><div class="mk-pipeseg">' +
         STAGES.map(function (st) { return '<div class="mk-chip' + (filtro === st.k ? " on" : "") + '" data-f="' + st.k + '">' + st.lbl + ' <i>' + cnt[st.k] + "</i></div>"; }).join("") +
       '</div><div class="mk-cards">' + listaHtml + "</div></div>";
 

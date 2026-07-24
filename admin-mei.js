@@ -92,7 +92,9 @@
   function render(d){
     const block = $("meiBlock");
     if(!block) return;
-    block.style.display = "";
+    const _pend = (d.das_meses || []).some(function (m) { return !m.paid; });
+    const _dasnPend = d.dasn && !d.dasn.done && d.dasn.atrasado;
+    block.style.display = (_pend || _dasnPend) ? "" : "none";
     // DAS mês corrente (o último da lista das_meses)
     const das = d.das_meses[d.das_meses.length - 1];
     $("meiDasMes").textContent = MONTH_FULL[das.month-1] + "/" + String(das.year).slice(-2);
@@ -368,7 +370,17 @@
   });
 
   // Boot: espera admin.js hidratar body-ready antes de disparar
-  function boot(){ loadDashboard(); }
+  function injectMeiMenu(){
+    if(document.getElementById("hmMei")) return true;
+    var menu = document.getElementById("headMenu"); if(!menu) return false;
+    var ref = document.getElementById("hmClearCache") || document.getElementById("btnSair");
+    var b = document.createElement("button");
+    b.id = "hmMei"; b.type = "button"; b.className = "hm-btn"; b.textContent = "MEI (impostos)";
+    b.addEventListener("click", function(){ try{ menu.classList.remove("open"); }catch(e){} openDetailModal(); });
+    if(ref && ref.parentNode) ref.parentNode.insertBefore(b, ref); else menu.appendChild(b);
+    return true;
+  }
+  function boot(){ loadDashboard(); window.MaratuMei = { open: openDetailModal }; var _mt=0, _miv=setInterval(function(){ _mt++; if(injectMeiMenu()||_mt>60) clearInterval(_miv); }, 300); }
   if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
   else boot();
 

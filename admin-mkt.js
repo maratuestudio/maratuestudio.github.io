@@ -73,8 +73,8 @@
       ".mk-card{background:var(--areia);border:1.5px solid var(--preto);border-radius:14px;box-shadow:2px 2px 0 0 var(--preto);padding:12px 13px}" +
       ".mk-ctop{display:flex;align-items:flex-start;gap:10px}" +
       ".mk-cnome{flex:1;font-size:14.5px;font-weight:700;color:var(--preto);line-height:1.3}" +
-      ".mk-acts{display:flex;gap:6px;flex:0 0 auto}" +
-      ".mk-ic{border:1.5px solid var(--preto);background:var(--areia);border-radius:8px;padding:5px;cursor:pointer;color:var(--preto);display:flex;-webkit-tap-highlight-color:transparent}" +
+      ".mk-acts{display:flex;gap:9px;flex:0 0 auto;margin-left:8px}" +
+      ".mk-ic{border:1.5px solid var(--preto);background:var(--areia);border-radius:8px;padding:6px;cursor:pointer;color:var(--preto);display:flex;-webkit-tap-highlight-color:transparent}" +
       ".mk-ic.go{background:var(--laranja);color:#F0ECE4}" +
       ".mk-empty{text-align:center;font-size:13px;color:var(--muted);padding:22px 10px;border:1.5px dashed var(--line);border-radius:14px}" +
       /* modal */

@@ -225,7 +225,7 @@
         '<div id="cnPreview" style="font-family:inherit;font-size:12.5px;color:' + PRETO + ';background:#fff;border:1.5px dashed ' + PRETO + ';border-radius:10px;padding:10px 12px;margin-top:14px;line-height:1.6;"></div>' +
         '<button type="button" id="cnGerar" style="width:100%;margin-top:16px;padding:14px;border:2px solid ' + PRETO + ';border-radius:12px;' +
           'background:' + LARANJA + ';color:' + AREIA + ';font-family:inherit;font-weight:900;font-size:15px;cursor:pointer;box-shadow:3px 3px 0 0 ' + PRETO + ';">Gerar cobranças</button>' +
-        '<a id="cnFeedLink" href="#" style="display:none;margin-top:12px;text-align:center;font-family:inherit;font-size:12.5px;font-weight:700;color:' + LARANJA + ';text-decoration:none;">📅 Assinar as cobranças no Apple Calendar</a>' +
+        '<a id="cnFeedLink" href="#" style="display:none;margin-top:12px;text-align:center;font-family:inherit;font-size:12.5px;font-weight:700;color:' + LARANJA + ';text-decoration:none;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="13" height="13" style="vertical-align:-2px;margin-right:5px"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>Assinar as cobranças no Apple Calendar</a>' +
       '</div>';
     document.body.appendChild(modal);
 
@@ -267,7 +267,7 @@
     var evs = gerarCobrancas(o);
     if (!addEvents(evs)) { toast("Erro ao salvar (recarregue a página)"); return; }
     closeModal();
-    toast(o.nparc + " cobranças criadas na agenda ✓");
+    toast(o.nparc + " cobranças criadas na agenda");
   }
   function openModal() {
     buildModal();
@@ -278,23 +278,9 @@
   }
   function closeModal() { if (modal) modal.style.display = "none"; }
 
-  /* ---------- botao "Novo carne" (em Orcamento > Lancamentos) ---------- */
-  function injectBtn() {
-    if (document.getElementById("carneBtn")) return true;
-    var ql = document.querySelector("#sub-vendas .quick-lanc");
-    var host = ql || document.getElementById("sub-vendas");
-    if (!host) return false;
-    var b = document.createElement("button");
-    b.id = "carneBtn"; b.type = "button";
-    b.innerHTML = "💰 Novo carnê <span style='opacity:.65;font-weight:600'>(venda parcelada no Pix)</span>";
-    b.style.cssText = "display:block;width:100%;margin:12px 0 0;padding:12px 14px;border:1.5px solid " + PRETO + ";" +
-      "border-radius:12px;background:" + AREIA + ";color:" + PRETO + ";font-family:inherit;font-weight:800;font-size:13.5px;" +
-      "cursor:pointer;box-shadow:2px 2px 0 0 " + PRETO + ";-webkit-tap-highlight-color:transparent;text-align:left;";
-    b.addEventListener("click", openModal);
-    if (ql) ql.parentNode.insertBefore(b, ql.nextSibling);
-    else host.insertBefore(b, host.firstChild);
-    return true;
-  }
+  /* ---------- o botao "Novo carne" agora vive no modulo Caixa (admin-caixa.js),
+       que chama window.MaratuCarne.open(). Aqui nao injeta mais nada. ---------- */
+  function injectBtn() { return true; }
 
   /* ---------- secao de cobranca no editor do evento (WhatsApp + recebida) ---------- */
   function injectCobrarBtn(id) {
@@ -308,20 +294,22 @@
     var wrap = document.createElement("div");
     wrap.id = "cnCobrarWrap";
     wrap.style.cssText = "margin:14px 0 2px;";
+    var chk = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" width="15" height="15" style="flex:0 0 auto"><path d="M20 6L9 17l-5-5"/></svg>';
+    var wa = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" style="flex:0 0 auto"><path d="M21 11.5a8.5 8.5 0 0 1-12.5 7.5L3 21l2-5.5A8.5 8.5 0 1 1 21 11.5z"/></svg>';
     var pago = faturada
       ? '<div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:9px;padding:11px;border:1.5px solid ' + PRETO + ';border-radius:12px;background:#DDEBD6;font-family:inherit;font-size:12.5px;font-weight:700;color:' + PRETO + ';">' +
-          '✓ Recebida · R$ ' + money(val) + ' no faturamento <a href="#" id="cnEstornar" style="color:' + LARANJA + ';font-weight:800;">estornar</a></div>'
-      : '<button type="button" id="cnPagaBtn" style="width:100%;margin-top:9px;padding:12px;border:2px solid ' + PRETO + ';border-radius:12px;' +
-          'background:' + AREIA + ';color:' + PRETO + ';font-family:inherit;font-weight:900;font-size:13.5px;cursor:pointer;box-shadow:3px 3px 0 0 ' + PRETO + ';">✓ Marcar como recebida (R$ ' + money(val) + ')</button>';
+          chk + 'Recebida · R$ ' + money(val) + ' no faturamento <a href="#" id="cnEstornar" style="color:' + LARANJA + ';font-weight:800;">estornar</a></div>'
+      : '<button type="button" id="cnPagaBtn" style="width:100%;margin-top:9px;padding:12px;border:2px solid ' + PRETO + ';border-radius:12px;display:flex;align-items:center;justify-content:center;gap:8px;' +
+          'background:' + AREIA + ';color:' + PRETO + ';font-family:inherit;font-weight:900;font-size:13.5px;cursor:pointer;box-shadow:3px 3px 0 0 ' + PRETO + ';">' + chk + 'Marcar como recebida (R$ ' + money(val) + ')</button>';
     wrap.innerHTML =
       '<a href="' + waLink(ev) + '" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;gap:8px;' +
         'padding:13px;border:2px solid ' + PRETO + ';border-radius:12px;background:#25D366;color:#0b3d1f;font-family:inherit;' +
-        'font-weight:900;font-size:14px;text-decoration:none;box-shadow:3px 3px 0 0 ' + PRETO + ';">💬 Cobrar no WhatsApp</a>' + pago;
+        'font-weight:900;font-size:14px;text-decoration:none;box-shadow:3px 3px 0 0 ' + PRETO + ';">' + wa + 'Cobrar no WhatsApp</a>' + pago;
     var fa = body.querySelector(".form-actions");
     if (fa) body.insertBefore(wrap, fa); else body.appendChild(wrap);
 
     var pb = wrap.querySelector("#cnPagaBtn");
-    if (pb) pb.addEventListener("click", function () { if (marcarPaga(ev)) { toast("Recebida · entrou no faturamento ✓"); injectCobrarBtn(id); } });
+    if (pb) pb.addEventListener("click", function () { if (marcarPaga(ev)) { toast("Recebida · entrou no faturamento"); injectCobrarBtn(id); } });
     var es = wrap.querySelector("#cnEstornar");
     if (es) es.addEventListener("click", function (e) { e.preventDefault(); if (estornar(ev)) { toast("Estornada do faturamento"); injectCobrarBtn(id); } });
   }
@@ -338,12 +326,11 @@
 
   /* ---------- boot ---------- */
   function boot() {
-    injectBtn();
+    window.MaratuCarne = { open: openModal };
     if (!wrapEditor()) {
       var n = 0, iv = setInterval(function () { n++; if (wrapEditor() || n > 40) clearInterval(iv); }, 200);
     }
     activateFeed();
-    var t = 0, ib = setInterval(function () { t++; if (injectBtn() || t > 40) clearInterval(ib); }, 250);
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
   else boot();

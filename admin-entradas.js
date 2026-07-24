@@ -54,34 +54,15 @@
         if (!novos.length) { if (manual) toast("Nenhuma entrada nova"); return; }
         setLancs(atuais.concat(novos));
         rerender();
-        toast(novos.length + " entrada" + (novos.length > 1 ? "s" : "") + " importada" + (novos.length > 1 ? "s" : "") + " ✓");
+        toast(novos.length + " entrada" + (novos.length > 1 ? "s" : "") + " importada" + (novos.length > 1 ? "s" : ""));
       })
       .catch(function () { if (manual) toast("Erro ao sincronizar"); });
   }
 
-  function injectBtn() {
-    if (document.getElementById("btgSyncBtn")) return true;
-    var ql = document.querySelector("#sub-vendas .quick-lanc");
-    var host = ql || document.getElementById("sub-vendas");
-    if (!host) return false;
-    var b = document.createElement("button");
-    b.id = "btgSyncBtn"; b.type = "button";
-    b.innerHTML = "🔄 Sincronizar entradas <span style='opacity:.65;font-weight:600'>(BTG + Mercado Pago)</span>";
-    b.style.cssText = "display:block;width:100%;margin:10px 0 0;padding:12px 14px;border:1.5px solid " + PRETO + ";" +
-      "border-radius:12px;background:#fff;color:" + PRETO + ";font-family:inherit;font-weight:800;font-size:13.5px;" +
-      "cursor:pointer;box-shadow:2px 2px 0 0 " + PRETO + ";-webkit-tap-highlight-color:transparent;text-align:left;";
-    b.addEventListener("click", function () {
-      b.disabled = true; b.style.opacity = ".6";
-      sync(true).then(function () { b.disabled = false; b.style.opacity = "1"; });
-    });
-    var after = document.getElementById("carneBtn") || ql;
-    if (after && after.parentNode) after.parentNode.insertBefore(b, after.nextSibling);
-    else host.insertBefore(b, host.firstChild);
-    return true;
-  }
-
+  /* a UI (botao/atualizar) agora vive no modulo Caixa (admin-caixa.js), que chama
+     window.MaratuEntradas.sync(). Aqui so exponho e faco o auto-sync no boot. */
   function boot() {
-    var t = 0, iv = setInterval(function () { t++; if (injectBtn() || t > 40) clearInterval(iv); }, 300);
+    window.MaratuEntradas = { sync: sync };
     // auto-sync 1x quando o MaratuStore estiver pronto
     var s = 0, sv = setInterval(function () {
       s++;

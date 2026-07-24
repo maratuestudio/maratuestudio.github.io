@@ -99,8 +99,9 @@
       ".cx-acoes{display:flex;gap:10px}" +
       ".cx-acoes button{flex:1;padding:12px;border:1.5px solid var(--preto);border-radius:13px;font-family:inherit;font-weight:800;font-size:14px;cursor:pointer;box-shadow:2px 2px 0 0 var(--preto);display:flex;align-items:center;justify-content:center;gap:7px;-webkit-tap-highlight-color:transparent}" +
       ".cx-b1{background:var(--laranja);color:#F0ECE4}.cx-b2{background:var(--areia);color:var(--preto)}" +
-      ".cx-sync{text-align:center;font-size:11.5px;color:var(--muted);font-weight:600;margin-top:-3px}" +
-      ".cx-sync a{color:var(--laranja);font-weight:700;cursor:pointer;text-decoration:none}" +
+      ".cx-refresh{border:none;background:none;color:var(--muted);cursor:pointer;padding:3px;display:flex;opacity:.5;-webkit-tap-highlight-color:transparent}" +
+      ".cx-refresh:hover{opacity:1;color:var(--laranja)}" +
+      "@media(prefers-reduced-motion:no-preference){.cx-spin{animation:cxspin .7s linear}}@keyframes cxspin{to{transform:rotate(360deg)}}" +
       ".cx-add{background:var(--areia);border:1.5px solid var(--preto);border-radius:13px;box-shadow:2px 2px 0 0 var(--preto);padding:12px;display:none;gap:8px;flex-wrap:wrap}" +
       ".cx-add.on{display:flex}" +
       ".cx-add input{flex:1;min-width:110px;box-sizing:border-box;padding:10px 11px;border:1.5px solid var(--preto);border-radius:9px;background:var(--areia-fundo,#fff);font-family:inherit;font-size:14px;color:var(--preto)}" +
@@ -137,7 +138,6 @@
           '<button class="cx-b1" id="cxAddBtn">' + svg(IC.plus, 17) + 'Entrada</button>' +
           '<button class="cx-b2" id="cxCarneBtn">' + svg(IC.receipt, 17) + 'Novo carnê</button>' +
         '</div>' +
-        '<div class="cx-sync">Entradas do BTG e Mercado Pago entram sozinhas · <a id="cxSync">atualizar</a></div>' +
         '<div class="cx-add" id="cxAddForm">' +
           '<input id="cxLabel" placeholder="Ex: kit vendido" autocomplete="off">' +
           '<input id="cxValor" class="v" inputmode="decimal" placeholder="Valor" autocomplete="off">' +
@@ -156,9 +156,6 @@
     });
     host.querySelector("#cxSalvar").addEventListener("click", salvarEntrada);
     host.querySelector("#cxValor").addEventListener("keydown", function (e) { if (e.key === "Enter") salvarEntrada(); });
-    host.querySelector("#cxSync").addEventListener("click", function () {
-      try { if (window.MaratuEntradas && window.MaratuEntradas.sync) window.MaratuEntradas.sync(true); } catch (e) {}
-    });
     return true;
   }
 
@@ -206,12 +203,21 @@
       return '<div><span class="cx-dot" style="background:' + FONTES[f].cor + '"></span>' + FONTES[f].lbl + " " + BRL(porFonte[f]) + "</div>";
     }).join("");
     host.querySelector("#cxResumo").innerHTML =
-      '<div class="cx-cap">Entrou em ' + (MESES[parseInt(mes.slice(5), 10) - 1] || "") + " (líquido)</div>" +
+      '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px">' +
+        '<div class="cx-cap">Entrou em ' + (MESES[parseInt(mes.slice(5), 10) - 1] || "") + " (líquido)</div>" +
+        '<button type="button" id="cxSync" class="cx-refresh" title="Atualizar" aria-label="Atualizar">' + svg(IC.refresh, 14) + "</button>" +
+      "</div>" +
       '<div class="cx-num"><small>R$</small> ' + BRL(total).replace(/^R\$\s*/, "") + "</div>" +
       '<div class="cx-sub">' + itens.length + " entrada" + (itens.length === 1 ? "" : "s") +
         (mpFee > 0 ? " · o Mercado Pago levou <b>" + BRL(mpFee) + "</b> em taxas" : "") + "</div>" +
       (barSeg ? '<div class="cx-bar">' + barSeg + "</div><div class=\"cx-leg\">" + leg + "</div>" : "") +
       (meta > 0 ? '<div class="cx-meta"><div class="cx-meta-row"><span>Meta do mês</span><span>' + BRL(total).replace(/^R\$\s*/, "") + " / " + BRL(meta).replace(/^R\$\s*/, "") + '</span></div><div class="cx-meta-bar"><div class="cx-meta-fill" style="width:' + pct + '%"></div></div></div>' : "");
+    var sy = host.querySelector("#cxSync");
+    if (sy) sy.addEventListener("click", function () {
+      sy.classList.add("cx-spin");
+      var done = function () { sy.classList.remove("cx-spin"); };
+      try { var r = (window.MaratuEntradas && window.MaratuEntradas.sync) ? window.MaratuEntradas.sync(true) : null; if (r && r.then) r.then(done); else setTimeout(done, 700); } catch (e) { done(); }
+    });
 
     // filtros
     var counts = { todas: itens.length, pix: 0, mp: 0, manual: 0, carne: 0 };

@@ -263,6 +263,7 @@
         clearInterval(iv);
         window.renderMarketing = render;
         window.renderMktStats = render; window.renderMktPlanner = function () {}; window.renderMktBacklog = render;
+        window.MaratuMkt = { openLeads: function () { sub = "leads"; try { render(); } catch (e) {} renderSub(); } };
         render();
         // move leads quando existir
         var l = 0, lv = setInterval(function () { l++; moveLeads(); if (document.getElementById("leadsSec") && document.getElementById("leadsSec").parentNode === document.getElementById("mkLeads")) { clearInterval(lv); renderSub(); } else if (l > 60) clearInterval(lv); }, 300);

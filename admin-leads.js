@@ -212,10 +212,26 @@
 
   /* ---------- render: card de funil no Painel ---------- */
   function ensureCard() {
-    // card de leads foi removido do Painel — leads vive na aba Marketing > Leads
-    var old = document.getElementById("leadsCard");
-    if (old) old.remove();
-    return null;
+    var card = document.getElementById("leadsCard");
+    if (card) return card;
+    var host = document.getElementById("panel-painel");
+    if (!host) return null;
+    card = document.createElement("div");
+    card.id = "leadsCard";
+    card.style.cssText = "border:1.5px solid " + PRETO + ";border-radius:16px;background:" + AREIA + ";padding:15px 16px;margin:14px 0 0;box-shadow:3px 3px 0 0 " + PRETO + ";cursor:pointer;";
+    card.title = "Ver leads";
+    card.addEventListener("click", function () {
+      try {
+        var t = document.querySelector('[data-tab="marketing"]');
+        if (t) t.click(); else if (typeof __gotoTab === "function") __gotoTab("marketing");
+      } catch (e) {}
+      setTimeout(function () { try { if (window.MaratuMkt && window.MaratuMkt.openLeads) window.MaratuMkt.openLeads(); } catch (e) {} }, 70);
+    });
+    // logo ABAIXO do bloco de Lembretes (o grid pn-main-grid que contém os lembretes)
+    var grid = host.querySelector(".pn-main-grid");
+    if (grid && grid.parentNode) grid.parentNode.insertBefore(card, grid.nextSibling);
+    else host.appendChild(card);
+    return card;
   }
   function renderCard() {
     var card = ensureCard();

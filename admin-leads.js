@@ -48,7 +48,7 @@
   function waLink(l) {
     var tel = String(l.contato || "").replace(/\D/g, "");
     var base = tel ? "https://wa.me/55" + tel : "https://wa.me/";
-    var msg = "Oi " + (l.nome || "") + "! Aqui é da MARATU Estúdio 🧡" + (l.interesse ? " Vi seu interesse em " + l.interesse + "." : "") + " Como posso te ajudar?";
+    var msg = "Oi " + (l.nome || "") + "! Aqui é da MARATU Estúdio" + (l.interesse ? " Vi seu interesse em " + l.interesse + "." : "") + " Como posso te ajudar?";
     return base + "?text=" + encodeURIComponent(msg);
   }
 
@@ -127,7 +127,7 @@
     if (editId) leads = leads.map(function (x) { return x.id === editId ? obj : x; });
     else leads = [obj].concat(leads);
     saveLeads(); renderAll(); closeModal();
-    toast(editId ? "Lead atualizado ✓" : "Lead adicionado ✓");
+    toast(editId ? "Lead atualizado" : "Lead adicionado");
   }
   function onExcluir() {
     if (!editId) return;
@@ -165,7 +165,7 @@
     var fup = "";
     if (l.followup && aberto(l)) {
       var atrasado = l.followup < todayISO();
-      fup = '<span style="font-size:11px;font-weight:700;color:' + (atrasado ? "#B23A2E" : LARANJA) + ';">🔔 ' + (atrasado ? "atrasado " : "") + fmtBR(l.followup) + '</span>';
+      fup = '<span style="font-size:11px;font-weight:700;color:' + (atrasado ? "#B23A2E" : LARANJA) + ';"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="11" height="11" style="vertical-align:-1px;margin-right:3px"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>' + (atrasado ? "atrasado " : "") + fmtBR(l.followup) + '</span>';
     }
     var nextStatus = { novo: "conversando", conversando: "fechado", fechado: "perdido", perdido: "novo" };
     return '<div style="border:1.5px solid ' + PRETO + ';border-radius:12px;background:#fff;padding:12px 13px;margin-bottom:9px;box-shadow:2px 2px 0 0 rgba(13,13,11,.12);">' +
@@ -177,7 +177,7 @@
       '</div>' +
       (l.interesse ? '<div style="font-family:inherit;font-size:12.5px;color:' + PRETO + ';opacity:.8;margin-top:5px;">' + esc(l.interesse) + '</div>' : '') +
       '<div style="display:flex;gap:8px;margin-top:10px;">' +
-        '<a href="' + waLink(l) + '" target="_blank" rel="noopener" style="flex:1;text-align:center;padding:8px;border:1.5px solid ' + PRETO + ';border-radius:9px;background:#25D366;color:#0b3d1f;font-family:inherit;font-weight:800;font-size:12.5px;text-decoration:none;">💬 WhatsApp</a>' +
+        '<a href="' + waLink(l) + '" target="_blank" rel="noopener" style="flex:1;text-align:center;padding:8px;border:1.5px solid ' + PRETO + ';border-radius:9px;background:#25D366;color:#0b3d1f;font-family:inherit;font-weight:800;font-size:12.5px;text-decoration:none;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="13" height="13" style="vertical-align:-2px;margin-right:4px"><path d="M21 11.5a8.5 8.5 0 0 1-12.5 7.5L3 21l2-5.5A8.5 8.5 0 1 1 21 11.5z"/></svg>WhatsApp</a>' +
         '<button type="button" data-edit="' + l.id + '" style="padding:8px 14px;border:1.5px solid ' + PRETO + ';border-radius:9px;background:' + AREIA + ';color:' + PRETO + ';font-family:inherit;font-weight:800;font-size:12.5px;cursor:pointer;">Editar</button>' +
       '</div>' +
       '<button type="button" data-nx="' + l.id + '|' + nextStatus[l.status || "novo"] + '" hidden></button>' +
@@ -241,7 +241,7 @@
     card.innerHTML =
       '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">' +
         '<div style="font-family:inherit;font-weight:800;font-size:13px;letter-spacing:.02em;text-transform:uppercase;color:' + PRETO + ';">Leads</div>' +
-        (pend ? '<div style="font-family:inherit;font-size:11.5px;font-weight:800;color:' + LARANJA + ';">🔔 ' + pend + ' follow-up' + (pend > 1 ? 's' : '') + ' pra hoje</div>' : '<div style="font-family:inherit;font-size:11.5px;font-weight:700;color:' + PRETO + ';opacity:.4;">' + taxa + '% de conversão</div>') +
+        (pend ? '<div style="font-family:inherit;font-size:11.5px;font-weight:800;color:' + LARANJA + ';"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="11" height="11" style="vertical-align:-1px;margin-right:3px"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>' + pend + ' follow-up' + (pend > 1 ? 's' : '') + ' pra hoje</div>' : '<div style="font-family:inherit;font-size:11.5px;font-weight:700;color:' + PRETO + ';opacity:.4;">' + taxa + '% de conversão</div>') +
       '</div>' +
       '<div style="display:flex;gap:6px;">' +
         tile(novos, "Novos", LARANJA) + tile(conv, "Conversando", "#2E6BB8") + tile(fech, "Fechados", "#3E7D4F") + tile(perd, "Perdidos", "#8A8577") +

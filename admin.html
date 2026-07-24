@@ -2583,14 +2583,13 @@ window.addEventListener('error', function(ev){
 
     <!-- Subtabs (Conta Azul vibe: nomes de MEI) -->
     <div class="seg" role="tablist" id="orcSeg">
-      <button role="tab" data-sub="produtos" aria-selected="true">Produtos do site</button>
-      <button role="tab" data-sub="vendas" aria-selected="false">Caixa</button>
+      <button role="tab" data-sub="vendas" aria-selected="true">Caixa</button>
+      <button role="tab" data-sub="produtos" aria-selected="false">Produtos do site</button>
       <button role="tab" data-sub="medida" aria-selected="false">Precificar peça</button>
-      <button role="tab" data-sub="ajustes" aria-selected="false">Parâmetros</button>
     </div>
 
     <!-- vendas / lançamentos do mês -->
-    <div class="sub-off" id="sub-vendas">
+    <div class="sub-on" id="sub-vendas">
       <p class="hint">Registre cada venda do mês aqui. O painel puxa esses lançamentos pra mostrar meta, streak e faturamento.</p>
 
       <div class="quick-lanc">
@@ -2707,7 +2706,7 @@ window.addEventListener('error', function(ev){
     </div>
 
     <!-- produtos (D1 catalog CRUD, alimenta o site) -->
-    <div class="sub-on" id="sub-produtos">
+    <div class="sub-off" id="sub-produtos">
       <p class="hint">Produtos publicados no maratu.com. Toque num card pra editar, ou crie um novo.</p>
       <div class="prod-toolbar">
         <input id="prodFilter" class="prod-filter" placeholder="Filtrar por nome, marca ou SKU" />
@@ -3127,6 +3126,7 @@ window.addEventListener('error', function(ev){
     <script src="/admin-leads.js?v=20260723a"></script>
     <script src="/admin-entradas.js?v=20260723c"></script>
     <script src="/admin-caixa.js?v=20260723a"></script>
+    <script src="/admin-orc.js?v=20260723a"></script>
   <script src="/admin-news.js?v=20260716f"></script>
 
 <!-- CHICO — popup expandido -->

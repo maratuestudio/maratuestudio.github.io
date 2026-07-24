@@ -18,6 +18,8 @@
   };
   var ORDEM_FONTE = ["mp", "pix", "manual", "carne"];
   var filtro = "todas";
+  var cxHidden = false;
+  try { cxHidden = localStorage.getItem("maratu.fatHidden") === "1"; } catch (e) {}
 
   /* ---- globais do core com fallback ---- */
   function BRL(v) { try { if (typeof brl === "function") return brl(v); } catch (e) {} return "R$ " + (Number(v) || 0).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
@@ -30,6 +32,21 @@
   function getLancs() { try { return MaratuStore.getLancamentos() || []; } catch (e) { return []; } }
   function setLancs(a) { try { MaratuStore.setLancamentos(a); return true; } catch (e) { return false; } }
   function getMeta() { try { var p = MaratuStore.getParams() || {}; return toNum(p.fixo) + toNum(p.retirada); } catch (e) { return 0; } }
+
+  /* ---- ocultar valores/nomes (igual "olho" da home; mesma chave localStorage) ---- */
+  function MASKV() { try { if (typeof maskBRL === "function") return maskBRL(); } catch (e) {} return "R$ •••••"; }
+  function money(v) { return cxHidden ? MASKV() : BRL(v); }
+  function plain(v) { return cxHidden ? "•••••" : BRL(v).replace(/^R\$\s*/, ""); }
+  function maskName(s) { return cxHidden ? "••••••" : ESC(s); }
+  function maskMeta(s) { var e = ESC(s); return cxHidden ? e.replace(/R\$\s*[\d.,]+/g, "R$ •••") : e; }
+  function setHidden(on) {
+    cxHidden = !!on;
+    try { localStorage.setItem("maratu.fatHidden", cxHidden ? "1" : "0"); } catch (e) {}
+    // mantem a home em sincronia (fatHidden/applyFatEye/renderPainel sao globais do admin.js)
+    try { fatHidden = cxHidden; } catch (e) {}
+    try { if (typeof applyFatEye === "function") applyFatEye(); } catch (e) {}
+    try { if (typeof renderPainel === "function") renderPainel(); } catch (e) {}
+  }
 
   var MESES = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"];
 
@@ -72,7 +89,9 @@
     plus: '<path d="M12 5v14M5 12h14"/>',
     receipt: '<path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9.5 8h5M9.5 12h5"/>',
     refresh: '<path d="M21 12a9 9 0 1 1-2.64-6.36M21 3v6h-6"/>',
-    x: '<path d="M6 6l12 12M18 6L6 18"/>'
+    x: '<path d="M6 6l12 12M18 6L6 18"/>',
+    eye: '<path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/>',
+    eyeOff: '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20C5 20 1 12 1 12a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><path d="M1 1l22 22"/>'
   };
 
   /* ---- estilos (usam vars de tema do admin) ---- */
@@ -200,18 +219,23 @@
       return '<span style="width:' + w + '%;background:' + FONTES[f].cor + '"></span>';
     }).join("");
     var leg = ORDEM_FONTE.filter(function (f) { return porFonte[f] > 0; }).map(function (f) {
-      return '<div><span class="cx-dot" style="background:' + FONTES[f].cor + '"></span>' + FONTES[f].lbl + " " + BRL(porFonte[f]) + "</div>";
+      return '<div><span class="cx-dot" style="background:' + FONTES[f].cor + '"></span>' + FONTES[f].lbl + " " + money(porFonte[f]) + "</div>";
     }).join("");
     host.querySelector("#cxResumo").innerHTML =
       '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px">' +
         '<div class="cx-cap">Entrou em ' + (MESES[parseInt(mes.slice(5), 10) - 1] || "") + " (líquido)</div>" +
-        '<button type="button" id="cxSync" class="cx-refresh" title="Atualizar" aria-label="Atualizar">' + svg(IC.refresh, 14) + "</button>" +
+        '<div style="display:flex;gap:4px;align-items:center">' +
+          '<button type="button" id="cxEye" class="cx-refresh" title="' + (cxHidden ? "Mostrar valores" : "Ocultar valores") + '" aria-label="' + (cxHidden ? "Mostrar valores" : "Ocultar valores") + '" aria-pressed="' + (cxHidden ? "true" : "false") + '">' + svg(cxHidden ? IC.eyeOff : IC.eye, 15) + "</button>" +
+          '<button type="button" id="cxSync" class="cx-refresh" title="Atualizar" aria-label="Atualizar">' + svg(IC.refresh, 14) + "</button>" +
+        "</div>" +
       "</div>" +
-      '<div class="cx-num"><small>R$</small> ' + BRL(total).replace(/^R\$\s*/, "") + "</div>" +
+      '<div class="cx-num"><small>R$</small> ' + plain(total) + "</div>" +
       '<div class="cx-sub">' + itens.length + " entrada" + (itens.length === 1 ? "" : "s") +
-        (mpFee > 0 ? " · o Mercado Pago levou <b>" + BRL(mpFee) + "</b> em taxas" : "") + "</div>" +
+        (mpFee > 0 ? " · o Mercado Pago levou <b>" + money(mpFee) + "</b> em taxas" : "") + "</div>" +
       (barSeg ? '<div class="cx-bar">' + barSeg + "</div><div class=\"cx-leg\">" + leg + "</div>" : "") +
-      (meta > 0 ? '<div class="cx-meta"><div class="cx-meta-row"><span>Meta do mês</span><span>' + BRL(total).replace(/^R\$\s*/, "") + " / " + BRL(meta).replace(/^R\$\s*/, "") + '</span></div><div class="cx-meta-bar"><div class="cx-meta-fill" style="width:' + pct + '%"></div></div></div>' : "");
+      (meta > 0 ? '<div class="cx-meta"><div class="cx-meta-row"><span>Meta do mês</span><span>' + plain(total) + " / " + plain(meta) + '</span></div><div class="cx-meta-bar"><div class="cx-meta-fill" style="width:' + pct + '%"></div></div></div>' : "");
+    var ey = host.querySelector("#cxEye");
+    if (ey) ey.addEventListener("click", function () { setHidden(!cxHidden); render(); });
     var sy = host.querySelector("#cxSync");
     if (sy) sy.addEventListener("click", function () {
       sy.classList.add("cx-spin");
@@ -237,12 +261,12 @@
     vis.forEach(function (it) { if (!mapa[it.data]) { mapa[it.data] = []; grupos.push(it.data); } mapa[it.data].push(it); });
     list.innerHTML = grupos.map(function (dia) {
       var arr = mapa[dia], sub = arr.reduce(function (s, it) { return s + it.valor; }, 0);
-      return '<div class="cx-grupo"><div class="cx-ghead"><span>' + fmtDia(dia) + "</span><span>+ " + BRL(sub) + '</span></div><div class="cx-lista">' +
+      return '<div class="cx-grupo"><div class="cx-ghead"><span>' + fmtDia(dia) + "</span><span>+ " + money(sub) + '</span></div><div class="cx-lista">' +
         arr.map(function (it) {
           return '<div class="cx-item">' +
             '<span class="cx-tag" style="background:' + FONTES[it.fonte].cor + '">' + FONTES[it.fonte].lbl + "</span>" +
-            '<div class="cx-mid"><div class="cx-nome">' + ESC(it.title) + '</div><div class="cx-imeta">' + ESC(it.meta) + "</div></div>" +
-            '<div class="cx-val">' + BRL(it.valor) + "</div>" +
+            '<div class="cx-mid"><div class="cx-nome">' + maskName(it.title) + '</div><div class="cx-imeta">' + maskMeta(it.meta) + "</div></div>" +
+            '<div class="cx-val">' + money(it.valor) + "</div>" +
             '<button class="cx-del" data-del="' + ESC(it.id) + '" aria-label="Remover">' + svg(IC.x, 15) + "</button>" +
           "</div>";
         }).join("") + "</div></div>";

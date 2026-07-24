@@ -2345,7 +2345,7 @@ window.addEventListener('error', function(ev){
   <section class="panel on" id="panel-painel">
 
     <!-- Wellbeing hero -->
-    <div class="wellbeing">
+    <div id="pnWellbeing" class="wellbeing">
       <div>
         <div class="wb-greet" id="pnGreet">Bom dia, Raphael</div>
         <div class="wb-lastact" id="pnLastAct"></div>
@@ -2414,7 +2414,7 @@ window.addEventListener('error', function(ev){
     </div>
 
     <!-- Painel: Notas grande à esquerda; métricas compactas + Hoje à direita -->
-    <div class="pn-main-grid">
+    <div id="pnMainGrid" class="pn-main-grid">
       <div class="side-card pn-notas-big">
         <div class="sc-head">
           <div class="sc-title">Lembretes</div>
@@ -2446,7 +2446,7 @@ window.addEventListener('error', function(ev){
     <div class="spacer"></div>
 
     <!-- Weekly bars -->
-    <div class="chart-card">
+    <div id="pnWeekCard" class="chart-card">
       <div class="ch-head">
         <div class="ch-title">Últimos 7 dias</div>
         <div class="ch-sub"><span id="pnWeekTotal">R$ 0</span> na semana</div>
@@ -2457,7 +2457,7 @@ window.addEventListener('error', function(ev){
     <div class="spacer"></div>
 
     <!-- Sparkline 6 months -->
-    <div class="chart-card">
+    <div id="pnSparkCard" class="chart-card">
       <div class="ch-head">
         <div class="ch-title">Últimos 6 meses</div>
         <div class="ch-sub"><span id="pnSixTotal">R$ 0</span> no total</div>
@@ -2471,7 +2471,7 @@ window.addEventListener('error', function(ev){
     <div class="spacer"></div>
 
     <!-- Side cards + quick lançamento -->
-    <div class="pn-grid">
+    <div id="pnSideGrid" class="pn-grid">
       <div class="side-card">
         <div class="sc-title">Próximos 7 dias</div>
         <ul class="list" id="proxLista"></ul>
@@ -2549,7 +2549,7 @@ window.addEventListener('error', function(ev){
       <div class="ga4-foot"><span id="igMeta">carregando…</span></div>
     </div>
 
-    <div class="relat-card">
+    <div id="pnRelatCard" class="relat-card">
       <div class="rc-l">
         <div class="rc-cap">Relatório semanal</div>
         <div class="rc-lbl">Resumo dos últimos 7 dias</div>
@@ -3131,6 +3131,7 @@ window.addEventListener('error', function(ev){
     <script src="/admin-mkt.js?v=20260723f"></script>
   <script src="/admin-news.js?v=20260716f"></script>
     <script src="/admin-relatorio.js?v=20260724a"></script>
+    <script src="/admin-painel-grid.js?v=20260724a"></script>
 
 <!-- CHICO — popup expandido -->
 <div class="chico-back" id="chicoBack" aria-hidden="true">

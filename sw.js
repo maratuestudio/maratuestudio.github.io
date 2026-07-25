@@ -1,5 +1,5 @@
 /* MARATU Admin Service Worker — offline + instant open */
-const VERSION = 'maratu-admin-v33';
+const VERSION = 'maratu-admin-v34';
 const STATIC_CACHE = 'static-' + VERSION;
 const RUNTIME_CACHE = 'runtime-' + VERSION;
 

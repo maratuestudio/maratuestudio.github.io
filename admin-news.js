@@ -13,20 +13,63 @@
   function $id(x) { return document.getElementById(x); }
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
 
-  /* ---- botao na aba Marketing: preto (.mkt-new), do lado do "+ nova ideia" ---- */
-  function addMarketingBtn() {
-    var novaIdeia = $id("mktToggleNew");
-    if (!novaIdeia || $id("mktNews")) return;
+  /* ---- botao "newsletter" na aba Marketing ----
+     O layout novo (admin-mkt.js) escondeu o `.mkt-backlog-head`, que era onde o botao morava
+     pendurado no "+ nova ideia" — e a newsletter sumiu da tela. Agora ele entra ao lado do
+     "Nova ideia" (#mkNova), dentro do card de resumo do Conteudo. O `render()` do admin-mkt
+     reescreve o #mkConteudo inteiro, entao um observer reinjeta o botao a cada render. */
+  var IC_ENV = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" ' +
+    'stroke-linecap="round" stroke-linejoin="round" width="17" height="17"><rect x="3" y="5" width="18" height="14" rx="2"/>' +
+    '<path d="M3 7l9 6 9-6"/></svg>';
+
+  function criarBtn() {
     var btn = document.createElement("button");
-    btn.type = "button"; btn.id = "mktNews"; btn.className = "mkt-new";
-    btn.textContent = "✉️ newsletter";
-    /* agrupa com o "+ nova ideia" num flex colado (o head e space-between e separava os dois) */
-    var grp = document.createElement("div");
-    grp.style.cssText = "display:flex;gap:8px;align-items:center;flex:0 0 auto;";
-    novaIdeia.parentNode.insertBefore(grp, novaIdeia);
-    grp.appendChild(btn);
-    grp.appendChild(novaIdeia);
+    btn.type = "button"; btn.id = "mktNews";
     btn.addEventListener("click", openNews);
+    return btn;
+  }
+
+  function addMarketingBtn() {
+    var nova = $id("mkNova");
+    var atual = $id("mktNews");
+    if (nova && nova.parentNode) {                       // layout novo
+      if (atual && atual.parentElement === nova.parentElement) return;  // ja esta no lugar
+      if (atual) atual.remove();   // nasceu no head antigo (escondido); migra pra ca
+      var btn = criarBtn();
+      btn.className = "mk-rbtn";
+      btn.style.cssText = "background:var(--areia);color:var(--preto);flex:1;";
+      btn.innerHTML = IC_ENV + "Newsletter";
+      var grp = document.createElement("div");
+      grp.style.cssText = "display:flex;gap:8px;align-items:stretch;";
+      nova.parentNode.insertBefore(grp, nova);
+      nova.style.flex = "1";
+      grp.appendChild(nova);
+      grp.appendChild(btn);
+      return;
+    }
+    // layout novo existe mas o #mkNova ainda nao renderizou: espera, nao usa o head antigo
+    if ($id("mkWrap")) return;
+    if (atual) return;
+    var novaIdeia = $id("mktToggleNew");                  // layout antigo (fallback)
+    if (!novaIdeia) return;
+    var b2 = criarBtn();
+    b2.className = "mkt-new";
+    b2.innerHTML = IC_ENV + " newsletter";
+    var g2 = document.createElement("div");
+    g2.style.cssText = "display:flex;gap:8px;align-items:center;flex:0 0 auto;";
+    novaIdeia.parentNode.insertBefore(g2, novaIdeia);
+    g2.appendChild(b2);
+    g2.appendChild(novaIdeia);
+  }
+
+  function vigiarConteudo() {
+    var alvo = $id("mkConteudo") || $id("panel-marketing");
+    if (!alvo) return false;
+    try {
+      new MutationObserver(function () { try { addMarketingBtn(); } catch (e) {} })
+        .observe(alvo, { childList: true, subtree: true });
+    } catch (e) {}
+    return true;
   }
 
   /* ---- modal ---- */
@@ -41,13 +84,13 @@
       + '<div id="nwStats" style="font-family:var(--clother);font-size:0.8rem;color:var(--muted);margin:2px 2px 16px;">carregando…</div>'
 
       + '<div class="form-section-title">Escrever & enviar</div>'
-      + '<label class="f"><span>Assunto do email</span><input id="nwAssunto" placeholder="ex: Novidades fresquinhas do mangue 🦀" /></label>'
+      + '<label class="f"><span>Assunto do email</span><input id="nwAssunto" placeholder="ex: Novidades fresquinhas do mangue" /></label>'
       + '<label class="f"><span>Título (opcional)</span><input id="nwTitulo" placeholder="ex: Chegou a coleção nova" /></label>'
       + '<label class="f"><span>Texto</span><textarea id="nwTexto" rows="6" placeholder="Escreve como quiser — linha em branco separa parágrafos."></textarea></label>'
       + '<label class="f"><span>Imagem (opcional)</span>'
       + '<div style="display:flex;gap:8px;align-items:center;">'
-      + '<input id="nwImagem" placeholder="toca em 📷 ou cola um link" style="flex:1;min-width:0;" />'
-      + '<button type="button" class="btn ghost" id="nwImgBtn" style="flex:0 0 auto;white-space:nowrap;">📷 Escolher</button>'
+      + '<input id="nwImagem" placeholder="escolha uma imagem ou cole um link" style="flex:1;min-width:0;" />'
+      + '<button type="button" class="btn ghost" id="nwImgBtn" style="flex:0 0 auto;white-space:nowrap;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" style="vertical-align:-2px;margin-right:5px"><path d="M3 8h3l2-2h8l2 2h3v12H3z"/><circle cx="12" cy="13" r="3.4"/></svg>Escolher</button>'
       + '</div>'
       + '<input type="file" id="nwImgFile" accept="image/*" style="display:none;">'
       + '<img id="nwImgPrev" alt="" style="display:none;margin-top:8px;max-width:150px;max-height:110px;object-fit:cover;border-radius:10px;border:1.5px solid rgba(13,13,11,0.25);">'
@@ -254,7 +297,15 @@
   }
 
   /* boot */
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", addMarketingBtn);
-  else addMarketingBtn();
-  setTimeout(addMarketingBtn, 1500);
+  /* o #mkConteudo so nasce quando o admin-mkt monta o layout; tenta ate achar */
+  function boot() {
+    addMarketingBtn();
+    if (vigiarConteudo()) return;
+    var t = 0, iv = setInterval(function () {
+      t++; addMarketingBtn();
+      if (vigiarConteudo() || t > 60) clearInterval(iv);
+    }, 300);
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
+  else boot();
 })();

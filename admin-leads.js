@@ -218,7 +218,7 @@
     if (!host) return null;
     card = document.createElement("div");
     card.id = "leadsCard";
-    card.style.cssText = "border:1.5px solid " + PRETO + ";border-radius:16px;background:" + AREIA + ";padding:15px 16px;box-shadow:3px 3px 0 0 " + PRETO + ";cursor:pointer;min-width:0;";
+    card.style.cssText = "border:1.5px solid " + PRETO + ";border-radius:16px;background:" + AREIA + ";padding:15px 16px;box-shadow:3px 3px 0 0 " + PRETO + ";cursor:pointer;min-width:0;display:flex;flex-direction:column;";
     card.title = "Ver leads";
     card.addEventListener("click", function () {
       try {
@@ -272,10 +272,55 @@
       '<div style="display:flex;gap:9px;">' +
         tile(novos, "Novos", LARANJA) + tile(conv, "Conversando", "#2E6BB8") + tile(fech, "Fechados", "#3E7D4F") + tile(perd, "Perdidos", "#8A8577") +
       '</div>' +
+      listaCurta() +
       '<div style="display:flex;align-items:center;justify-content:space-between;margin-top:13px;padding-top:11px;border-top:1px solid rgba(13,13,11,.12);font-family:inherit;font-size:11.5px;font-weight:700;color:' + PRETO + ';">' +
         '<span style="opacity:.55;">' + total + ' lead' + (total > 1 ? 's' : '') + ' · ' + taxa + '% de conversão</span>' +
         '<span style="color:' + LARANJA + ';font-weight:800;">Ver todos ' + arrow + '</span>' +
       '</div>';
+    aparar(card);
+  }
+
+  /* O card divide a linha com o "Próximos 7 dias", que costuma ser mais alto. Em vez de
+     deixar o vazio embaixo, preenche com quem está em aberto: primeiro o follow-up
+     vencido, depois o mais próximo, depois quem nem tem follow-up marcado. */
+  function listaCurta() {
+    var hoje = todayISO();
+    var abertos = leads.filter(aberto);
+    if (!abertos.length) return '<div style="flex:1"></div>';
+    abertos.sort(function (a, b) {
+      var fa = a.followup || "", fb = b.followup || "";
+      if (fa && fb) return fa.localeCompare(fb);
+      if (fa) return -1;
+      if (fb) return 1;
+      return (b.criado || "").localeCompare(a.criado || "");
+    });
+    var COR = { novo: LARANJA, conversando: "#2E6BB8" };
+    var linhas = abertos.map(function (l) {
+      var atrasado = l.followup && l.followup < hoje;
+      var dir = l.followup
+        ? (atrasado ? "atrasado" : (l.followup === hoje ? "hoje" : fmtBR(l.followup)))
+        : (l.origem || "");
+      return '<div class="ld-row" style="display:flex;align-items:center;gap:8px;padding:7px 0;border-top:1px solid rgba(13,13,11,.09);' +
+          'font-family:inherit;font-size:12.5px;color:' + PRETO + ';">' +
+          '<span style="width:7px;height:7px;border-radius:50%;flex:0 0 auto;background:' + (COR[l.status] || "#8A8577") + '"></span>' +
+          '<span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:700;">' + esc(l.nome || "—") + '</span>' +
+          (l.interesse ? '<span style="opacity:.5;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:45%;">' + esc(l.interesse) + '</span>' : "") +
+          '<span style="flex:0 0 auto;font-weight:800;font-size:11px;color:' + (atrasado ? LARANJA : PRETO) + ';opacity:' + (atrasado ? 1 : .5) + ';">' + esc(dir) + '</span>' +
+        '</div>';
+    }).join("");
+    return '<div class="ld-curta" style="flex:1;min-height:0;overflow:hidden;margin-top:11px;">' + linhas + "</div>";
+  }
+
+  /* tira as linhas que não couberam, pra não cortar nenhuma pela metade */
+  function aparar(card) {
+    var box = card.querySelector(".ld-curta");
+    if (!box) return;
+    requestAnimationFrame(function () {
+      var voltas = 0;
+      while (box.scrollHeight > box.clientHeight && box.lastElementChild && voltas < 40) {
+        box.removeChild(box.lastElementChild); voltas++;
+      }
+    });
   }
 
   function renderAll() { try { renderLista(); } catch (e) {} try { renderCard(); } catch (e) {} }

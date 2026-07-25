@@ -485,7 +485,9 @@ window.addEventListener('error', function(ev){
   .pn-main-grid .pn-right-col{ display:flex; flex-direction:column; gap:14px; min-width:0; }
   .pn-main-grid .pn-metrics-row{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:12px; }
   .pn-main-grid .pn-metrics-row > .metric-card{ min-width:0; overflow:hidden; }
-  .pn-main-grid .pn-notas-big{ height:100%; min-width:0; }
+  .pn-main-grid .pn-col-big{ height:100%; min-width:0; }
+  /* o card da coluna da direita estica pra fechar na mesma linha do bloco grande */
+  .pn-main-grid .pn-right-col > .side-card{ flex:1 1 auto; min-height:0; }
   @media (max-width:720px){ .pn-main-grid{ grid-template-columns:1fr; } }
   /* MOBILE: métricas empilham (1 por linha) — lado a lado nao cabe no celular e o 2o card saia da tela */
   @media (max-width:560px){ .pn-main-grid .pn-metrics-row{ grid-template-columns:1fr; } }
@@ -3120,7 +3122,7 @@ window.addEventListener('error', function(ev){
 <script src="/admin-agenda.js?v=20260724a"></script>
     <script src="/admin-agenda-dia.js?v=20260724a"></script>
     <script src="/admin-carne.js?v=20260723d"></script>
-    <script src="/admin-leads.js?v=20260724a"></script>
+    <script src="/admin-leads.js?v=20260724b"></script>
     <script src="/admin-entradas.js?v=20260723c"></script>
     <script src="/admin-caixa.js?v=20260724a"></script>
     <script src="/admin-orc.js?v=20260723b"></script>

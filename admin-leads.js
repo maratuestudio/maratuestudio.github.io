@@ -45,6 +45,7 @@
   }
 
   /* ---------- WhatsApp ---------- */
+  function temZap(l) { return String(l && l.contato || "").replace(/\D/g, "").length >= 10; }
   function waLink(l) {
     var tel = String(l.contato || "").replace(/\D/g, "");
     var base = tel ? "https://wa.me/55" + tel : "https://wa.me/";
@@ -176,9 +177,13 @@
         '<span style="margin-left:auto;"></span>' + fup +
       '</div>' +
       (l.interesse ? '<div style="font-family:inherit;font-size:12.5px;color:' + PRETO + ';opacity:.8;margin-top:5px;">' + esc(l.interesse) + '</div>' : '') +
-      '<div style="display:flex;gap:8px;margin-top:10px;">' +
-        '<a href="' + waLink(l) + '" target="_blank" rel="noopener" style="flex:1;text-align:center;padding:8px;border:1.5px solid ' + PRETO + ';border-radius:9px;background:#25D366;color:#0b3d1f;font-family:inherit;font-weight:800;font-size:12.5px;text-decoration:none;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="13" height="13" style="vertical-align:-2px;margin-right:4px"><path d="M21 11.5a8.5 8.5 0 0 1-12.5 7.5L3 21l2-5.5A8.5 8.5 0 1 1 21 11.5z"/></svg>WhatsApp</a>' +
-        '<button type="button" data-edit="' + l.id + '" style="padding:8px 14px;border:1.5px solid ' + PRETO + ';border-radius:9px;background:' + AREIA + ';color:' + PRETO + ';font-family:inherit;font-weight:800;font-size:12.5px;cursor:pointer;">Editar</button>' +
+      /* Sem telefone o link ia pro wa.me sem destinatario, e com flex:1 o botao virava uma
+         barra verde de quase a largura toda — clique perdido abria o WhatsApp à toa. */
+      '<div style="display:flex;gap:8px;margin-top:10px;align-items:center;">' +
+        (temZap(l)
+          ? '<a href="' + waLink(l) + '" target="_blank" rel="noopener" style="flex:0 0 auto;padding:8px 15px;border:1.5px solid ' + PRETO + ';border-radius:9px;background:#25D366;color:#0b3d1f;font-family:inherit;font-weight:800;font-size:12.5px;text-decoration:none;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="13" height="13" style="vertical-align:-2px;margin-right:4px"><path d="M21 11.5a8.5 8.5 0 0 1-12.5 7.5L3 21l2-5.5A8.5 8.5 0 1 1 21 11.5z"/></svg>WhatsApp</a>'
+          : '<span style="flex:0 0 auto;font-family:inherit;font-size:11.5px;font-weight:700;color:' + PRETO + ';opacity:.4;">sem WhatsApp salvo</span>') +
+        '<button type="button" data-edit="' + l.id + '" style="flex:0 0 auto;padding:8px 14px;border:1.5px solid ' + PRETO + ';border-radius:9px;background:' + AREIA + ';color:' + PRETO + ';font-family:inherit;font-weight:800;font-size:12.5px;cursor:pointer;">Editar</button>' +
       '</div>' +
       '<button type="button" data-nx="' + l.id + '|' + nextStatus[l.status || "novo"] + '" hidden></button>' +
     '</div>';

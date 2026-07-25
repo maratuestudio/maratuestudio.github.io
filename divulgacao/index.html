@@ -249,14 +249,14 @@
     .loja__label-tr{position:absolute;top:64px;right:var(--margem);text-align:right;z-index:3;display:flex;flex-direction:column;gap:4px}
     .loja__label-tr .loja__titulo{font-family:var(--clother);font-weight:900;font-size:clamp(1.1rem,1.9vw,1.7rem);letter-spacing:-.01em;text-transform:uppercase;color:var(--areia)}
     .loja__stage{position:absolute;inset:0}
-    .lj-card{position:absolute;inset:0;display:flex;flex-direction:row-reverse;align-items:center;justify-content:center;gap:clamp(28px,5vw,90px);padding:clamp(24px,5vw,80px);opacity:0;transform:translateX(28px);transition:opacity .6s ease,transform .6s ease;pointer-events:none}
+    .lj-card{position:absolute;inset:0;display:flex;flex-direction:row;align-items:center;justify-content:center;gap:clamp(28px,5vw,90px);padding:clamp(24px,5vw,80px);opacity:0;transform:translateX(28px);transition:opacity .6s ease,transform .6s ease;pointer-events:none}
     .lj-card.ativo{opacity:1;transform:translateX(0);pointer-events:auto}
     .lj-card__img{position:relative;width:clamp(220px,28vw,400px);aspect-ratio:1/1;flex-shrink:0;border-radius:18px;overflow:hidden;background:var(--areia);border:2px solid var(--preto);box-shadow:7px 7px 0 0 var(--preto)}
     .lj-card__img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
     .lj-card__img--sticker{width:auto;height:clamp(240px,44vh,430px);aspect-ratio:875/1241}
     .lj-card__img--a3{width:auto;height:clamp(300px,56vh,540px);aspect-ratio:1131/1600}
     .lj-card__img--a4{width:auto;height:clamp(200px,38vh,370px);aspect-ratio:1131/1600}
-    .lj-card__info{display:flex;flex-direction:column;align-items:flex-end;text-align:right;gap:clamp(6px,1.2vh,16px);max-width:min(46vw,620px)}
+    .lj-card__info{display:flex;flex-direction:column;align-items:center;text-align:center;gap:clamp(6px,1.2vh,16px);max-width:min(46vw,620px)}
     .lj-card__txt{display:contents}
     .lj-card__preco{display:flex;align-items:baseline;gap:4px;font-family:var(--clother);font-weight:900;font-size:clamp(2.2rem,6.5vw,5.6rem);line-height:.9;letter-spacing:-.02em;color:var(--areia);text-shadow:.05em .05em 0 var(--preto)}
     .lj-card__preco small{font-family:var(--clother);font-weight:700;font-size:.28em}
@@ -270,11 +270,13 @@
     .brand-corner__logo{display:block;width:6em;height:auto;filter:brightness(0) invert(1)}
     .brand-corner__est{display:block;overflow:hidden;width:3.3em;height:0.854em;margin-top:-0.05em;margin-left:-0.12em;line-height:0}
     .brand-corner__est .estudio-boil{display:block;height:100%;width:400%;max-width:none;animation:estudio-boil .28s steps(4) infinite}
-    .qr-corner{position:fixed;top:clamp(18px,3vh,40px);right:var(--margem);z-index:20;opacity:0;visibility:hidden;transition:opacity .35s ease;background:var(--areia);border:2px solid var(--preto);border-radius:18px;box-shadow:6px 6px 0 0 var(--preto);padding:clamp(10px,1.2vw,16px);display:flex;flex-direction:column;align-items:center;gap:8px;width:clamp(128px,14vw,180px);text-decoration:none;color:var(--preto)}
-    .qr-corner img{width:100%;height:auto;display:block;border-radius:5px}
+    .qr-corner{position:fixed;top:clamp(20px,3.2vh,44px);left:50%;transform:translateX(-50%);z-index:20;opacity:0;visibility:hidden;transition:opacity .35s ease;display:flex;flex-direction:column;align-items:center;gap:clamp(10px,1.6vh,18px)}
+    .qr-corner.show{opacity:1;visibility:visible}
+    .qr-corner__titulo{font-family:var(--jack);font-size:clamp(1.5rem,3vw,2.6rem);line-height:.92;letter-spacing:-.01em;text-transform:uppercase;color:var(--laranja);text-align:center}
+    .qr-corner__card{background:var(--areia);border:2px solid var(--preto);border-radius:18px;box-shadow:6px 6px 0 0 var(--preto);padding:clamp(10px,1.2vw,16px);display:flex;flex-direction:column;align-items:center;gap:8px;width:clamp(128px,14vw,180px);text-decoration:none;color:var(--preto)}
+    .qr-corner__card img{width:100%;height:auto;display:block;border-radius:5px}
     .qr-corner__lbl{font-family:var(--mono);font-size:clamp(.5rem,.8vw,.62rem);letter-spacing:.14em;text-transform:uppercase;text-align:center;line-height:1.5}
     .qr-corner__lbl b{font-weight:900}
-    .qr-corner.show{opacity:1;visibility:visible}
   </style>
 </head>
 <body>
@@ -331,10 +333,13 @@
     <img class="brand-corner__logo" src="/maratu-logo.svg?v=1" alt="MARATU">
     <span class="brand-corner__est"><img class="estudio-boil" src="/estudio-sprite.webp?v=1" alt="Estúdio"></span>
   </div>
-  <a class="qr-corner" href="https://instagram.com/maratuestudio" target="_blank" rel="noopener" aria-label="Siga a MARATU no Instagram">
-    <img src="/divulgacao/ig-qr.png?v=2" alt="QR do Instagram @maratuestudio" width="462" height="462">
-    <span class="qr-corner__lbl">Siga no Instagram<br><b>@maratuestudio</b></span>
-  </a>
+  <div class="qr-corner">
+    <h2 class="qr-corner__titulo">Siga a<br>Maratu</h2>
+    <a class="qr-corner__card" href="https://instagram.com/maratuestudio" target="_blank" rel="noopener" aria-label="Siga a MARATU no Instagram">
+      <img src="/divulgacao/ig-qr.png?v=2" alt="QR do Instagram @maratuestudio" width="462" height="462">
+      <span class="qr-corner__lbl">Siga no Instagram<br><b>@maratuestudio</b></span>
+    </a>
+  </div>
   <script>
 
     var heroSlides=document.querySelectorAll('.hero__bg-slide'),heroAtual=0;

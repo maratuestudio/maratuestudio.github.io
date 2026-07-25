@@ -218,7 +218,7 @@
     if (!host) return null;
     card = document.createElement("div");
     card.id = "leadsCard";
-    card.style.cssText = "border:1.5px solid " + PRETO + ";border-radius:16px;background:" + AREIA + ";padding:15px 16px;margin:14px 0 0;box-shadow:3px 3px 0 0 " + PRETO + ";cursor:pointer;";
+    card.style.cssText = "border:1.5px solid " + PRETO + ";border-radius:16px;background:" + AREIA + ";padding:15px 16px;box-shadow:3px 3px 0 0 " + PRETO + ";cursor:pointer;min-width:0;";
     card.title = "Ver leads";
     card.addEventListener("click", function () {
       try {
@@ -227,7 +227,9 @@
       } catch (e) {}
       setTimeout(function () { try { if (window.MaratuMkt && window.MaratuMkt.openLeads) window.MaratuMkt.openLeads(); } catch (e) {} }, 70);
     });
-    // logo ABAIXO do bloco de Lembretes (o grid pn-main-grid que contém os lembretes)
+    // divide a linha com o "Próximos 7 dias" (grid de 2 colunas #pnProxGrid)
+    var linha = document.getElementById("pnProxGrid");
+    if (linha) { linha.appendChild(card); return card; }
     var grid = host.querySelector(".pn-main-grid");
     if (grid && grid.parentNode) grid.parentNode.insertBefore(card, grid.nextSibling);
     else host.appendChild(card);

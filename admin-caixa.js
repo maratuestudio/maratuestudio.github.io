@@ -202,6 +202,7 @@
     if (!host || !host.querySelector(".cx")) return;
     var mes = HOJE().slice(0, 7);
     var lancs = getLancs().filter(function (l) { return (l.data || "").slice(0, 7) === mes; })
+      .reverse()
       .sort(function (a, b) { return (b.data || "").localeCompare(a.data || ""); });
 
     var total = 0, porFonte = { pix: 0, mp: 0, manual: 0, carne: 0 }, mpFee = 0;

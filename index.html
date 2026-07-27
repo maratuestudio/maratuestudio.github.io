@@ -680,7 +680,7 @@
     /* ── FOOTER ── */
     .footer {
       background: var(--areia); color: var(--preto);
-      padding: clamp(40px, 6vh, 72px) var(--margem) 32px;
+      padding: clamp(24px, 3vh, 36px) var(--margem) 32px;
       position: relative;
     }
     .footer__logo {
@@ -710,19 +710,20 @@
     }
     .footer__servicos a { color: inherit; text-decoration: none; transition: color 0.2s ease; }
     .footer__servicos a:hover { color: var(--laranja); }
-    .footer__topo {
-      display: block;
-      margin-bottom: 32px;
+    .secao-indica {
+      background: var(--areia); color: var(--preto);
+      padding: clamp(48px,7vh,96px) var(--margem);
+      border-top: 0.5px solid rgba(13,13,11,0.1);
     }
-    .footer__indica { text-align: center; }
+    .footer__indica { text-align: left; }
     .footer__indica-head {
       display: grid;
       grid-template-columns: auto 1fr;
       gap: clamp(20px, 3vw, 36px);
       align-items: center;
-      justify-content: center;
+      justify-content: start;
       max-width: 880px;
-      margin: 0 auto;
+      margin: 0;
       text-align: left;
     }
     .footer__indica-titulo {
@@ -754,9 +755,9 @@
       grid-template-columns: repeat(6, 1fr);
       gap: 24px 16px;
       align-items: start;
-      justify-items: center;
+      justify-items: start;
       max-width: 880px;
-      margin: 0 auto;
+      margin: 0;
     }
     @media (max-width: 900px) {
       .footer__indica-marcas { grid-template-columns: repeat(3, 1fr); }
@@ -765,8 +766,8 @@
       .footer__indica-marcas { grid-template-columns: repeat(2, 1fr); }
     }
     .footer__indica-marca {
-      display: flex; flex-direction: column; align-items: center;
-      text-align: center; gap: 8px; text-decoration: none;
+      display: flex; flex-direction: column; align-items: flex-start;
+      text-align: left; gap: 8px; text-decoration: none;
       transition: transform 0.15s ease;
     }
     .footer__indica-marca:hover { transform: translateY(-2px); }
@@ -1689,7 +1690,50 @@
     </div>
   </section>
 
-  <!-- ⑦ POLÍTICA TROCA -->
+  <!-- ⑦ MARATU INDICA -->
+  <section class="secao-indica reveal" id="parceiros">
+    <div class="footer__indica">
+      <div class="footer__indica-head">
+        <h3 class="footer__indica-titulo">MARATU<span>Indica</span></h3>
+        <p class="footer__indica-sub">Marcas, projetos e pessoas de Sergipe que caminham com a gente. Tudo que a gente usa, confia e indica de olho fechado.</p>
+      </div>
+      <hr class="footer__indica-divider">
+      <div class="footer__indica-marcas">
+        <a href="https://www.qabrand.com.br" rel="noopener" class="footer__indica-marca" aria-label="QA">
+          <div class="footer__indica-marca-circulo"><img src="logo-qa.png" alt="QA" loading="lazy" decoding="async" width="672" height="772"></div>
+          <span class="footer__indica-marca-nome">QA</span>
+          <span class="footer__indica-marca-cat">moda</span>
+        </a>
+        <a href="https://www.instagram.com/vilacajuse/" rel="noopener noreferrer" class="footer__indica-marca" aria-label="Vila Caju">
+          <div class="footer__indica-marca-circulo"><img src="logo-vilacaju.png" alt="Vila Caju" loading="lazy" decoding="async" width="1000" height="1000"></div>
+          <span class="footer__indica-marca-nome">Vila Caju</span>
+          <span class="footer__indica-marca-cat">café · arte</span>
+        </a>
+        <a href="https://www.instagram.com/flo.streetwear/" rel="noopener noreferrer" class="footer__indica-marca" aria-label="flo streetwear">
+          <div class="footer__indica-marca-circulo"><img src="logo-flo.png?v=2" alt="flo streetwear" loading="lazy" decoding="async" width="600" height="301"></div>
+          <span class="footer__indica-marca-nome">FLO</span>
+          <span class="footer__indica-marca-cat">streetwear</span>
+        </a>
+        <a href="https://estudiogece.com.br" rel="noopener noreferrer" class="footer__indica-marca" aria-label="estúdio GECÊ">
+          <div class="footer__indica-marca-circulo"><img src="logo-gece.png" alt="estúdio GECÊ" loading="lazy" decoding="async" width="600" height="600"></div>
+          <span class="footer__indica-marca-nome">GECÊ</span>
+          <span class="footer__indica-marca-cat">arquitetura<br>interiores</span>
+        </a>
+        <a href="https://www.instagram.com/winebarbellclub/" rel="noopener noreferrer" class="footer__indica-marca" aria-label="Wine Barbell Club">
+          <div class="footer__indica-marca-circulo"><img src="logo-wbc.png?v=2" alt="Wine Barbell Club" loading="lazy" decoding="async" width="600" height="565"></div>
+          <span class="footer__indica-marca-nome">WBC</span>
+          <span class="footer__indica-marca-cat">academia · LPO</span>
+        </a>
+        <a href="https://www.instagram.com/robertoqueirozfotografia/" rel="noopener noreferrer" class="footer__indica-marca" aria-label="Roberto Queiroz Fotografia">
+          <div class="footer__indica-marca-circulo"><img src="logo-roberto.png?v=2" alt="Roberto Queiroz Fotografia" loading="lazy" decoding="async" width="1250" height="1703"></div>
+          <span class="footer__indica-marca-nome">Roberto Queiroz</span>
+          <span class="footer__indica-marca-cat">fotografia</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ⑧ POLÍTICA TROCA -->
   <section class="politica reveal" id="politica">
     <p class="politica-lbl">POLÍTICA</p>
     <h2 class="politica-titulo">Troca e <span>Devolução</span></h2>
@@ -1755,47 +1799,6 @@
 
   <!-- FOOTER -->
   <footer class="footer">
-    <div class="footer__topo">
-      <div class="footer__indica" id="parceiros">
-        <div class="footer__indica-head">
-          <h3 class="footer__indica-titulo">MARATU<span>Indica</span></h3>
-          <p class="footer__indica-sub">Marcas, projetos e pessoas de Sergipe que caminham com a gente. Tudo que a gente usa, confia e indica de olho fechado.</p>
-        </div>
-        <hr class="footer__indica-divider">
-        <div class="footer__indica-marcas">
-          <a href="https://www.qabrand.com.br" rel="noopener" class="footer__indica-marca" aria-label="QA">
-            <div class="footer__indica-marca-circulo"><img src="logo-qa.png" alt="QA" loading="lazy" decoding="async" width="672" height="772"></div>
-            <span class="footer__indica-marca-nome">QA</span>
-            <span class="footer__indica-marca-cat">moda</span>
-          </a>
-          <a href="https://www.instagram.com/vilacajuse/" rel="noopener noreferrer" class="footer__indica-marca" aria-label="Vila Caju">
-            <div class="footer__indica-marca-circulo"><img src="logo-vilacaju.png" alt="Vila Caju" loading="lazy" decoding="async" width="1000" height="1000"></div>
-            <span class="footer__indica-marca-nome">Vila Caju</span>
-            <span class="footer__indica-marca-cat">café · arte</span>
-          </a>
-          <a href="https://www.instagram.com/flo.streetwear/" rel="noopener noreferrer" class="footer__indica-marca" aria-label="flo streetwear">
-            <div class="footer__indica-marca-circulo"><img src="logo-flo.png?v=2" alt="flo streetwear" loading="lazy" decoding="async" width="600" height="301"></div>
-            <span class="footer__indica-marca-nome">FLO</span>
-            <span class="footer__indica-marca-cat">streetwear</span>
-          </a>
-          <a href="https://estudiogece.com.br" rel="noopener noreferrer" class="footer__indica-marca" aria-label="estúdio GECÊ">
-            <div class="footer__indica-marca-circulo"><img src="logo-gece.png" alt="estúdio GECÊ" loading="lazy" decoding="async" width="600" height="600"></div>
-            <span class="footer__indica-marca-nome">GECÊ</span>
-            <span class="footer__indica-marca-cat">arquitetura<br>interiores</span>
-          </a>
-          <a href="https://www.instagram.com/winebarbellclub/" rel="noopener noreferrer" class="footer__indica-marca" aria-label="Wine Barbell Club">
-            <div class="footer__indica-marca-circulo"><img src="logo-wbc.png?v=2" alt="Wine Barbell Club" loading="lazy" decoding="async" width="600" height="565"></div>
-            <span class="footer__indica-marca-nome">WBC</span>
-            <span class="footer__indica-marca-cat">academia · LPO</span>
-          </a>
-          <a href="https://www.instagram.com/robertoqueirozfotografia/" rel="noopener noreferrer" class="footer__indica-marca" aria-label="Roberto Queiroz Fotografia">
-            <div class="footer__indica-marca-circulo"><img src="logo-roberto.png?v=2" alt="Roberto Queiroz Fotografia" loading="lazy" decoding="async" width="1250" height="1703"></div>
-            <span class="footer__indica-marca-nome">Roberto Queiroz</span>
-            <span class="footer__indica-marca-cat">fotografia</span>
-          </a>
-        </div>
-      </div>
-    </div>
     <div class="footer__baseline">
       <p>© 2026 MARATU Estúdio · feito em Aracaju · Projeta o Mangue!</p>
       <p class="footer__servicos"><a href="/servicos?utm_source=site&amp;utm_medium=rodape" data-servico="geral" data-origem="rodape">Site, loja e sistema feitos pela MARATU. Fazemos o seu ↗</a></p>
@@ -1895,7 +1898,7 @@
     });
 
     // INVERSÃO DE COR — seções claras atrás do header
-    var lightSections = document.querySelectorAll('.solido, .loja-secao, .secao--areia, .footer');
+    var lightSections = document.querySelectorAll('.solido, .loja-secao, .secao--areia, .footer, .secao-indica, .politica');
     var activeLight = new Set();
     var lightObserver = new IntersectionObserver(function(entries) {
       entries.forEach(function(entry) {

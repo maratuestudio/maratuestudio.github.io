@@ -3,27 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Diário da Maré · boletim do estúdio MARATU</title>
-  <meta name="description" content="Boletim do estúdio MARATU, no ritmo do mangue. Oficina, prova, achado e recado de Aracaju.">
+  <title>Diário de Maré · boletim do estúdio MARATU</title>
+  <meta name="description" content="Boletim do estúdio MARATU, no ritmo do mangue.">
   <link rel="canonical" href="https://maratu.com.br/mare">
   <meta name="theme-color" content="#0E3272">
   <link rel="icon" type="image/png" href="/favicon-v6.png">
   <link rel="apple-touch-icon" href="/apple-touch-icon-v6.png">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Diário da Maré · boletim do estúdio MARATU">
-  <meta property="og:description" content="Boletim do estúdio MARATU, no ritmo do mangue. Oficina, prova, achado e recado de Aracaju.">
+  <meta property="og:title" content="Diário de Maré · boletim do estúdio MARATU">
+  <meta property="og:description" content="Boletim do estúdio MARATU, no ritmo do mangue.">
   <meta property="og:url" content="https://maratu.com.br/mare">
   <meta property="og:image" content="https://maratu.com.br/og-image.png">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Diário da Maré · boletim do estúdio MARATU">
-  <meta name="twitter:description" content="Boletim do estúdio MARATU, no ritmo do mangue. Oficina, prova, achado e recado de Aracaju.">
+  <meta name="twitter:title" content="Diário de Maré · boletim do estúdio MARATU">
+  <meta name="twitter:description" content="Boletim do estúdio MARATU, no ritmo do mangue.">
   <meta name="twitter:image" content="https://maratu.com.br/og-image.png">
-  <script type="application/ld+json">
-  {"@context":"https://schema.org","@type":"Blog","@id":"https://maratu.com.br/mare#blog",
-   "name":"Diário da Maré","description":"Boletim do estúdio MARATU, no ritmo do mangue.",
-   "url":"https://maratu.com.br/mare","inLanguage":"pt-BR",
-   "publisher":{"@type":"Organization","name":"MARATU Estúdio","url":"https://maratu.com.br"}}
-  </script>
 
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-HCJ291HL72"></script>
@@ -41,6 +35,15 @@
     @font-face { font-family: 'Clother'; src: url('/TRYClother-Bold.woff2') format('woff2'), url('/TRYClother-Bold.ttf') format('truetype'); font-weight: 700; font-display: swap; }
     @font-face { font-family: 'Clother'; src: url('/TRYClother-Black.woff2') format('woff2'), url('/TRYClother-Black.ttf') format('truetype'); font-weight: 900; font-display: swap; }
   
+/* As regras de .grade/.entrada/.chapa/.pill/.btn-ler acima ficam guardadas: o diario volta
+   a ter entradas e elas sao o card aprovado. Sem markup usando, nao pesam no render. */
+
+/* ══ estado vazio: enquanto nao ha entrada publicada ══ */
+.vazio{min-height:34vh;display:flex;align-items:center}
+.vazio__txt{font-family:var(--clother);font-weight:900;
+  font-size:clamp(1.6rem,4.2vw,3.2rem);line-height:1.08;letter-spacing:-.03em;
+  max-width:16ch;margin:0}
+
 /* ══ MENU MOBILE: mesmo do site ══ */
 .header__menu-toggle{display:none;align-items:center;
   padding:7px 12px 7px 16px;background:var(--dourado);color:var(--preto);
@@ -135,7 +138,7 @@ img{max-width:100%;display:block}
 .t1{font-family:var(--clother);font-weight:700;font-size:clamp(.85rem,1.5vw,1.1rem);
   display:block;margin:0 0 2px}
 /* O viewBox reserva ~20% da altura no topo para o acento, que fica lá na direita, sobre o E.
-   Sobre o M isso vira vão morto e soltava o "Diário da". A margem negativa recupera esse
+   Sobre o M isso vira vão morto e soltava o "Diário de". A margem negativa recupera esse
    espaço e acompanha a escala do lettering; o acento sobe junto, sem encostar no texto. */
 .t2-svg{display:block;width:clamp(200px,31vw,380px);height:auto;
   fill:currentColor;color:var(--areia);margin:clamp(-14px,-1.05vw,-4px) 0 0}
@@ -277,7 +280,7 @@ img{max-width:100%;display:block}
 
   <div class="abertura">
     <h1>
-      <span class="t1">Diário da</span>
+      <span class="t1">Diário de</span>
       <svg class="t2-svg" viewBox="0 0 378.81 87.07" role="img" aria-label="Maré">
       <g>
       <g>
@@ -304,65 +307,8 @@ img{max-width:100%;display:block}
 </section>
 
 <section class="secao secao--areia">
-  <div class="grade">
-
-    <article class="entrada entrada--capa">
-      <div class="entrada__img">
-        <div class="chapa chapa--laranja"></div>
-        <span class="pill pill--oficina">Oficina</span>
-      </div>
-      <p class="entrada__data">24 jul 2026</p>
-      <h3 class="entrada__titulo">A carranca empenou três vezes até eu aceitar o óbvio</h3>
-      <p class="entrada__dek">Mudei a altura de camada. Troquei o filamento. Culpei a mesa.
-        O problema era a primeira camada correndo rápido demais. Baixei a velocidade pela metade
-        e a peça saiu inteira na quarta tentativa.</p>
-      <div class="entrada__pe"><a class="btn-ler" href="/mare/carranca">Ler a entrada</a></div>
-    </article>
-
-    <article class="entrada">
-      <div class="entrada__img">
-        <div class="chapa chapa--azul"></div>
-        <span class="pill pill--prova">Prova</span>
-      </div>
-      <p class="entrada__data">21 jul 2026</p>
-      <h3 class="entrada__titulo">Os Arcos da Orla viraram pôster A1</h3>
-      <p class="entrada__dek">Desenhei os arcos em vetor num sábado. Testei três laranjas antes
-        de fechar no de sempre.</p>
-    </article>
-
-    <article class="entrada">
-      <div class="entrada__img">
-        <div class="chapa chapa--dourado"></div>
-        <span class="pill pill--achado">Achado</span>
-      </div>
-      <p class="entrada__data">18 jul 2026</p>
-      <h3 class="entrada__titulo">Um azulejo na parede da Rua Itabaianinha</h3>
-      <p class="entrada__dek">Fotografei antes que caísse. O padrão tem uma falha de repetição
-        que ninguém corrigiu em cinquenta anos.</p>
-    </article>
-
-    <article class="entrada">
-      <div class="entrada__img">
-        <div class="chapa chapa--preto"></div>
-        <span class="pill pill--oficina">Oficina</span>
-      </div>
-      <p class="entrada__data">15 jul 2026</p>
-      <h3 class="entrada__titulo">A fonte da marca subiu sem as minúsculas</h3>
-      <p class="entrada__dek">O arquivo tinha só de A a Z. O site caía na fonte reserva e eu não
-        via, porque o nome da marca é todo em caixa alta.</p>
-    </article>
-
-    <article class="entrada">
-      <div class="entrada__img">
-        <div class="chapa chapa--areia"></div>
-        <span class="pill pill--recado">Recado</span>
-      </div>
-      <p class="entrada__data">12 jul 2026</p>
-      <h3 class="entrada__titulo">Chaveiros novos na loja</h3>
-      <p class="entrada__dek">Carranca, Relógio do Mercado e Arco da Orla. Impressos aqui, um por
-        vez, na cor que você escolher.</p>
-    </article>
-
+  <div class="vazio">
+    <p class="vazio__txt">Nada pra ver por aqui por enquanto.</p>
   </div>
 </section>
 

@@ -35,6 +35,44 @@
     @font-face { font-family: 'Clother'; src: url('/TRYClother-Bold.woff2') format('woff2'), url('/TRYClother-Bold.ttf') format('truetype'); font-weight: 700; font-display: swap; }
     @font-face { font-family: 'Clother'; src: url('/TRYClother-Black.woff2') format('woff2'), url('/TRYClother-Black.ttf') format('truetype'); font-weight: 900; font-display: swap; }
   
+/* ══ PÁGINA DE ENTRADA ══ o Worker injeta esta marcação no lugar do <!--MARE:CORPO-->
+   quando a URL é /mare/<slug>. Mantido aqui pra o design viver no repo. */
+.ent-cabeca{max-width:760px}
+.ent-meta{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:22px}
+.ent-data{font-family:var(--mono);font-size:.62rem;letter-spacing:.16em;
+  text-transform:uppercase;opacity:.6}
+.ent-titulo{font-family:var(--clother);font-weight:900;
+  font-size:clamp(2rem,4.6vw,3.6rem);line-height:1.02;letter-spacing:-.03em;margin:0}
+.ent-olho{font-size:clamp(1rem,1.5vw,1.22rem);line-height:1.6;opacity:.78;
+  margin:20px 0 0;max-width:56ch}
+.ent-figura{position:relative;margin:0;border-radius:8px;overflow:hidden;
+  border:1.5px solid var(--preto);box-shadow:3px 3px 0 0 var(--preto);
+  aspect-ratio:16/7;background:var(--laranja)}
+.ent-legenda{font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;
+  text-transform:uppercase;opacity:.55;margin:10px 0 0}
+.corpo{max-width:63ch}
+.corpo p{font-size:clamp(1rem,1.25vw,1.12rem);line-height:1.78;margin:0 0 1.35em}
+.corpo p:last-child{margin-bottom:0}
+.corpo h3{font-family:var(--clother);font-weight:900;font-size:1.35rem;
+  letter-spacing:-.02em;margin:2.2em 0 .7em}
+.corpo strong{font-weight:700}
+.destaque{margin:2.4em 0;padding-left:22px;border-left:3px solid var(--laranja);
+  font-size:clamp(1.15rem,1.8vw,1.5rem);line-height:1.4;font-weight:700;
+  letter-spacing:-.02em;max-width:44ch}
+.ficha{margin-top:clamp(40px,6vh,64px);border-top:1.5px solid rgba(13,13,11,.18);
+  padding-top:18px;display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:18px 24px;max-width:760px}
+.ficha div{font-family:var(--mono);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase}
+.ficha dt{opacity:.5;margin-bottom:5px}
+.ficha dd{margin:0;font-weight:700;font-size:.72rem;letter-spacing:.08em}
+.proxima{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.proxima__rot{font-family:var(--mono);font-size:.58rem;letter-spacing:.2em;
+  text-transform:uppercase;opacity:.55;margin:0 0 8px}
+.proxima__tit{font-family:var(--clother);font-weight:900;
+  font-size:clamp(1.4rem,2.6vw,2.2rem);line-height:1.1;letter-spacing:-.025em;max-width:20ch}
+.proxima a{display:block}
+.proxima a:hover .proxima__tit{color:var(--laranja)}
+
 /* As regras de .grade/.entrada/.chapa/.pill/.btn-ler acima ficam guardadas: o diario volta
    a ter entradas e elas sao o card aprovado. Sem markup usando, nao pesam no render. */
 
@@ -275,6 +313,7 @@ img{max-width:100%;display:block}
 </div>
 
 
+<!--MARE:HERO-->
 <section class="secao secao--azul abertura-secao">
   <canvas id="grafico" class="mare-fundo" aria-hidden="true"></canvas>
 
@@ -305,12 +344,9 @@ img{max-width:100%;display:block}
     <span>cheia <b>22:55</b></span>
   </div>
 </section>
+<!--/MARE:HERO-->
 
-<section class="secao secao--areia">
-  <div class="vazio">
-    <p class="vazio__txt">Nada pra ver por aqui por enquanto.</p>
-  </div>
-</section>
+<!--MARE:CORPO-->
 
 <footer class="rodape">
   <span>MARATU · Aracaju, SE</span>

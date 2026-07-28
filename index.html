@@ -773,9 +773,15 @@
     .footer__indica-marca:hover { transform: translateY(-2px); }
     .footer__indica-marca-circulo {
       width: 56px; height: 56px; border-radius: 50%;
-      background: rgba(13,13,11,0.08);
+      background: #FFFFFF; color: var(--preto);
+      border: 1.5px solid var(--preto);
+      box-shadow: 2px 2px 0 0 var(--preto);
       display: flex; align-items: center; justify-content: center;
       overflow: hidden;
+      transition: box-shadow 0.15s ease;
+    }
+    .footer__indica-marca:hover .footer__indica-marca-circulo {
+      box-shadow: 3px 3px 0 0 var(--preto);
     }
     .footer__indica-marca-circulo img {
       max-width: 60%; max-height: 60%; object-fit: contain; display: block;

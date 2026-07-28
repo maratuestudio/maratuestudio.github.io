@@ -1,5 +1,5 @@
 /* MARATU Admin Service Worker — offline + instant open */
-const VERSION = 'maratu-admin-v34';
+const VERSION = 'maratu-admin-v35';
 const STATIC_CACHE = 'static-' + VERSION;
 const RUNTIME_CACHE = 'runtime-' + VERSION;
 
@@ -56,6 +56,41 @@ function freshFirst(req) {
     return Response.error();
   }));
 }
+
+/* Push do Worker. O payload vem cifrado e chega aqui como JSON:
+   { titulo, corpo, path, tag }. O iOS exige que todo push mostre notificação. */
+self.addEventListener('push', (event) => {
+  let d = {};
+  try { d = event.data ? event.data.json() : {}; } catch (e) { d = { corpo: event.data && event.data.text() }; }
+  const titulo = d.titulo || 'MARATU';
+  event.waitUntil(
+    self.registration.showNotification(titulo, {
+      body: d.corpo || '',
+      icon: '/admin-icon-192-v6.png',
+      badge: '/admin-icon-192-v6.png',
+      tag: d.tag || 'maratu',
+      renotify: true,
+      data: { path: d.path || '/admin.html' }
+    })
+  );
+});
+
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  const destino = (event.notification.data && event.notification.data.path) || '/admin.html';
+  event.waitUntil(
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((abas) => {
+      for (const aba of abas) {
+        if (aba.url.includes('/admin.html')) {
+          aba.focus();
+          try { aba.navigate(new URL(destino, self.location.origin).href); } catch (e) {}
+          return;
+        }
+      }
+      return self.clients.openWindow(destino);
+    })
+  );
+});
 
 self.addEventListener('fetch', (event) => {
   const req = event.request;

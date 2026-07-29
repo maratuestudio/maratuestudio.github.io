@@ -49,15 +49,9 @@ const DEFAULT_PARAMS={filamento:140,maquina:5,maodeobra:30,margem:2,fixo:267,ret
     try { renderUpcoming(); } catch(e){}
   }
 
-  /* ---- popup Ajustes (engrenagem) vive dentro de <nav class="tabs">, que no mobile tem
-     overflow-x:auto -> overflow-y vira auto e CLIPA o popup fixed, deixando so uma fatia sob
-     as tabs. Move o popup + backdrop pra raiz do <body> pra ancorar na viewport e nao ser
-     clipado. So muda o pai; o admin.js acha tudo por getElementById, entao abrir/fechar segue. */
-  (function(){
-    var m = document.getElementById("headMenu"), b = document.getElementById("headMenuBack");
-    if (m && m.parentElement !== document.body) document.body.appendChild(m);
-    if (b && b.parentElement !== document.body) document.body.appendChild(b);
-  })();
+  /* O popup de Ajustes virou pagina (#panel-ajustes). O bloco que morava aqui movia o
+     #headMenu pra raiz do <body> pra escapar do clip do <nav>. Agora isso ESVAZIARIA o
+     painel e sumiria com tema, passkey, notificacoes e ate o botao Sair. Removido. */
 
   /* ---- wrap renderCal + renderWeek + renderMonth: pinta/acinzenta os blocos do dia ----
      renderWeek/renderMonth sao chamados DIRETO em varios lugares (navegar semana, fechar

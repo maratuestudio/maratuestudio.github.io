@@ -3,8 +3,26 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="theme-color" content="#C8501A" />
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://maratu-api.raphaelnascimento.workers.dev; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests;" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+  <script>
+    /* Anti-enquadramento. O certo seria o cabecalho frame-ancestors, mas ele so vale como
+       cabecalho de verdade e o GitHub Pages nao manda cabecalho. Enquanto nao houver uma
+       Transform Rule na Cloudflare, isto resolve o caso pratico: se a pagina for aberta
+       dentro de um iframe de outro site, ela tenta escapar; se o navegador barrar, ela se
+       apaga em vez de servir de isca. */
+    (function () {
+      if (window.top === window.self) return;
+      try { window.top.location.replace(window.self.location.href); }
+      catch (e) {
+        document.addEventListener("DOMContentLoaded", function () {
+          document.body.innerHTML = "";
+          document.body.style.background = "#0D0D0B";
+        });
+      }
+    })();
+  </script>
+<meta name="theme-color" content="#C8501A" />
 <title>MARATU · Passkey</title>
 <meta name="robots" content="noindex,nofollow" />
 <link rel="icon" type="image/png" href="favicon-v6.png" />

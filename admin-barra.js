@@ -25,19 +25,19 @@
   var LIMIAR = 7;             // px de movimento pra virar arraste em vez de toque
   var ind = null, pilula = null, tabs = null;
   var ultimoX = null, volta = null;
-  var arrastando = false, comecouEm = 0, alvo = null, xAnterior = 0, tAnterior = 0;
+  var arrastando = false, comecouEm = 0, alvo = null, xAnterior = 0, tAnterior = 0, pid = null;
 
   var CSS =
     "@media " + MQ + "{" +
     /* NAO adicionar position aqui: o .tabs original ja faz fixed nesta media query, e
        repetir com especificidade de ID grudaria o valor se um dia mudar pra sticky. */
     "  #tabs{touch-action:none}" +
-    "  #tabs .tab{position:relative;z-index:1;background:transparent!important;" +
+    "  #tabs .tab,#tabs .gear-wrap,#tabs .head-menu-btn{position:relative;z-index:1;background:transparent!important;" +
     "    transition:color .32s ease}" +
-    "  #tabs .tab[aria-selected=\"true\"]{color:var(--selected-fg,var(--areia))}" +
+    "  #tabs .tab[aria-selected=\"true\"],#tabs .head-menu-btn[aria-selected=\"true\"]{color:var(--selected-fg,var(--areia))}" +
     /* durante o arraste quem manda e o dedo, nao o aria-selected */
-    "  #tabs.mrt-arrastando .tab{color:var(--preto);transition:color .12s ease}" +
-    "  #tabs.mrt-arrastando .tab.mrt-alvo{color:var(--selected-fg,var(--areia))}" +
+    "  #tabs.mrt-arrastando .tab,#tabs.mrt-arrastando .head-menu-btn{color:var(--preto);transition:color .12s ease}" +
+    "  #tabs.mrt-arrastando .mrt-alvo,#tabs.mrt-arrastando .mrt-alvo .head-menu-btn{color:var(--selected-fg,var(--areia))}" +
     "  .mrt-ind{position:absolute;left:0;top:0;z-index:0;pointer-events:none;" +
     "    transition:transform .32s cubic-bezier(.32,1.30,.42,1);" +
     "    will-change:transform}" +
@@ -56,8 +56,16 @@
     (document.head || document.documentElement).appendChild(st);
   }
 
-  function abas() { return tabs ? [].slice.call(tabs.querySelectorAll(".tab")) : []; }
-  function selecionada() { return tabs && tabs.querySelector('.tab[aria-selected="true"]'); }
+  /* .gear-wrap entra junto: a engrenagem e um botao proprio, nao uma .tab, e o pedido
+     era manter ele assim. Uso o wrap porque e ele que ocupa a fatia na barra. */
+  function abas() { return tabs ? [].slice.call(tabs.querySelectorAll(".tab, .gear-wrap")) : []; }
+  function selecionada() {
+    if (!tabs) return null;
+    var t = tabs.querySelector('.tab[aria-selected="true"]');
+    if (t) return t;
+    var g = tabs.querySelector('.head-menu-btn[aria-selected="true"]');
+    return g ? (g.closest(".gear-wrap") || g) : null;
+  }
   function menosMovimento() { return window.matchMedia("(prefers-reduced-motion:reduce)").matches; }
   function medidas(el) { return { x: el.offsetLeft, w: el.offsetWidth, h: el.offsetHeight, t: el.offsetTop }; }
 
@@ -124,7 +132,10 @@
     comecouEm = e.clientX;
     xAnterior = e.clientX; tAnterior = e.timeStamp;
     arrastando = false;
-    try { tabs.setPointerCapture(e.pointerId); } catch (err) {}
+    pid = e.pointerId;
+    /* NAO capturar aqui. Capturar o ponteiro faz o click seguinte ser entregue ao #tabs
+       em vez da aba, e o admin.js escuta em cada aba — o toque simples parava de trocar
+       de painel. A captura so entra quando o dedo vira arraste de verdade. */
   }
 
   function aoMover(e) {
@@ -133,6 +144,7 @@
       if (Math.abs(e.clientX - comecouEm) < LIMIAR) return;
       arrastando = true;
       tabs.classList.add("mrt-arrastando");
+      try { tabs.setPointerCapture(pid); } catch (err) {}
       marcaAlvo(selecionada());
     }
     e.preventDefault();
@@ -163,7 +175,7 @@
     var eraArraste = arrastando;
     var destino = alvo;
     comecouEm = 0; arrastando = false;
-    try { tabs.releasePointerCapture(e.pointerId); } catch (err) {}
+    if (eraArraste) { try { tabs.releasePointerCapture(e.pointerId); } catch (err) {} }
     tabs.classList.remove("mrt-arrastando");
     abas().forEach(function (b) { b.classList.remove("mrt-alvo"); });
     alvo = null;
@@ -173,7 +185,11 @@
     if (!eraArraste) return;                           // foi toque: o click nativo resolve
     e.preventDefault();
     suprimeProximoClique();
-    if (destino && destino.getAttribute("aria-selected") !== "true") destino.click();
+    if (destino) {
+      var clicavel = destino.classList.contains("gear-wrap")
+        ? destino.querySelector(".head-menu-btn") : destino;
+      if (clicavel && clicavel.getAttribute("aria-selected") !== "true") clicavel.click();
+    }
     var m = medidas(destino || selecionada());
     poe(m.x, m, true, null);                           // assenta com mola
   }

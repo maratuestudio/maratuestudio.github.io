@@ -26,20 +26,21 @@
     painel.classList.add("on");
   }
 
-  /* Quando o usuario volta pra outra aba, a engrenagem tem que apagar. O admin.js mexe no
-     aria-selected das abas mas nao conhece o botao, entao escuto e acompanho. */
-  function vigia() {
-    var tabs = document.getElementById("tabs");
-    if (!tabs) return false;
-    try {
-      new MutationObserver(function () {
+  /* Quando o usuario volta pra outra aba, a engrenagem tem que apagar.
+     NAO usar MutationObserver aqui: ele escutaria a troca de aria-selected e escreveria
+     aria-selected de volta, realimentando a si mesmo em laco infinito — foi exatamente
+     isso que travou a pagina. Um clique nas abas resolve sem realimentacao. */
+  function acompanhaAbas() {
+    abas().forEach(function (t) {
+      if (t.dataset.mrtLimpaGear) return;
+      t.dataset.mrtLimpaGear = "1";
+      t.addEventListener("click", function () {
         var btn = document.getElementById("headMenuBtn");
-        if (!btn) return;
-        var outraAtiva = abas().some(function (t) { return t.getAttribute("aria-selected") === "true"; });
-        if (outraAtiva) btn.setAttribute("aria-selected", "false");
-      }).observe(tabs, { attributes: true, subtree: true, attributeFilter: ["aria-selected"] });
-    } catch (e) {}
-    return true;
+        if (btn && btn.getAttribute("aria-selected") === "true") {
+          btn.setAttribute("aria-selected", "false");
+        }
+      });
+    });
   }
 
   function liga() {
@@ -51,7 +52,7 @@
       e.stopPropagation();
       abreAjustes();
     });
-    vigia();
+    acompanhaAbas();
     return true;
   }
 

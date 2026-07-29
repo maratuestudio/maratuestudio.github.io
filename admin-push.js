@@ -12,7 +12,7 @@
   var API = "https://maratu-api.raphaelnascimento.workers.dev";
   var CHAVE_PUB = "BMjhxXrHo64T09xYPoBZcPq92bv7_FBFTtWCKae0pPZf2clPvPFW6ZA6gNrtfl37-4KFG1TdNZTlPJcGhzKPTzQ";
 
-  var elBtn, elMsg;
+  var elBtn, elTeste, elMsg;
 
   /* ---------- utils ---------- */
   function b64urlParaBytes(s) {
@@ -88,6 +88,7 @@
     elBtn.disabled = false;
     elBtn.textContent = sub ? "Desligar notificações" : "Ligar notificações";
     elBtn.dataset.ligado = sub ? "1" : "";
+    if (elTeste) elTeste.style.display = sub ? "" : "none";
   }
 
   /* ---------- ligar e desligar ---------- */
@@ -127,6 +128,14 @@
     }).catch(function (e) { msg("Falhou: " + (e && e.message || e), true); });
   }
 
+  function teste() {
+    msg("Enviando…");
+    return apiPost("/api/push/teste", {}).then(function (d) {
+      if (d && d.enviados) msg("Enviado para " + d.enviados + " aparelho(s).");
+      else msg("Nada enviado. " + JSON.stringify(d).slice(0, 120), true);
+    }).catch(function (e) { msg("Falhou: " + (e && e.message || e), true); });
+  }
+
   /* ---------- UI dentro do menu Ajustes ---------- */
   function monta() {
     var menu = document.getElementById("headMenu");
@@ -146,6 +155,14 @@
       (elBtn.dataset.ligado ? desligar() : ligar());
     });
 
+    elTeste = document.createElement("button");
+    elTeste.className = "hm-btn";
+    elTeste.type = "button";
+    elTeste.id = "ajPushTeste";
+    elTeste.textContent = "Enviar teste";
+    elTeste.style.display = "none";
+    elTeste.addEventListener("click", teste);
+
     elMsg = document.createElement("div");
     elMsg.className = "hm-msg";
     elMsg.id = "ajPushMsg";
@@ -156,7 +173,7 @@
     for (var i = 0; i < lbls.length; i++) {
       if (/Manuten/i.test(lbls[i].textContent)) { antes = lbls[i]; break; }
     }
-    [lbl, elBtn, elMsg].forEach(function (n) {
+    [lbl, elBtn, elTeste, elMsg].forEach(function (n) {
       if (antes) menu.insertBefore(n, antes); else menu.appendChild(n);
     });
 

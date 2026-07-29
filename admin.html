@@ -2198,26 +2198,7 @@ window.addEventListener('error', function(ev){
 #maratu-splash #mi-crab path{ stroke-width:var(--mi-crab-stroke); vector-effect:non-scaling-stroke; }
 #maratu-splash .lp{ stroke-width:var(--mi-wm-stroke); vector-effect:non-scaling-stroke; }
 #maratu-splash #mi-wm-sub{ fill:var(--mi-caju); opacity:0; }
-
-  /* ── AJUSTES: era dropdown centralizado, virou pagina inteira ──
-     O container mantem o id headMenu porque admin-push.js e admin-mei.js injetam nele.
-     Aqui ele so deixa de ser caixa flutuante e vira coluna normal do painel. */
-  #panel-ajustes .head-menu{
-    display:flex !important; flex-direction:column; align-items:stretch; gap:12px;
-    position:static !important; transform:none !important; inset:auto !important;
-    width:auto !important; min-width:0 !important; max-width:560px;
-    max-height:none !important; overflow:visible !important;
-    background:transparent; border:0; border-radius:0; box-shadow:none; padding:0;
-    z-index:auto !important;
-  }
-  #panel-ajustes .hm-lbl{ display:block !important; margin-top:14px; }
-  #panel-ajustes .hm-lbl:first-child{ margin-top:0; }
-  #panel-ajustes .sec-head{ margin:0 0 22px; }
-  #panel-ajustes .sec-title{
-    font-family:var(--clother); font-weight:900; letter-spacing:-0.02em; margin:0;
-    font-size:clamp(1.5rem, 4vw, 2.1rem);
-  }
-  </style>
+</style>
 <div id="maratu-splash" aria-hidden="true">
     <div class="crab-stage"><svg viewBox="0 0 221.06 106.21" xmlns="http://www.w3.org/2000/svg">
         <g id="mi-crab">
@@ -2361,8 +2342,27 @@ window.addEventListener('error', function(ev){
     <button class="tab" role="tab" data-tab="agenda" aria-selected="false"><svg class="tab-ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4.5" width="18" height="16.5" rx="2"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4"/></svg><span class="tab-lbl">Agenda</span></button>
     <button class="tab" role="tab" data-tab="marketing" aria-selected="false"><svg class="tab-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg><span class="tab-lbl">Marketing</span></button>
     <div class="gear-wrap">
-      <button class="head-menu-btn" id="headMenuBtn" type="button" aria-label="Ajustes" aria-selected="false"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span class="tab-lbl">Ajustes</span></button>
-    </div>
+          <div class="head-menu" id="headMenu" role="menu">
+          <span class="hm-lbl">Modo de cor</span>
+          <div class="theme-seg" role="group" aria-label="modo de cor" id="themeSeg">
+            <button type="button" data-theme=""      aria-pressed="true"  title="Original — laranja"><span class="sw"></span></button>
+            <button type="button" data-theme="dia"   aria-pressed="false" title="Dia — azul atalaia"><span class="sw"></span></button>
+            <button type="button" data-theme="noite" aria-pressed="false" title="Noite — preto mangue"><span class="sw"></span></button>
+          </div>
+          <span class="hm-lbl">Segurança · Passkey</span>
+          <button id="ajPkReg" class="hm-btn" type="button">Registrar Touch ID / Face ID</button>
+          <div id="ajPkMsg" class="hm-msg"></div>
+          <div id="ajPkList" class="hm-list"></div>
+          <span class="hm-lbl">Calendário</span>
+          <a id="appleSub" class="hm-btn" style="text-decoration:none;text-align:center;display:block;">Assinar no Apple Calendar</a>
+          <span class="hm-lbl">Manutenção</span>
+          <button id="hmClearCache" class="hm-btn" type="button">Limpar cache e recarregar</button>
+          <span class="hm-lbl">Sessão</span>
+          <button class="sair" id="btnSair" type="button">Sair</button>
+        </div>
+        <button class="head-menu-btn" id="headMenuBtn" type="button" aria-label="Ajustes" aria-expanded="false"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span class="tab-lbl">Ajustes</span></button>
+        <div class="head-menu-back" id="headMenuBack" aria-hidden="true"></div>
+        </div>
   </nav>
 
   <!-- ================= PAINEL ================= -->
@@ -2976,30 +2976,6 @@ window.addEventListener('error', function(ev){
     <div id="mktLista"></div>
   </section>
 
-  <!-- ================= AJUSTES ================= -->
-  <section class="panel" id="panel-ajustes">
-    <div class="sec-head"><h2 class="sec-title">Ajustes</h2></div>
-<div class="head-menu" id="headMenu" role="group">
-          <span class="hm-lbl">Modo de cor</span>
-          <div class="theme-seg" role="group" aria-label="modo de cor" id="themeSeg">
-            <button type="button" data-theme=""      aria-pressed="true"  title="Original — laranja"><span class="sw"></span></button>
-            <button type="button" data-theme="dia"   aria-pressed="false" title="Dia — azul atalaia"><span class="sw"></span></button>
-            <button type="button" data-theme="noite" aria-pressed="false" title="Noite — preto mangue"><span class="sw"></span></button>
-          </div>
-          <span class="hm-lbl">Segurança · Passkey</span>
-          <button id="ajPkReg" class="hm-btn" type="button">Registrar Touch ID / Face ID</button>
-          <div id="ajPkMsg" class="hm-msg"></div>
-          <div id="ajPkList" class="hm-list"></div>
-          <span class="hm-lbl">Calendário</span>
-          <a id="appleSub" class="hm-btn" style="text-decoration:none;text-align:center;display:block;">Assinar no Apple Calendar</a>
-          <span class="hm-lbl">Manutenção</span>
-          <button id="hmClearCache" class="hm-btn" type="button">Limpar cache e recarregar</button>
-          <span class="hm-lbl">Sessão</span>
-          <button class="sair" id="btnSair" type="button">Sair</button>
-        </div>
-          </section>
-
-
   <!-- ================= NOTAS ================= -->
   <div class="modal-back" id="notasModal">
    <div class="modal-card modal-card-notas">
@@ -3182,7 +3158,6 @@ window.addEventListener('error', function(ev){
     <script src="/admin-fluido.js?v=20260728a"></script>
     <script src="/admin-barra.js?v=20260728a"></script>
     <script src="/admin-agenda-arraste.js?v=20260729a"></script>
-    <script src="/admin-ajustes.js?v=20260729a"></script>
 
 <!-- CHICO — popup expandido -->
 <div class="chico-back" id="chicoBack" aria-hidden="true">

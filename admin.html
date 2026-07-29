@@ -180,7 +180,7 @@ window.addEventListener('error', function(ev){
   }
 
   *{ box-sizing:border-box; }
-  html,body{ margin:0; padding:0; overflow-x:hidden; max-width:100%; }
+  html,body{ margin:0; padding:0; overflow-x:hidden; overflow-x:clip; max-width:100%; }
   html{
     background:var(--bg-page);
     -webkit-font-smoothing:antialiased;
@@ -192,9 +192,12 @@ window.addEventListener('error', function(ev){
     background:var(--bg-page); color:var(--preto); font-family:var(--clother);
     line-height:1.5; padding-bottom:env(safe-area-inset-bottom);
     transition:background .28s ease, color .28s ease;
-    overflow-x:hidden;
+    /* clip, nao hidden: hidden faz o eixo Y virar auto sozinho e o elemento vira contexto
+       de rolagem, o que no WebKit desancora o position:fixed da barra de abas. */
+    overflow-x:hidden;   /* reserva pra navegador sem clip */
+    overflow-x:clip;
   }
-  html{ overflow-x:hidden; }
+  html{ overflow-x:hidden; overflow-x:clip; }
   ::-webkit-scrollbar{ width:12px; height:12px; background:transparent; }
   ::-webkit-scrollbar-thumb{
     background-color:var(--scroll-thumb); border-radius:10px;
@@ -212,7 +215,7 @@ window.addEventListener('error', function(ev){
   .wrap{
     max-width:960px; margin:0 auto;
     padding:max(env(safe-area-inset-top), 20px) max(20px, env(safe-area-inset-right)) 56px max(20px, env(safe-area-inset-left));
-    position:relative; z-index:1; overflow-x:hidden;
+    position:relative; z-index:1; overflow-x:hidden; overflow-x:clip;
   }
   @media (max-width:560px){
     .wrap{ padding-left:max(14px, env(safe-area-inset-left)); padding-right:max(14px, env(safe-area-inset-right)); }

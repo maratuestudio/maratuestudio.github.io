@@ -123,6 +123,7 @@
       scroll-behavior: smooth;
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
+      overflow-x: clip;   /* clip nao vira contexto de rolagem; hidden no html desancora position:fixed no WebKit */
       background: var(--areia);
       scrollbar-color: rgba(200,80,26,0.6) transparent;
       scrollbar-width: thin;

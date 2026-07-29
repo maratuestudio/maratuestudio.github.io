@@ -401,7 +401,12 @@ form.addEventListener('submit', async (e)=>{
       msg.classList.add('on');
       return;
     }
-    try { localStorage.setItem('maratu.token', pw); } catch(e){}
+    /* Guarda a SESSAO que o /api/state devolve, nao a senha. Guardando a senha, o token
+             mestre ficava no aparelho e o portao passava a exigir X-TOTP-Code em toda chamada
+             assim que o 2FA fosse ligado — o admin respondia 401 em tudo. */
+          let sess = '';
+          try { const j = await r.json(); sess = j && j.session ? j.session : ''; } catch(e){}
+          try { localStorage.setItem('maratu.token', sess || pw); } catch(e){}
     location.replace('/admin.html');
   }catch(e){
     btn.disabled = false;

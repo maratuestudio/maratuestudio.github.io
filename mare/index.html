@@ -77,6 +77,13 @@
 /* As regras de .grade/.entrada/.chapa/.pill/.btn-ler acima ficam guardadas: o diario volta
    a ter entradas e elas sao o card aprovado. Sem markup usando, nao pesam no render. */
 
+/* imagem e link dentro do texto da entrada — o Worker emite figure.ent-figura e <a> */
+.ent-figura img{width:100%;height:100%;object-fit:cover;display:block}
+.corpo a{color:var(--laranja);text-decoration:underline;text-underline-offset:3px}
+.corpo ul,.corpo ol{margin:0 0 1.15em;padding-left:1.3em}
+.corpo li{margin:.28em 0}
+.corpo figure{margin:clamp(28px,4vh,44px) 0}
+
 /* ══ estado vazio: enquanto nao ha entrada publicada ══ */
 .vazio{min-height:34vh;display:flex;align-items:center}
 .vazio__txt{font-family:var(--clother);font-weight:900;

@@ -373,7 +373,8 @@
   function injectMeiMenu(){
     if(document.getElementById("hmMei")) return true;
     var menu = document.getElementById("headMenu"); if(!menu) return false;
-    var ref = document.getElementById("hmClearCache") || document.getElementById("btnSair");
+    // ancora invisivel no fim de Manutencao; sem ela o MEI cairia antes do Sair
+    var ref = document.getElementById("ajManutencao") || document.getElementById("btnSair");
     var b = document.createElement("button");
     b.id = "hmMei"; b.type = "button"; b.className = "hm-btn"; b.textContent = "MEI (impostos)";
     b.addEventListener("click", function(){ try{ menu.classList.remove("open"); }catch(e){} openDetailModal(); });

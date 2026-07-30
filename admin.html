@@ -2199,21 +2199,48 @@ window.addEventListener('error', function(ev){
 #maratu-splash .lp{ stroke-width:var(--mi-wm-stroke); vector-effect:non-scaling-stroke; }
 #maratu-splash #mi-wm-sub{ fill:var(--mi-caju); opacity:0; }
 
-  /* ── AJUSTES vira pagina. O container mantem o id headMenu porque admin-push.js e
-     admin-mei.js injetam nele; aqui ele so deixa de ser popup. ── */
-  #panel-ajustes .head-menu{
-    display:flex !important; flex-direction:column; align-items:stretch; gap:12px;
-    position:static !important; transform:none !important; inset:auto !important;
-    width:auto !important; min-width:0 !important; max-width:560px;
-    max-height:none !important; overflow:visible !important;
-    background:transparent; border:0; border-radius:0; box-shadow:none; padding:0;
-    z-index:auto !important;
-  }
-  #panel-ajustes .hm-lbl{ display:block !important; margin-top:14px; }
-  #panel-ajustes .hm-lbl:first-of-type{ margin-top:0; }
-  .aj-head{ margin:0 0 22px; }
+  /* ── AJUSTES: era dropdown esticado, agora e pagina de verdade ──
+     O container mantem o id headMenu porque admin-push.js e admin-mei.js injetam nele, e a
+     lista e plana (rotulo, controle, rotulo, controle...). Entao o desenho vem todo do CSS,
+     sem reagrupar marcacao que os modulos nao conhecem. */
+  #panel-ajustes{ padding-bottom:40px; }
+  .aj-head{ margin:0 0 26px; }
   .aj-title{ font-family:var(--clother); font-weight:900; letter-spacing:-0.02em; margin:0;
-    font-size:clamp(1.5rem, 4vw, 2.1rem); }
+    font-size:clamp(1.6rem, 4vw, 2.2rem); }
+
+  #panel-ajustes .head-menu{
+    display:flex !important; flex-direction:column; align-items:stretch; gap:10px;
+    position:static !important; transform:none !important; inset:auto !important;
+    width:auto !important; min-width:0 !important; max-width:520px;
+    max-height:none !important; overflow:visible !important; z-index:auto !important;
+    background:var(--areia); border:1.5px solid var(--borda); border-radius:14px;
+    box-shadow:3px 3px 0 0 var(--sombra-hard); padding:8px 20px 22px;
+  }
+  /* cada rotulo vira cabecalho de secao, com um fio acima separando do bloco anterior */
+  #panel-ajustes .hm-lbl{
+    display:block !important; margin:20px 0 4px; padding-top:16px;
+    border-top:1px solid var(--linha);   /* nao usar cor fixa: o tema noite inverte o fundo */
+  }
+  #panel-ajustes .hm-lbl:first-of-type{ margin-top:6px; padding-top:0; border-top:0; }
+  #panel-ajustes .hm-btn{
+    text-align:left !important; padding:12px 14px; border-radius:10px;
+    box-shadow:2px 2px 0 0 var(--sombra-hard);
+    transition:transform .12s cubic-bezier(.2,.8,.2,1), box-shadow .12s ease;
+  }
+  #panel-ajustes .hm-btn:active{ transform:translate(2px,2px); box-shadow:0 0 0 0 var(--sombra-hard); }
+  #panel-ajustes .theme-seg{ width:max-content; align-self:flex-start; }
+  #panel-ajustes .hm-list{ gap:2px; margin-top:2px; }
+  #panel-ajustes .hm-msg:empty{ display:none; }
+  /* Sair e a unica acao de saida: separada e em laranja, pra nao ser tocada sem querer */
+  #panel-ajustes .sair{
+    margin-top:4px; background:transparent; color:var(--laranja);
+    border:1.5px solid var(--laranja); box-shadow:2px 2px 0 0 var(--laranja);
+  }
+  #panel-ajustes .sair:active{ transform:translate(2px,2px); box-shadow:0 0 0 0 var(--laranja); }
+  @media (max-width:720px){
+    #panel-ajustes .head-menu{ max-width:none; padding:8px 16px 20px; }
+    #panel-ajustes{ padding-bottom:96px; }   /* nao ficar embaixo da barra fixa */
+  }
   </style>
 <div id="maratu-splash" aria-hidden="true">
     <div class="crab-stage"><svg viewBox="0 0 221.06 106.21" xmlns="http://www.w3.org/2000/svg">
@@ -2990,7 +3017,7 @@ window.addEventListener('error', function(ev){
           <span class="hm-lbl">Calendário</span>
           <a id="appleSub" class="hm-btn" style="text-decoration:none;text-align:center;display:block;">Assinar no Apple Calendar</a>
           <span class="hm-lbl">Manutenção</span>
-          <button id="hmClearCache" class="hm-btn" type="button">Limpar cache e recarregar</button>
+          <span id="ajManutencao" hidden></span>
           <span class="hm-lbl">Sessão</span>
           <button class="sair" id="btnSair" type="button">Sair</button>
         </div>
@@ -3143,17 +3170,6 @@ window.addEventListener('error', function(ev){
       feed.textContent='link copiado ✓';
     }catch(e){ feed.textContent='erro'; }
     setTimeout(function(){feed.textContent=old;},2500);
-  });
-  var cc=document.getElementById('hmClearCache');
-  if(cc)cc.addEventListener('click', function(){
-    if(!confirm('Limpar cache e recarregar o app?'))return;
-    cc.textContent='limpando…';
-    Promise.resolve()
-      .then(function(){return navigator.serviceWorker?navigator.serviceWorker.getRegistrations():[];})
-      .then(function(rs){return Promise.all((rs||[]).map(function(r){return r.unregister();}));})
-      .then(function(){return window.caches?caches.keys():[];})
-      .then(function(ks){return Promise.all((ks||[]).map(function(k){return caches.delete(k);}));})
-      .catch(function(){}).then(function(){location.reload(true);});
   });
 })();
 </script>

@@ -2208,7 +2208,14 @@ window.addEventListener('error', function(ev){
   .aj-title{ font-family:var(--clother); font-weight:900; letter-spacing:-0.02em; margin:0;
     font-size:clamp(1.6rem, 4vw, 2.2rem); }
 
-  .aj-wrap{ display:flex; flex-direction:column; gap:22px; max-width:460px; }
+  /* No desktop os grupos se espalham em duas colunas: numa coluna so de 460px sobrava
+     metade da tela e a linha ficava com um vao enorme entre o nome e o controle.
+     No celular vira coluna unica. */
+  .aj-wrap{ display:grid; grid-template-columns:repeat(2, minmax(0,1fr));
+    gap:20px; align-content:start; max-width:900px; }
+  /* Cada coluna e uma pilha propria: com grid-row span a esquerda esticava pra acompanhar
+     a altura da direita e abria um vao morto entre Aparencia e Seguranca. */
+  .aj-col{ display:flex; flex-direction:column; gap:20px; min-width:0; }
 
   .aj-grupo{
     background:var(--areia); border:1.5px solid var(--borda); border-radius:14px;
@@ -2296,8 +2303,12 @@ window.addEventListener('error', function(ev){
   #panel-ajustes .hm-btn[data-ligado="1"] .aj-estado{ color:var(--laranja); font-weight:700; }
   /* linha com estado nao precisa da seta de "abre outra coisa" */
   #panel-ajustes .hm-btn:has(.aj-estado)::after{ content:none; }
+  @media (max-width:900px){
+    .aj-wrap{ grid-template-columns:1fr; }
+    .aj-wrap > #headMenu{ grid-column:1; grid-row:auto; }
+  }
   @media (max-width:720px){
-    .aj-wrap{ max-width:none; gap:20px; }
+    .aj-wrap{ max-width:none; gap:18px; }
     #panel-ajustes{ padding-bottom:96px; }   /* nao ficar embaixo da barra fixa */
     /* nome + aparelho + "registrar" nao cabem numa linha no celular: o nome sobe e o
        resto desce alinhado a esquerda, em vez de quebrar torto na direita */
@@ -3074,8 +3085,8 @@ window.addEventListener('error', function(ev){
          O #headMenu segue existindo porque admin-push.js e admin-mei.js injetam nele; ele
          virou so o container da secao "Conta e ferramentas". -->
     <div class="aj-wrap">
-
-      <div class="aj-grupo">
+      <div class="aj-col">
+<div class="aj-grupo">
         <p class="aj-grupo-tit">Aparência</p>
         <div class="aj-linha">
           <span class="aj-nome">Modo de cor</span>
@@ -3099,8 +3110,9 @@ window.addEventListener('error', function(ev){
           </div>
         </div>
       </div>
-
-      <div class="aj-grupo" id="headMenu" role="group">
+      </div>
+      <div class="aj-col">
+<div class="aj-grupo" id="headMenu" role="group">
         <p class="aj-grupo-tit">Conta e ferramentas</p>
         <a id="appleSub" class="aj-linha aj-linha--link">
           <span class="aj-nome">Assinar no Apple Calendar</span>
@@ -3109,7 +3121,7 @@ window.addEventListener('error', function(ev){
         <span id="ajManutencao" hidden></span>
         <button class="sair" id="btnSair" type="button">Sair da conta</button>
       </div>
-
+      </div>
     </div>
   </section>
 

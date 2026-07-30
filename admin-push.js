@@ -66,28 +66,36 @@
       .catch(function () { return null; });
   }
 
+  /* Linha, nao botao de largura cheia: nome fixo a esquerda e o ESTADO a direita.
+     Antes o proprio rotulo mudava ("Ligar"/"Desligar") e nao dava pra saber a situacao
+     sem interpretar o verbo. */
   function pinta(sub) {
     if (!elBtn) return;
+    function linha(estado, ligado) {
+      elBtn.innerHTML = "";
+      var n = document.createElement("span");
+      n.textContent = "Notificações";
+      var e = document.createElement("span");
+      e.className = "aj-estado";
+      e.textContent = estado;
+      elBtn.appendChild(n); elBtn.appendChild(e);
+      elBtn.dataset.ligado = ligado ? "1" : "";
+    }
     if (!suportado()) {
-      elBtn.disabled = true;
-      elBtn.textContent = "Não disponível neste navegador";
-      return;
+      elBtn.disabled = true; linha("indisponível", false); return;
     }
     if (!naTelaDeInicio()) {
-      elBtn.disabled = true;
-      elBtn.textContent = "Abra pelo ícone da tela de início";
-      msg("O iOS só entrega push para o painel instalado na tela de início.");
+      elBtn.disabled = true; linha("só no app", false);
+      msg("Abra o painel pelo ícone na tela de início para receber notificação.");
       return;
     }
     if (Notification.permission === "denied") {
-      elBtn.disabled = true;
-      elBtn.textContent = "Bloqueado nos Ajustes do iPhone";
+      elBtn.disabled = true; linha("bloqueado", false);
       msg("Libere em Ajustes > MARATU > Notificações.", true);
       return;
     }
     elBtn.disabled = false;
-    elBtn.textContent = sub ? "Desligar notificações" : "Ligar notificações";
-    elBtn.dataset.ligado = sub ? "1" : "";
+    linha(sub ? "ligadas" : "desligadas", !!sub);
   }
 
   /* ---------- ligar e desligar ---------- */
@@ -132,9 +140,6 @@
     var menu = document.getElementById("headMenu");
     if (!menu || document.getElementById("ajPushBtn")) return;
 
-    var lbl = document.createElement("span");
-    lbl.className = "hm-lbl";
-    lbl.textContent = "Notificações";
 
     elBtn = document.createElement("button");
     elBtn.className = "hm-btn";
@@ -150,14 +155,13 @@
     elMsg.className = "hm-msg";
     elMsg.id = "ajPushMsg";
 
-    // Entra logo antes de "Manutenção" pra ficar perto de Calendário.
-    var antes = null;
-    var lbls = menu.querySelectorAll(".hm-lbl");
-    for (var i = 0; i < lbls.length; i++) {
-      if (/Manuten/i.test(lbls[i].textContent)) { antes = lbls[i]; break; }
-    }
-    [lbl, elBtn, elMsg].forEach(function (n) {
-      if (antes) menu.insertBefore(n, antes); else menu.appendChild(n);
+    /* Ancora: o #ajManutencao marca onde as ferramentas entram, antes do Sair. Antes eu
+       procurava o rotulo "Manutencao" por texto — com o layout de linhas esse rotulo nao
+       existe mais e o bloco caia depois do Sair. */
+    var antes = document.getElementById("ajManutencao") || document.getElementById("btnSair");
+    [elBtn, elMsg].forEach(function (n) {
+      if (antes && antes.parentNode) antes.parentNode.insertBefore(n, antes);
+      else menu.appendChild(n);
     });
 
     inscricaoAtual().then(pinta);

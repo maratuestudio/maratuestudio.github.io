@@ -33,8 +33,28 @@
   /* ---------------- estilo ---------------- */
   var CSS = [
     "#aj2{display:flex;flex-direction:column;gap:18px;max-width:560px}",
-    "@media (min-width:900px){#aj2{max-width:none;display:grid;grid-template-columns:1fr 1fr;",
-    "  align-items:start;gap:18px 26px}}",
+    /* No desktop as duas colunas fixas davam um lado com o dobro do outro (numeros
+       e ferramentas de um lado, aparencia e seguranca do outro), e o cartao de
+       conta gastava 280px de altura pra tres informacoes.
+       Agora: a conta vira uma faixa de uma linha no topo, e os grupos restantes
+       entram em colunas de altura equilibrada pelo proprio browser. Equilibrar por
+       CSS e nao na mao importa porque admin-push.js e admin-mei.js injetam linhas
+       em Ferramentas: a altura desse cartao muda sozinha. */
+    "@media (min-width:900px){",
+    "  #aj2{max-width:none;display:block;columns:2;column-gap:26px}",
+    "  #aj2 .g{break-inside:avoid;-webkit-column-break-inside:avoid;margin:0 0 18px}",
+    "  #aj2 .g.conta-faixa{column-span:all;margin-bottom:22px}",
+    "  #aj2 .conta-faixa .card{display:flex;align-items:center;justify-content:space-between;",
+    "    gap:18px;padding:0 18px;flex-wrap:wrap}",
+    "  #aj2 .conta-faixa .conta{padding:14px 0;flex:0 0 auto}",
+    "  #aj2 .conta-faixa .ln{border-top:none;width:auto;flex:0 0 auto;padding:14px 0 14px 22px;",
+    "    gap:10px;border-left:1px solid var(--linha)}",
+    "  #aj2 .conta-faixa .ln .n{color:var(--muted);font-weight:700}",
+    "}",
+    "@media (min-width:900px) and (hover:hover){",
+    /* no Mac o alvo nao precisa dos 48px de dedo */
+    "  #aj2 .ln,#aj2 .card .hm-btn,#aj2 .card .aj-linha{min-height:42px;padding:10px 15px}",
+    "}",
     "#aj2 .g{display:flex;flex-direction:column;gap:7px}",
     "#aj2 .g > .lbl{font-size:var(--fs-1,11px);font-weight:700;letter-spacing:.2em;",
     "  text-transform:uppercase;color:var(--muted);margin-left:4px}",
@@ -178,11 +198,13 @@
     estilo();
     var raiz = el("div", "");
     raiz.id = "aj2";
-    var colA = el("div", "g-col"), colB = el("div", "g-col");
-    colA.style.cssText = colB.style.cssText = "display:flex;flex-direction:column;gap:18px";
+    /* sem coluna intermediaria: os grupos sao filhos diretos e quem equilibra as
+       colunas no desktop e o CSS (columns + break-inside). Com um wrapper flex no
+       meio, o multi-column do WebKit ignorava o equilibrio e voltava tudo pra um lado. */
 
     /* ---- conta ---- */
     var gConta = grupo("");
+    gConta.classList.add("conta-faixa");
     var crab = document.createElement("div");
     crab.className = "conta";
     crab.innerHTML = '<svg viewBox="0 0 221.06 106.21" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
@@ -199,7 +221,7 @@
     gConta._card.appendChild(lVer);
     estado(lSync, "ok", textoSync());
     estado(lVer, "", versao());
-    colA.appendChild(gConta);
+    raiz.appendChild(gConta);
 
     /* ---- aparência ---- */
     var gApar = grupo("Aparência");
@@ -212,7 +234,7 @@
     gApar._card.appendChild(lTema);
     var lAuto = linha("Seguir o iPhone", true);
     gApar._card.appendChild(lAuto);
-    colA.appendChild(gApar);
+    raiz.appendChild(gApar);
 
     /* ---- segurança ----
        a lista e a mensagem vem junto: presas no painel antigo (display:none) o
@@ -224,8 +246,7 @@
     var pkList = $("ajPkList"), pkMsg = $("ajPkMsg");
     if (pkList) { pkList.classList.add("pk-lista"); gSeg._card.appendChild(pkList); }
     if (pkMsg) { pkMsg.classList.add("pk-msg"); gSeg._card.appendChild(pkMsg); }
-    colA.appendChild(gSeg);
-
+    
     /* ---- números do negócio ---- */
     var gNum = grupo("Números do negócio");
     NUMEROS.forEach(function (par) {
@@ -234,7 +255,11 @@
       gNum._card.appendChild(l);
       l.addEventListener("click", function () { editar(l, par[0], par[1]); });
     });
-    colB.appendChild(gNum);
+    raiz.appendChild(gNum);
+    /* segue depois do bloco grande de proposito: com "aparencia, numeros, seguranca,
+       ferramentas, sair" o equilibrio das duas colunas no desktop fica em ~40px.
+       Na ordem antiga (seguranca antes de numeros) sobrava 358px numa coluna. */
+    raiz.appendChild(gSeg);
 
     /* ---- ferramentas: o proprio #headMenu vira o cartao ---- */
     var gFer = grupo("Ferramentas");
@@ -248,7 +273,7 @@
     var lZero = linha("Recarregar do zero", true);
     headMenu.appendChild(lDiag);
     headMenu.appendChild(lZero);
-    colB.appendChild(gFer);
+    raiz.appendChild(gFer);
 
     /* ---- sair ---- */
     var gSair = grupo("");
@@ -256,10 +281,8 @@
       btnSair.className = "sair";
       gSair._card.appendChild(btnSair);
     }
-    colB.appendChild(gSair);
+    raiz.appendChild(gSair);
 
-    raiz.appendChild(colA);
-    raiz.appendChild(colB);
     painel.appendChild(raiz);
 
     ligar(lAuto, lPk, lDiag, lZero, lSync);
@@ -387,6 +410,9 @@
       refs.lPk.disabled = false;
       estado(refs.lPk, n ? "ok" : "off", n ? (n === 1 ? "1 aparelho" : n + " aparelhos") : (msg || "nenhum aparelho"), "›");
     }
+    /* a lista do core escreve "nenhum dispositivo" quando esta vazia, repetindo o
+       que a propria linha ja diz. So aparece quando tem aparelho pra remover. */
+    if (lista) lista.style.display = n ? "" : "none";
     estado(refs.lDiag, diagLigado() ? "avi" : "off", diagLigado() ? "ligado" : "desligado");
     estado(refs.lZero, "", "", "›");
     if (refs.lSync) estado(refs.lSync, "ok", textoSync());

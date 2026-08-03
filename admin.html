@@ -2316,6 +2316,86 @@ window.addEventListener('error', function(ev){
     .aj-linha--alta .aj-dir{ justify-content:flex-start; }
     #panel-ajustes .hm-list{ align-items:flex-start; }
   }
+
+  /* ================= LEGIBILIDADE E TOQUE (03/08/2026) =================
+     Numeros medidos antes de mexer, no WebKit 26 com iPhone 14 Pro Max:
+     pill de "Proximos compromissos" a 1.10:1 sobre o laranja (minimo 4.5:1),
+     botao de vista com 21px de altura e seta com 32px (minimo 44px),
+     e a celula do mes com 51px tentando escrever titulo de 9px. */
+
+  /* Cor das pills. As antigas foram escolhidas de olho e nenhuma passava no
+     minimo de 4.5:1 nem no claro nem no escuro: azul 4.26, verde 3.56,
+     dourado 2.18, laranja 3.86 sobre a areia; 3.30, 3.94, 6.43 e 3.64 sobre o
+     card do tema noite. Aqui fica o tom que passa nos dois, mantendo o matiz.
+     A borda continua na cor cheia da marca, quem muda e so o texto. */
+  :root{
+    --pill-azul:#2C69BA;    /* 4.65:1 na areia */
+    --pill-verde:#357550;   /* 4.68:1 */
+    --pill-dourado:#8B6207; /* 4.63:1 */
+    --pill-laranja:#B14717; /* 4.71:1 */
+  }
+  :root[data-theme="noite"]{
+    --pill-azul:#4F8AD6;    /* 4.68:1 no card escuro */
+    --pill-verde:#449869;   /* 4.68:1 */
+    --pill-dourado:#D4960A; /* 6.43:1, o dourado da marca ja passava aqui */
+    --pill-laranja:#E25F23; /* 4.64:1 */
+  }
+  .pill.evento{ color:var(--pill-azul); }
+  .pill.post{ color:var(--pill-azul); }
+  .pill.projeto{ color:var(--pill-verde); }
+  .pill.marketing{ color:var(--pill-dourado); }
+  .pill.entrega{ color:var(--pill-laranja); }
+
+  /* A lista ficava solta sobre o laranja, e nem o preto puro passa em cima
+     dele (4.28:1). Rotulo e lista viram um card unico, igual ao Painel. */
+  #panel-agenda .divlbl{
+    color:var(--preto); background:var(--areia);
+    border:1.5px solid var(--borda); border-bottom:none;
+    border-radius:12px 12px 0 0; padding:16px 20px 4px; margin:28px 0 0;
+    box-shadow:3px 0 0 0 var(--sombra-hard);
+  }
+  #upcoming{
+    list-style:none; margin:0; padding:0 20px 4px;
+    background:var(--areia); border:1.5px solid var(--borda); border-top:none;
+    border-radius:0 0 12px 12px; box-shadow:3px 3px 0 0 var(--sombra-hard);
+  }
+  #upcoming:empty{ display:none; }
+
+  @media (max-width:720px){
+    .cal-view-toggle button{ min-height:44px; display:inline-flex; align-items:center; }
+    .cal-nav button{ width:44px; height:44px; }
+    .cal-nav .cn-today{ width:auto; height:44px; padding:0 16px; }
+
+    /* No celular a celula do mes vira ponto por tipo: o nome do compromisso
+       fica no painel do dia, que ja abre no toque da celula.
+       Grid e nao flex de proposito: com flex-basis:100% o "hoje" esticava e o
+       circulo do dia virava elipse de 44x22. No grid o numero ocupa a linha
+       inteira sem esticar a propria caixa. */
+    /* a linha DOM..SAB pegava 78px. E o grid-auto-rows menor so existia a partir
+       de 640px, entao entre 641 e 720 a celula ficava com altura de desktop
+       enquanto o evento ja era um ponto de 7px. */
+    .cal-month-grid{ grid-template-rows:30px; grid-auto-rows:78px; }
+    .cal-month-grid .mcell{
+      display:grid; grid-template-columns:repeat(auto-fill,10px);
+      align-content:start; justify-content:start; gap:3px;
+    }
+    .cal-month-grid .mcell-d{ grid-column:1/-1; justify-self:start; }
+    .cal-month-grid .mev{
+      width:7px; height:7px; flex:0 0 auto; padding:0; border:none; border-radius:50%;
+      font-size:0; line-height:0; overflow:hidden; background:var(--preto);
+      box-shadow:0 0 0 1.5px var(--areia); /* anel pra nao sumir no dia colorido */
+    }
+    .cal-month-grid .mev.evento{ background:var(--azul); }
+    .cal-month-grid .mev.post{ background:var(--azul-claro); }
+    .cal-month-grid .mev.projeto{ background:#3E8A5F; }
+    .cal-month-grid .mev.marketing{ background:var(--dourado); }
+    .cal-month-grid .mev.cobranca{ background:var(--laranja); }
+    .cal-month-grid .mev-done{ opacity:0.4; }
+    .cal-month-grid .mev-more{
+      font-size:10px; padding:0; color:var(--preto);
+      grid-column:span 2; align-self:center; line-height:1;
+    }
+  }
   </style>
 <div id="maratu-splash" aria-hidden="true">
     <div class="crab-stage"><svg viewBox="0 0 221.06 106.21" xmlns="http://www.w3.org/2000/svg">
@@ -3297,6 +3377,7 @@ window.addEventListener('error', function(ev){
     <script src="/admin-barra.js?v=20260729a"></script>
     <script src="/admin-ajustes.js?v=20260729b"></script>
     <script src="/admin-agenda-arraste.js?v=20260729a"></script>
+    <script src="/admin-mes-mob.js?v=20260803a"></script>
 
 <!-- CHICO — popup expandido -->
 <div class="chico-back" id="chicoBack" aria-hidden="true">

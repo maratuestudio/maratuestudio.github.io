@@ -1142,6 +1142,51 @@
       .produto-card:has(.cor-selector) > .btn-encomendar { grid-area: btn; width: auto; margin-top: 0; white-space: nowrap; font-size: 10px; letter-spacing: 0.03em; padding: 7px 11px; }
     }
 
+    /* BOTÃO VER NA PAREDE (AR) — secundário do Encomendar: mesma pílula, sem o dourado */
+    .btn-ar {
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      width: 100%; margin-top: auto; margin-bottom: 6px;
+      font-family: 'Clother', sans-serif; font-weight: 700;
+      font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--preto); background: var(--areia);
+      padding: 8px 14px; border-radius: 999px;
+      border: 1.5px solid var(--preto); box-shadow: 3px 3px 0 0 var(--preto);
+      cursor: pointer; transition: all 0.15s ease; -webkit-tap-highlight-color: transparent;
+    }
+    .btn-ar svg { flex-shrink: 0; }
+    .btn-ar:hover { background: var(--dourado); box-shadow: 1px 1px 0 0 var(--preto); transform: translate(2px, 2px); }
+    .btn-ar:active { box-shadow: 0 0 0 0 var(--preto); transform: translate(3px, 3px); }
+    /* com o botão de AR no card, quem empurra pro rodapé é ele, não o Encomendar */
+    .produto-card:has(.btn-ar) > .btn-encomendar { margin-top: 0; }
+
+    .ar-popup { max-width: 560px; }
+    .ar-palco {
+      width: 100%; aspect-ratio: 3 / 4; max-height: 62vh; margin: 0 auto;
+      background: rgba(13,13,11,0.04); border: 1px solid rgba(13,13,11,0.1);
+      display: flex; align-items: center; justify-content: center; overflow: hidden;
+    }
+    .ar-palco model-viewer { width: 100%; height: 100%; --poster-color: transparent; background: transparent; }
+    .ar-carregando {
+      font-family: 'Clother', sans-serif; font-size: 0.7rem; letter-spacing: 0.08em;
+      color: rgba(13,13,11,0.4); text-align: center; padding: 0 20px;
+    }
+    .ar-dica {
+      font-family: 'Clother', sans-serif; font-size: 0.6rem; letter-spacing: 0.06em;
+      color: rgba(13,13,11,0.35); text-align: center; margin-top: 14px;
+    }
+    .ar-btn-tabela {
+      font-family: 'Clother', sans-serif; font-weight: 700; font-size: 10px;
+      letter-spacing: 0.1em; text-transform: uppercase; color: var(--preto);
+      background: var(--dourado); border: 1.5px solid var(--preto);
+      box-shadow: 3px 3px 0 0 var(--preto); border-radius: 999px;
+      padding: 8px 16px; cursor: pointer; transition: all 0.15s ease;
+    }
+    .ar-btn-tabela:active { box-shadow: 0 0 0 0 var(--preto); transform: translate(3px, 3px); }
+    @media (max-width: 520px) {
+      .ar-popup { padding: 20px 16px 18px; }
+      .ar-palco { max-height: 54vh; }
+    }
+
     /* BOTÃO DISPONÍVEL NA QA */
     .btn-disponivel { display: flex; align-items: center; justify-content: center; gap: 8px; background: var(--areia); font-family: 'Clother', sans-serif; font-weight: 700; }
     .btn-disponivel img { height: 16px; width: auto; display: block; }
@@ -2473,6 +2518,7 @@
   </div>
   <script src="components/radio/radio.js?v=5"  defer></script>
   <script src="js/tracking.js?v=3"></script>
+  <script src="js/ar-parede.js?v=1" defer></script>
 
   <!-- Parcelamento automático: produtos com preço > R$150 ganham selo "3x sem juros" -->
   <script>

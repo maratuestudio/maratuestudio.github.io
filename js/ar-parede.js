@@ -26,12 +26,12 @@
   var BASE = "https://maratu-api.raphaelnascimento.workers.dev/img/ar/";
   /* Os modelos vao com Cache-Control imutavel de um ano, entao trocar o arquivo
      no R2 nao basta: quem ja abriu continua com o antigo. Subir esta versao a
-     cada regeracao dos modelos. v2 = usdz deitado e com a arte de volta. */
-  var VERSAO = "3";
+     cada regeracao dos modelos. v4 = moldura preta preta de verdade (a v3 puxava pro cinza). */
+  var VERSAO = "4";
 
   /* Acabamentos de moldura. A ordem aqui e a ordem que aparece na tela. */
   var MOLDURAS = [
-    { id: "preta",   rotulo: "Preta",   amostra: "#151513" },
+    { id: "preta",   rotulo: "Preta",   amostra: "#0A0A09" },
     { id: "branca",  rotulo: "Branca",  amostra: "#EDEAE2" },
     { id: "madeira", rotulo: "Madeira", amostra: "linear-gradient(120deg,#7A4E28,#5C3A1D 60%,#8A5B32)" }
   ];

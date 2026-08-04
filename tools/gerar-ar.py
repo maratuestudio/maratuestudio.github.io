@@ -51,7 +51,10 @@ QUALIDADE_JPEG = 82
 # Os tres acabamentos que a loja oferece. "madeira" ganha textura desenhada
 # na hora; as outras duas sao cor lisa.
 MOLDURAS = {
-    "preta":   {"cor": [0.055, 0.055, 0.045], "aspereza": 0.55, "nome": "preta"},
+    # preto de verdade: com cor alta e superficie muito aspera a luz do ambiente
+    # espalha e a moldura le como cinza. Cor quase zero e acabamento mais liso
+    # concentram o brilho numa faixa so e o resto fica preto.
+    "preta":   {"cor": [0.012, 0.012, 0.012], "aspereza": 0.40, "nome": "preta"},
     "branca":  {"cor": [0.930, 0.918, 0.890], "aspereza": 0.60, "nome": "branca"},
     "madeira": {"cor": [0.400, 0.270, 0.155], "aspereza": 0.72, "nome": "madeira",
                 "textura": True},

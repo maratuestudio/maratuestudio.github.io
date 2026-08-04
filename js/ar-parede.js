@@ -282,7 +282,7 @@
     return MOLDURAS.filter(function (m) { return lista.indexOf(m.id) !== -1; });
   }
 
-  function mostrarEscolha(pid, tam, seguir, rotuloBotao) {
+  function mostrarEscolha(pid, tam, seguir, rotuloBotao, comCamera) {
     var disponiveis = molduraDoPoster(pid);
     if (!aviso) {
       aviso = document.createElement("div");
@@ -321,7 +321,9 @@
     marcarEscolhida();
     aviso.querySelector("#ar-medida-escolha").textContent =
       "Pôster " + tam + " · " + MEDIDAS[tam] + " de papel";
-    aviso.querySelector("#ar-passos").style.display = jaAvisado() ? "none" : "";
+    // as dicas so fazem sentido pra quem vai apontar a camera, e so na estreia
+    aviso.querySelector("#ar-passos").style.display =
+      (comCamera && !jaAvisado()) ? "" : "none";
 
     var botao = aviso.querySelector("[data-ar-seguir]");
     botao.textContent = rotuloBotao;
@@ -352,7 +354,7 @@
     var tam = tamanhoDoCard(card);
     var nome = nomeDoCard(card);
 
-    var seguir, rotulo;
+    var seguir, rotulo, comCamera = true;
     if (temQuickLook()) {
       seguir = function (m) { abrirQuickLook(pid, tam, m, nome); };
       rotulo = "Abrir a câmera";
@@ -362,8 +364,9 @@
     } else {
       seguir = function (m) { abrirModal(pid, tam, m, nome); };
       rotulo = "Ver em 3D";
+      comCamera = false;
     }
-    mostrarEscolha(pid, tam, seguir, rotulo);
+    mostrarEscolha(pid, tam, seguir, rotulo, comCamera);
   }
 
   /* --- injecao no card --------------------------------------------------- */

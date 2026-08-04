@@ -15,8 +15,11 @@ Uso:  python3 tools/gerar-ar.py [--saida DIR] [--so pordosol,atalaia]
 import argparse
 import json
 import os
+import shutil
 import struct
+import subprocess
 import sys
+import tempfile
 import time
 import urllib.request
 from io import BytesIO
@@ -213,11 +216,31 @@ def montar_glb(w, h, jpeg):
 
 
 # --- USDZ ------------------------------------------------------------------
+def deitar(pontos, meia_volta=False):
+    """Vira o modelo do plano XY (em pe) pro plano XZ (deitado), girando -90 em X.
+
+    O ARKit ancora conteudo no plano XZ do anchor, com o Y sendo a normal da
+    superficie. Numa parede, esse Y aponta pra fora dela. Modelo em pe (XY)
+    entra na parede perpendicular, saindo feito prateleira — foi o que aconteceu
+    no primeiro teste no iPhone. Deitado, a arte encosta na parede como quadro.
+    (x, y, z) -> (x, z, -y): o topo vai pra -Z e a frente passa a olhar pra +Y.
+    Nota: o glTF NAO leva esse tratamento. O Scene Viewer do Android quer o
+    contrario — modelo em pe, verso em -Z — que e como o .glb ja sai.
+
+    meia_volta gira 180 graus em torno do Y, mandando o topo pra +Z. Serve pra
+    gerar um arquivo de prova quando so o aparelho pode dizer qual lado e o alto.
+    """
+    deitados = [(p[0], p[2], -p[1]) for p in pontos]
+    if meia_volta:
+        deitados = [(-p[0], p[1], -p[2]) for p in deitados]
+    return deitados
+
+
 def _pts(lista):
     return ", ".join("(%.5f, %.5f, %.5f)" % p for p in lista)
 
 
-def montar_usda(w, h, nome_textura):
+def montar_usda(w, h, nome_textura, meia_volta=False):
     fz = ESPESSURA / 2 + 0.0005
     f_pos, _, _, _ = frente(w, h, fz)
     c_pos, _, _, c_idx = caixa(w, h, ESPESSURA)
@@ -225,6 +248,10 @@ def montar_usda(w, h, nome_textura):
     # a caixa vira faces de 4 cantos (USD aceita quad direto)
     quads = [c_pos[i:i + 4] for i in range(0, len(c_pos), 4)]
     c_flat = [p for q in quads for p in q]
+
+    # so o USD vai deitado: e o que o ARKit espera pra grudar na parede
+    f_pos = deitar(f_pos, meia_volta)
+    c_flat = deitar(c_flat, meia_volta)
     c_counts = ", ".join(["4"] * len(quads))   # USD quer virgula, espaco nao parseia
     c_indices = ", ".join(str(i) for i in range(len(c_flat)))
 
@@ -245,7 +272,9 @@ def Xform "Root" (
     uniform token preliminary:anchoring:type = "plane"
     uniform token preliminary:planeAnchoring:alignment = "vertical"
 
-    def Mesh "Arte"
+    def Mesh "Arte" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
     {{
         uniform bool doubleSided = 0
         int[] faceVertexCounts = [4]
@@ -258,7 +287,9 @@ def Xform "Root" (
         uniform token subdivisionScheme = "none"
     }}
 
-    def Mesh "Moldura"
+    def Mesh "Moldura" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
     {{
         uniform bool doubleSided = 0
         int[] faceVertexCounts = [{c_counts}]
@@ -296,7 +327,9 @@ def Xform "Root" (
             def Shader "Leitor"
             {{
                 uniform token info:id = "UsdPrimvarReader_float2"
-                token inputs:varname = "st"
+                // string, nao token: com token o RealityKit nao acha o primvar
+                // e a arte some (o quadro sai cinza no iPhone)
+                string inputs:varname = "st"
                 float2 outputs:result
             }}
         }}
@@ -317,6 +350,37 @@ def Xform "Root" (
     }}
 }}
 '''
+
+
+def montar_usdz_apple(usda, jpeg, nome_textura, destino):
+    """Empacota com as ferramentas do proprio macOS, quando existem.
+
+    O usdcat converte o texto pra crate binario (o que a Apple recomenda pro
+    Quick Look) e o usdzip cuida do alinhamento do pacote. Mais seguro que
+    escrever o zip na mao. Devolve False se as ferramentas nao existirem.
+    """
+    if not (os.path.exists("/usr/bin/usdcat") and os.path.exists("/usr/bin/usdzip")):
+        return False
+    tmp = tempfile.mkdtemp(prefix="maratu-usdz-")
+    try:
+        usda_path = os.path.join(tmp, "modelo.usda")
+        usdc_path = os.path.join(tmp, "modelo.usdc")
+        tex_path = os.path.join(tmp, nome_textura)
+        with open(usda_path, "w") as fh:
+            fh.write(usda)
+        with open(tex_path, "wb") as fh:
+            fh.write(jpeg)
+        subprocess.run(["/usr/bin/usdcat", usda_path, "-o", usdc_path],
+                       check=True, capture_output=True)
+        saida = os.path.abspath(destino)
+        if os.path.exists(saida):
+            os.remove(saida)
+        # o usdzip resolve a textura pelo caminho relativo, entao roda de dentro
+        subprocess.run(["/usr/bin/usdzip", saida, "modelo.usdc", nome_textura],
+                       check=True, capture_output=True, cwd=tmp)
+        return True
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
 
 
 def montar_usdz(usda, jpeg, nome_textura):
@@ -371,6 +435,8 @@ def main():
     ap.add_argument("--saida", default="ar")
     ap.add_argument("--so", default="", help="lista de ids separados por virgula")
     ap.add_argument("--tamanhos", default="A4,A3,A2,A1")
+    ap.add_argument("--meia-volta", action="store_true",
+                    help="gira o usdz 180 graus (topo pro outro lado); sai com sufixo -alt")
     args = ap.parse_args()
 
     filtro = [s.strip() for s in args.so.split(",") if s.strip()]
@@ -391,15 +457,20 @@ def main():
         nome_textura = "arte.jpg"
         for tam in tams:
             w, h = TAMANHOS[tam]
+            sufixo = "-alt" if args.meia_volta else ""
+            base = os.path.join(args.saida, "%s-%s%s" % (pid, tam, sufixo))
+
             glb = montar_glb(w, h, jpeg)
-            usdz = montar_usdz(montar_usda(w, h, nome_textura), jpeg, nome_textura)
-            for ext, dados in (("glb", glb), ("usdz", usdz)):
-                caminho = os.path.join(args.saida, "%s-%s.%s" % (pid, tam, ext))
-                with open(caminho, "wb") as fh:
-                    fh.write(dados)
-                total += 1
+            with open(base + ".glb", "wb") as fh:
+                fh.write(glb)
+
+            usda = montar_usda(w, h, nome_textura, args.meia_volta)
+            if not montar_usdz_apple(usda, jpeg, nome_textura, base + ".usdz"):
+                with open(base + ".usdz", "wb") as fh:
+                    fh.write(montar_usdz(usda, jpeg, nome_textura))
+            total += 2
             print("%-18s %s  glb %6.0f KB   usdz %6.0f KB"
-                  % (pid, tam, len(glb) / 1024, len(usdz) / 1024))
+                  % (pid, tam, len(glb) / 1024, os.path.getsize(base + ".usdz") / 1024))
         manifesto[pid] = tams
 
     # o site le isto pra saber quem tem modelo; poster novo entra sozinho

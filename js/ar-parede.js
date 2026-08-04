@@ -27,7 +27,28 @@
   /* Os modelos vao com Cache-Control imutavel de um ano, entao trocar o arquivo
      no R2 nao basta: quem ja abriu continua com o antigo. Subir esta versao a
      cada regeracao dos modelos. v2 = usdz deitado e com a arte de volta. */
-  var VERSAO = "2";
+  var VERSAO = "3";
+
+  /* Acabamentos de moldura. A ordem aqui e a ordem que aparece na tela. */
+  var MOLDURAS = [
+    { id: "preta",   rotulo: "Preta",   amostra: "#151513" },
+    { id: "branca",  rotulo: "Branca",  amostra: "#EDEAE2" },
+    { id: "madeira", rotulo: "Madeira", amostra: "linear-gradient(120deg,#7A4E28,#5C3A1D 60%,#8A5B32)" }
+  ];
+  var MOLDURA_PADRAO = "preta";
+  var CHAVE_MOLDURA = "maratu_ar_moldura";
+
+  function molduraEscolhida() {
+    try {
+      var m = localStorage.getItem(CHAVE_MOLDURA);
+      for (var i = 0; i < MOLDURAS.length; i++) if (MOLDURAS[i].id === m) return m;
+    } catch (e) {}
+    return MOLDURA_PADRAO;
+  }
+
+  function guardarMoldura(m) {
+    try { localStorage.setItem(CHAVE_MOLDURA, m); } catch (e) {}
+  }
   var MODEL_VIEWER = "vendor/model-viewer.min.js";
   var MEDIDAS = {
     A4: "21 × 29,7 cm",
@@ -65,11 +86,12 @@
   }
 
   /* --- GA4 --------------------------------------------------------------- */
-  function medir(produto, tamanho, modo) {
+  function medir(produto, tamanho, moldura, modo) {
     if (typeof gtag === "function") {
       // beacon: no Android a pagina sai pro Scene Viewer logo depois daqui
       gtag("event", "ver_na_parede", {
-        produto: produto, tamanho: tamanho, modo: modo, transport_type: "beacon"
+        produto: produto, tamanho: tamanho, moldura: moldura, modo: modo,
+        transport_type: "beacon"
       });
     }
   }
@@ -91,15 +113,15 @@
     return btn ? btn.dataset.poster : null;
   }
 
-  function arquivo(pid, tam, ext) {
-    return BASE + pid + "-" + tam + "." + ext + "?v=" + VERSAO;
+  function arquivo(pid, tam, moldura, ext) {
+    return BASE + pid + "-" + tam + "-" + moldura + "." + ext + "?v=" + VERSAO;
   }
 
   /* --- degrau 1: iOS ----------------------------------------------------- */
-  function abrirQuickLook(pid, tam, nome) {
+  function abrirQuickLook(pid, tam, moldura, nome) {
     var a = document.createElement("a");
     a.setAttribute("rel", "ar");
-    a.href = arquivo(pid, tam, "usdz");
+    a.href = arquivo(pid, tam, moldura, "usdz");
     // o Safari so entra no Quick Look se o link tiver uma imagem dentro
     var img = document.createElement("img");
     img.src = "data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==";
@@ -109,14 +131,14 @@
     document.body.appendChild(a);
     a.click();
     setTimeout(function () { a.remove(); }, 1000);
-    medir(nome, tam, "quick-look");
+    medir(nome, tam, moldura, "quick-look");
   }
 
   /* --- degrau 2: Android ------------------------------------------------- */
-  function abrirSceneViewer(pid, tam, nome) {
-    var volta = location.origin + location.pathname + "#ver3d=" + pid + "-" + tam;
+  function abrirSceneViewer(pid, tam, moldura, nome) {
+    var volta = location.origin + location.pathname + "#ver3d=" + pid + "-" + tam + "-" + moldura;
     var alvo = "https://arvr.google.com/scene-viewer/1.0" +
-      "?file=" + encodeURIComponent(arquivo(pid, tam, "glb")) +
+      "?file=" + encodeURIComponent(arquivo(pid, tam, moldura, "glb")) +
       "&mode=ar_preferred" +
       "&enable_vertical_placement=true" +
       "&resizable=false" +          // o poster tem tamanho real; nao e pra esticar
@@ -124,14 +146,14 @@
     var intent = "intent://" + alvo.replace("https://", "") +
       "#Intent;scheme=https;package=com.google.ar.core;action=android.intent.action.VIEW;" +
       "S.browser_fallback_url=" + encodeURIComponent(volta) + ";end;";
-    medir(nome, tam, "scene-viewer");
+    medir(nome, tam, moldura, "scene-viewer");
     // se o Scene Viewer nao existir, o proprio Android abre o fallback
     location.href = intent;
   }
 
   /* --- degrau 3: modal 3D ------------------------------------------------ */
   var modal = null;
-  var DICA = "Arraste pra girar. No celular, o botão abre a câmera.";
+  var DICA = "Arraste pra girar. No celular, o botão abre a câmera e o pôster sai no tamanho real.";
 
   function montarModal() {
     if (modal) return modal;
@@ -184,7 +206,7 @@
     } catch (e) { return true; }
   }
 
-  function abrirModal(pid, tam, nome) {
+  function abrirModal(pid, tam, moldura, nome) {
     montarModal();
     modal.querySelector("#ar-titulo").textContent = nome;
     modal.querySelector("#ar-medida").textContent = "Impresso em " + tam + " · " + MEDIDAS[tam];
@@ -194,13 +216,13 @@
     palco.innerHTML = '<p class="ar-carregando">carregando o modelo…</p>';
     modal.classList.add("open");
     document.body.style.overflow = "hidden";
-    medir(nome, tam, "modelo-3d");
+    medir(nome, tam, moldura, "modelo-3d");
 
     if (semWebGL()) return caiPraTabela(palco, dica);
 
     carregarModelViewer().then(function () {
       var mv = document.createElement("model-viewer");
-      mv.setAttribute("src", arquivo(pid, tam, "glb"));
+      mv.setAttribute("src", arquivo(pid, tam, moldura, "glb"));
       mv.setAttribute("alt", nome + " em 3D");
       mv.setAttribute("camera-controls", "");
       mv.setAttribute("disable-zoom", "");
@@ -212,7 +234,7 @@
       mv.setAttribute("ar", "");
       mv.setAttribute("ar-modes", "webxr scene-viewer quick-look");
       mv.setAttribute("ar-placement", "wall");
-      mv.setAttribute("ios-src", arquivo(pid, tam, "usdz"));
+      mv.setAttribute("ios-src", arquivo(pid, tam, moldura, "usdz"));
       mv.addEventListener("error", function () { caiPraTabela(palco, dica); });
       palco.innerHTML = "";
       palco.appendChild(mv);
@@ -222,11 +244,102 @@
   /* ultimo degrau: o guia de tamanhos que a loja ja tem */
   function caiPraTabela(palco, dica) {
     palco.innerHTML = '<p class="ar-carregando">Seu navegador não abre o modelo 3D.</p>';
-    dica.innerHTML = '<button type="button" class="ar-btn-tabela">Ver o guia de tamanhos</button>';
-    var b = dica.querySelector(".ar-btn-tabela");
+    dica.innerHTML = '<button type="button" class="ar-btn-principal">Ver o guia de tamanhos</button>';
+    var b = dica.querySelector(".ar-btn-principal");
     b.addEventListener("click", function () {
       fecharModal();
       if (typeof window.abrirTamPopup === "function") window.abrirTamPopup();
+    });
+  }
+
+  /* --- aviso da primeira vez --------------------------------------------- */
+  /* No celular o clique cai direto na camera, entao o modal 3D nunca aparece e
+     nao ha onde explicar o gesto. Este aviso sai uma vez so, na primeira vez,
+     e depois some pra nao virar pedagio. */
+  var CHAVE_AVISO = "maratu_ar_avisado";
+  var aviso = null;
+
+  function jaAvisado() {
+    try { return localStorage.getItem(CHAVE_AVISO) === "1"; } catch (e) { return true; }
+  }
+
+  function marcarAvisado() {
+    try { localStorage.setItem(CHAVE_AVISO, "1"); } catch (e) {}
+  }
+
+  function fecharEscolha() {
+    if (!aviso) return;
+    aviso.classList.remove("open");
+    document.body.style.overflow = "";
+  }
+
+  /* Uma tela so pras duas decisoes: qual moldura e seguir pro AR. As instrucoes
+     de como apontar aparecem so enquanto a pessoa nao usou o recurso nenhuma vez. */
+  function molduraDoPoster(pid) {
+    var info = comModelo && comModelo[pid];
+    var lista = info && info.molduras;
+    if (!lista || !lista.length) return MOLDURAS;
+    return MOLDURAS.filter(function (m) { return lista.indexOf(m.id) !== -1; });
+  }
+
+  function mostrarEscolha(pid, tam, seguir, rotuloBotao) {
+    var disponiveis = molduraDoPoster(pid);
+    if (!aviso) {
+      aviso = document.createElement("div");
+      aviso.className = "tam-popup-overlay";
+      aviso.innerHTML =
+        '<div class="tam-popup ar-aviso">' +
+          '<button class="tam-popup-close" type="button" data-ar-fechar>fechar ✕</button>' +
+          '<p class="tam-popup-title">Escolha a moldura</p>' +
+          '<p class="tam-popup-sub" id="ar-medida-escolha"></p>' +
+          '<div class="ar-molduras" id="ar-molduras">' +
+            disponiveis.map(function (m) {
+              return '<button type="button" class="ar-moldura" data-moldura="' + m.id + '" aria-pressed="false">' +
+                '<span class="ar-moldura__amostra" style="background:' + m.amostra + '"></span>' +
+                '<span class="ar-moldura__rotulo">' + m.rotulo + '</span>' +
+              '</button>';
+            }).join("") +
+          '</div>' +
+          '<ul class="ar-passos" id="ar-passos">' +
+            '<li>Aponte pra parede e mova o celular devagar.</li>' +
+            '<li>Parede lisa e clara demora mais. Mire perto de uma quina, de um rodapé ou de outro quadro.</li>' +
+            '<li>Não pince pra ajustar. O tamanho já sai no real.</li>' +
+          '</ul>' +
+          '<button type="button" class="ar-btn-principal" data-ar-seguir>Abrir a câmera</button>' +
+        '</div>';
+      document.body.appendChild(aviso);
+      aviso.addEventListener("click", function (ev) {
+        if (ev.target === aviso || ev.target.closest("[data-ar-fechar]")) fecharEscolha();
+        var op = ev.target.closest(".ar-moldura");
+        if (op) {
+          guardarMoldura(op.dataset.moldura);
+          marcarEscolhida();
+        }
+      });
+    }
+
+    marcarEscolhida();
+    aviso.querySelector("#ar-medida-escolha").textContent =
+      "Pôster " + tam + " · " + MEDIDAS[tam] + " de papel";
+    aviso.querySelector("#ar-passos").style.display = jaAvisado() ? "none" : "";
+
+    var botao = aviso.querySelector("[data-ar-seguir]");
+    botao.textContent = rotuloBotao;
+    botao.onclick = function () {
+      fecharEscolha();
+      marcarAvisado();
+      seguir(molduraEscolhida());   // segue no mesmo toque, que e o que o iOS exige
+    };
+    aviso.classList.add("open");
+    document.body.style.overflow = "hidden";
+  }
+
+  function marcarEscolhida() {
+    var atual = molduraEscolhida();
+    aviso.querySelectorAll(".ar-moldura").forEach(function (b) {
+      var ativa = b.dataset.moldura === atual;
+      b.classList.toggle("selecionada", ativa);
+      b.setAttribute("aria-pressed", ativa ? "true" : "false");
     });
   }
 
@@ -238,9 +351,19 @@
     if (!pid) return;
     var tam = tamanhoDoCard(card);
     var nome = nomeDoCard(card);
-    if (temQuickLook()) return abrirQuickLook(pid, tam, nome);
-    if (ehAndroid()) return abrirSceneViewer(pid, tam, nome);
-    abrirModal(pid, tam, nome);
+
+    var seguir, rotulo;
+    if (temQuickLook()) {
+      seguir = function (m) { abrirQuickLook(pid, tam, m, nome); };
+      rotulo = "Abrir a câmera";
+    } else if (ehAndroid()) {
+      seguir = function (m) { abrirSceneViewer(pid, tam, m, nome); };
+      rotulo = "Abrir a câmera";
+    } else {
+      seguir = function (m) { abrirModal(pid, tam, m, nome); };
+      rotulo = "Ver em 3D";
+    }
+    mostrarEscolha(pid, tam, seguir, rotulo);
   }
 
   /* --- injecao no card --------------------------------------------------- */
@@ -264,13 +387,13 @@
   /* volta do Scene Viewer quando o aparelho nao tem AR: abre o modal 3D */
   function verHash() {
     // o id vem do D1 e tem hifen (poster-atalaia, farol-de-atalaia)
-    var m = /#ver3d=([a-z0-9-]+)-(A[1-4])$/i.exec(location.hash || "");
+    var m = /#ver3d=([a-z0-9-]+)-(A[1-4])-([a-z]+)$/i.exec(location.hash || "");
     if (!m) return;
     history.replaceState(null, "", location.pathname + location.search);
-    var pid = m[1], tam = m[2].toUpperCase();
+    var pid = m[1], tam = m[2].toUpperCase(), moldura = m[3].toLowerCase();
     var card = document.querySelector('.tam-btn[data-poster="' + pid + '"]');
     var nome = card ? nomeDoCard(card.closest(".produto-card")) : "Pôster";
-    abrirModal(pid, tam, nome);
+    abrirModal(pid, tam, moldura, nome);
   }
 
   function init() {

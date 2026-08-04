@@ -42,10 +42,21 @@ TAMANHOS = {
     "A1": (0.594, 0.841),
 }
 
-ESPESSURA = 0.005          # 5 mm, um quadro fino
-LARGURA_TEXTURA = 1024     # px; o resto e peso a toa no celular
+ESPESSURA = 0.005              # 5 mm de placa atras da arte
+MOLDURA_LARGURA = 0.022        # 2,2 cm de borda em volta do papel
+MOLDURA_PROFUNDIDADE = 0.022   # o quanto a moldura sai da parede
+LARGURA_TEXTURA = 1024         # px; o resto e peso a toa no celular
 QUALIDADE_JPEG = 82
-CINZA = [0.82, 0.82, 0.82, 1.0]
+
+# Os tres acabamentos que a loja oferece. "madeira" ganha textura desenhada
+# na hora; as outras duas sao cor lisa.
+MOLDURAS = {
+    "preta":   {"cor": [0.055, 0.055, 0.045], "aspereza": 0.55, "nome": "preta"},
+    "branca":  {"cor": [0.930, 0.918, 0.890], "aspereza": 0.60, "nome": "branca"},
+    "madeira": {"cor": [0.400, 0.270, 0.155], "aspereza": 0.72, "nome": "madeira",
+                "textura": True},
+}
+MOLDURA_PADRAO = "preta"
 
 
 # --- catalogo --------------------------------------------------------------
@@ -81,6 +92,34 @@ def carregar_textura(url):
     return buf.getvalue()
 
 
+def textura_madeira(largura=384, altura=96):
+    """Desenha um veio de madeira simples: faixas escuras irregulares sobre um
+    marrom base. Cor lisa deixa a moldura com cara de plastico."""
+    import math
+    import random
+
+    base = MOLDURAS["madeira"]["cor"]
+    img = Image.new("RGB", (largura, altura))
+    px = img.load()
+    random.seed(7)                      # sempre a mesma madeira
+    veios = [(random.uniform(0, largura), random.uniform(2.5, 7.0),
+              random.uniform(0.06, 0.16)) for _ in range(14)]
+    for x in range(largura):
+        onda = math.sin(x / 19.0) * 2.0 + math.sin(x / 7.3) * 0.8
+        escuro = 0.0
+        for centro, espessura, forca in veios:
+            d = abs(x - centro + onda)
+            if d < espessura:
+                escuro += forca * (1 - d / espessura)
+        for y in range(altura):
+            ruido = (random.random() - 0.5) * 0.035
+            f = max(0.0, 1.0 - escuro + ruido)
+            px[x, y] = tuple(min(255, max(0, int(c * 255 * f))) for c in base)
+    buf = BytesIO()
+    img.save(buf, "JPEG", quality=88, optimize=True)
+    return buf.getvalue()
+
+
 # --- geometria -------------------------------------------------------------
 def frente(w, h, z):
     """Quad da arte: 4 vertices, normal +Z, uv cobrindo a imagem inteira."""
@@ -93,8 +132,8 @@ def frente(w, h, z):
     return pos, nor, uv, idx
 
 
-def caixa(w, h, d):
-    """Corpo do quadro. Sem uv util, so serve pra dar espessura e verso."""
+def caixa(w, h, d, centro=(0, 0, 0)):
+    """Bloco retangular. Serve de placa de fundo e de barra da moldura."""
     x, y, z = w / 2, h / 2, d / 2
     faces = [
         # (4 cantos, normal)
@@ -105,14 +144,49 @@ def caixa(w, h, d):
         ([(-x, y, z), (x, y, z), (x, y, -z), (-x, y, -z)], (0, 1, 0)),    # topo
         ([(-x, -y, -z), (x, -y, -z), (x, -y, z), (-x, -y, z)], (0, -1, 0)),  # base
     ]
+    cx, cy, cz = centro
     pos, nor, uv, idx = [], [], [], []
     for cantos, n in faces:
         base = len(pos)
-        pos.extend(cantos)
+        pos.extend([(p[0] + cx, p[1] + cy, p[2] + cz) for p in cantos])
         nor.extend([n] * 4)
         uv.extend([(0, 0), (1, 0), (1, 1), (0, 1)])
         idx.extend([base, base + 1, base + 2, base, base + 2, base + 3])
     return pos, nor, uv, idx
+
+
+def juntar(*grupos):
+    """Cola varias caixas num unico conjunto, remendando os indices."""
+    pos, nor, uv, idx = [], [], [], []
+    for g in grupos:
+        deslocamento = len(pos)
+        pos.extend(g[0])
+        nor.extend(g[1])
+        uv.extend(g[2])
+        idx.extend([i + deslocamento for i in g[3]])
+    return pos, nor, uv, idx
+
+
+def corpo_do_quadro(w, h):
+    """Placa de fundo + as quatro barras da moldura em volta da arte.
+
+    O verso encosta na parede em z=0. A arte fica na frente da placa e a
+    moldura sobe mais alto que ela, como num quadro de verdade.
+    """
+    L = MOLDURA_LARGURA
+    P = MOLDURA_PROFUNDIDADE
+    placa_d = 0.005
+    ext_w, ext_h = w + 2 * L, h + 2 * L
+
+    placa = caixa(ext_w, ext_h, placa_d, (0, 0, placa_d / 2))
+    meio_z = P / 2
+    barras = [
+        caixa(ext_w, L, P, (0, (h + L) / 2, meio_z)),    # topo
+        caixa(ext_w, L, P, (0, -(h + L) / 2, meio_z)),   # base
+        caixa(L, h, P, ((w + L) / 2, 0, meio_z)),        # direita
+        caixa(L, h, P, (-(w + L) / 2, 0, meio_z)),       # esquerda
+    ]
+    return juntar(placa, *barras)
 
 
 # --- GLB -------------------------------------------------------------------
@@ -120,11 +194,11 @@ def _pad4(b, enchimento=b"\x00"):
     return b + enchimento * ((4 - len(b) % 4) % 4)
 
 
-def montar_glb(w, h, jpeg):
+def montar_glb(w, h, jpeg, moldura, madeira=None):
     """glTF 2.0 binario, uma malha com duas primitivas (arte + moldura)."""
-    fz = ESPESSURA / 2 + 0.0005          # a arte fica rente, sem brigar com a caixa
+    fz = ESPESSURA + 0.0005              # a arte fica rente a placa, sem brigar
     f_pos, f_nor, f_uv, f_idx = frente(w, h, fz)
-    c_pos, c_nor, c_uv, c_idx = caixa(w, h, ESPESSURA)
+    c_pos, c_nor, c_uv, c_idx = corpo_do_quadro(w, h)
 
     pos = f_pos + c_pos
     nor = f_nor + c_nor
@@ -168,6 +242,18 @@ def montar_glb(w, h, jpeg):
     a_ic = add_acc(b_ic, add_view(b_ic, 34963), len(idx_caixa), "SCALAR", 5123)
 
     v_img = add_view(jpeg)
+    acabamento = MOLDURAS[moldura]
+    imagens = [{"bufferView": v_img, "mimeType": "image/jpeg"}]
+    texturas = [{"source": 0, "sampler": 0}]
+
+    mat_moldura = {"metallicFactor": 0.0, "roughnessFactor": acabamento["aspereza"]}
+    if madeira:
+        v_mad = add_view(madeira)
+        imagens.append({"bufferView": v_mad, "mimeType": "image/jpeg"})
+        texturas.append({"source": 1, "sampler": 0})
+        mat_moldura["baseColorTexture"] = {"index": 1}
+    else:
+        mat_moldura["baseColorFactor"] = acabamento["cor"] + [1.0]
 
     gltf = {
         "asset": {"version": "2.0", "generator": "MARATU gerar-ar.py"},
@@ -188,14 +274,11 @@ def montar_glb(w, h, jpeg):
              "pbrMetallicRoughness": {
                  "baseColorTexture": {"index": 0},
                  "metallicFactor": 0.0, "roughnessFactor": 0.65}},
-            {"name": "Moldura",
-             "pbrMetallicRoughness": {
-                 "baseColorFactor": CINZA,
-                 "metallicFactor": 0.0, "roughnessFactor": 0.9}},
+            {"name": "Moldura", "pbrMetallicRoughness": mat_moldura},
         ],
-        "textures": [{"source": 0, "sampler": 0}],
-        "samplers": [{"magFilter": 9729, "minFilter": 9987, "wrapS": 33071, "wrapT": 33071}],
-        "images": [{"bufferView": v_img, "mimeType": "image/jpeg"}],
+        "textures": texturas,
+        "samplers": [{"magFilter": 9729, "minFilter": 9987, "wrapS": 10497, "wrapT": 10497}],
+        "images": imagens,
         "bufferViews": views,
         "accessors": accs,
         "buffers": [{"byteLength": sum(len(b) for b in blobs)}],
@@ -240,12 +323,12 @@ def _pts(lista):
     return ", ".join("(%.5f, %.5f, %.5f)" % p for p in lista)
 
 
-def montar_usda(w, h, nome_textura, meia_volta=False):
-    fz = ESPESSURA / 2 + 0.0005
+def montar_usda(w, h, nome_textura, moldura, nome_madeira=None, meia_volta=False):
+    fz = ESPESSURA + 0.0005
     f_pos, _, _, _ = frente(w, h, fz)
-    c_pos, _, _, c_idx = caixa(w, h, ESPESSURA)
+    c_pos, _, _, _ = corpo_do_quadro(w, h)
 
-    # a caixa vira faces de 4 cantos (USD aceita quad direto)
+    # o corpo vira faces de 4 cantos (USD aceita quad direto)
     quads = [c_pos[i:i + 4] for i in range(0, len(c_pos), 4)]
     c_flat = [p for q in quads for p in q]
 
@@ -254,9 +337,38 @@ def montar_usda(w, h, nome_textura, meia_volta=False):
     c_flat = deitar(c_flat, meia_volta)
     c_counts = ", ".join(["4"] * len(quads))   # USD quer virgula, espaco nao parseia
     c_indices = ", ".join(str(i) for i in range(len(c_flat)))
+    # cada face do corpo recebe a textura inteira; nas barras finas da moldura
+    # isso vira o veio da madeira correndo pelo comprimento
+    c_uv = ", ".join(["(0, 0), (1, 0), (1, 1), (0, 1)"] * len(quads))
 
     # ao contrario do glTF: no USD o st (0,0) e o canto de BAIXO da imagem
     uv = "(0, 0), (1, 0), (1, 1), (0, 1)"
+
+    acabamento = MOLDURAS[moldura]
+    cor = acabamento["cor"]
+    if nome_madeira:
+        superficie_moldura = f'''color3f inputs:diffuseColor.connect = </Root/Looks/Moldura/Textura.outputs:rgb>'''
+        shaders_moldura = f'''
+            def Shader "Textura"
+            {{
+                uniform token info:id = "UsdUVTexture"
+                asset inputs:file = @{nome_madeira}@
+                float2 inputs:st.connect = </Root/Looks/Moldura/Leitor.outputs:result>
+                token inputs:wrapS = "repeat"
+                token inputs:wrapT = "repeat"
+                float3 outputs:rgb
+            }}
+
+            def Shader "Leitor"
+            {{
+                uniform token info:id = "UsdPrimvarReader_float2"
+                string inputs:varname = "st"
+                float2 outputs:result
+            }}
+'''
+    else:
+        superficie_moldura = f'''color3f inputs:diffuseColor = ({cor[0]}, {cor[1]}, {cor[2]})'''
+        shaders_moldura = ""
 
     return f'''#usda 1.0
 (
@@ -295,6 +407,9 @@ def Xform "Root" (
         int[] faceVertexCounts = [{c_counts}]
         int[] faceVertexIndices = [{c_indices}]
         point3f[] points = [{_pts(c_flat)}]
+        texCoord2f[] primvars:st = [{c_uv}] (
+            interpolation = "faceVarying"
+        )
         rel material:binding = </Root/Looks/Moldura>
         uniform token subdivisionScheme = "none"
     }}
@@ -341,18 +456,19 @@ def Xform "Root" (
             def Shader "Surface"
             {{
                 uniform token info:id = "UsdPreviewSurface"
-                color3f inputs:diffuseColor = ({CINZA[0]}, {CINZA[1]}, {CINZA[2]})
+                {superficie_moldura}
                 float inputs:metallic = 0
-                float inputs:roughness = 0.9
+                float inputs:roughness = {acabamento["aspereza"]}
                 token outputs:surface
             }}
+{shaders_moldura}
         }}
     }}
 }}
 '''
 
 
-def montar_usdz_apple(usda, jpeg, nome_textura, destino):
+def montar_usdz_apple(usda, jpeg, nome_textura, destino, extras=None):
     """Empacota com as ferramentas do proprio macOS, quando existem.
 
     O usdcat converte o texto pra crate binario (o que a Apple recomenda pro
@@ -370,13 +486,18 @@ def montar_usdz_apple(usda, jpeg, nome_textura, destino):
             fh.write(usda)
         with open(tex_path, "wb") as fh:
             fh.write(jpeg)
+        nomes = ["modelo.usdc", nome_textura]
+        for nome, dados in (extras or {}).items():
+            with open(os.path.join(tmp, nome), "wb") as fh:
+                fh.write(dados)
+            nomes.append(nome)
         subprocess.run(["/usr/bin/usdcat", usda_path, "-o", usdc_path],
                        check=True, capture_output=True)
         saida = os.path.abspath(destino)
         if os.path.exists(saida):
             os.remove(saida)
         # o usdzip resolve a textura pelo caminho relativo, entao roda de dentro
-        subprocess.run(["/usr/bin/usdzip", saida, "modelo.usdc", nome_textura],
+        subprocess.run(["/usr/bin/usdzip", saida] + nomes,
                        check=True, capture_output=True, cwd=tmp)
         return True
     finally:
@@ -435,14 +556,20 @@ def main():
     ap.add_argument("--saida", default="ar")
     ap.add_argument("--so", default="", help="lista de ids separados por virgula")
     ap.add_argument("--tamanhos", default="A4,A3,A2,A1")
+    ap.add_argument("--molduras", default="preta,branca,madeira")
     ap.add_argument("--meia-volta", action="store_true",
                     help="gira o usdz 180 graus (topo pro outro lado); sai com sufixo -alt")
     args = ap.parse_args()
 
     filtro = [s.strip() for s in args.so.split(",") if s.strip()]
     tams = [t.strip() for t in args.tamanhos.split(",") if t.strip()]
+    molduras = [m.strip() for m in args.molduras.split(",") if m.strip()]
+    for m in molduras:
+        if m not in MOLDURAS:
+            sys.exit("moldura desconhecida: %s (tem %s)" % (m, ", ".join(MOLDURAS)))
     os.makedirs(args.saida, exist_ok=True)
 
+    veio = textura_madeira()
     total = 0
     manifesto = {}
     for p in listar_posteres():
@@ -455,27 +582,35 @@ def main():
             print("imagem falhou (%s): %s" % (pid, e), file=sys.stderr)
             continue
         nome_textura = "arte.jpg"
+        nome_madeira = "madeira.jpg"
         for tam in tams:
             w, h = TAMANHOS[tam]
             sufixo = "-alt" if args.meia_volta else ""
-            base = os.path.join(args.saida, "%s-%s%s" % (pid, tam, sufixo))
+            for moldura in molduras:
+                base = os.path.join(args.saida, "%s-%s-%s%s" % (pid, tam, moldura, sufixo))
+                tem_madeira = MOLDURAS[moldura].get("textura")
+                madeira = veio if tem_madeira else None
 
-            glb = montar_glb(w, h, jpeg)
-            with open(base + ".glb", "wb") as fh:
-                fh.write(glb)
+                glb = montar_glb(w, h, jpeg, moldura, madeira)
+                with open(base + ".glb", "wb") as fh:
+                    fh.write(glb)
 
-            usda = montar_usda(w, h, nome_textura, args.meia_volta)
-            if not montar_usdz_apple(usda, jpeg, nome_textura, base + ".usdz"):
-                with open(base + ".usdz", "wb") as fh:
-                    fh.write(montar_usdz(usda, jpeg, nome_textura))
-            total += 2
-            print("%-18s %s  glb %6.0f KB   usdz %6.0f KB"
-                  % (pid, tam, len(glb) / 1024, os.path.getsize(base + ".usdz") / 1024))
-        manifesto[pid] = tams
+                usda = montar_usda(w, h, nome_textura, moldura,
+                                   nome_madeira if tem_madeira else None, args.meia_volta)
+                extras = {nome_madeira: madeira} if tem_madeira else None
+                if not montar_usdz_apple(usda, jpeg, nome_textura, base + ".usdz", extras):
+                    with open(base + ".usdz", "wb") as fh:
+                        fh.write(montar_usdz(usda, jpeg, nome_textura))
+                total += 2
+            print("%-18s %s  %s  glb %5.0f KB   usdz %5.0f KB"
+                  % (pid, tam, "/".join(molduras), len(glb) / 1024,
+                     os.path.getsize(base + ".usdz") / 1024))
+        manifesto[pid] = {"tamanhos": tams, "molduras": molduras}
 
     # o site le isto pra saber quem tem modelo; poster novo entra sozinho
     with open(os.path.join(args.saida, "manifesto.json"), "w") as fh:
-        json.dump({"posteres": manifesto, "gerado_em": time.strftime("%Y-%m-%d")}, fh)
+        json.dump({"posteres": manifesto, "molduras": molduras,
+                   "padrao": MOLDURA_PADRAO, "gerado_em": time.strftime("%Y-%m-%d")}, fh)
     print("\n%d arquivos + manifesto em %s/" % (total, args.saida))
 
 

@@ -1065,6 +1065,18 @@
 
     /* TAMANHOS */
     .tam-selector { display: flex; gap: 4px; margin-bottom: 6px; flex-wrap: wrap; }
+    /* No celular o card tem ~130-170px e os quatro tamanhos do pôster quebravam
+       em duas linhas. Dividindo o espaço por igual eles cabem numa linha só, em
+       qualquer largura, sem depender de acertar um padding fixo.
+       Só pôster: a blusa usa o mesmo componente com cinco tamanhos (PP a GG), e
+       espremer cinco nessa largura deixaria o alvo de toque pequeno demais. */
+    @media (max-width: 599px) {
+      .produto-card[data-tipo="poster"] .tam-selector { flex-wrap: nowrap; gap: 3px; }
+      .produto-card[data-tipo="poster"] .tam-btn {
+        flex: 1 1 0; min-width: 0; padding: 3px 2px;
+        letter-spacing: 0.04em; text-align: center;
+      }
+    }
     .tam-btn {
       font-family: 'Clother', sans-serif; font-size: 9px; font-weight: 700;
       letter-spacing: 0.12em; text-transform: uppercase;
@@ -1174,18 +1186,51 @@
       font-family: 'Clother', sans-serif; font-size: 0.6rem; letter-spacing: 0.06em;
       color: rgba(13,13,11,0.35); text-align: center; margin-top: 14px;
     }
-    .ar-btn-tabela {
+    .ar-btn-principal {
       font-family: 'Clother', sans-serif; font-weight: 700; font-size: 10px;
       letter-spacing: 0.1em; text-transform: uppercase; color: var(--preto);
       background: var(--dourado); border: 1.5px solid var(--preto);
       box-shadow: 3px 3px 0 0 var(--preto); border-radius: 999px;
       padding: 8px 16px; cursor: pointer; transition: all 0.15s ease;
     }
-    .ar-btn-tabela:active { box-shadow: 0 0 0 0 var(--preto); transform: translate(3px, 3px); }
+    .ar-btn-principal:active { box-shadow: 0 0 0 0 var(--preto); transform: translate(3px, 3px); }
     @media (max-width: 520px) {
       .ar-popup { padding: 20px 16px 18px; }
       .ar-palco { max-height: 54vh; }
+      .ar-aviso { padding: 24px 18px 20px; }
     }
+    .ar-aviso { max-width: 400px; }
+    .ar-passos { list-style: none; margin: 0 0 22px; padding: 0; }
+    .ar-passos li {
+      position: relative; padding-left: 18px; margin-bottom: 12px;
+      font-family: 'Clother', sans-serif; font-size: 0.82rem; line-height: 1.45;
+      color: rgba(13,13,11,0.72);
+    }
+    .ar-passos li::before {
+      content: ""; position: absolute; left: 0; top: 8px;
+      width: 7px; height: 7px; background: var(--laranja); border-radius: 50%;
+    }
+    .ar-aviso .ar-btn-principal { width: 100%; }
+    .ar-molduras { display: flex; gap: 8px; margin-bottom: 20px; }
+    .ar-moldura {
+      flex: 1 1 0; display: flex; flex-direction: column; align-items: center; gap: 7px;
+      background: none; border: 1.5px solid rgba(13,13,11,0.18); border-radius: 12px;
+      padding: 12px 4px 10px; cursor: pointer; transition: all 0.14s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .ar-moldura__amostra {
+      width: 34px; height: 34px; border-radius: 50%;
+      border: 1.5px solid var(--preto); display: block;
+    }
+    .ar-moldura__rotulo {
+      font-family: 'Clother', sans-serif; font-size: 9px; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase; color: rgba(13,13,11,0.5);
+    }
+    .ar-moldura.selecionada {
+      border-color: var(--preto); background: rgba(13,13,11,0.04);
+      box-shadow: 3px 3px 0 0 var(--preto);
+    }
+    .ar-moldura.selecionada .ar-moldura__rotulo { color: var(--preto); }
 
     /* BOTÃO DISPONÍVEL NA QA */
     .btn-disponivel { display: flex; align-items: center; justify-content: center; gap: 8px; background: var(--areia); font-family: 'Clother', sans-serif; font-weight: 700; }
@@ -2518,7 +2563,7 @@
   </div>
   <script src="components/radio/radio.js?v=5"  defer></script>
   <script src="js/tracking.js?v=3"></script>
-  <script src="js/ar-parede.js?v=2" defer></script>
+  <script src="js/ar-parede.js?v=3" defer></script>
 
   <!-- Parcelamento automático: produtos com preço > R$150 ganham selo "3x sem juros" -->
   <script>

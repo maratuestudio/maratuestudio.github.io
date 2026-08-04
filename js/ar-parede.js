@@ -24,6 +24,10 @@
      do .glb no visualizador quebram. O /img/ do Worker ja manda CORS e cache
      imutavel, e preserva o content-type gravado no objeto. */
   var BASE = "https://maratu-api.raphaelnascimento.workers.dev/img/ar/";
+  /* Os modelos vao com Cache-Control imutavel de um ano, entao trocar o arquivo
+     no R2 nao basta: quem ja abriu continua com o antigo. Subir esta versao a
+     cada regeracao dos modelos. v2 = usdz deitado e com a arte de volta. */
+  var VERSAO = "2";
   var MODEL_VIEWER = "vendor/model-viewer.min.js";
   var MEDIDAS = {
     A4: "21 × 29,7 cm",
@@ -88,7 +92,7 @@
   }
 
   function arquivo(pid, tam, ext) {
-    return BASE + pid + "-" + tam + "." + ext;
+    return BASE + pid + "-" + tam + "." + ext + "?v=" + VERSAO;
   }
 
   /* --- degrau 1: iOS ----------------------------------------------------- */

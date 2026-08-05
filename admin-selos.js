@@ -673,6 +673,8 @@
     b.style.zIndex = "100003";
     /* Nao existe mais "marcar como vendido": o selo vinculado ja aceita o registro do
        comprador. A protecao e poder desfazer, nao um passo a mais no meio da feira. */
+    /* So aparece em selo que ja tem nome de dono. "Liberar reivindicacao" nao dizia nada
+       pra quem usa; o botao agora diz o que faz. */
     var podeLiberar = s.status === "reivindicado" || s.status === "vendido";
     var podeBloquear = s.status !== "bloqueado";
     var podeSoltar = s.status === "bloqueado";
@@ -686,7 +688,12 @@
         (s.pedido_ref ? '<p style="font-family:var(--clother);font-size:.8rem;opacity:.7;margin:0 0 10px;">pedido ' + esc(s.pedido_ref) + "</p>" : "") +
 
         '<div style="display:flex;flex-direction:column;gap:8px;">' +
-          (podeLiberar ? '<button type="button" class="btn ghost" data-ac="liberar">Liberar reivindicação</button>' : "") +
+          (podeLiberar
+            ? '<p style="font-family:var(--clother);font-size:.74rem;opacity:.6;margin:2px 2px 6px;line-height:1.45;">' +
+              "Tira o nome do certificado e deixa a peça livre pra outra pessoa registrar. " +
+              "Serve pra presente, nome digitado errado ou registro indevido.</p>" +
+              '<button type="button" class="btn ghost" data-ac="liberar">Apagar o registro do dono</button>'
+            : "") +
           (podeBloquear ? '<button type="button" class="btn ghost" data-ac="bloqueado" style="color:' + LARANJA + ';">Bloquear</button>' : "") +
           (podeSoltar ? '<button type="button" class="btn ghost" data-ac="ativo">Desbloquear</button>' : "") +
           '<a class="btn ghost" href="' + SITE + "/a/" + esc(s.codigo) + '" target="_blank" rel="noopener" ' +
@@ -710,7 +717,7 @@
               body: JSON.stringify({ codigo: s.codigo, status: ac })
             });
         p.then(function () {
-          toast(ac === "liberar" ? "reivindicação apagada, selo voltou pra ativo" : "selo agora está " + estInfo(ac).lbl.toLowerCase());
+          toast(ac === "liberar" ? "nome apagado, a peça voltou a ficar livre" : "selo agora está " + estInfo(ac).lbl.toLowerCase());
           fecha();
           recarrega();
         }).catch(function (er) { toast(String(er.message || er)); btn.disabled = false; });

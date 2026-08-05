@@ -142,6 +142,11 @@
       transition:opacity .26s ease;-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);
       overflow-y:auto}
     .mrt-reg-back.on{opacity:1}
+    /* O atributo hidden vira display:none pela folha do navegador — e a regra acima, com
+       display:flex, ganha dela. Sem esta linha o diálogo fica invisível mas cobrindo a tela
+       inteira, comendo todo clique e todo mousemove da página: o cartão parava de se mexer,
+       o selo não abria e os botões não respondiam. */
+    .mrt-reg-back[hidden]{display:none}
     .mrt-reg-back .mrt-form{margin:auto;transform:translateY(14px) scale(.98);
       transition:transform .3s cubic-bezier(.2,.8,.25,1);position:relative}
     .mrt-reg-back.on .mrt-form{transform:none}
@@ -376,7 +381,7 @@ window.__mrtModais = window.__mrtModais || (function(){
   /* o convite ocupa o lugar do formulário no corpo */
   var convite=document.createElement('div');
   convite.className='mrt-convite';
-  convite.innerHTML='<p>Esta peça é sua? Registre seu nome no certificado.</p>'+
+  convite.innerHTML='<p>Esse Maratu é seu? Registre ele em seu nome!</p>'+
     '<a class="mrt-opiniao" href="#" role="button">Registrar a posse</a>';
   form.parentNode.insertBefore(convite,form);
   back.appendChild(form);

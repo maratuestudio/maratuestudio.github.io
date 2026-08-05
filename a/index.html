@@ -122,28 +122,25 @@
     .mrt-verif{margin:0;font-size:15px;font-weight:500;color:#14523B;line-height:1.25}
     .mrt-verif-sub{margin:2px 0 0;font-size:11.5px;color:#3E6E5B}
     .mrt-dono{margin:4px 0 0;font-size:12.5px;color:#14523B}
-    /* Fora do cartão, soltos no laranja: são convite, não parte do documento. As pílulas
-       têm a mesma assinatura do site (.clink-pill, .servicos-band__cta): borda preta de
-       1.5px e sombra dura de 3px que encolhe no toque. Vidro fosco não existe em lugar
-       nenhum do MARATU e ainda reprovava no contraste sobre o laranja. */
-    .mrt-acoes{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;
-      width:344px;max-width:100%}
-    .mrt-opiniao,.mrt-site{display:inline-flex;align-items:center;justify-content:center;
-      padding:13px 20px;border-radius:999px;text-decoration:none;
-      border:1.5px solid #0D0D0B;box-shadow:3px 3px 0 0 #0D0D0B;
-      font-size:13.5px;font-weight:700;line-height:1.25;text-align:center;
-      transition:transform .15s ease,box-shadow .15s ease}
-    .mrt-opiniao{flex:1 1 100%;background:var(--areia-orla);color:#0D0D0B}
-    .mrt-site{flex:1 1 100%;background:#0D0D0B;color:#FFFCF6}
-    .mrt-opiniao:hover,.mrt-site:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 0 #0D0D0B}
-    .mrt-opiniao:active,.mrt-site:active{transform:translate(2px,2px);box-shadow:1px 1px 0 0 #0D0D0B}
-    .mrt-opiniao:focus-visible,.mrt-site:focus-visible{outline:2px solid #FFFCF6;outline-offset:3px}
-    /* lado a lado quando cabe; empilhados no celular estreito */
-    @media (min-width:420px){
-      .mrt-acoes{width:auto;max-width:100%}
-      .mrt-opiniao{flex:0 1 auto}
-      .mrt-site{flex:0 0 auto}
-    }
+    /* ══ AÇÕES ══ segundo bloco de papel, não pílulas soltas no laranja. Mesma largura,
+       mesmo canto de 14px, mesmo papel pontilhado e a mesma sombra difusa do cartão: as
+       duas peças passam a ser o mesmo material, em vez de dois mundos empilhados (o
+       documento macio e a pílula de borda dura). O convite é o texto; o botão é botão. */
+    .mrt-acoes{width:344px;max-width:100%;background:var(--areia-orla);border-radius:14px;
+      padding:20px 24px 20px;
+      background-image:radial-gradient(rgba(28,26,24,.055) .6px,transparent .7px),radial-gradient(rgba(28,26,24,.04) .6px,transparent .7px);
+      background-size:4px 4px,7px 7px;
+      box-shadow:0 18px 46px rgba(46,12,0,.40),0 7.5px 14px rgba(46,12,0,.22),0 2px 0 rgba(255,255,255,.55) inset}
+    .mrt-acoes-txt{margin:0 0 15px;font-size:14.5px;line-height:1.5;color:var(--tinta-papel)}
+    /* mesmo botão do "Enviar confirmação", pra dentro da página não ter dois tipos de botão */
+    .mrt-opiniao{display:flex;align-items:center;justify-content:center;width:100%;
+      padding:13px 18px;border-radius:10px;background:#0D0D0B;color:#FFFCF6;
+      font-size:14.5px;font-weight:700;line-height:1.2;text-decoration:none}
+    .mrt-opiniao:active{transform:translateY(1px)}
+    .mrt-site{display:block;margin:13px 0 0;text-align:center;font-size:13px;font-weight:700;
+      color:var(--tinta-papel);text-decoration:underline;text-underline-offset:3px}
+    .mrt-site:hover{color:var(--laranja)}
+    .mrt-opiniao:focus-visible,.mrt-site:focus-visible{outline:2px solid var(--tinta-papel);outline-offset:3px}
 
     /* ══ AVISOS ══ selo sem peça, selo bloqueado, código que não existe. Cara da marca,
        não cara de erro. */
@@ -163,8 +160,10 @@
     .sr-so{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 
     /* ══ REIVINDICAÇÃO ══ só aparece no estado vendido */
+    /* Mesma sombra e mesmo canto do cartão e do bloco de ações: as três peças ficam no
+       mesmo plano. O papel é mais claro de propósito — é a superfície onde se escreve. */
     .mrt-form,.mrt-recado{width:344px;max-width:100%;background:#FFFCF6;border-radius:14px;
-      padding:22px 24px;box-shadow:0 10px 26px rgba(60,20,0,.22)}
+      padding:22px 24px;box-shadow:0 18px 46px rgba(46,12,0,.40),0 7.5px 14px rgba(46,12,0,.22),0 2px 0 rgba(255,255,255,.55) inset}
     .mrt-form-tit,.mrt-recado-tit{margin:0;font-size:17px;font-weight:700;color:var(--tinta-papel)}
     .mrt-form-sub,.mrt-recado-txt{margin:8px 0 0;font-size:13px;line-height:1.6;color:var(--tinta-fraca)}
     .mrt-campo{display:block;margin:16px 0 0}

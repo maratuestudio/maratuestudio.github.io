@@ -122,18 +122,28 @@
     .mrt-verif{margin:0;font-size:15px;font-weight:500;color:#14523B;line-height:1.25}
     .mrt-verif-sub{margin:2px 0 0;font-size:11.5px;color:#3E6E5B}
     .mrt-dono{margin:4px 0 0;font-size:12.5px;color:#14523B}
-    /* Fora do cartão, solto no laranja: é convite, não parte do documento. A pílula é a
-       mesma assinatura do site (.clink-pill, .servicos-band__cta): areia, borda preta de
+    /* Fora do cartão, soltos no laranja: são convite, não parte do documento. As pílulas
+       têm a mesma assinatura do site (.clink-pill, .servicos-band__cta): borda preta de
        1.5px e sombra dura de 3px que encolhe no toque. Vidro fosco não existe em lugar
        nenhum do MARATU e ainda reprovava no contraste sobre o laranja. */
-    .mrt-opiniao{display:inline-flex;align-items:center;justify-content:center;
-      padding:13px 22px;border-radius:999px;text-decoration:none;
-      background:var(--areia-orla);border:1.5px solid #0D0D0B;box-shadow:3px 3px 0 0 #0D0D0B;
-      color:#0D0D0B;font-size:13.5px;font-weight:700;line-height:1.2;text-align:center;
+    .mrt-acoes{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;
+      width:344px;max-width:100%}
+    .mrt-opiniao,.mrt-site{display:inline-flex;align-items:center;justify-content:center;
+      padding:13px 20px;border-radius:999px;text-decoration:none;
+      border:1.5px solid #0D0D0B;box-shadow:3px 3px 0 0 #0D0D0B;
+      font-size:13.5px;font-weight:700;line-height:1.25;text-align:center;
       transition:transform .15s ease,box-shadow .15s ease}
-    .mrt-opiniao:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 0 #0D0D0B}
-    .mrt-opiniao:active{transform:translate(2px,2px);box-shadow:1px 1px 0 0 #0D0D0B}
-    .mrt-opiniao:focus-visible{outline:2px solid #FFFCF6;outline-offset:3px}
+    .mrt-opiniao{flex:1 1 100%;background:var(--areia-orla);color:#0D0D0B}
+    .mrt-site{flex:1 1 100%;background:#0D0D0B;color:#FFFCF6}
+    .mrt-opiniao:hover,.mrt-site:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 0 #0D0D0B}
+    .mrt-opiniao:active,.mrt-site:active{transform:translate(2px,2px);box-shadow:1px 1px 0 0 #0D0D0B}
+    .mrt-opiniao:focus-visible,.mrt-site:focus-visible{outline:2px solid #FFFCF6;outline-offset:3px}
+    /* lado a lado quando cabe; empilhados no celular estreito */
+    @media (min-width:420px){
+      .mrt-acoes{width:auto;max-width:100%}
+      .mrt-opiniao{flex:0 1 auto}
+      .mrt-site{flex:0 0 auto}
+    }
 
     /* ══ AVISOS ══ selo sem peça, selo bloqueado, código que não existe. Cara da marca,
        não cara de erro. */
@@ -212,6 +222,7 @@
     if(!ev.target||!ev.target.closest)return;
     if(ev.target.closest('a[href*="wa.me"]'))gtag('event','selo_ajuda',{estado:estado});
     if(ev.target.closest('.mrt-opiniao'))gtag('event','selo_opiniao',{estado:estado});
+    if(ev.target.closest('.mrt-site'))gtag('event','selo_site',{estado:estado});
   },true);
 })();
 </script>

@@ -45,8 +45,9 @@
      de tolerancia. */
   var QR_FOLGA = 2;
   var ARATU_PCT = 0.28;       // fracao da largura do QR
+  /* 12 mm saiu: o ladrilho caía pra 0,36 mm, abaixo do piso de 0,4 que a câmera aguenta
+     em papel comum. Lia no teste, mas seria o primeiro a falhar com luz ruim. */
   var TAMANHOS = [
-    { k: "12", lbl: "12 mm", qr: 12 },
     { k: "15", lbl: "15 mm", qr: 15 },
     { k: "20", lbl: "20 mm", qr: 20 }
   ];
@@ -84,7 +85,7 @@
   function hojeISO() { var d = new Date(); return d.getFullYear() + "-" + pad2(d.getMonth() + 1) + "-" + pad2(d.getDate()); }
   function fmtBR(iso) { var p = String(iso || "").split("-"); return p.length === 3 ? p[2] + "/" + p[1] + "/" + p[0] : ""; }
   function estInfo(k) { for (var i = 0; i < ESTADOS.length; i++) if (ESTADOS[i].k === k) return ESTADOS[i]; return ESTADOS[0]; }
-  function tamInfo(k) { for (var i = 0; i < TAMANHOS.length; i++) if (TAMANHOS[i].k === k) return TAMANHOS[i]; return TAMANHOS[1]; }
+  function tamInfo(k) { for (var i = 0; i < TAMANHOS.length; i++) if (TAMANHOS[i].k === k) return TAMANHOS[i]; return TAMANHOS[0]; }
   /* Mesmo alfabeto do Worker: sem 0, O, 1, I, L, U. Aqui so pra limpar o que foi digitado. */
   function normaliza(s) { return String(s || "").toUpperCase().replace(/[^0-9A-Z]/g, "").slice(0, 10); }
   /* Aceita a URL inteira lida do QR ou so o codigo. */

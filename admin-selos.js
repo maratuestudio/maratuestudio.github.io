@@ -143,8 +143,12 @@
   function libLeitor() { return carregaScript("/vendor/jsQR.min.js?v=1").then(function () { return window.jsQR; }); }
 
   /* ---------- API ---------- */
-  function carregaProdutos() {
-    if (produtos.length) return Promise.resolve(produtos);
+  /* A lista sai da tabela de produtos da loja, entao produto novo cadastrado no catalogo ja
+     aparece aqui sozinho. O cache e so pra nao repetir a chamada dentro da mesma tela; ao
+     abrir o modal ele e jogado fora, senao um produto cadastrado com o admin aberto so
+     apareceria depois de recarregar a pagina. */
+  function carregaProdutos(forcar) {
+    if (produtos.length && !forcar) return Promise.resolve(produtos);
     return pedeJson(API + "/api/selos/produtos").then(function (d) { produtos = d.produtos || []; return produtos; });
   }
   function carregaSelos(filtros) {
@@ -227,6 +231,7 @@
   function abrir() {
     montaModal();
     back.classList.add("on");
+    produtos = [];            // pega o catalogo de novo: pode ter produto cadastrado agora
     vaiPara("lote");
   }
   function fechar() {
@@ -259,7 +264,7 @@
 
       '<div class="form-section-title" style="margin-top:26px;">Peça já vendida (retroativo)</div>' +
       '<p style="font-family:var(--clother);font-size:.78rem;opacity:.62;margin:0 2px 12px;line-height:1.5;">' +
-        "Peça que saiu antes do sistema existir. Nasce vinculada e já vendida, pra reivindicação abrir. " +
+        "Peça que saiu antes do sistema existir. Nasce vinculada e pronta pra quem comprou registrar. " +
         "Sem adesivo: o link vai por email. Campo que você não souber fica vazio — data chutada, nunca.</p>" +
       '<label class="f"><span>Produto</span><select id="slRetProd"></select></label>' +
       '<div style="display:flex;gap:8px;flex-wrap:wrap;">' +
@@ -666,7 +671,8 @@
     var b = document.createElement("div");
     b.className = "modal-back on";
     b.style.zIndex = "100003";
-    var podeVender = s.status === "ativo";
+    /* Nao existe mais "marcar como vendido": o selo vinculado ja aceita o registro do
+       comprador. A protecao e poder desfazer, nao um passo a mais no meio da feira. */
     var podeLiberar = s.status === "reivindicado" || s.status === "vendido";
     var podeBloquear = s.status !== "bloqueado";
     var podeSoltar = s.status === "bloqueado";
@@ -678,9 +684,8 @@
           '<span style="font-family:var(--clother);font-size:.85rem;">' + esc(s.produto_nome || "sem peça vinculada") + "</span></div>" +
         (s.dono_nome && s.confirmado_em ? '<p style="font-family:var(--clother);font-size:.8rem;opacity:.7;margin:0 0 10px;">registrada por ' + esc(s.dono_nome) + "</p>" : "") +
         (s.pedido_ref ? '<p style="font-family:var(--clother);font-size:.8rem;opacity:.7;margin:0 0 10px;">pedido ' + esc(s.pedido_ref) + "</p>" : "") +
-        (podeVender ? '<label class="f"><span>Referência do pedido (opcional)</span><input id="slPedido" placeholder="ex: WA 12/07"></label>' : "") +
+
         '<div style="display:flex;flex-direction:column;gap:8px;">' +
-          (podeVender ? '<button type="button" class="btn" data-ac="vendido">Marcar como vendido</button>' : "") +
           (podeLiberar ? '<button type="button" class="btn ghost" data-ac="liberar">Liberar reivindicação</button>' : "") +
           (podeBloquear ? '<button type="button" class="btn ghost" data-ac="bloqueado" style="color:' + LARANJA + ';">Bloquear</button>' : "") +
           (podeSoltar ? '<button type="button" class="btn ghost" data-ac="ativo">Desbloquear</button>' : "") +
@@ -696,14 +701,13 @@
       btn.onclick = function () {
         var ac = btn.getAttribute("data-ac");
         btn.disabled = true;
-        var pedido = b.querySelector("#slPedido");
         var p = ac === "liberar"
           ? pedeJson(API + "/api/selos/liberar", {
               method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ codigo: s.codigo })
             })
           : pedeJson(API + "/api/selos/status", {
               method: "POST", headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ codigo: s.codigo, status: ac, pedido_ref: (pedido && pedido.value) || null })
+              body: JSON.stringify({ codigo: s.codigo, status: ac })
             });
         p.then(function () {
           toast(ac === "liberar" ? "reivindicação apagada, selo voltou pra ativo" : "selo agora está " + estInfo(ac).lbl.toLowerCase());

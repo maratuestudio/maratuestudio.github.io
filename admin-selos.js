@@ -13,6 +13,9 @@
 
   var API = "https://maratu-api.raphaelnascimento.workers.dev";
   var SITE = "https://maratu.com.br";
+  /* O QR carrega a URL sem o esquema, pra ficar menor. Links pra abrir e copiar seguem
+     com https, que ali o tamanho não importa. */
+  function URL_QR(codigo) { return "maratu.com.br/a/" + codigo; }
   var PRETO = "#0D0D0B", AREIA = "#F0ECE4", LARANJA = "#C8501A";
   var ESTADOS = [
     { k: "branco",       lbl: "Branco",     cor: "#8A8577" },
@@ -21,16 +24,50 @@
     { k: "reivindicado", lbl: "Registrado", cor: "#3E7D4F" },
     { k: "bloqueado",    lbl: "Bloqueado",  cor: "#0D0D0B" }
   ];
-  /* Tamanhos de adesivo. A celula guarda o QR mais a linha do codigo, e a largura sai de
-     dividir a area util do A4 (210 - 2x8mm de margem = 194mm) pelo numero de colunas, pra
-     folha na tela sair igual a folha no papel. Altura escolhida pra fechar 280mm de linhas. */
-  var UTIL_MM = 194;
+  /* ---------- receita do adesivo ----------
+     O adesivo vai colado na peca, entao ele e o menor possivel sem perder leitura.
+     Tres decisoes medidas antes de virar padrao (pagina de teste de 2026-08-05):
+
+     1. A URL vai SEM o "https://". A Cloudflare forca HTTPS no dominio (confirmado: um GET
+        em http:// devolve 301), e sem o esquema o QR cai de 29 pra 25 modulos. Aqui a
+        correcao Q come essa folga de volta, mas a URL curta segue valendo.
+     2. Correcao Q, nao M. Q aguenta o Aratu ocupando ate 30% da largura; M so ate 22%.
+        Medido rasterizando e decodificando cada combinacao.
+     3. Aratu em 28% da largura, com janela limpa atras: os modulos que ele cobre nao sao
+        desenhados, senao fica sujeira sob as patas.
+
+     Testado no iPhone com adesivo de 15 mm: le e abre a pagina. */
+  var UTIL_MM = 194;          // A4 de 210 mm menos 2 x 8 mm de margem
+  var QR_ECC = "Q";
+  /* Zona de silencio de 2 modulos. O padrao pede 4, mas aqui a celula e o proprio adesivo:
+     a folga branca E a margem que a tesoura tem pra errar. Com 1 modulo qualquer desvio ja
+     comia modulo vivo; com 2 o modulo cai so de 0,48 pra 0,45 mm e o corte ganha o dobro
+     de tolerancia. */
+  var QR_FOLGA = 2;
+  var ARATU_PCT = 0.28;       // fracao da largura do QR
   var TAMANHOS = [
-    { k: "30", lbl: "30 mm", qr: 30, cols: 5, alt: 46.8 },
-    { k: "40", lbl: "40 mm", qr: 40, cols: 4, alt: 56 },
-    { k: "50", lbl: "50 mm", qr: 50, cols: 3, alt: 70 }
+    { k: "12", lbl: "12 mm", qr: 12 },
+    { k: "15", lbl: "15 mm", qr: 15 },
+    { k: "20", lbl: "20 mm", qr: 20 }
   ];
-  TAMANHOS.forEach(function (t) { t.cel = UTIL_MM / t.cols; });
+  /* Celula colada na vizinha: largura = o proprio adesivo, altura = adesivo + a linha do
+     codigo. Nada de folga branca em volta — o corte e reto e continuo. */
+  TAMANHOS.forEach(function (t) {
+    t.cel = t.qr;
+    t.txt = Math.max(1.6, t.qr / 9);
+    t.alt = t.qr + t.txt * 1.5;
+    t.cols = Math.floor(UTIL_MM / t.cel);
+  });
+
+  /* O Aratu do Asset 7.svg — o mesmo bicho do rodape do site. */
+  var ARATU_VB = { w: 221.06, h: 106.21 };
+  var ARATU_D = [
+    "M0,72.78c0,18.46,14.97,33.43,33.43,33.43V39.35C14.97,39.35,0,54.31,0,72.78Z",
+    "M187.62,39.35v66.86c18.46,0,33.43-14.97,33.43-33.43s-14.97-33.43-33.43-33.43Z",
+    "M110.53,106.21c36.93,0,66.86-29.94,66.86-66.86H43.66c0,36.93,29.94,66.86,66.86,66.86Z",
+    "M156.17,16.73c0-9.24-7.49-16.73-16.73-16.73v33.45c9.24,0,16.73-7.49,16.73-16.73Z",
+    "M81.61,33.45V0c-9.24,0-16.73,7.49-16.73,16.73s7.49,16.73,16.73,16.73Z"
+  ];
 
   var back = null, aba = "lote";
   var selos = [], produtos = [], alertas = [];
@@ -213,7 +250,7 @@
           '<input id="slQtd" type="number" min="1" max="500" value="30" inputmode="numeric"></label>' +
         '<label class="f" style="flex:0 0 130px;margin:0;"><span>Adesivo</span>' +
           '<select id="slTam">' + TAMANHOS.map(function (t) {
-            return '<option value="' + t.k + '"' + (t.k === "40" ? " selected" : "") + ">" + t.lbl + "</option>";
+            return '<option value="' + t.k + '"' + (t.k === "15" ? " selected" : "") + ">" + t.lbl + "</option>";
           }).join("") + "</select></label>" +
         '<button type="button" class="btn" id="slGerar" style="flex:1;min-width:150px;">Gerar e montar folha</button>' +
       "</div>" +
@@ -286,19 +323,51 @@
     };
   }
 
+  /* ---------- o QR do adesivo ---------- */
+  /* Desenhado modulo a modulo em vez de usar o createSvgTag da lib, porque precisa da
+     janela limpa no meio pro Aratu. Ver a receita la em cima. */
+  function qrDoSelo(qrcode, codigo) {
+    var qr = qrcode(0, QR_ECC);
+    qr.addData(URL_QR(codigo));
+    qr.make();
+    var n = qr.getModuleCount();
+    var total = n + QR_FOLGA * 2;
+
+    var aW = n * ARATU_PCT;
+    var aH = aW * (ARATU_VB.h / ARATU_VB.w);
+    var aX = QR_FOLGA + (n - aW) / 2;
+    var aY = QR_FOLGA + (n - aH) / 2;
+    var folga = 0.6;                        // meio modulo de respiro em volta do bicho
+    var jX = aX - folga, jY = aY - folga, jW = aW + folga * 2, jH = aH + folga * 2;
+
+    var d = "";
+    for (var r = 0; r < n; r++) {
+      for (var c = 0; c < n; c++) {
+        if (!qr.isDark(r, c)) continue;
+        var x = QR_FOLGA + c, y = QR_FOLGA + r;
+        if (x + 1 > jX && x < jX + jW && y + 1 > jY && y < jY + jH) continue;
+        d += "M" + x + " " + y + "h1v1h-1z";
+      }
+    }
+    var escala = aW / ARATU_VB.w;
+    var bicho = '<g fill="#000" transform="translate(' + aX.toFixed(3) + " " + aY.toFixed(3) +
+      ") scale(" + escala.toFixed(5) + ')">' +
+      ARATU_D.map(function (p) { return '<path d="' + p + '"/>'; }).join("") + "</g>";
+
+    // o xmlns nao e opcional: sem ele o SVG nao vira imagem quando alguem exporta ou testa
+    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + total + " " + total +
+      '" shape-rendering="crispEdges">' +
+      '<rect width="' + total + '" height="' + total + '" fill="#fff"/>' +
+      '<path fill="#000" d="' + d + '"/>' + bicho + "</svg>";
+  }
+
   /* ---------- folha A4 pra impressao ---------- */
-  /* Montada aqui no navegador, em SVG (vetor nao serrilha na impressora). Correcao de erro
-     nivel M: aguenta adesivo riscado sem virar QR gigante. */
+  /* Montada aqui no navegador, em SVG (vetor nao serrilha na impressora). */
   function montaFolha(codigos, tam) {
     return libGerador().then(function (qrcode) {
       var cels = codigos.map(function (c) {
-        var qr = qrcode(0, "M");
-        qr.addData(SITE + "/a/" + c);
-        qr.make();
-        // margin 8 = 4 modulos de zona de silencio dentro do proprio SVG. Sem ela o texto do
-        // codigo encosta no QR e o leitor erra; com ela o quadrado de 40 mm ja vem completo.
-        var svg = qr.createSvgTag({ cellSize: 2, margin: 8, scalable: true });
-        return '<div class="sf-cel"><div class="sf-qr">' + svg + "</div><div class=\"sf-cod\">" + esc(c) + "</div></div>";
+        return '<div class="sf-cel"><div class="sf-qr" aria-hidden="true">' + qrDoSelo(qrcode, c) +
+          "</div><div class=\"sf-cod\">" + esc(c) + "</div></div>";
       }).join("");
 
       var folha = $id("seloFolha");
@@ -322,21 +391,27 @@
         "#seloFolha .sf-barra{position:sticky;top:0;z-index:2;display:flex;gap:10px;align-items:center;" +
           "padding:12px 16px;background:" + AREIA + ";border-bottom:1.5px solid rgba(13,13,11,.15);}" +
         "#seloFolha .sf-tit{font-family:var(--clother);font-size:13px;font-weight:700;flex:1;}" +
+        /* Colados um no outro: a largura da grade e um multiplo exato da celula, senao o
+           flex distribui sobra e abre corredor branco no meio da folha. */
         "#seloFolha .sf-grade{display:flex;flex-wrap:wrap;align-content:flex-start;gap:0;" +
-          "width:" + UTIL_MM + "mm;max-width:100%;margin:8mm auto;}" +
-        "#seloFolha .sf-cel{width:" + tam.cel.toFixed(2) + "mm;height:" + tam.alt + "mm;display:flex;flex-direction:column;" +
-          "align-items:center;justify-content:center;gap:1.5mm;break-inside:avoid;page-break-inside:avoid;" +
-          /* marca de corte discreta: tracejado claro pra guiar a tesoura, sem sangria */
-          "outline:.2mm dashed #c9c9c9;outline-offset:-.1mm;}" +
+          "width:" + (tam.cel * tam.cols).toFixed(2) + "mm;max-width:100%;margin:6mm auto;}" +
+        "#seloFolha .sf-cel{width:" + tam.cel.toFixed(2) + "mm;height:" + tam.alt.toFixed(2) + "mm;" +
+          "display:flex;flex-direction:column;align-items:center;justify-content:flex-start;" +
+          "break-inside:avoid;page-break-inside:avoid;" +
+          /* Fio de corte em outline, nao em box-shadow: sombra o navegador trata como
+             grafico de fundo e nao imprime sem a pessoa marcar a caixinha no dialogo.
+             Outline sai sempre, nao ocupa espaco no layout, e as bordas vizinhas se
+             encostam formando uma grade continua. */
+          "outline:.1mm solid #d0d0d0;outline-offset:-.05mm;}" +
         "#seloFolha .sf-qr{width:" + tam.qr + "mm;height:" + tam.qr + "mm;}" +
         "#seloFolha .sf-qr svg{width:100%;height:100%;display:block;}" +
         "#seloFolha .sf-cod{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;" +
-          "font-size:" + (tam.qr / 10).toFixed(1) + "mm;letter-spacing:.05em;color:#000;}" +
+          "font-size:" + tam.txt.toFixed(2) + "mm;line-height:1.15;letter-spacing:.03em;color:#000;}" +
         "@media print{@page{size:A4;margin:8mm;}" +
           "body.selo-imprimindo>*:not(#seloFolha){display:none !important;}" +
           "#seloFolha{position:static;overflow:visible;padding:0;}" +
           "#seloFolha .sf-barra{display:none;}" +
-          "#seloFolha .sf-grade{margin:0;}}";
+          "#seloFolha .sf-grade{margin:0 auto;}}";
 
       $id("sfImprimir").onclick = function () { window.print(); };
       $id("sfFechar").onclick = function () {

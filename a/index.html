@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Certificado · MARATU</title>
+  <meta name="description" content="Certificado de autenticidade de uma peça do estúdio MARATU, feita em Aracaju.">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#C8501A">
+  <link rel="icon" type="image/png" href="/favicon-v6.png">
+  <link rel="apple-touch-icon" href="/apple-touch-icon-v6.png">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Certificado · MARATU">
+  <meta property="og:description" content="Certificado de autenticidade de uma peça do estúdio MARATU, feita em Aracaju.">
+  <meta property="og:image" content="https://maratu.com.br/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Certificado · MARATU">
+  <meta name="twitter:description" content="Certificado de autenticidade de uma peça do estúdio MARATU, feita em Aracaju.">
+  <meta name="twitter:image" content="https://maratu.com.br/og-image.png">
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-HCJ291HL72"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-HCJ291HL72');
+  </script>
+  <link rel="preconnect" href="https://maratu.com.br">
+  <style>
+    @font-face { font-family: 'Clother'; src: url('/TRYClother-Regular.woff2') format('woff2'), url('/TRYClother-Regular.ttf') format('truetype'); font-weight: 400; font-style: normal; font-display: swap; }
+    @font-face { font-family: 'Clother'; src: url('/TRYClother-Bold.woff2') format('woff2'), url('/TRYClother-Bold.ttf') format('truetype'); font-weight: 700; font-display: swap; }
+    @font-face { font-family: 'Clother'; src: url('/TRYClother-Black.woff2') format('woff2'), url('/TRYClother-Black.ttf') format('truetype'); font-weight: 900; font-display: swap; }
+
+    /* O código é pra ser copiado à mão do adesivo pra tela. Mono de sistema, sem baixar
+       fonte nova: no site --mono é alias de Clother (Space Mono foi descontinuada, ver
+       design.md), e Clother não alinha dígito com letra. */
+    :root{
+      --clother:'Clother',-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;
+      --mono-cod:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+      /* Laranja do site. O cartão, porém, tem palete própria: é papel impresso, não tela.
+         Areia Orla e a tinta #1C1A18 vêm do certificado que o Rapha aprovou — mais quentes
+         e mais claras que --areia (#F0ECE4) e --preto (#0D0D0B) de propósito, pra dar cara
+         de papel. Não são os tokens do site com erro de digitação. */
+      --laranja:#C8501A;
+      --areia-orla:#F0EBE2;
+      --tinta-papel:#1C1A18;
+      --tinta-fraca:#6E6152;
+      --verde:#1D6E4F;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:var(--clother);-webkit-font-smoothing:antialiased}
+
+    /* ══ CARTÃO DO CERTIFICADO ══ o Worker injeta a marcação no lugar do marcador de corpo,
+       lá embaixo. Vive aqui pro design ficar no repo, como no diário.
+       Cuidado: não escrever o marcador por extenso em comentário, senão a troca pega ele. */
+    .mrt-page{background:var(--laranja);min-height:100vh;min-height:100dvh;display:flex;
+      flex-direction:column;align-items:center;justify-content:center;gap:18px;
+      padding:44px 24px;perspective:1100px}
+    .mrt-card{width:344px;max-width:100%;background:var(--areia-orla);border-radius:14px;
+      padding:22px 26px 0;position:relative;
+      background-image:radial-gradient(rgba(28,26,24,.055) .6px,transparent .7px),radial-gradient(rgba(28,26,24,.04) .6px,transparent .7px);
+      background-size:4px 4px,7px 7px;
+      box-shadow:0 18px 40px rgba(60,20,0,.3),0 2px 0 rgba(255,255,255,.55) inset;
+      transition:transform .16s ease-out}
+    .mrt-seal{width:96px;height:96px;position:absolute;top:20px;right:24px;display:block;
+      transform:rotate(-6deg);filter:drop-shadow(0 3px 5px rgba(28,26,24,.3))}
+    .mrt-seal-txt{font-family:var(--clother);font-size:13px;font-weight:700;letter-spacing:.02em}
+    .mrt-logo{width:150px;height:29px;display:block;margin-top:16px}
+    .mrt-titulo{margin-top:22px}
+    .mrt-nome{margin:0;font-size:24px;font-weight:500;color:var(--tinta-papel);line-height:1.15}
+    .mrt-sub{margin:6px 0 0;font-size:13px;color:var(--tinta-fraca)}
+    .mrt-rule{height:1px;background:rgba(28,26,24,.14);margin:16px 0 14px}
+    .mrt-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px 16px}
+    .mrt-full{grid-column:1/-1}
+    .mrt-label{margin:0;font-size:10px;letter-spacing:.13em;color:#8A7B66;text-transform:uppercase}
+    .mrt-valor{margin:3px 0 0;font-size:13.5px;color:var(--tinta-papel);line-height:1.45}
+    .mrt-codigo{margin:3px 0 0;font-size:14.5px;font-family:var(--mono-cod);color:var(--tinta-papel);letter-spacing:.04em}
+    .mrt-rodape{margin:18px -26px 0;padding:14px 26px;background:rgba(29,110,79,.09);
+      border-top:1px solid rgba(29,110,79,.22);border-radius:0 0 14px 14px;
+      display:flex;align-items:center;gap:11px}
+    .mrt-check{width:26px;height:26px;flex:none}
+    .mrt-verif{margin:0;font-size:15px;font-weight:500;color:#14523B;line-height:1.25}
+    .mrt-verif-sub{margin:2px 0 0;font-size:11.5px;color:#3E6E5B}
+    .mrt-dono{margin:4px 0 0;font-size:12.5px;color:#14523B}
+
+    /* ══ AVISOS ══ selo sem peça, selo bloqueado, código que não existe. Cara da marca,
+       não cara de erro. */
+    .mrt-card--aviso{padding:24px 26px 26px;text-align:left}
+    .mrt-aviso-tit{margin:20px 0 0;font-size:20px;font-weight:700;color:var(--tinta-papel);line-height:1.2}
+    .mrt-aviso-txt{margin:10px 0 0;font-size:14px;line-height:1.6;color:var(--tinta-fraca)}
+    .mrt-aviso-link{margin:16px 0 0;font-size:14px}
+    .mrt-aviso-link a{color:var(--laranja);font-weight:700;text-decoration:none}
+    .mrt-aviso-link a:hover{text-decoration:underline}
+
+    /* ══ CÓDIGO DIGITADO À MÃO ══ pra quando o QR não lê */
+    .mrt-busca{margin:18px 0 0;display:flex;gap:8px;flex-wrap:wrap}
+    .mrt-busca input{flex:1 1 160px;min-width:0;padding:11px 13px;border:1.5px solid rgba(28,26,24,.25);
+      border-radius:10px;background:#FFFCF6;font-family:var(--mono-cod);font-size:15px;
+      letter-spacing:.12em;text-transform:uppercase;color:var(--tinta-papel)}
+    .mrt-busca input:focus{outline:2px solid var(--laranja);outline-offset:1px}
+    .sr-so{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+    /* ══ REIVINDICAÇÃO ══ só aparece no estado vendido */
+    .mrt-form,.mrt-recado{width:344px;max-width:100%;background:#FFFCF6;border-radius:14px;
+      padding:22px 24px;box-shadow:0 10px 26px rgba(60,20,0,.22)}
+    .mrt-form-tit,.mrt-recado-tit{margin:0;font-size:17px;font-weight:700;color:var(--tinta-papel)}
+    .mrt-form-sub,.mrt-recado-txt{margin:8px 0 0;font-size:13px;line-height:1.6;color:var(--tinta-fraca)}
+    .mrt-campo{display:block;margin:16px 0 0}
+    .mrt-campo span{display:block;font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:#8A7B66}
+    .mrt-campo input{width:100%;margin-top:5px;padding:11px 13px;border:1.5px solid rgba(28,26,24,.25);
+      border-radius:10px;background:var(--areia-orla);font-family:var(--clother);font-size:16px;color:var(--tinta-papel)}
+    .mrt-campo input:focus{outline:2px solid var(--laranja);outline-offset:1px}
+    .mrt-radios{margin:18px 0 0;padding:0;border:0}
+    .mrt-radios legend{padding:0;font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:#8A7B66}
+    .mrt-radios label{display:flex;gap:9px;align-items:flex-start;margin-top:9px;font-size:13.5px;line-height:1.45;color:var(--tinta-papel)}
+    .mrt-radios input{margin:2px 0 0;accent-color:var(--laranja);flex:none}
+    /* separada e desmarcada: cadastro de garantia e lista de conteúdo são finalidades
+       diferentes sob a LGPD, e uma não autoriza a outra */
+    .mrt-news{display:flex;gap:9px;align-items:flex-start;margin:18px 0 0;padding:13px 14px;
+      background:var(--areia-orla);border-radius:10px;font-size:12.5px;line-height:1.5;color:var(--tinta-fraca)}
+    .mrt-news input{margin:1px 0 0;accent-color:var(--laranja);flex:none}
+    .mrt-btn{margin:18px 0 0;width:100%;padding:13px 18px;border:0;border-radius:10px;
+      background:var(--tinta-papel);color:#FFFCF6;font-family:var(--clother);font-size:15px;font-weight:700;cursor:pointer}
+    .mrt-btn:active{transform:translateY(1px)}
+    .mrt-erro{margin:12px 0 0;padding:10px 12px;border-radius:9px;background:rgba(200,80,26,.12);
+      color:#8A3410;font-size:13px;line-height:1.5}
+    .mrt-recado{border-left:4px solid var(--verde)}
+
+    @media (max-width:380px){
+      .mrt-page{padding:28px 14px}
+      .mrt-card{padding:18px 18px 0}
+      .mrt-rodape{margin:16px -18px 0;padding:13px 18px}
+      .mrt-seal{width:78px;height:78px;top:16px;right:16px}
+      .mrt-nome{font-size:21px}
+      .mrt-grid{gap:12px 12px}
+    }
+    @media (prefers-reduced-motion:reduce){.mrt-card{transition:none}}
+  </style>
+</head>
+<body>
+
+<div class="mrt-page">
+<!--SELO:CORPO-->
+</div>
+
+<script>
+/* GA4 do certificado. Eventos próprios, como o clique_servico é próprio: um selo consultado
+   não é uma encomenda, e jogar isso no clique_encomendar sujaria o funil da loja. Por isso
+   o /js/tracking.js não entra aqui. O estado vem no data-estado que o Worker injeta. */
+(function(){
+  if(typeof gtag!=='function')return;
+  var alvo=document.querySelector('[data-estado]');
+  var estado=alvo?alvo.getAttribute('data-estado'):'desconhecido';
+  gtag('event','selo_visto',{estado:estado});
+
+  var form=document.querySelector('.mrt-form');
+  if(form)form.addEventListener('submit',function(){
+    var news=form.querySelector('[name="newsletter"]');
+    gtag('event','selo_reivindicacao',{estado:estado,newsletter:!!(news&&news.checked)});
+  });
+
+  document.addEventListener('click',function(ev){
+    var a=ev.target&&ev.target.closest?ev.target.closest('a[href*="wa.me"]'):null;
+    if(a)gtag('event','selo_ajuda',{estado:estado});
+  },true);
+})();
+</script>
+
+<script>
+/* O holograma reage à inclinação: deviceorientation no celular, mousemove no desktop.
+   As camadas do selo andam deslocando o gradientTransform; o cartão inclina junto. */
+(function(){
+  var card=document.getElementById('mrt-card');
+  var seal=document.getElementById('mrt-seal');
+  var gRb=document.getElementById('mrtRb');
+  var gSp=document.getElementById('mrtSpec');
+  var rbr=document.getElementById('mrt-rbr');
+  if(!card||!seal||!gRb||!gSp||!rbr)return;
+  var reduz=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function aplicar(rx,ry){
+    rx=Math.max(-12,Math.min(12,rx));
+    ry=Math.max(-14,Math.min(14,ry));
+    var m=Math.min(1,Math.sqrt(rx*rx+ry*ry)/17);
+
+    card.style.transform='rotateX('+rx.toFixed(2)+'deg) rotateY('+ry.toFixed(2)+'deg)';
+
+    gRb.setAttribute('gradientTransform','translate('+(ry*13).toFixed(2)+','+(-rx*13).toFixed(2)+')');
+    gSp.setAttribute('gradientTransform','translate('+(-ry*14).toFixed(2)+','+(rx*14).toFixed(2)+')');
+    rbr.setAttribute('opacity',(.44+m*.3).toFixed(2));
+    seal.style.filter='drop-shadow(0 3px 5px rgba(28,26,24,.3)) saturate('+(1+m*.5).toFixed(2)+') brightness('+(.95+m*.2).toFixed(2)+')';
+  }
+
+  aplicar(0,0);
+  if(reduz)return;
+
+  var palco=document.querySelector('.mrt-page');
+  palco.addEventListener('mousemove',function(e){
+    var r=palco.getBoundingClientRect();
+    aplicar(-((e.clientY-r.top)/r.height-.5)*22,((e.clientX-r.left)/r.width-.5)*26);
+  });
+  palco.addEventListener('mouseleave',function(){aplicar(0,0);});
+
+  function ouvir(){
+    window.addEventListener('deviceorientation',function(ev){
+      if(ev.beta===null)return;
+      aplicar((ev.beta-45)*.3,ev.gamma*.4);
+    });
+  }
+  /* No iPhone o sensor só liga depois de um gesto. Pedimos no primeiro clique da página. */
+  if(window.DeviceOrientationEvent){
+    if(typeof DeviceOrientationEvent.requestPermission==='function'){
+      document.addEventListener('click',function iniciar(){
+        DeviceOrientationEvent.requestPermission().then(function(s){
+          if(s==='granted')ouvir();
+        }).catch(function(){});
+        document.removeEventListener('click',iniciar);
+      });
+    } else {
+      ouvir();
+    }
+  }
+})();
+</script>
+
+</body>
+</html>

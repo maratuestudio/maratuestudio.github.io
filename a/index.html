@@ -70,16 +70,21 @@
       box-shadow:0 26px 54px rgba(50,14,0,.42),0 2px 0 rgba(255,255,255,.55) inset;
       transition:transform .14s ease-out,box-shadow .14s ease-out}
     /* ══ REFLEXO ══ luz varrendo o papel, como metal fosco: faixa larga e macia, não
-       espelho. Anda por transform (composição), não por background-position (repaint):
-       a faixa é maior que o cartão e desliza por dentro dele. */
-    /* z-index -1: a luz é na superfície do papel, o texto é impresso nela. Por cima ela
+       espelho.
+       A camada tem o TAMANHO do cartão e herda o raio, e quem anda é o gradiente dentro
+       dela. A primeira versão era maior que o cartão e deslizava por transform — mais
+       barato, mas `will-change:transform` promove a camada e aí o navegador aplica só o
+       recorte retangular: a faixa escapava pelos cantos arredondados.
+       z-index -1: a luz é na superfície do papel, o texto é impresso nela. Por cima ela
        lavava os rótulos, que já são de baixo contraste. */
-    .mrt-card::after{content:"";position:absolute;inset:-45%;pointer-events:none;z-index:-1;
+    .mrt-card::after{content:"";position:absolute;inset:0;border-radius:inherit;
+      pointer-events:none;z-index:-1;
       background:linear-gradient(112deg,
         transparent 34%, rgba(255,252,246,.32) 44%, rgba(255,255,255,.62) 50%,
         rgba(255,252,246,.30) 56%, transparent 66%);
-      mix-blend-mode:soft-light;
-      transform:translate3d(var(--luz-x,0),var(--luz-y,0),0);will-change:transform}
+      background-size:300% 300%;
+      background-position:calc(50% + var(--luz-x,0px)) calc(50% + var(--luz-y,0px));
+      mix-blend-mode:soft-light}
     .mrt-seal{width:96px;height:96px;position:absolute;top:20px;right:24px;display:block;
       transform:rotate(-6deg);filter:drop-shadow(0 3px 5px rgba(28,26,24,.3));
       cursor:zoom-in;-webkit-tap-highlight-color:transparent}
@@ -462,8 +467,8 @@ window.__mrtModais = window.__mrtModais || (function(){
       '0 2px 0 rgba(255,255,255,.55) inset';
 
     // a faixa de luz corre pro lado oposto ao que o cartão levanta
-    card.style.setProperty('--luz-x',(ry*3.1).toFixed(2)+'%');
-    card.style.setProperty('--luz-y',(-rx*3.1).toFixed(2)+'%');
+    card.style.setProperty('--luz-x',(ry*11).toFixed(1)+'px');
+    card.style.setProperty('--luz-y',(-rx*11).toFixed(1)+'px');
 
     gRb.setAttribute('gradientTransform','translate('+(ry*15).toFixed(2)+','+(-rx*15).toFixed(2)+')');
     gSp.setAttribute('gradientTransform','translate('+(-ry*16).toFixed(2)+','+(rx*16).toFixed(2)+')');
@@ -484,18 +489,47 @@ window.__mrtModais = window.__mrtModais || (function(){
 
   aplicar(0,0);
 
-  var palco=document.querySelector('.mrt-page');
-  palco.addEventListener('mousemove',function(e){
-    var r=palco.getBoundingClientRect();
-    mirar(-((e.clientY-r.top)/r.height-.5)*34,((e.clientX-r.left)/r.width-.5)*40);
+  /* O mousemove escuta no DOCUMENTO, não no palco. Quando o selo abre em tela cheia o
+     palco fica inert e para de receber evento de ponteiro — o holograma congelava justo na
+     hora em que a pessoa quer olhar pra ele de perto. Com o popup de registro aberto aí sim
+     fica parado: ali o cartão está atrás de um modal e não é o assunto. */
+  document.addEventListener('mousemove',function(e){
+    if(window.__mrtModais.tem('registro'))return;
+    var w=window.innerWidth||1, h=window.innerHeight||1;
+    mirar(-((e.clientY/h)-.5)*34,((e.clientX/w)-.5)*40);
   });
-  palco.addEventListener('mouseleave',function(){mirar(0,0);});
+  document.addEventListener('mouseleave',function(){mirar(0,0);});
 
+  /* O deviceorientation entrega beta/gamma no referencial do APARELHO, não no da tela.
+     No iPad deitado, gamma fica perto de ±90 e beta perto de 0 — com a conta antiga os dois
+     eixos saturavam no limite e o cartão ficava pregado, parecendo travado.
+
+     Duas correções: girar o vetor conforme o ângulo da tela, e medir o DELTA a partir de
+     como a pessoa está segurando (a primeira leitura vira o zero), em vez de supor 45°.
+     Assim funciona em pé, deitado, e com a pessoa jogada no sofá. */
+  var base=null, anguloTela=0;
+  function leAnguloTela(){
+    var a=(window.screen&&window.screen.orientation&&window.screen.orientation.angle);
+    if(a==null)a=window.orientation;
+    return ((Number(a)||0)%360+360)%360;
+  }
   function ouvir(){
+    anguloTela=leAnguloTela();
+    function virou(){ anguloTela=leAnguloTela(); base=null; }   // referencial mudou, recalibra
+    window.addEventListener('orientationchange',virou);
+    if(window.screen&&window.screen.orientation&&window.screen.orientation.addEventListener)
+      window.screen.orientation.addEventListener('change',virou);
+
     window.addEventListener('deviceorientation',function(ev){
-      if(ev.beta===null)return;
-      // mais solto que antes: o celular na mão varia pouco e o cartão mal saía do lugar
-      mirar((ev.beta-45)*.55,ev.gamma*.72);
+      if(ev.beta===null||ev.gamma===null)return;
+      if(!base){ base={b:ev.beta,g:ev.gamma}; return; }
+      var db=ev.beta-base.b, dg=ev.gamma-base.g;
+      var x,y;
+      if(anguloTela===90){ x=-dg; y=db; }
+      else if(anguloTela===180){ x=-db; y=-dg; }
+      else if(anguloTela===270){ x=dg; y=-db; }
+      else { x=db; y=dg; }
+      mirar(x*.95,y*.95);
     });
   }
   /* No iPhone o sensor só liga depois de um gesto. Pedimos no primeiro toque da página. */

@@ -158,7 +158,7 @@
   function montarModal() {
     if (modal) return modal;
     modal = document.createElement("div");
-    modal.className = "tam-popup-overlay ar-fundo";
+    modal.className = "tam-popup-overlay";
     modal.id = "ar-overlay";
     modal.innerHTML =
       '<div class="tam-popup ar-popup">' +
@@ -286,7 +286,7 @@
     var disponiveis = molduraDoPoster(pid);
     if (!aviso) {
       aviso = document.createElement("div");
-      aviso.className = "tam-popup-overlay ar-fundo";
+      aviso.className = "tam-popup-overlay";
       aviso.innerHTML =
         '<div class="tam-popup ar-aviso">' +
           '<button class="tam-popup-close" type="button" data-ar-fechar>fechar ✕</button>' +

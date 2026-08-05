@@ -1,0 +1,4 @@
+# lixo de trabalho — a raiz do clone e a raiz do site publicado
+_snap*.html
+.wrangler/
+.DS_Store

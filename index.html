@@ -1200,26 +1200,6 @@
       .ar-palco { max-height: 54vh; }
       .ar-aviso { padding: 24px 20px 22px; }
     }
-    /* Os dois popups do "ver na parede" no mesmo padrao do popup de cores: borda preta de
-       1.5px, canto de 16px e sombra dura. Antes herdavam so o .tam-popup base, que tem canto
-       assimetrico e borda cinza de 1px — desenho antigo, de antes do site fechar essa
-       assinatura. Ver feedback_maratu_design_coherence. */
-    .ar-fundo { background: rgba(13,13,11,0.55); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); }
-    /* Duas classes de propósito: só .ar-aviso empata em especificidade com o .tam-popup base,
-       que é declarado mais abaixo na folha e ganharia por ordem. */
-    .tam-popup.ar-aviso, .tam-popup.ar-popup {
-      border: 1.5px solid var(--preto); border-radius: 16px;
-      box-shadow: 6px 6px 0 0 var(--preto); padding: 28px;
-    }
-    .ar-aviso .tam-popup-close, .ar-popup .tam-popup-close {
-      border: 1.5px solid var(--preto); color: var(--preto);
-      box-shadow: 2px 2px 0 0 var(--preto); border-radius: 999px; font-weight: 700;
-      transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
-    }
-    .ar-aviso .tam-popup-close:hover, .ar-popup .tam-popup-close:hover {
-      background: var(--dourado); transform: translate(1px, 1px); box-shadow: 1px 1px 0 0 var(--preto);
-    }
-    .ar-aviso .tam-popup-title, .ar-popup .tam-popup-title { font-size: 1.25rem; margin-bottom: 4px; }
     .ar-aviso { max-width: 400px; }
     .ar-passos { list-style: none; margin: 0 0 22px; padding: 0; }
     .ar-passos li {
@@ -1258,11 +1238,6 @@
     .btn-disponivel img { height: 16px; width: auto; display: block; }
 
     /* POPUP QA */
-    #qa-popup-overlay .tam-popup {
-      border-radius: 8px;
-      border: 1.5px solid var(--preto);
-      box-shadow: 3px 3px 0 0 var(--preto);
-    }
     .qa-popup-actions { display: flex; flex-direction: column; gap: 12px; margin-top: 4px; }
     .qa-action-btn {
       display: block; width: 100%; text-align: center;
@@ -1317,20 +1292,20 @@
     .politica-faqitem p strong { color: rgba(13,13,11,0.9); font-weight: 700; }
 
 
-    /* POPUP TAMANHOS */
-    .tam-popup-overlay { display: none; position: fixed; inset: 0; z-index: 9998; background: rgba(13,13,11,0.85); align-items: center; justify-content: center; padding: 20px; }
+    /* POPUPS DA LOJA
+       Uma assinatura para os quatro: guia de tamanhos, QA, cores e os dois do "ver na parede".
+       Borda grossa, canto de 16px e sombra dura, como o resto do site. Antes cada um tinha a
+       sua: o base vinha com canto assimetrico e borda cinza quase invisivel, o de cores com o
+       padrao certo repetido a mao, o da QA com uma terceira medida (8px/3px). Quem precisar
+       diferir muda so a largura logo abaixo. */
+    .tam-popup-overlay { display: none; position: fixed; inset: 0; z-index: 9998; background: rgba(13,13,11,0.55); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); align-items: center; justify-content: center; padding: 20px; }
     .tam-popup-overlay.open { display: flex; }
-    .tam-popup { background: var(--areia); border: 1px solid rgba(13,13,11,0.12); padding: 32px; max-width: 480px; width: 100%; border-radius: 0 16px 0 0; position: relative; }
-    .tam-popup-close { position: absolute; top: 16px; right: 16px; background: none; border: 1px solid rgba(13,13,11,0.15); color: rgba(13,13,11,0.5); font-family: 'Clother', sans-serif; font-size: 0.65rem; letter-spacing: 0.1em; padding: 6px 12px; cursor: pointer; border-radius: 999px; transition: all 0.2s; }
-    .tam-popup-close:hover { background: rgba(13,13,11,0.08); }
-    .tam-popup-title { font-family: 'Clother', sans-serif; font-weight: 900; font-size: 1.1rem; color: var(--preto); text-transform: uppercase; margin-bottom: 6px; }
+    .tam-popup { background: var(--areia); border: 1.5px solid var(--preto); border-radius: 16px; box-shadow: 6px 6px 0 0 var(--preto); padding: 28px; max-width: 480px; width: 100%; position: relative; }
+    .tam-popup-close { position: absolute; top: 16px; right: 16px; background: none; border: 1.5px solid var(--preto); color: var(--preto); font-family: 'Clother', sans-serif; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em; padding: 6px 12px; cursor: pointer; border-radius: 999px; box-shadow: 2px 2px 0 0 var(--preto); transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease; }
+    .tam-popup-close:hover { background: var(--dourado); transform: translate(1px, 1px); box-shadow: 1px 1px 0 0 var(--preto); }
+    .tam-popup-title { font-family: 'Clother', sans-serif; font-weight: 900; font-size: 1.25rem; color: var(--preto); text-transform: uppercase; margin-bottom: 4px; }
     .tam-popup-sub { font-family: 'Clother', sans-serif; font-size: 0.58rem; color: rgba(13,13,11,0.35); letter-spacing: 0.1em; margin-bottom: 24px; }
-    /* Popup de cores no padrao neubrutalista do site (borda grossa + sombra dura + cantos arredondados) */
-    .cor-popup-overlay { background: rgba(13,13,11,0.55); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); }
-    .cor-popup { max-width: 540px; border: 1.5px solid var(--preto); border-radius: 16px; box-shadow: 6px 6px 0 0 var(--preto); padding: 28px; }
-    .cor-popup .tam-popup-title { font-size: 1.25rem; margin-bottom: 4px; }
-    .cor-popup .tam-popup-close { border: 1.5px solid var(--preto); color: var(--preto); box-shadow: 2px 2px 0 0 var(--preto); border-radius: 999px; font-weight: 700; transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease; }
-    .cor-popup .tam-popup-close:hover { background: var(--dourado); transform: translate(1px, 1px); box-shadow: 1px 1px 0 0 var(--preto); }
+    .cor-popup { max-width: 540px; }
     .cor-popup-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; max-height: 62vh; overflow-y: auto; }
     @media (max-width: 480px) { .cor-popup-grid { grid-template-columns: repeat(2, 1fr); } }
     .cor-opcao { display: flex; flex-direction: column; gap: 6px; text-decoration: none; }
@@ -1903,7 +1878,7 @@
     <img class="lightbox-img" id="lightbox-img" src="" alt="">
   </div>
 
-  <div class="tam-popup-overlay cor-popup-overlay" id="cor-popup-overlay" onclick="fecharCorPopup(event)">
+  <div class="tam-popup-overlay" id="cor-popup-overlay" onclick="fecharCorPopup(event)">
     <div class="tam-popup cor-popup">
       <button class="tam-popup-close" onclick="fecharCorPopup()">fechar ✕</button>
       <p class="tam-popup-title" id="cor-popup-title">Escolha a cor</p>
@@ -2584,7 +2559,7 @@
   </div>
   <script src="components/radio/radio.js?v=5"  defer></script>
   <script src="js/tracking.js?v=3"></script>
-  <script src="js/ar-parede.js?v=5" defer></script>
+  <script src="js/ar-parede.js?v=6" defer></script>
 
   <!-- Parcelamento automático: produtos com preço > R$150 ganham selo "3x sem juros" -->
   <script>

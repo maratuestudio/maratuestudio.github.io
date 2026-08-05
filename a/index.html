@@ -63,13 +63,23 @@
       flex-direction:column;align-items:center;justify-content:center;gap:18px;
       padding:44px 24px;perspective:900px}
     .mrt-card{width:344px;max-width:100%;background:var(--areia-orla);border-radius:14px;
-      padding:22px 26px 0;position:relative;
+      padding:22px 26px 0;position:relative;overflow:hidden;isolation:isolate;
       background-image:radial-gradient(rgba(28,26,24,.055) .6px,transparent .7px),radial-gradient(rgba(28,26,24,.04) .6px,transparent .7px);
       background-size:4px 4px,7px 7px;
       /* a sombra some daqui: o script a redesenha a cada quadro, seguindo a inclinação */
       box-shadow:0 26px 54px rgba(50,14,0,.42),0 2px 0 rgba(255,255,255,.55) inset;
-      transition:transform .14s ease-out,box-shadow .14s ease-out;
-      transform-style:preserve-3d}
+      transition:transform .14s ease-out,box-shadow .14s ease-out}
+    /* ══ REFLEXO ══ luz varrendo o papel, como metal fosco: faixa larga e macia, não
+       espelho. Anda por transform (composição), não por background-position (repaint):
+       a faixa é maior que o cartão e desliza por dentro dele. */
+    /* z-index -1: a luz é na superfície do papel, o texto é impresso nela. Por cima ela
+       lavava os rótulos, que já são de baixo contraste. */
+    .mrt-card::after{content:"";position:absolute;inset:-45%;pointer-events:none;z-index:-1;
+      background:linear-gradient(112deg,
+        transparent 34%, rgba(255,252,246,.32) 44%, rgba(255,255,255,.62) 50%,
+        rgba(255,252,246,.30) 56%, transparent 66%);
+      mix-blend-mode:soft-light;
+      transform:translate3d(var(--luz-x,0),var(--luz-y,0),0);will-change:transform}
     .mrt-seal{width:96px;height:96px;position:absolute;top:20px;right:24px;display:block;
       transform:rotate(-6deg);filter:drop-shadow(0 3px 5px rgba(28,26,24,.3));
       cursor:zoom-in;-webkit-tap-highlight-color:transparent}
@@ -124,6 +134,34 @@
     .mrt-verif{margin:0;font-size:15px;font-weight:500;color:#14523B;line-height:1.25}
     .mrt-verif-sub{margin:2px 0 0;font-size:11.5px;color:#3E6E5B}
     .mrt-dono{margin:4px 0 0;font-size:12.5px;color:#14523B}
+    /* ══ REGISTRO EM POPUP ══ o formulário sai do fluxo e abre por cima na primeira visita.
+       O Worker continua entregando o formulário no corpo da página: quem estiver sem JS vê
+       ele ali mesmo, como antes. É o script que o move pra cá e cria o convite. */
+    .mrt-reg-back{position:fixed;inset:0;z-index:70;display:flex;align-items:center;
+      justify-content:center;padding:20px;background:rgba(12,10,9,.72);opacity:0;
+      transition:opacity .26s ease;-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);
+      overflow-y:auto}
+    .mrt-reg-back.on{opacity:1}
+    .mrt-reg-back .mrt-form{margin:auto;transform:translateY(14px) scale(.98);
+      transition:transform .3s cubic-bezier(.2,.8,.25,1);position:relative}
+    .mrt-reg-back.on .mrt-form{transform:none}
+    .mrt-reg-x{position:absolute;top:10px;right:12px;width:34px;height:34px;border:0;
+      border-radius:999px;background:transparent;color:var(--tinta-fraca);font-size:22px;
+      line-height:1;cursor:pointer}
+    .mrt-reg-x:hover{background:rgba(28,26,24,.07);color:var(--tinta-papel)}
+    .mrt-reg-x:focus-visible{outline:2px solid var(--tinta-papel);outline-offset:2px}
+    /* o convite que fica na página depois que o popup é fechado */
+    .mrt-convite{width:344px;max-width:100%;background:var(--areia-orla);border-radius:14px;
+      padding:18px 24px 20px;text-align:left;
+      background-image:radial-gradient(rgba(28,26,24,.055) .6px,transparent .7px),radial-gradient(rgba(28,26,24,.04) .6px,transparent .7px);
+      background-size:4px 4px,7px 7px;
+      box-shadow:0 18px 46px rgba(46,12,0,.40),0 7.5px 14px rgba(46,12,0,.22),0 2px 0 rgba(255,255,255,.55) inset}
+    .mrt-convite p{margin:0 0 13px;font-size:14.5px;line-height:1.5;color:var(--tinta-papel)}
+    @media (prefers-reduced-motion:reduce){
+      .mrt-reg-back,.mrt-reg-back .mrt-form{transition:none}
+      .mrt-reg-back .mrt-form{transform:none}
+    }
+
     /* ══ AÇÕES ══ segundo bloco de papel, não pílulas soltas no laranja. Mesma largura,
        mesmo canto de 14px, mesmo papel pontilhado e a mesma sombra difusa do cartão: as
        duas peças passam a ser o mesmo material, em vez de dois mundos empilhados (o
@@ -286,6 +324,110 @@
 </script>
 
 <script>
+/* Pilha dos diálogos da página. São dois (a lupa do selo e o registro de posse) e eles
+   dividem o mesmo estado global: scroll travado no body e o certificado fora do caminho do
+   teclado. Sem uma pilha, fechar um limpava o estado do outro, e um Esc fechava os dois. */
+window.__mrtModais = window.__mrtModais || (function(){
+  var pilha = [], palco = null;
+  function fundo(){
+    if(!palco) palco = document.querySelector('.mrt-page');
+    if(pilha.length){
+      document.body.classList.add('selo-lupa-aberta');
+      if(palco){ palco.setAttribute('aria-hidden','true'); try{palco.inert=true;}catch(e){} }
+    } else {
+      document.body.classList.remove('selo-lupa-aberta');
+      if(palco){ palco.removeAttribute('aria-hidden'); try{palco.inert=false;}catch(e){} }
+    }
+  }
+  return {
+    entra:function(n){ if(pilha.indexOf(n)<0)pilha.push(n); fundo(); },
+    sai:function(n){ var i=pilha.indexOf(n); if(i>=0)pilha.splice(i,1); fundo(); },
+    topo:function(){ return pilha[pilha.length-1]||null; },
+    tem:function(n){ return pilha.indexOf(n)>=0; }
+  };
+})();
+</script>
+
+<script>
+/* O registro de posse abre sozinho na primeira vez que a pessoa cai na página. Depois de
+   fechado uma vez, não incomoda mais naquele aparelho — fica o convite no corpo pra reabrir.
+   Sem JS o formulário continua no fluxo da página, do jeito que o Worker mandou. */
+(function(){
+  var form=document.querySelector('.mrt-form');
+  if(!form)return;
+  var codigo=(location.pathname.split('/').filter(Boolean).pop()||'').toUpperCase();
+  var chave='mrt.reg.'+codigo;
+  var jaFechou=false;
+  try{ jaFechou=localStorage.getItem(chave)==='1'; }catch(e){}
+
+  var back=document.createElement('div');
+  back.className='mrt-reg-back';
+  back.setAttribute('role','dialog');
+  back.setAttribute('aria-modal','true');
+  back.setAttribute('aria-label','Registrar a posse da peça');
+  back.hidden=true;
+
+  var fechar=document.createElement('button');
+  fechar.type='button';
+  fechar.className='mrt-reg-x';
+  fechar.setAttribute('aria-label','Fechar');
+  fechar.innerHTML='&times;';
+
+  /* o convite ocupa o lugar do formulário no corpo */
+  var convite=document.createElement('div');
+  convite.className='mrt-convite';
+  convite.innerHTML='<p>Esta peça é sua? Registre seu nome no certificado.</p>'+
+    '<a class="mrt-opiniao" href="#" role="button">Registrar a posse</a>';
+  form.parentNode.insertBefore(convite,form);
+  back.appendChild(form);
+  form.appendChild(fechar);
+  document.body.appendChild(back);
+
+  var focoAntes=null;
+  function abre(origem){
+    // se o selo estiver aberto em tela cheia, o popup espera a vez
+    if(!back.hidden||window.__mrtModais.tem('lupa'))return;
+    focoAntes=document.activeElement;
+    back.hidden=false;
+    window.__mrtModais.entra('registro');
+    void back.offsetWidth;
+    back.classList.add('on');
+    var alvo=form.querySelector('input[name="nome"]');
+    if(alvo)try{alvo.focus({preventScroll:true});}catch(e){}
+    if(typeof gtag==='function')gtag('event','selo_registro_abriu',{origem:origem||'auto'});
+  }
+  function some(){
+    if(back.hidden)return;
+    back.classList.remove('on');
+    window.__mrtModais.sai('registro');
+    try{localStorage.setItem(chave,'1');}catch(e){}
+    setTimeout(function(){ back.hidden=true; },300);
+    if(focoAntes&&focoAntes.focus)try{focoAntes.focus({preventScroll:true});}catch(e){}
+    if(typeof gtag==='function')gtag('event','selo_registro_fechou',{});
+  }
+  fechar.addEventListener('click',some);
+  back.addEventListener('click',function(e){ if(e.target===back)some(); });
+  // Esc só fecha quem está por cima
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape'&&window.__mrtModais.topo()==='registro')some();
+  });
+  convite.querySelector('a').addEventListener('click',function(e){ e.preventDefault(); abre('convite'); });
+  /* Tab não escapa do diálogo enquanto ele está aberto */
+  back.addEventListener('keydown',function(e){
+    if(e.key!=='Tab'||back.hidden)return;
+    var f=back.querySelectorAll('input,button,a[href],select,textarea');
+    if(!f.length)return;
+    var pri=f[0], ult=f[f.length-1];
+    if(e.shiftKey&&document.activeElement===pri){e.preventDefault();ult.focus();}
+    else if(!e.shiftKey&&document.activeElement===ult){e.preventDefault();pri.focus();}
+  });
+
+  // primeira visita: deixa o certificado aparecer antes de chamar a atenção
+  if(!jaFechou)setTimeout(function(){abre('auto');},900);
+})();
+</script>
+
+<script>
 /* O holograma reage à inclinação: deviceorientation no celular, mousemove no desktop.
    As camadas do selo andam deslocando o gradientTransform; o cartão inclina junto. */
 (function(){
@@ -314,6 +456,10 @@
       sx+'px '+sy+'px '+(46+m*30).toFixed(0)+'px rgba(46,12,0,'+(.40+m*.18).toFixed(2)+'),'+
       (sx/2.4).toFixed(1)+'px '+(sy/2.4).toFixed(1)+'px '+(14+m*10).toFixed(0)+'px rgba(46,12,0,.22),'+
       '0 2px 0 rgba(255,255,255,.55) inset';
+
+    // a faixa de luz corre pro lado oposto ao que o cartão levanta
+    card.style.setProperty('--luz-x',(ry*3.1).toFixed(2)+'%');
+    card.style.setProperty('--luz-y',(-rx*3.1).toFixed(2)+'%');
 
     gRb.setAttribute('gradientTransform','translate('+(ry*15).toFixed(2)+','+(-rx*15).toFixed(2)+')');
     gSp.setAttribute('gradientTransform','translate('+(-ry*16).toFixed(2)+','+(rx*16).toFixed(2)+')');
@@ -388,10 +534,9 @@
     seal.setAttribute('tabindex','-1');   // some do Tab enquanto está ampliado
     lupa.appendChild(seal);
     document.body.appendChild(lupa);
-    document.body.classList.add('selo-lupa-aberta');
     lupa.addEventListener('touchmove',barraToque,{passive:false});
     // o certificado atrás sai do caminho do Tab e do leitor de tela enquanto isto está aberto
-    if(palco){ palco.setAttribute('aria-hidden','true'); try{palco.inert=true;}catch(e){} }
+    window.__mrtModais.entra('lupa');
     void lupa.offsetWidth;          // força o quadro inicial antes de animar
     lupa.classList.add('on');
     try{lupa.focus({preventScroll:true});}catch(e){}
@@ -405,8 +550,7 @@
     var indo=lupa;
     lupa=null;
     indo.classList.remove('on');
-    document.body.classList.remove('selo-lupa-aberta');
-    if(palco){ palco.removeAttribute('aria-hidden'); try{palco.inert=false;}catch(e){} }
+    window.__mrtModais.sai('lupa');
     /* Espera a volta do selo terminar (transform de .72s) antes de arrancá-lo do overlay,
        senão ele teleporta pro cartão no meio do caminho. O timer é a rede de segurança
        pra quando o transitionend não vem. */
@@ -441,7 +585,9 @@
   document.addEventListener('click',function(e){
     if(lupa&&e.target!==seal&&!seal.contains(e.target))fecharLupa();
   });
-  document.addEventListener('keydown',function(e){ if(e.key==='Escape')fecharLupa(); });
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape'&&window.__mrtModais.topo()==='lupa')fecharLupa();
+  });
 })();
 </script>
 

@@ -17,8 +17,10 @@
       --laranja: #C8501A;
       --preto: #0D0D0B;
       --areia: #F0ECE4;
+      --creme-papel: #FFFCF6;
       --azul: #0E3272;
       --dourado: #D4960A;
+      --font-display: "Jack", "Clother", sans-serif;
       --font-body: "Clother", "Helvetica Neue", Helvetica, Arial, sans-serif;
       --font-mono: "Clother", ui-monospace, Menlo, monospace;
       --shadow-hard: 4px 4px 0 var(--preto);
@@ -30,10 +32,9 @@
     html { scroll-behavior: smooth; }
 
     body {
-      background:
-        linear-gradient(rgba(240,236,228,0.90), rgba(240,236,228,0.94)),
-        url('/mangue.webp') center center / cover no-repeat fixed,
-        var(--areia);
+      /* Areia limpa, como a loja. A foto do mangue lavada por baixo puxava o papel
+         pra um verde-acinzentado que nao e a areia da marca. */
+      background: var(--areia);
       color: var(--preto);
       font-family: var(--font-body);
       font-size: 17px;
@@ -49,10 +50,13 @@
       margin-bottom: 56px; padding-bottom: 16px;
       border-bottom: 1.5px solid rgba(13,13,11,0.18);
     }
+    /* Mesmo cabecalho da home e da /servicos: a palavra em Jack, minuscula, 1.4rem.
+       Jack aqui e legitimo, e o nome da marca. O lockup grafico MARATU+ESTUDIO e peca
+       de documento (o cartao do certificado) e de splash, nao de topo de pagina. */
     .topbar a {
+      font-family: var(--font-display); font-size: 1.4rem;
+      letter-spacing: -0.02em; text-transform: lowercase;
       color: var(--preto); text-decoration: none;
-      font-family: var(--font-body); font-weight: 900;
-      font-size: 22px; letter-spacing: 0.02em;
     }
     .topbar .tag {
       font-family: var(--font-mono); font-size: 11px;
@@ -77,9 +81,16 @@
       margin-top: 20px; display: flex; gap: 16px; flex-wrap: wrap;
     }
 
+    /* Canto de 14px e papel pontilhado: a mesma regra do cartao do certificado e dos
+       cards da loja. Com 4px e branco puro os blocos ficavam retangulares e duros no
+       meio de um site todo arredondado. */
     .pergunta {
-      background: #fff; border: 1.5px solid var(--preto);
-      border-radius: 4px; padding: 28px 24px; margin-bottom: 24px;
+      background: var(--creme-papel); border: 1.5px solid var(--preto);
+      border-radius: 14px; padding: 28px 24px; margin-bottom: 24px;
+      background-image:
+        radial-gradient(rgba(28,26,24,0.055) 0.6px, transparent 0.7px),
+        radial-gradient(rgba(28,26,24,0.04) 0.6px, transparent 0.7px);
+      background-size: 4px 4px, 7px 7px;
       box-shadow: var(--shadow-hard-lg); color: var(--preto);
     }
     .pergunta .num {
@@ -120,12 +131,12 @@
     .escala-legenda {
       display: flex; justify-content: space-between; margin-top: 10px;
       font-family: var(--font-mono); font-size: 11px;
-      letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.5;
+      letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.68;
     }
 
     textarea {
       width: 100%; min-height: 100px; padding: 14px 16px;
-      border: 1.5px solid var(--preto); border-radius: 4px;
+      border: 1.5px solid var(--preto); border-radius: 12px;
       background: var(--areia); color: var(--preto);
       font-family: var(--font-body); font-size: 16px; line-height: 1.5; resize: vertical;
     }
@@ -133,7 +144,7 @@
     .char-count {
       font-family: var(--font-mono); font-size: 11px;
       letter-spacing: 0.08em; text-transform: uppercase;
-      opacity: 0.4; margin-top: 6px; text-align: right;
+      opacity: 0.6; margin-top: 6px; text-align: right;
     }
 
     .submit-bar { margin-top: 40px; text-align: center; }
@@ -151,7 +162,7 @@
 
     .erro {
       background: var(--laranja); color: var(--areia);
-      padding: 14px 18px; border-radius: 4px;
+      padding: 14px 18px; border-radius: 12px;
       border: 1.5px solid var(--preto); box-shadow: var(--shadow-hard-sm);
       margin-bottom: 24px; font-weight: 700; display: none;
     }
@@ -182,7 +193,7 @@
     }
 
     @media (max-width: 520px) {
-      body { padding: 24px 16px 60px; background-attachment: scroll; }
+      body { padding: 24px 16px 60px; }
       .pergunta { padding: 22px 18px; }
       .pill { padding: 9px 14px; font-size: 13px; min-width: 40px; }
       .topbar { margin-bottom: 40px; }
@@ -200,7 +211,7 @@
 <body>
   <div class="container">
     <header class="topbar">
-      <a href="/">MARATU</a>
+      <a href="/">maratu</a>
       <span class="tag">Avaliação</span>
     </header>
 

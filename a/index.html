@@ -43,6 +43,7 @@
          e mais claras que --areia (#F0ECE4) e --preto (#0D0D0B) de propósito, pra dar cara
          de papel. Não são os tokens do site com erro de digitação. */
       --laranja:#C8501A;
+      --areia:#F0ECE4;
       --areia-orla:#F0EBE2;
       --tinta-papel:#1C1A18;
       --tinta-fraca:#6E6152;
@@ -52,12 +53,13 @@
     /* Laranja no html também: sem isso o celular mostra faixa branca no rubber-band do
        scroll e nas bordas quando a página é mais curta que a tela. */
     html{background:var(--laranja);overscroll-behavior:none}
-    body{margin:0;background:var(--laranja);font-family:var(--clother);-webkit-font-smoothing:antialiased}
+    body{margin:0;background:var(--laranja);font-family:var(--clother);-webkit-font-smoothing:antialiased;
+      display:flex;flex-direction:column;min-height:100vh;min-height:100dvh}
 
     /* ══ CARTÃO DO CERTIFICADO ══ o Worker injeta a marcação no lugar do marcador de corpo,
        lá embaixo. Vive aqui pro design ficar no repo, como no diário.
        Cuidado: não escrever o marcador por extenso em comentário, senão a troca pega ele. */
-    .mrt-page{background:var(--laranja);min-height:100vh;min-height:100dvh;display:flex;
+    .mrt-page{background:var(--laranja);flex:1 0 auto;display:flex;
       flex-direction:column;align-items:center;justify-content:center;gap:18px;
       padding:44px 24px;perspective:900px}
     .mrt-card{width:344px;max-width:100%;background:var(--areia-orla);border-radius:14px;
@@ -184,6 +186,26 @@
       color:#8A3410;font-size:13px;line-height:1.5}
     .mrt-recado{border-left:4px solid var(--verde)}
 
+
+    /* ══ RODAPÉ DO SITE ══ o mesmo da home, inclusive o Aratu que anda e foge do dedo.
+       Areia com tinta escura: em cima do laranja a linha de 8px em creme não teria
+       contraste nenhum. */
+    .footer{background:var(--areia);color:#0D0D0B;
+      padding:clamp(24px,3vh,36px) clamp(20px,5vw,64px) 32px;position:relative;flex:0 0 auto}
+    .footer__baseline{border-top:1px solid rgba(13,13,11,0.08);
+      padding-top:20px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;
+      font-family:var(--clother);font-size:.5rem;letter-spacing:.12em;text-transform:uppercase;
+      color:rgba(13,13,11,0.62)}
+    .footer__baseline p{margin:0}
+    .footer__servicos a{color:inherit;text-decoration:none;transition:color .2s ease}
+    .footer__servicos a:hover{color:var(--laranja)}
+    .aratu-mascote{position:absolute;left:0;bottom:4px;width:48px;height:24px;pointer-events:none;z-index:10;overflow:visible}
+    .aratu-mascote svg{width:100%;height:100%;overflow:visible;display:block}
+    @media (max-width:640px){
+      .footer__baseline{flex-direction:column}
+      .aratu-mascote{width:40px;height:20px;bottom:4px}
+    }
+
     @media (max-width:380px){
       .mrt-page{padding:28px 14px}
       .mrt-card{padding:18px 18px 0}
@@ -200,6 +222,35 @@
 <div class="mrt-page">
 <!--SELO:CORPO-->
 </div>
+
+<footer class="footer">
+  <div class="footer__baseline">
+    <p>© 2026 MARATU Estúdio · feito em Aracaju · Projeta o Mangue!</p>
+    <p class="footer__servicos"><a href="/servicos?utm_source=site&amp;utm_medium=rodape_selo" data-servico="geral" data-origem="rodape_selo">Site, loja e sistema feitos pela MARATU. Fazemos o seu ↗</a></p>
+    <p>Impressão 3D · Design · Arte</p>
+  </div>
+  <div class="aratu-mascote" aria-hidden="true" style="margin-top:28px;">
+    <svg viewBox="0 0 318.24 152.9" xmlns="http://www.w3.org/2000/svg">
+      <g data-aratu="claw-left">
+        <path fill="#C8501A" d="M0,104.77c0,26.58,21.55,48.13,48.13,48.13V56.65C21.55,56.65,0,78.19,0,104.77Z"/>
+      </g>
+      <g data-aratu="claw-right">
+        <path fill="#C8501A" d="M270.11,56.65v96.26c26.58,0,48.13-21.55,48.13-48.13s-21.55-48.13-48.13-48.13Z"/>
+      </g>
+      <g data-aratu="body">
+        <path fill="#C8501A" d="M159.12,152.9c53.16,0,96.26-43.1,96.26-96.26H62.86c0,53.16,43.1,96.26,96.26,96.26Z"/>
+      </g>
+      <g data-aratu="eye-right">
+        <path fill="#C8501A" d="M224.82,24.08c0-13.3-10.78-24.08-24.08-24.08v48.16c13.3,0,24.08-10.78,24.08-24.08Z"/>
+      </g>
+      <g data-aratu="eye-left">
+        <path fill="#C8501A" d="M117.49,48.16V0c-13.3,0-24.08,10.78-24.08,24.08s10.78,24.08,24.08,24.08Z"/>
+      </g>
+    </svg>
+  </div>
+</footer>
+
+<script src="/aratu-mascote.js?v=8" defer></script>
 
 <script>
 /* GA4 do certificado. Eventos próprios, como o clique_servico é próprio: um selo consultado
@@ -222,6 +273,14 @@
     if(ev.target.closest('a[href*="wa.me"]'))gtag('event','selo_ajuda',{estado:estado});
     if(ev.target.closest('.mrt-opiniao'))gtag('event','selo_opiniao',{estado:estado});
     if(ev.target.closest('.mrt-site'))gtag('event','selo_site',{estado:estado});
+    /* O link de serviços do rodapé dispara o MESMO clique_servico do resto do site, mas
+       daqui, sem carregar o /js/tracking.js — que arrastaria junto o clique_encomendar
+       e sujaria o funil da loja com os WhatsApp de suporte desta página. */
+    var sv=ev.target.closest('[data-servico]');
+    if(sv)gtag('event','clique_servico',{
+      servico:sv.getAttribute('data-servico')||'geral',
+      origem:sv.getAttribute('data-origem')||'rodape_selo'
+    });
   },true);
 })();
 </script>

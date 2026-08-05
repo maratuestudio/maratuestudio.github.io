@@ -49,22 +49,46 @@
       --verde:#1D6E4F;
     }
     *{box-sizing:border-box}
-    body{margin:0;font-family:var(--clother);-webkit-font-smoothing:antialiased}
+    /* Laranja no html também: sem isso o celular mostra faixa branca no rubber-band do
+       scroll e nas bordas quando a página é mais curta que a tela. */
+    html{background:var(--laranja);overscroll-behavior:none}
+    body{margin:0;background:var(--laranja);font-family:var(--clother);-webkit-font-smoothing:antialiased}
 
     /* ══ CARTÃO DO CERTIFICADO ══ o Worker injeta a marcação no lugar do marcador de corpo,
        lá embaixo. Vive aqui pro design ficar no repo, como no diário.
        Cuidado: não escrever o marcador por extenso em comentário, senão a troca pega ele. */
     .mrt-page{background:var(--laranja);min-height:100vh;min-height:100dvh;display:flex;
       flex-direction:column;align-items:center;justify-content:center;gap:18px;
-      padding:44px 24px;perspective:1100px}
+      padding:44px 24px;perspective:900px}
     .mrt-card{width:344px;max-width:100%;background:var(--areia-orla);border-radius:14px;
       padding:22px 26px 0;position:relative;
       background-image:radial-gradient(rgba(28,26,24,.055) .6px,transparent .7px),radial-gradient(rgba(28,26,24,.04) .6px,transparent .7px);
       background-size:4px 4px,7px 7px;
-      box-shadow:0 18px 40px rgba(60,20,0,.3),0 2px 0 rgba(255,255,255,.55) inset;
-      transition:transform .16s ease-out}
+      /* a sombra some daqui: o script a redesenha a cada quadro, seguindo a inclinação */
+      box-shadow:0 26px 54px rgba(50,14,0,.42),0 2px 0 rgba(255,255,255,.55) inset;
+      transition:transform .14s ease-out,box-shadow .14s ease-out;
+      transform-style:preserve-3d}
     .mrt-seal{width:96px;height:96px;position:absolute;top:20px;right:24px;display:block;
-      transform:rotate(-6deg);filter:drop-shadow(0 3px 5px rgba(28,26,24,.3))}
+      transform:rotate(-6deg);filter:drop-shadow(0 3px 5px rgba(28,26,24,.3));
+      cursor:zoom-in;-webkit-tap-highlight-color:transparent}
+    .mrt-seal:focus-visible{outline:2px solid #FFFCF6;outline-offset:3px;border-radius:50%}
+
+    /* ══ SELO EM TELA CHEIA ══ toque no selo: ele gira uma volta enquanto cresce, e o
+       certificado fica no escuro atrás. Sair é tocar em qualquer lugar, ou Esc. */
+    .selo-lupa{position:fixed;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;
+      background:rgba(12,10,9,.86);opacity:0;transition:opacity .3s ease;cursor:zoom-out;
+      -webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+    .selo-lupa.on{opacity:1}
+    .selo-lupa .mrt-seal{position:static;top:auto;right:auto;cursor:zoom-out;
+      width:min(76vw,380px);height:min(76vw,380px);
+      transform:rotate(-6deg) scale(.24);
+      transition:transform .72s cubic-bezier(.18,.85,.24,1)}
+    .selo-lupa.on .mrt-seal{transform:rotate(354deg) scale(1)}
+    .selo-lupa-dica{position:absolute;left:0;right:0;bottom:max(30px,env(safe-area-inset-bottom));
+      text-align:center;font-size:12.5px;letter-spacing:.06em;color:rgba(255,252,246,.62);
+      opacity:0;transition:opacity .3s ease .5s}
+    .selo-lupa.on .selo-lupa-dica{opacity:1}
+    body.selo-lupa-aberta{overflow:hidden}
     .mrt-seal-txt{font-family:var(--clother);font-size:13px;font-weight:700;letter-spacing:.02em}
     .mrt-logo{width:150px;height:29px;display:block;margin-top:16px}
     .mrt-titulo{margin-top:22px}
@@ -78,11 +102,16 @@
     .mrt-codigo{margin:3px 0 0;font-size:14.5px;font-family:var(--mono-cod);color:var(--tinta-papel);letter-spacing:.04em}
     .mrt-rodape{margin:18px -26px 0;padding:14px 26px;background:rgba(29,110,79,.09);
       border-top:1px solid rgba(29,110,79,.22);border-radius:0 0 14px 14px;
-      display:flex;align-items:center;gap:11px}
+      display:flex;align-items:center;gap:11px;flex-wrap:wrap}
     .mrt-check{width:26px;height:26px;flex:none}
+    .mrt-verif-txt{flex:1 1 auto;min-width:0}
     .mrt-verif{margin:0;font-size:15px;font-weight:500;color:#14523B;line-height:1.25}
     .mrt-verif-sub{margin:2px 0 0;font-size:11.5px;color:#3E6E5B}
     .mrt-dono{margin:4px 0 0;font-size:12.5px;color:#14523B}
+    .mrt-opiniao{flex:0 0 auto;padding:8px 15px;border-radius:999px;background:var(--verde);
+      color:#FFFCF6;font-size:12.5px;font-weight:700;text-decoration:none;white-space:nowrap}
+    .mrt-opiniao:active{transform:translateY(1px)}
+    @media (max-width:400px){.mrt-opiniao{flex:1 1 100%;text-align:center;margin-top:4px}}
 
     /* ══ AVISOS ══ selo sem peça, selo bloqueado, código que não existe. Cara da marca,
        não cara de erro. */
@@ -111,10 +140,7 @@
     .mrt-campo input{width:100%;margin-top:5px;padding:11px 13px;border:1.5px solid rgba(28,26,24,.25);
       border-radius:10px;background:var(--areia-orla);font-family:var(--clother);font-size:16px;color:var(--tinta-papel)}
     .mrt-campo input:focus{outline:2px solid var(--laranja);outline-offset:1px}
-    .mrt-radios{margin:18px 0 0;padding:0;border:0}
-    .mrt-radios legend{padding:0;font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:#8A7B66}
-    .mrt-radios label{display:flex;gap:9px;align-items:flex-start;margin-top:9px;font-size:13.5px;line-height:1.45;color:var(--tinta-papel)}
-    .mrt-radios input{margin:2px 0 0;accent-color:var(--laranja);flex:none}
+    .mrt-nota{margin:14px 0 0;font-size:12.5px;line-height:1.55;color:var(--tinta-fraca)}
     /* separada e desmarcada: cadastro de garantia e lista de conteúdo são finalidades
        diferentes sob a LGPD, e uma não autoriza a outra */
     .mrt-news{display:flex;gap:9px;align-items:flex-start;margin:18px 0 0;padding:13px 14px;
@@ -161,8 +187,9 @@
   });
 
   document.addEventListener('click',function(ev){
-    var a=ev.target&&ev.target.closest?ev.target.closest('a[href*="wa.me"]'):null;
-    if(a)gtag('event','selo_ajuda',{estado:estado});
+    if(!ev.target||!ev.target.closest)return;
+    if(ev.target.closest('a[href*="wa.me"]'))gtag('event','selo_ajuda',{estado:estado});
+    if(ev.target.closest('.mrt-opiniao'))gtag('event','selo_opiniao',{estado:estado});
   },true);
 })();
 </script>
@@ -177,50 +204,145 @@
   var gSp=document.getElementById('mrtSpec');
   var rbr=document.getElementById('mrt-rbr');
   if(!card||!seal||!gRb||!gSp||!rbr)return;
+  /* "Reduzir movimento" tira a ROTAÇÃO do cartão, que é o que embrulha o estômago de quem
+     precisa da opção. O brilho do selo e a sombra continuam reagindo: são cor e luz, não
+     deslocamento. Antes isto desligava a página inteira e ela parecia quebrada. */
   var reduz=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var LIM_X=19, LIM_Y=22;
 
   function aplicar(rx,ry){
-    rx=Math.max(-12,Math.min(12,rx));
-    ry=Math.max(-14,Math.min(14,ry));
-    var m=Math.min(1,Math.sqrt(rx*rx+ry*ry)/17);
+    rx=Math.max(-LIM_X,Math.min(LIM_X,rx));
+    ry=Math.max(-LIM_Y,Math.min(LIM_Y,ry));
+    var m=Math.min(1,Math.sqrt(rx*rx+ry*ry)/24);
 
-    card.style.transform='rotateX('+rx.toFixed(2)+'deg) rotateY('+ry.toFixed(2)+'deg)';
+    if(!reduz)card.style.transform='rotateX('+rx.toFixed(2)+'deg) rotateY('+ry.toFixed(2)+'deg)';
 
-    gRb.setAttribute('gradientTransform','translate('+(ry*13).toFixed(2)+','+(-rx*13).toFixed(2)+')');
-    gSp.setAttribute('gradientTransform','translate('+(-ry*14).toFixed(2)+','+(rx*14).toFixed(2)+')');
-    rbr.setAttribute('opacity',(.44+m*.3).toFixed(2));
-    seal.style.filter='drop-shadow(0 3px 5px rgba(28,26,24,.3)) saturate('+(1+m*.5).toFixed(2)+') brightness('+(.95+m*.2).toFixed(2)+')';
+    /* A sombra foge do lado que levanta e engorda conforme o cartão inclina. */
+    var sx=(-ry*1.7).toFixed(1), sy=(18+rx*1.7).toFixed(1);
+    card.style.boxShadow=
+      sx+'px '+sy+'px '+(46+m*30).toFixed(0)+'px rgba(46,12,0,'+(.40+m*.18).toFixed(2)+'),'+
+      (sx/2.4).toFixed(1)+'px '+(sy/2.4).toFixed(1)+'px '+(14+m*10).toFixed(0)+'px rgba(46,12,0,.22),'+
+      '0 2px 0 rgba(255,255,255,.55) inset';
+
+    gRb.setAttribute('gradientTransform','translate('+(ry*15).toFixed(2)+','+(-rx*15).toFixed(2)+')');
+    gSp.setAttribute('gradientTransform','translate('+(-ry*16).toFixed(2)+','+(rx*16).toFixed(2)+')');
+    rbr.setAttribute('opacity',(.44+m*.32).toFixed(2));
+    seal.style.filter='drop-shadow(0 3px 5px rgba(28,26,24,.3)) saturate('+(1+m*.6).toFixed(2)+') brightness('+(.95+m*.22).toFixed(2)+')';
+  }
+
+  /* Um repintar por quadro, não por evento. A sombra é blur grande e obriga paint de
+     verdade (o transform não obrigava); o deviceorientation dispara perto de 60 Hz no
+     celular e o mousemove mais ainda. Ver reference_maratu_home_custo_cpu. */
+  var alvoX=0, alvoY=0, agendado=false;
+  function mirar(rx,ry){
+    alvoX=rx; alvoY=ry;
+    if(agendado)return;
+    agendado=true;
+    requestAnimationFrame(function(){ agendado=false; aplicar(alvoX,alvoY); });
   }
 
   aplicar(0,0);
-  if(reduz)return;
 
   var palco=document.querySelector('.mrt-page');
   palco.addEventListener('mousemove',function(e){
     var r=palco.getBoundingClientRect();
-    aplicar(-((e.clientY-r.top)/r.height-.5)*22,((e.clientX-r.left)/r.width-.5)*26);
+    mirar(-((e.clientY-r.top)/r.height-.5)*34,((e.clientX-r.left)/r.width-.5)*40);
   });
-  palco.addEventListener('mouseleave',function(){aplicar(0,0);});
+  palco.addEventListener('mouseleave',function(){mirar(0,0);});
 
   function ouvir(){
     window.addEventListener('deviceorientation',function(ev){
       if(ev.beta===null)return;
-      aplicar((ev.beta-45)*.3,ev.gamma*.4);
+      // mais solto que antes: o celular na mão varia pouco e o cartão mal saía do lugar
+      mirar((ev.beta-45)*.55,ev.gamma*.72);
     });
   }
-  /* No iPhone o sensor só liga depois de um gesto. Pedimos no primeiro clique da página. */
+  /* No iPhone o sensor só liga depois de um gesto. Pedimos no primeiro toque da página. */
   if(window.DeviceOrientationEvent){
     if(typeof DeviceOrientationEvent.requestPermission==='function'){
+      /* Na captura: o primeiro toque pode ser no selo, que segura a propagação pra abrir
+         a lupa. Escutando na descida o pedido de permissão sai de qualquer jeito. */
       document.addEventListener('click',function iniciar(){
         DeviceOrientationEvent.requestPermission().then(function(s){
           if(s==='granted')ouvir();
         }).catch(function(){});
-        document.removeEventListener('click',iniciar);
-      });
+        document.removeEventListener('click',iniciar,true);
+      },true);
     } else {
       ouvir();
     }
   }
+
+  /* ---- selo em tela cheia ---- */
+  /* O selo é MOVIDO pro fundo escuro, não clonado: os gradientes viajam junto dentro do
+     próprio <defs> e não há dois elementos disputando o mesmo id. */
+  var lugar=seal.parentNode, lupa=null;
+  seal.setAttribute('role','button');
+  seal.setAttribute('tabindex','0');
+  seal.setAttribute('aria-label','Ver o selo de autenticidade de perto');
+
+  /* Safari do iPhone ignora overflow:hidden no body pra gesto de toque: o fundo rola
+     atrás do overlay. Barrar o touchmove no próprio overlay é o que funciona lá. */
+  function barraToque(e){ e.preventDefault(); }
+
+  function abrirLupa(){
+    if(lupa)return;
+    lupa=document.createElement('div');
+    lupa.className='selo-lupa';
+    lupa.setAttribute('role','dialog');
+    lupa.setAttribute('aria-modal','true');
+    lupa.setAttribute('aria-label','Selo de autenticidade');
+    lupa.innerHTML='<p class="selo-lupa-dica">toque pra voltar</p>';
+    lupa.appendChild(seal);
+    document.body.appendChild(lupa);
+    document.body.classList.add('selo-lupa-aberta');
+    lupa.addEventListener('touchmove',barraToque,{passive:false});
+    // o certificado atrás sai do caminho do Tab e do leitor de tela enquanto isto está aberto
+    if(palco){ palco.setAttribute('aria-hidden','true'); try{palco.inert=true;}catch(e){} }
+    void lupa.offsetWidth;          // força o quadro inicial antes de animar
+    lupa.classList.add('on');
+    try{seal.focus({preventScroll:true});}catch(e){}
+    if(typeof gtag==='function'){
+      var alvo=document.querySelector('[data-estado]');
+      gtag('event','selo_lupa',{estado:alvo?alvo.getAttribute('data-estado'):'desconhecido'});
+    }
+  }
+  function fecharLupa(){
+    if(!lupa)return;
+    var indo=lupa;
+    lupa=null;
+    indo.classList.remove('on');
+    document.body.classList.remove('selo-lupa-aberta');
+    if(palco){ palco.removeAttribute('aria-hidden'); try{palco.inert=false;}catch(e){} }
+    /* Espera a volta do selo terminar (transform de .72s) antes de arrancá-lo do overlay,
+       senão ele teleporta pro cartão no meio do caminho. O timer é a rede de segurança
+       pra quando o transitionend não vem. */
+    var devolveu=false;
+    var devolver=function(){
+      if(devolveu)return;
+      devolveu=true;
+      indo.removeEventListener('touchmove',barraToque);
+      lugar.insertBefore(seal,lugar.firstChild);
+      indo.remove();
+    };
+    seal.addEventListener('transitionend',function fim(e){
+      if(e.propertyName!=='transform')return;
+      seal.removeEventListener('transitionend',fim);
+      devolver();
+    });
+    setTimeout(devolver,820);
+  }
+  seal.addEventListener('click',function(e){
+    e.stopPropagation();
+    if(lupa)fecharLupa(); else abrirLupa();
+  });
+  seal.addEventListener('keydown',function(e){
+    if(e.key==='Enter'||e.key===' '){e.preventDefault();if(lupa)fecharLupa();else abrirLupa();}
+  });
+  document.addEventListener('click',function(e){
+    if(lupa&&e.target!==seal&&!seal.contains(e.target))fecharLupa();
+  });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape')fecharLupa(); });
 })();
 </script>
 

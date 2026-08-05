@@ -188,17 +188,17 @@
 
 
     /* ══ RODAPÉ DO SITE ══ o mesmo da home, inclusive o Aratu que anda e foge do dedo.
-       Areia com tinta escura: em cima do laranja a linha de 8px em creme não teria
-       contraste nenhum. */
-    .footer{background:var(--areia);color:#0D0D0B;
+       Aqui ele é laranja com tinta preta: o fundo da página é laranja e o rodapé não
+       corta a página com uma faixa de outra cor. Aratu preto pelo mesmo motivo. */
+    .footer{background:var(--laranja);color:#0D0D0B;
       padding:clamp(24px,3vh,36px) clamp(20px,5vw,64px) 32px;position:relative;flex:0 0 auto}
-    .footer__baseline{border-top:1px solid rgba(13,13,11,0.08);
+    .footer__baseline{border-top:1px solid rgba(13,13,11,0.22);
       padding-top:20px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;
       font-family:var(--clother);font-size:.5rem;letter-spacing:.12em;text-transform:uppercase;
-      color:rgba(13,13,11,0.62)}
+      color:#0D0D0B}
     .footer__baseline p{margin:0}
     .footer__servicos a{color:inherit;text-decoration:none;transition:color .2s ease}
-    .footer__servicos a:hover{color:var(--laranja)}
+    .footer__servicos a:hover{color:#FFFCF6}
     .aratu-mascote{position:absolute;left:0;bottom:4px;width:48px;height:24px;pointer-events:none;z-index:10;overflow:visible}
     .aratu-mascote svg{width:100%;height:100%;overflow:visible;display:block}
     @media (max-width:640px){
@@ -232,19 +232,19 @@
   <div class="aratu-mascote" aria-hidden="true" style="margin-top:28px;">
     <svg viewBox="0 0 318.24 152.9" xmlns="http://www.w3.org/2000/svg">
       <g data-aratu="claw-left">
-        <path fill="#C8501A" d="M0,104.77c0,26.58,21.55,48.13,48.13,48.13V56.65C21.55,56.65,0,78.19,0,104.77Z"/>
+        <path fill="#0D0D0B" d="M0,104.77c0,26.58,21.55,48.13,48.13,48.13V56.65C21.55,56.65,0,78.19,0,104.77Z"/>
       </g>
       <g data-aratu="claw-right">
-        <path fill="#C8501A" d="M270.11,56.65v96.26c26.58,0,48.13-21.55,48.13-48.13s-21.55-48.13-48.13-48.13Z"/>
+        <path fill="#0D0D0B" d="M270.11,56.65v96.26c26.58,0,48.13-21.55,48.13-48.13s-21.55-48.13-48.13-48.13Z"/>
       </g>
       <g data-aratu="body">
-        <path fill="#C8501A" d="M159.12,152.9c53.16,0,96.26-43.1,96.26-96.26H62.86c0,53.16,43.1,96.26,96.26,96.26Z"/>
+        <path fill="#0D0D0B" d="M159.12,152.9c53.16,0,96.26-43.1,96.26-96.26H62.86c0,53.16,43.1,96.26,96.26,96.26Z"/>
       </g>
       <g data-aratu="eye-right">
-        <path fill="#C8501A" d="M224.82,24.08c0-13.3-10.78-24.08-24.08-24.08v48.16c13.3,0,24.08-10.78,24.08-24.08Z"/>
+        <path fill="#0D0D0B" d="M224.82,24.08c0-13.3-10.78-24.08-24.08-24.08v48.16c13.3,0,24.08-10.78,24.08-24.08Z"/>
       </g>
       <g data-aratu="eye-left">
-        <path fill="#C8501A" d="M117.49,48.16V0c-13.3,0-24.08,10.78-24.08,24.08s10.78,24.08,24.08,24.08Z"/>
+        <path fill="#0D0D0B" d="M117.49,48.16V0c-13.3,0-24.08,10.78-24.08,24.08s10.78,24.08,24.08,24.08Z"/>
       </g>
     </svg>
   </div>

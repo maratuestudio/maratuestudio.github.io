@@ -262,23 +262,34 @@
       "</div>" +
       '<div id="slLoteSaida" style="margin-top:14px;"></div>' +
 
-      '<div class="form-section-title" style="margin-top:26px;">Peça já vendida (retroativo)</div>' +
+      '<div class="form-section-title" style="margin-top:26px;">Peça especial</div>' +
       '<p style="font-family:var(--clother);font-size:.78rem;opacity:.62;margin:0 2px 12px;line-height:1.5;">' +
-        "Peça que saiu antes do sistema existir. Nasce vinculada e pronta pra quem comprou registrar. " +
-        "Sem adesivo: o link vai por email. Campo que você não souber fica vazio — data chutada, nunca.</p>" +
-      '<label class="f"><span>Produto</span><select id="slRetProd"></select></label>' +
+        "Cria o selo já vinculado e pronto pra quem tem a peça registrar. Serve pro que saiu " +
+        "antes do sistema existir, pra encomenda e pra peça única — e não precisa estar no " +
+        "catálogo. Sem adesivo: o link vai por email. Campo que você não souber fica vazio.</p>" +
+      '<label class="f"><span>Peça</span><select id="slRetProd"></select></label>' +
+      '<div id="slForaCat" style="display:none;">' +
+        '<label class="f"><span>Nome da peça</span><input id="slRetNome" placeholder="ex: Carranca de Ouro"></label>' +
+        '<label class="f"><span>Linha de baixo (opcional)</span><input id="slRetSub" placeholder="ex: Peça única · 12 × 8 cm"></label>' +
+      "</div>" +
       '<div style="display:flex;gap:8px;flex-wrap:wrap;">' +
         '<label class="f" style="flex:0 0 100px;"><span>Quantos</span><input id="slRetN" type="number" min="1" max="200" value="1" inputmode="numeric"></label>' +
         '<label class="f" style="flex:1;min-width:140px;"><span>Impressa em (se souber)</span><input id="slRetData" type="date"></label>' +
       "</div>" +
       '<label class="f"><span>Texto desta peça (opcional)</span>' +
         '<textarea id="slRetTexto" rows="2" placeholder="ex: Peça única feita para a exposição do Mercado. Manda no lugar do texto de origem do produto."></textarea></label>' +
-      '<button type="button" class="btn ghost" id="slRetGerar" style="width:100%;">Criar selos retroativos</button>' +
+      '<button type="button" class="btn ghost" id="slRetGerar" style="width:100%;">Criar selo da peça especial</button>' +
       '<div id="slRetSaida" style="margin-top:12px;"></div>';
 
     carregaProdutos().then(function () {
-      $id("slRetProd").innerHTML = produtos.filter(function (p) { return p.ativo; })
-        .map(function (p) { return '<option value="' + esc(p.id) + '">' + esc(p.nome) + "</option>"; }).join("");
+      $id("slRetProd").innerHTML =
+        produtos.filter(function (p) { return p.ativo; })
+          .map(function (p) { return '<option value="' + esc(p.id) + '">' + esc(p.nome) + "</option>"; }).join("") +
+        '<option value="">— peça fora do catálogo —</option>';
+      // sem produto do catalogo, o nome e a linha de baixo vem do proprio selo
+      $id("slRetProd").onchange = function () {
+        $id("slForaCat").style.display = this.value ? "none" : "";
+      };
     }).catch(function () {});
 
     $id("slGerar").onclick = function () {
@@ -302,15 +313,18 @@
 
     $id("slRetGerar").onclick = function () {
       var sku = $id("slRetProd").value;
+      var nome = $id("slRetNome").value.trim();
       var n = Number($id("slRetN").value) || 0;
-      if (!sku) return toast("escolha o produto");
+      if (!sku && !nome) return toast("escolha a peça ou escreva o nome dela");
       if (n < 1 || n > 200) return toast("de 1 a 200 por vez");
       var btn = this;
       btn.disabled = true;
-      pedeJson(API + "/api/selos/retroativo", {
+      pedeJson(API + "/api/selos/especial", {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          sku: sku, n: n,
+          sku: sku || null, n: n,
+          nome_peca: sku ? null : nome,
+          sub_peca: sku ? null : ($id("slRetSub").value.trim() || null),
           data_impressao: $id("slRetData").value || null,
           texto_selo: $id("slRetTexto").value.trim() || null
         })
@@ -323,7 +337,7 @@
             '<button type="button" class="btn ghost" data-apaga="' + esc(c) + '" style="padding:4px 10px;font-size:11px;color:' + LARANJA + ';">apagar</button></div>';
         }).join("");
         $id("slRetSaida").innerHTML = '<p style="font-family:var(--clother);font-size:.82rem;margin:0 2px 8px;">' +
-          (d.codigos || []).length + " selos criados. Mande o link pra quem comprou.</p>" + links;
+          (d.codigos || []).length + " selo(s) criado(s). Mande o link pra quem tem a peça.</p>" + links;
         /* Apagar aqui mesmo: e onde voce percebe que criou errado. */
         Array.prototype.forEach.call($id("slRetSaida").querySelectorAll("[data-apaga]"), function (b) {
           b.onclick = function () {
@@ -674,7 +688,7 @@
           '<code style="display:block;font-size:12.5px;letter-spacing:.06em;">' + esc(s.codigo) + "</code>" +
           '<span style="font-size:11px;opacity:.6;">' + esc(s.produto_nome || "sem peça") +
             (s.data_impressao ? " · " + esc(fmtBR(s.data_impressao)) : "") +
-            (s.origem === "retroativo" ? " · retroativo" : "") + "</span></span>" +
+            (s.origem === "especial" ? " · especial" : "") + "</span></span>" +
         '<span style="flex:0 0 auto;font-size:11px;opacity:.55;display:flex;align-items:center;gap:4px;">' +
           IC.olho + (s.acessos || 0) + "</span>" +
         "</div>";

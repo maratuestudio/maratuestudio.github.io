@@ -71,19 +71,33 @@
     .mrt-seal{width:96px;height:96px;position:absolute;top:20px;right:24px;display:block;
       transform:rotate(-6deg);filter:drop-shadow(0 3px 5px rgba(28,26,24,.3));
       cursor:zoom-in;-webkit-tap-highlight-color:transparent}
-    .mrt-seal:focus-visible{outline:2px solid #FFFCF6;outline-offset:3px;border-radius:50%}
+    /* Anel de foco no cartão sim, dentro da lupa não: lá o selo está girado e enorme, e o
+       anel virava um quadrado torto e cortado na tela. Na lupa quem recebe o foco é o
+       próprio fundo escuro, que não gira. */
+    .mrt-seal:focus-visible{outline:2px solid #FFFCF6;outline-offset:4px}
 
-    /* ══ SELO EM TELA CHEIA ══ toque no selo: ele gira uma volta enquanto cresce, e o
-       certificado fica no escuro atrás. Sair é tocar em qualquer lugar, ou Esc. */
+    /* ══ SELO EM TELA CHEIA ══ toque no selo: ele dá uma volta em torno do próprio eixo,
+       mostrando frente, verso e frente de novo, enquanto cresce. O certificado fica no
+       escuro atrás. Sair é tocar em qualquer lugar, ou Esc. */
     .selo-lupa{position:fixed;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;
       background:rgba(12,10,9,.86);opacity:0;transition:opacity .3s ease;cursor:zoom-out;
-      -webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+      perspective:1500px;-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+    .selo-lupa:focus{outline:none}
     .selo-lupa.on{opacity:1}
+    /* rotateY, não rotate: o selo vira como uma moeda, não roda de cabeça pra baixo */
     .selo-lupa .mrt-seal{position:static;top:auto;right:auto;cursor:zoom-out;
       width:min(76vw,380px);height:min(76vw,380px);
-      transform:rotate(-6deg) scale(.24);
-      transition:transform .72s cubic-bezier(.18,.85,.24,1)}
-    .selo-lupa.on .mrt-seal{transform:rotate(354deg) scale(1)}
+      transform:rotateY(0deg) scale(.24);
+      transition:transform .8s cubic-bezier(.22,.72,.24,1)}
+    .selo-lupa.on .mrt-seal{transform:rotateY(360deg) scale(1)}
+    /* Dentro da lupa o selo sai do caminho do Tab (o JS troca o tabindex): quem manda é o
+       próprio diálogo, que fecha no Esc. Assim não sobra elemento focável sem anel visível. */
+    .selo-lupa .mrt-seal:focus,.selo-lupa .mrt-seal:focus-visible{outline:none}
+    /* Quem pediu menos movimento não leva a volta de 360°: só o crescer. */
+    @media (prefers-reduced-motion:reduce){
+      .selo-lupa .mrt-seal{transform:scale(.6);transition:transform .3s ease}
+      .selo-lupa.on .mrt-seal{transform:scale(1)}
+    }
     .selo-lupa-dica{position:absolute;left:0;right:0;bottom:max(30px,env(safe-area-inset-bottom));
       text-align:center;font-size:12.5px;letter-spacing:.06em;color:rgba(255,252,246,.62);
       opacity:0;transition:opacity .3s ease .5s}
@@ -108,10 +122,18 @@
     .mrt-verif{margin:0;font-size:15px;font-weight:500;color:#14523B;line-height:1.25}
     .mrt-verif-sub{margin:2px 0 0;font-size:11.5px;color:#3E6E5B}
     .mrt-dono{margin:4px 0 0;font-size:12.5px;color:#14523B}
-    .mrt-opiniao{flex:0 0 auto;padding:8px 15px;border-radius:999px;background:var(--verde);
-      color:#FFFCF6;font-size:12.5px;font-weight:700;text-decoration:none;white-space:nowrap}
-    .mrt-opiniao:active{transform:translateY(1px)}
-    @media (max-width:400px){.mrt-opiniao{flex:1 1 100%;text-align:center;margin-top:4px}}
+    /* Fora do cartão, solto no laranja: é convite, não parte do documento. A pílula é a
+       mesma assinatura do site (.clink-pill, .servicos-band__cta): areia, borda preta de
+       1.5px e sombra dura de 3px que encolhe no toque. Vidro fosco não existe em lugar
+       nenhum do MARATU e ainda reprovava no contraste sobre o laranja. */
+    .mrt-opiniao{display:inline-flex;align-items:center;justify-content:center;
+      padding:13px 22px;border-radius:999px;text-decoration:none;
+      background:var(--areia-orla);border:1.5px solid #0D0D0B;box-shadow:3px 3px 0 0 #0D0D0B;
+      color:#0D0D0B;font-size:13.5px;font-weight:700;line-height:1.2;text-align:center;
+      transition:transform .15s ease,box-shadow .15s ease}
+    .mrt-opiniao:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 0 #0D0D0B}
+    .mrt-opiniao:active{transform:translate(2px,2px);box-shadow:1px 1px 0 0 #0D0D0B}
+    .mrt-opiniao:focus-visible{outline:2px solid #FFFCF6;outline-offset:3px}
 
     /* ══ AVISOS ══ selo sem peça, selo bloqueado, código que não existe. Cara da marca,
        não cara de erro. */
@@ -276,7 +298,7 @@
   /* ---- selo em tela cheia ---- */
   /* O selo é MOVIDO pro fundo escuro, não clonado: os gradientes viajam junto dentro do
      próprio <defs> e não há dois elementos disputando o mesmo id. */
-  var lugar=seal.parentNode, lupa=null;
+  var lugar=seal.parentNode, lupa=null, porTeclado=false;
   seal.setAttribute('role','button');
   seal.setAttribute('tabindex','0');
   seal.setAttribute('aria-label','Ver o selo de autenticidade de perto');
@@ -292,7 +314,9 @@
     lupa.setAttribute('role','dialog');
     lupa.setAttribute('aria-modal','true');
     lupa.setAttribute('aria-label','Selo de autenticidade');
+    lupa.tabIndex=-1;
     lupa.innerHTML='<p class="selo-lupa-dica">toque pra voltar</p>';
+    seal.setAttribute('tabindex','-1');   // some do Tab enquanto está ampliado
     lupa.appendChild(seal);
     document.body.appendChild(lupa);
     document.body.classList.add('selo-lupa-aberta');
@@ -301,7 +325,7 @@
     if(palco){ palco.setAttribute('aria-hidden','true'); try{palco.inert=true;}catch(e){} }
     void lupa.offsetWidth;          // força o quadro inicial antes de animar
     lupa.classList.add('on');
-    try{seal.focus({preventScroll:true});}catch(e){}
+    try{lupa.focus({preventScroll:true});}catch(e){}
     if(typeof gtag==='function'){
       var alvo=document.querySelector('[data-estado]');
       gtag('event','selo_lupa',{estado:alvo?alvo.getAttribute('data-estado'):'desconhecido'});
@@ -322,8 +346,10 @@
       if(devolveu)return;
       devolveu=true;
       indo.removeEventListener('touchmove',barraToque);
+      seal.setAttribute('tabindex','0');   // de volta ao cartão, volta pro Tab
       lugar.insertBefore(seal,lugar.firstChild);
       indo.remove();
+      if(porTeclado){try{seal.focus({preventScroll:true});}catch(e){}}
     };
     seal.addEventListener('transitionend',function fim(e){
       if(e.propertyName!=='transform')return;
@@ -337,7 +363,11 @@
     if(lupa)fecharLupa(); else abrirLupa();
   });
   seal.addEventListener('keydown',function(e){
-    if(e.key==='Enter'||e.key===' '){e.preventDefault();if(lupa)fecharLupa();else abrirLupa();}
+    if(e.key==='Enter'||e.key===' '){
+      e.preventDefault();
+      porTeclado=true;              // só devolve o foco pro selo quem chegou por teclado
+      if(lupa)fecharLupa(); else abrirLupa();
+    }
   });
   document.addEventListener('click',function(e){
     if(lupa&&e.target!==seal&&!seal.contains(e.target))fecharLupa();

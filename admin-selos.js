@@ -319,10 +319,26 @@
           return '<div style="display:flex;gap:8px;align-items:center;padding:7px 2px;border-bottom:1px solid rgba(13,13,11,.1);">' +
             '<code style="font-size:12.5px;letter-spacing:.06em;">' + esc(c) + "</code>" +
             '<a href="' + SITE + "/a/" + esc(c) + '" target="_blank" rel="noopener" style="font-size:11.5px;color:' + LARANJA + ';margin-left:auto;">abrir</a>' +
-            '<button type="button" class="btn ghost" data-copia="' + SITE + "/a/" + esc(c) + '" style="padding:4px 10px;font-size:11px;">copiar link</button></div>';
+            '<button type="button" class="btn ghost" data-copia="' + SITE + "/a/" + esc(c) + '" style="padding:4px 10px;font-size:11px;">copiar link</button>' +
+            '<button type="button" class="btn ghost" data-apaga="' + esc(c) + '" style="padding:4px 10px;font-size:11px;color:' + LARANJA + ';">apagar</button></div>';
         }).join("");
         $id("slRetSaida").innerHTML = '<p style="font-family:var(--clother);font-size:.82rem;margin:0 2px 8px;">' +
           (d.codigos || []).length + " selos criados. Mande o link pra quem comprou.</p>" + links;
+        /* Apagar aqui mesmo: e onde voce percebe que criou errado. */
+        Array.prototype.forEach.call($id("slRetSaida").querySelectorAll("[data-apaga]"), function (b) {
+          b.onclick = function () {
+            var c = b.getAttribute("data-apaga");
+            b.disabled = true;
+            pedeJson(API + "/api/selos/apagar", {
+              method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ codigo: c })
+            }).then(function () {
+              b.parentNode.style.opacity = ".4";
+              b.parentNode.querySelector("code").style.textDecoration = "line-through";
+              b.textContent = "apagado";
+              toast(c + " apagado");
+            }).catch(function (e) { toast(String(e.message || e)); b.disabled = false; });
+          };
+        });
         Array.prototype.forEach.call($id("slRetSaida").querySelectorAll("[data-copia]"), function (b) {
           b.onclick = function () {
             var t = b.getAttribute("data-copia");
@@ -710,12 +726,43 @@
           (podeSoltar ? '<button type="button" class="btn ghost" data-ac="ativo">Desbloquear</button>' : "") +
           '<a class="btn ghost" href="' + SITE + "/a/" + esc(s.codigo) + '" target="_blank" rel="noopener" ' +
             'style="text-decoration:none;text-align:center;">Abrir a página pública</a>' +
+          /* Apagar e diferente de bloquear: bloquear guarda o historico, apagar some com o
+             codigo. Dois toques, porque nao tem como desfazer. */
+          '<button type="button" class="btn ghost" id="slApagar" style="color:' + LARANJA + ';">Apagar este selo</button>' +
         "</div>" +
       "</div>";
     document.body.appendChild(b);
     var fecha = function () { b.remove(); };
     b.addEventListener("click", function (ev) { if (ev.target === b) fecha(); });
     b.querySelector("[data-fecha]").onclick = fecha;
+    var apagar = b.querySelector("#slApagar");
+    if (apagar) {
+      var armado = false;
+      apagar.onclick = function () {
+        if (!armado) {
+          armado = true;
+          apagar.textContent = "Tem certeza? Não dá pra desfazer";
+          apagar.style.background = LARANJA;
+          apagar.style.color = "#F0ECE4";
+          setTimeout(function () {
+            if (!armado) return;
+            armado = false;
+            apagar.textContent = "Apagar este selo";
+            apagar.style.background = "";
+            apagar.style.color = LARANJA;
+          }, 4000);
+          return;
+        }
+        apagar.disabled = true;
+        pedeJson(API + "/api/selos/apagar", {
+          method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ codigo: s.codigo })
+        }).then(function () {
+          toast("selo " + s.codigo + " apagado");
+          fecha();
+          recarrega();
+        }).catch(function (e) { toast(String(e.message || e)); apagar.disabled = false; });
+      };
+    }
     Array.prototype.forEach.call(b.querySelectorAll("[data-ac]"), function (btn) {
       btn.onclick = function () {
         var ac = btn.getAttribute("data-ac");

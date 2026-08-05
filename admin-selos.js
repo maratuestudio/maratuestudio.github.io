@@ -271,6 +271,8 @@
         '<label class="f" style="flex:0 0 100px;"><span>Quantos</span><input id="slRetN" type="number" min="1" max="200" value="1" inputmode="numeric"></label>' +
         '<label class="f" style="flex:1;min-width:140px;"><span>Impressa em (se souber)</span><input id="slRetData" type="date"></label>' +
       "</div>" +
+      '<label class="f"><span>Texto desta peça (opcional)</span>' +
+        '<textarea id="slRetTexto" rows="2" placeholder="ex: Peça única feita para a exposição do Mercado. Manda no lugar do texto de origem do produto."></textarea></label>' +
       '<button type="button" class="btn ghost" id="slRetGerar" style="width:100%;">Criar selos retroativos</button>' +
       '<div id="slRetSaida" style="margin-top:12px;"></div>';
 
@@ -307,7 +309,11 @@
       btn.disabled = true;
       pedeJson(API + "/api/selos/retroativo", {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ sku: sku, n: n, data_impressao: $id("slRetData").value || null })
+        body: JSON.stringify({
+          sku: sku, n: n,
+          data_impressao: $id("slRetData").value || null,
+          texto_selo: $id("slRetTexto").value.trim() || null
+        })
       }).then(function (d) {
         var links = (d.codigos || []).map(function (c) {
           return '<div style="display:flex;gap:8px;align-items:center;padding:7px 2px;border-bottom:1px solid rgba(13,13,11,.1);">' +
@@ -688,7 +694,13 @@
         (s.pedido_ref ? '<p style="font-family:var(--clother);font-size:.8rem;opacity:.7;margin:0 0 10px;">pedido ' + esc(s.pedido_ref) + "</p>" : "") +
 
         '<div style="display:flex;flex-direction:column;gap:8px;">' +
-          (podeLiberar
+          /* Texto so desta peca. Vazio volta a herdar o texto de origem do produto. */
+        '<label class="f"><span>Texto desta peça</span>' +
+          '<textarea id="slTexto" rows="2" placeholder="' +
+          (s.produto_origem ? "herdando do produto: " + esc(s.produto_origem).slice(0, 70) : "sem texto") +
+          '">' + esc(s.texto_selo || "") + "</textarea></label>" +
+        '<button type="button" class="btn ghost" data-ac="texto" style="margin-bottom:8px;">Salvar o texto</button>' +
+        (podeLiberar
             ? '<p style="font-family:var(--clother);font-size:.74rem;opacity:.6;margin:2px 2px 6px;line-height:1.45;">' +
               "Tira o nome do certificado e deixa a peça livre pra outra pessoa registrar. " +
               "Serve pra presente, nome digitado errado ou registro indevido.</p>" +
@@ -708,7 +720,13 @@
       btn.onclick = function () {
         var ac = btn.getAttribute("data-ac");
         btn.disabled = true;
-        var p = ac === "liberar"
+        var campoTexto = b.querySelector("#slTexto");
+        var p = ac === "texto"
+          ? pedeJson(API + "/api/selos/texto", {
+              method: "POST", headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ codigo: s.codigo, texto_selo: (campoTexto && campoTexto.value.trim()) || null })
+            })
+          : ac === "liberar"
           ? pedeJson(API + "/api/selos/liberar", {
               method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ codigo: s.codigo })
             })
@@ -717,6 +735,7 @@
               body: JSON.stringify({ codigo: s.codigo, status: ac })
             });
         p.then(function () {
+          if (ac === "texto") { toast(campoTexto.value.trim() ? "texto salvo" : "texto apagado, volta a herdar do produto"); s.texto_selo = campoTexto.value.trim(); btn.disabled = false; return; }
           toast(ac === "liberar" ? "nome apagado, a peça voltou a ficar livre" : "selo agora está " + estInfo(ac).lbl.toLowerCase());
           fecha();
           recarrega();

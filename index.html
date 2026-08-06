@@ -986,6 +986,10 @@
       box-shadow: 2px 2px 0 0 var(--preto);
       display: inline-flex; align-items: center; line-height: 1;
     }
+    /* Pré-venda: única pílula vazada do grupo, pra ler como estado e não como coleção. */
+    .pill-prevenda {
+      background: var(--areia); color: var(--preto);
+    }
     .pill-origens {
       background: #2E6FC4; color: var(--areia);
     }
@@ -1579,7 +1583,7 @@
           <button class="tam-btn tam-esgotado" disabled>G</button>
           <button class="tam-btn tam-esgotado" disabled>GG</button>
         </div>
-        <a href="https://wa.me/5579991957415?text=Ol%C3%A1%21%20Quero%20a%20blusa%20Azulejo%20Portugu%C3%AAs%20%F0%9F%A7%A1" target="_blank" rel="noopener" class="btn-encomendar" data-produto="Azulejo Português">Peça agora</a>
+        <a href="https://wa.me/5579991957415?text=Ol%C3%A1%21%20Quero%20a%20blusa%20Azulejo%20Portugu%C3%AAs." target="_blank" rel="noopener" class="btn-encomendar" data-produto="Azulejo Português">Peça agora</a>
       </div>
       <div class="produto-card" data-tipo="blusa" data-faixa="blusas">
         <div class="produto-img-wrap quadrado" onclick="abrirLightbox('blusa-maratu-frente.jpg?v=6','Maratu')">
@@ -1598,7 +1602,7 @@
           <button class="tam-btn tam-esgotado" disabled>G</button>
           <button class="tam-btn tam-esgotado" disabled>GG</button>
         </div>
-        <a href="https://wa.me/5579991957415?text=Ol%C3%A1%21%20Quero%20a%20blusa%20Maratu%20%F0%9F%A7%A1" target="_blank" rel="noopener" class="btn-encomendar" data-produto="Maratu">Peça agora</a>
+        <a href="https://wa.me/5579991957415?text=Ol%C3%A1%21%20Quero%20a%20blusa%20Maratu." target="_blank" rel="noopener" class="btn-encomendar" data-produto="Maratu">Peça agora</a>
       </div>
       </div>
     </div>
@@ -2398,6 +2402,7 @@
         }
 
         var badges = '<div class="tag-badge">';
+        if (p.prevenda) badges += '<span class="pill-colecao pill-prevenda">Pré-venda</span>';
         if (p.novo) badges += '<div class="tag-novo"><span>NOVO</span></div>';
         (p.colecoes || []).forEach(function(c) { badges += pill(c); });
         badges += '</div>';
@@ -2437,7 +2442,7 @@
             var dis = t.esgotado ? ' disabled' : '';
             return '<button class="' + cls + '"' + dis + '>' + esc(t.t) + '</button>';
           }).join('') + '</div>';
-          btn = '<a href="https://wa.me/5579991957415?text=' + encodeURIComponent('Olá! Quero a blusa ' + p.nome + ' 🧡') + '" target="_blank" rel="noopener" class="btn-encomendar" data-produto="' + nomeAttr + '">Peça agora</a>';
+          btn = '<a href="https://wa.me/5579991957415?text=' + encodeURIComponent('Olá! Quero a blusa ' + p.nome + '.') + '" target="_blank" rel="noopener" class="btn-encomendar" data-produto="' + nomeAttr + '">Peça agora</a>';
         } else if (cfg.tipo === 'poster') {
           extraBlock = '<div class="tam-selector" id="tam-' + esc(p.id) + '">' +
             ['A4','A3','A2','A1'].map(function(t) {

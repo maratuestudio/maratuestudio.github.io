@@ -10,6 +10,8 @@
   if (window.__maratuCaixa) return;
   window.__maratuCaixa = true;
 
+  var API = "https://maratu-api.raphaelnascimento.workers.dev";
+
   var FONTES = {
     pix:    { lbl: "Pix",    cor: "#3E7D4F" },
     mp:     { lbl: "MP",     cor: "#2E6BB8" },
@@ -49,6 +51,15 @@
   }
 
   var MESES = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"];
+
+  function toast(txt) {
+    var t = document.createElement("div");
+    t.textContent = txt;
+    t.style.cssText = "position:fixed;left:50%;bottom:26px;transform:translateX(-50%);z-index:100000;background:#0D0D0B;color:#F0ECE4;" +
+      "font-family:inherit;font-size:13px;font-weight:700;padding:12px 18px;border-radius:12px;box-shadow:3px 3px 0 0 #C8501A;max-width:88vw;text-align:center;";
+    document.body.appendChild(t);
+    setTimeout(function () { t.style.transition = "opacity .3s"; t.style.opacity = "0"; setTimeout(function () { t.remove(); }, 320); }, 2600);
+  }
 
   /* ---- origem e parse ---- */
   function fonteDe(l) {
@@ -272,13 +283,30 @@
         }).join("") + "</div></div>";
     }).join("");
     list.querySelectorAll("[data-del]").forEach(function (b) {
-      b.addEventListener("click", function () {
-        var id = b.getAttribute("data-del");
-        setLancs(getLancs().filter(function (l) { return String(l.id) !== String(id); }));
-        render();
-        try { if (typeof renderPainel === "function") renderPainel(); } catch (e) {}
-      });
+      b.addEventListener("click", function () { apagar(b.getAttribute("data-del")); });
     });
+  }
+
+  /* Apagar e definitivo. Entrada automatica (Pix do BTG, Mercado Pago) volta no proximo
+     cron se so sumir da lista, entao o id tambem entra na lista de ignorados do Worker. */
+  function apagar(id) {
+    var lanc = null;
+    getLancs().forEach(function (l) { if (String(l.id) === String(id)) lanc = l; });
+    if (!lanc) return;
+    var it = parseItem(lanc);
+    var auto = /^(btg-|mp-)/.test(String(id));
+    if (!confirm("Apagar " + it.title + " (" + BRL(it.valor) + ")?\n\n" +
+      (auto ? "Some do caixa pra sempre — nem a sincronização traz de volta." : "Não dá pra desfazer."))) return;
+    setLancs(getLancs().filter(function (l) { return String(l.id) !== String(id); }));
+    render();
+    try { if (typeof renderPainel === "function") renderPainel(); } catch (e) {}
+    if (!auto) return;
+    fetch(API + "/api/entradas/ignorar", {
+      method: "POST",
+      headers: { Authorization: "Bearer ", "Content-Type": "application/json" },
+      body: JSON.stringify({ id: id, motivo: "apagado na Caixa" })
+    }).then(function (r) { if (!r.ok) toast("Apaguei da lista, mas pode voltar na sincronização"); })
+      .catch(function () { toast("Sem conexão — pode voltar na sincronização"); });
   }
 
   /* ---- boot: monta, sobrescreve renderVendas, renderiza ---- */

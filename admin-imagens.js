@@ -17,13 +17,13 @@
    de upload que o formulario ja faz. O embrulho de autenticacao do admin.js
    roda por dentro deste, entao as chamadas daqui saem autenticadas.
 
-   A MESMA marca existe em tools/marca-dagua.py, que faz o lote das imagens
+   A MESMA marca existe em tools/marca_dagua.py, que faz o lote das imagens
    antigas. As duas ESPEC precisam bater. */
 (function () {
   var API = 'https://maratu-api.raphaelnascimento.workers.dev';
 
   // Fracoes da largura da imagem, pra marca sair igual em qualquer tamanho.
-  // Espelho de ESPEC em tools/marca-dagua.py — mexeu aqui, mexa la.
+  // Espelho de ESPEC em tools/marca_dagua.py — mexeu aqui, mexa la.
   var ESPEC = {
     largura: 1400,
     qualidade: 0.82,

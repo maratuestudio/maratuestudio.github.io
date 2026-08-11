@@ -1,0 +1,25 @@
+<!doctype html>
+<!-- Banco de teste: roda a marca d'agua do admin (admin-imagens.js) fora do
+     admin, pra comparar com a do Python (tools/marca-dagua.py). Nao e pagina
+     do site; fica em tools/ so pra conferencia. -->
+<html lang="pt-BR"><head><meta charset="utf-8"><title>marca d'agua — teste</title>
+<style>
+  @font-face { font-family:'Jack';    src:url('/TRYJackAlpha-Regular.woff2?v=2') format('woff2'), url('/TRYJackAlpha-Regular.ttf') format('truetype'); font-weight:400; }
+  @font-face { font-family:'Clother'; src:url('/TRYClother-Bold.woff2') format('woff2'), url('/TRYClother-Bold.ttf') format('truetype'); font-weight:700; }
+  body { font-family:'Clother',sans-serif; background:#F0EBE3; padding:20px; }
+</style></head><body>
+<p id="estado">carregando…</p>
+<script src="/admin-imagens.js"></script>
+<script>
+window.rodar = async function (caminho) {
+  const blob = await (await fetch(caminho)).blob();
+  const d = await window.__maratuImagens.derivados(blob);
+  const b64 = b => new Promise(ok => { const r = new FileReader(); r.onload = () => ok(r.result); r.readAsDataURL(b); });
+  return {
+    tipo: d.marcada.tipo,
+    miniatura: { bytes: d.miniatura.blob.size, dados: await b64(d.miniatura.blob) },
+    marcada: { bytes: d.marcada.blob.size, dados: await b64(d.marcada.blob) }
+  };
+};
+document.getElementById('estado').textContent = 'pronto';
+</script></body></html>

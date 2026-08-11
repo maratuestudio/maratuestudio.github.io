@@ -1,13 +1,19 @@
 #!/usr/bin/env python3
-"""Gera as miniaturas WebP do catalogo e sobe pro R2 em thumbs/.
+"""Gera as variantes leves do catalogo e sobe pro R2.
 
 Os originais no R2 sao PNG em resolucao de impressao (26 MB so nas capas dos
 cards). O card mostra no maximo ~300 px de largura, entao o navegador baixava
-100x mais bytes do que precisava. Aqui o original fica intacto e ganha um
-irmao leve: thumbs/<caminho sem extensao>.webp.
+100x mais bytes do que precisava. Aqui o original fica intacto e ganha dois
+irmaos:
+
+  thumbs/<caminho sem extensao>.webp   1000 px, limpa      -> card    (?t=1)
+  wm/<caminho sem extensao>.webp       1400 px, com marca  -> ampliada (?w=1)
+
+Isto e o lote das imagens antigas. Imagem nova ja sai assim do proprio admin,
+por admin-imagens.js — as duas implementacoes da marca precisam bater.
 
 Uso:
-  python3 tools/gerar-thumbs.py            # gera em tools/thumbs-out
+  python3 tools/gerar-thumbs.py            # so gera, em tools/thumbs-out
   python3 tools/gerar-thumbs.py --subir    # gera e sobe pro R2
 """
 import json
@@ -19,12 +25,14 @@ from concurrent.futures import ThreadPoolExecutor
 
 from PIL import Image
 
+import marca_dagua
+
 API = "https://maratu-api.raphaelnascimento.workers.dev"
 BUCKET = "maratu-catalog"
 RAIZ = os.path.dirname(os.path.abspath(__file__))
 SRC = os.path.join(RAIZ, "thumbs-src")
 OUT = os.path.join(RAIZ, "thumbs-out")
-LARGURA = 1000   # cobre o card em 3x e ainda serve o lightbox
+LARGURA = 1000   # cobre o card em 3x
 QUALIDADE = 78
 
 
@@ -61,20 +69,29 @@ def baixar(k):
 
 
 def gerar(k):
+    """Devolve (chave, bytes do original, {variante: arquivo local})."""
     origem = baixar(k)
-    destino = os.path.join(OUT, os.path.splitext(k)[0].replace("/", "__") + ".webp")
     os.makedirs(OUT, exist_ok=True)
+    base = os.path.splitext(k)[0].replace("/", "__")
     im = Image.open(origem)
     if im.mode not in ("RGB", "RGBA"):
         im = im.convert("RGBA" if "A" in im.getbands() else "RGB")
-    if im.width > LARGURA:
-        im = im.resize((LARGURA, round(im.height * LARGURA / im.width)), Image.LANCZOS)
-    im.save(destino, "WEBP", quality=QUALIDADE, method=6)
-    return k, os.path.getsize(origem), os.path.getsize(destino), destino
+
+    mini = os.path.join(OUT, base + ".webp")
+    peq = im
+    if peq.width > LARGURA:
+        peq = peq.resize((LARGURA, round(peq.height * LARGURA / peq.width)), Image.LANCZOS)
+    peq.save(mini, "WEBP", quality=QUALIDADE, method=6)
+
+    marca = os.path.join(OUT, base + ".wm.webp")
+    marca_dagua.aplicar(im).save(
+        marca, "WEBP", quality=marca_dagua.ESPEC["qualidade"], method=6)
+
+    return k, os.path.getsize(origem), {"thumbs": mini, "wm": marca}
 
 
-def subir(k, arquivo):
-    chave = "thumbs/" + os.path.splitext(k)[0] + ".webp"
+def subir(k, variante, arquivo):
+    chave = variante + "/" + os.path.splitext(k)[0] + ".webp"
     cmd = ["npx", "--yes", "wrangler@4", "r2", "object", "put",
            f"{BUCKET}/{chave}", "--file", arquivo,
            "--content-type", "image/webp", "--remote"]
@@ -88,25 +105,28 @@ def main():
     print(f"{len(ks)} imagens no catalogo")
     with ThreadPoolExecutor(6) as ex:
         feitos = list(ex.map(gerar, ks))
-    antes = sum(a for _, a, _, _ in feitos)
-    depois = sum(d for _, _, d, _ in feitos)
-    for k, a, d, _ in sorted(feitos, key=lambda r: -r[1])[:8]:
-        print(f"  {a/1e6:6.2f} MB -> {d/1e3:6.0f} KB  {k}")
-    print(f"total: {antes/1e6:.1f} MB -> {depois/1e6:.2f} MB "
-          f"({100 - depois/antes*100:.0f}% a menos)")
+    antes = sum(a for _, a, _ in feitos)
+    mini = sum(os.path.getsize(v["thumbs"]) for _, _, v in feitos)
+    marca = sum(os.path.getsize(v["wm"]) for _, _, v in feitos)
+    for k, a, v in sorted(feitos, key=lambda r: -r[1])[:8]:
+        print(f"  {a/1e6:6.2f} MB -> {os.path.getsize(v['thumbs'])/1e3:5.0f} KB card"
+              f" / {os.path.getsize(v['wm'])/1e3:5.0f} KB marcada   {k}")
+    print(f"total: {antes/1e6:.1f} MB de original -> "
+          f"{mini/1e6:.2f} MB em card + {marca/1e6:.2f} MB marcadas")
 
     if "--subir" not in sys.argv:
         print("\n(nada foi pro R2; rode com --subir)")
         return
     ruins = []
-    for k, _, _, arquivo in feitos:
-        chave, ok, log = subir(k, arquivo)
+    envios = [(k, var, arq) for k, _, v in feitos for var, arq in v.items()]
+    for k, var, arq in envios:
+        chave, ok, log = subir(k, var, arq)
         print(("  ok  " if ok else "  ERRO ") + chave)
         if not ok:
             ruins.append((chave, log))
     for chave, log in ruins:
         print(f"\nfalhou {chave}:\n{log}")
-    print(f"\nsubiram {len(feitos) - len(ruins)}/{len(feitos)}")
+    print(f"\nsubiram {len(envios) - len(ruins)}/{len(envios)}")
 
 
 if __name__ == "__main__":

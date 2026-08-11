@@ -2386,9 +2386,11 @@
       function cardHTML(p, cfg, isExtra) {
         var img = R2 + p.imagem_principal;
         var hoverImg = p.imagem_hover ? R2 + p.imagem_hover : null;
-        // O card e o lightbox carregam a miniatura de 1000 px (?t=1) — cobre os 88vh
-        // do lightbox e evita baixar 2,5 MB por toque. O schema.org fica com o original.
+        // O card carrega a miniatura limpa de 1000 px (?t=1). A tela cheia carrega
+        // a versao de 1400 px com marca d'agua (?w=1) — a marca so aparece quando o
+        // visitante amplia. O schema.org fica com o original.
         var imgCard = img + '?t=1';
+        var imgCheia = img + '?w=1';
         var hoverCard = hoverImg ? hoverImg + '?t=1' : null;
         var nomeAttr = esc(p.nome);
         var precoReais = Math.round(p.preco / 100);
@@ -2422,13 +2424,13 @@
         if (cfg.tipo === 'adesivo') {
           wrapClass = 'produto-img-wrap';
           wrapStyle = ' style="aspect-ratio: 875 / 1241;"';
-          wrapOnclick = " onclick=\"abrirLightbox('" + jsStr(imgCard) + "','" + jsStr(p.nome) + "')\"";
+          wrapOnclick = " onclick=\"abrirLightbox('" + jsStr(imgCheia) + "','" + jsStr(p.nome) + "')\"";
         } else if (cfg.tipo === 'poster') {
           wrapClass = 'produto-img-wrap poster';
-          wrapOnclick = " onclick=\"abrirLightbox('" + jsStr(imgCard) + "','" + jsStr(p.nome) + "')\"";
+          wrapOnclick = " onclick=\"abrirLightbox('" + jsStr(imgCheia) + "','" + jsStr(p.nome) + "')\"";
         } else {
           wrapClass = 'produto-img-wrap quadrado';
-          wrapOnclick = " onclick=\"abrirLightbox('" + jsStr(imgCard) + "','" + jsStr(p.nome) + "')\"";
+          wrapOnclick = " onclick=\"abrirLightbox('" + jsStr(imgCheia) + "','" + jsStr(p.nome) + "')\"";
         }
 
         var subLines = String(p.subtitulo || '').split('|').map(function(s){return s.trim();}).filter(Boolean);

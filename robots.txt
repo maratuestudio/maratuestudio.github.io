@@ -4,5 +4,6 @@ Disallow: /admin.html
 Disallow: /admin
 Disallow: /login
 Disallow: /login.html
+Disallow: /tools/
 
 Sitemap: https://maratu.com.br/sitemap.xml

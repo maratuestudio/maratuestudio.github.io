@@ -924,6 +924,45 @@
       position: relative; overflow: hidden;
       border-radius: 0; margin: 0 -10px 8px; background: #e4dfd6;
     }
+    /* CELULAR: a arte é a vitrine, então o card sai de cima dela.
+       O balão de preço tem 81px num quadro de 165px, e com três selos de
+       coleção o Farol de Atalaia ficava com 25% da arte tapada. Aqui o preço
+       desce pra linha do nome e fica um selo só. O desktop tem espaço de
+       sobra e não muda. Quem move o selo é o script do parcelamento, que já
+       é dono desse pedaço; aqui é só a aparência dele fora da imagem. */
+    @media (max-width: 599px) {
+      .produto-card .tag-badge > *:nth-child(n+2) { display: none; }
+
+      /* O preço fica embaixo do nome, não ao lado: em 165px de card o nome e um
+         "3x R$109,67" disputavam a mesma linha e a pílula passava por cima do
+         nome. Uma pílula só, a do preço que se paga; o "de" e o "ou à vista"
+         viram texto miúdo em volta. Três pílulas não cabem nessa largura. */
+      .preco-movel { margin-top: 6px; display: flex; flex-wrap: wrap; align-items: center; gap: 5px; }
+      .preco-movel .preco-selo {
+        position: static; width: auto; height: auto; padding: 4px 10px;
+        border-radius: 999px; transform: none; gap: 3px; order: 2;
+      }
+      .preco-movel .preco-selo .preco-valor { font-size: 15px; }
+      .preco-movel .preco-selo .preco-cifrao { font-size: 9px; }
+      /* precisa dos quatro níveis: .preco-selo .preco-valor--parcela .preco-cents
+         empata em especificidade e vem depois no arquivo, então venceria */
+      .preco-movel .preco-selo .preco-valor--parcela .preco-cents { font-size: 9px; margin-top: 1px; }
+      /* dentro do balão os dois eram absolutos; aqui entram na fila */
+      .preco-movel .preco-selo .preco-3x-corner {
+        position: static; order: -1; font-size: 10px; font-weight: 900;
+      }
+      .preco-movel .preco-selo .preco-riscado {
+        position: static; order: -2; background: none; border: none; box-shadow: none;
+        padding: 0; margin-right: 1px; font-size: 9px; color: rgba(13,13,11,0.45);
+        text-decoration-color: currentColor;
+      }
+      .preco-movel .preco-parcela {
+        position: static; order: 3; transform: none; background: none; border: none;
+        box-shadow: none; padding: 0; font-size: 9px; letter-spacing: 0.04em;
+        color: rgba(13,13,11,0.5);
+      }
+    }
+
     .produto-img-wrap.poster { aspect-ratio: 3 / 4; }
     .produto-img-wrap.quadrado { aspect-ratio: 1 / 1; }
     .produto-img-wrap img {
@@ -2582,10 +2621,39 @@
         if(!v) return 0;
         return parseInt(v.textContent.replace(/[^0-9]/g,''), 10) || 0;
       }
+      // No celular o preço não fica sobre a imagem (ver o @media 599px). Como o
+      // selo muda de pai, nada aqui pode procurar dentro de .produto-img-wrap:
+      // a busca é sempre a partir do card, e a pílula "ou R$total" nasce ao
+      // lado do selo, onde quer que ele esteja.
+      var CELULAR = window.matchMedia('(max-width: 599px)');
+
+      function posicionar(card){
+        var selo = card.querySelector('.preco-selo');
+        var moldura = card.querySelector('.produto-img-wrap') || card.querySelector('figure.vaso-slideshow');
+        var info = card.querySelector('.produto-info');
+        if(!selo || !moldura || !info) return;
+        var pill = card.querySelector('.preco-parcela');
+        var caixa = info.querySelector('.preco-movel');
+        if(CELULAR.matches){
+          if(!caixa){
+            caixa = document.createElement('div');
+            caixa.className = 'preco-movel';
+            info.appendChild(caixa);
+          }
+          if(selo.parentNode !== caixa) caixa.appendChild(selo);
+          if(pill && pill.parentNode !== caixa) caixa.appendChild(pill);
+        } else {
+          if(selo.parentNode !== moldura) moldura.appendChild(selo);
+          if(pill && pill.parentNode !== moldura) moldura.appendChild(pill);
+          if(caixa) caixa.remove();
+        }
+      }
+
       function aplicar(){
-        document.querySelectorAll('.produto-img-wrap').forEach(function(wrap){
-          var selo = wrap.querySelector('.preco-selo');
-          var pill = wrap.querySelector('.preco-parcela');
+        document.querySelectorAll('.produto-card').forEach(function(card){
+          var wrap = card.querySelector('.produto-img-wrap') || card;
+          var selo = card.querySelector('.preco-selo');
+          var pill = card.querySelector('.preco-parcela');
           var total = selo ? totalDoSelo(selo) : 0;
           if(total > LIMIAR){
             if(selo && !selo.dataset.total) selo.dataset.total = total;
@@ -2607,16 +2675,21 @@
             if(!pill){
               pill = document.createElement('div');
               pill.className = 'preco-parcela';
-              wrap.appendChild(pill);
+              (selo && selo.parentNode ? selo.parentNode : wrap).appendChild(pill);
             }
             pill.textContent = 'ou R$' + total;
           } else if(pill){
             pill.remove();
           }
+          posicionar(card);
         });
       }
       function init(){
         aplicar();
+        // girar o celular ou redimensionar a janela cruza o limiar de 599px
+        var reagir = function(){ aplicar(); };
+        if(CELULAR.addEventListener) CELULAR.addEventListener('change', reagir);
+        else CELULAR.addListener(reagir);
         // cards são re-renderizados de forma assíncrona (hydrateCatalog / buildPosters)
         var alvo = document.querySelector('main') || document.body;
         var obs = new MutationObserver(function(){

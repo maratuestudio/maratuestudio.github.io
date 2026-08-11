@@ -1,0 +1,229 @@
+<!doctype html>
+<!-- Comparador do card de poster no celular. Carrega o index.html de verdade
+     em iframes de 390px e aplica cada variacao por cima, pra decidir olhando o
+     card real e nao um desenho. So ferramenta; nao e pagina do site. -->
+<html lang="pt-BR"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Card de pôster no celular — comparação</title>
+<style>
+  @font-face { font-family:'Clother'; src:url('/TRYClother-Regular.woff2') format('woff2'); font-weight:400; }
+  @font-face { font-family:'Clother'; src:url('/TRYClother-Bold.woff2') format('woff2'); font-weight:700; }
+  :root { --preto:#0D0D0B; --areia:#F0EBE3; --dourado:#D69A1E; --laranja:#D9541E; --verde:#7BA05B; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--preto); color:var(--areia);
+         font-family:'Clother',-apple-system,sans-serif; padding:16px 20px 40px; }
+  h1 { font-size:15px; letter-spacing:.14em; text-transform:uppercase; margin:0 0 4px; }
+  .sub { font-size:12px; opacity:.55; margin:0 0 14px; max-width:76ch; line-height:1.55; }
+  .barra { display:flex; gap:8px; align-items:center; margin-bottom:14px; flex-wrap:wrap; }
+  .barra + .barra { margin-bottom:18px; }
+  .rot { font-size:10px; letter-spacing:.1em; text-transform:uppercase; opacity:.45; margin-right:2px; }
+  button { font:700 10px/1 'Clother',sans-serif; letter-spacing:.09em; text-transform:uppercase;
+    padding:8px 13px; border-radius:999px; border:1.5px solid rgba(240,235,227,.5); background:transparent;
+    color:var(--areia); cursor:pointer; }
+  button.on { background:var(--dourado); color:var(--preto); border-color:var(--dourado); }
+  .pista { display:flex; gap:16px; align-items:flex-start; overflow-x:auto; padding-bottom:10px; }
+  .col { flex:0 0 auto; }
+  .cab { margin-bottom:8px; min-height:32px; max-width:390px; }
+  .n { font:700 11px/1.3 'Clother',sans-serif; letter-spacing:.09em; text-transform:uppercase; display:block; }
+  .col[data-rec] .n { color:var(--dourado); }
+  .tag { font-size:10px; opacity:.5; line-height:1.4; }
+  .tela { width:390px; height:640px; border-radius:20px; overflow:hidden;
+          border:2px solid rgba(240,235,227,.22); background:var(--areia); }
+  iframe { width:390px; height:640px; border:0; display:block; }
+  .med { margin-top:9px; font-size:11px; line-height:1.75; opacity:.8; max-width:390px; }
+  .med b { color:var(--dourado); font-weight:700; }
+  .med .d { opacity:.45; }
+  .nota { margin-top:22px; font-size:12px; line-height:1.65; opacity:.6; max-width:80ch; }
+  .nota b { color:var(--areia); opacity:1; }
+</style></head><body>
+
+<h1>Card de pôster no celular</h1>
+<p class="sub">O card do site de verdade, em 390px, com cada mudança aplicada por cima.
+O número que importa é <b style="color:var(--dourado)">quanto do pôster dá pra ver</b>.</p>
+
+<div class="barra" id="grupos">
+  <span class="rot">O que mexer</span>
+  <button data-g="cima" class="on">Em cima da imagem · selos e preço</button>
+  <button data-g="baixo">Embaixo da imagem · texto e botões</button>
+</div>
+<div class="barra">
+  <span class="rot">Escala</span>
+  <button data-s="1">100%</button>
+  <button data-s="0.8" class="on">80%</button>
+  <button data-s="0.62">62%</button>
+</div>
+
+<div class="pista" id="pista"></div>
+
+<p class="nota" id="nota"></p>
+
+<script>
+/* Cada variacao e um par: CSS injetado + um ajuste de DOM, aplicados no
+   index.html real dentro do iframe. Nada disso vai pro site ainda. */
+
+const PRECO_FORA = `
+  .produto-card[data-tipo="poster"] .produto-info {
+    display:flex; align-items:flex-start; justify-content:space-between; gap:8px;
+  }
+  .produto-card[data-tipo="poster"] .produto-info > .preco-selo {
+    position:static; width:auto; height:auto; border-radius:999px; transform:none;
+    padding:4px 9px; flex:0 0 auto; align-self:flex-start;
+  }
+  .produto-card[data-tipo="poster"] .produto-info > .preco-selo .preco-valor { font-size:15px; }
+  .produto-card[data-tipo="poster"] .produto-info > .preco-selo .preco-cifrao { font-size:9px; }
+`;
+const PRECO_PILULA = `
+  .produto-card[data-tipo="poster"] .preco-selo {
+    width:auto; height:auto; border-radius:999px; padding:4px 11px;
+    bottom:8px; right:8px; transform:rotate(-3deg);
+  }
+  .produto-card[data-tipo="poster"] .preco-selo .preco-valor { font-size:15px; }
+  .produto-card[data-tipo="poster"] .preco-selo .preco-cifrao { font-size:9px; }
+`;
+const UM_SELO = `
+  .produto-card[data-tipo="poster"] .tag-badge > *:nth-child(n+2) { display:none; }
+`;
+const SEM_CORTE = `.produto-img-wrap.poster { aspect-ratio: 1 / 1.414; }`;
+const BLOCO_ENXUTO = `
+  .produto-card[data-tipo="poster"] .produto-tipo { display:none; }
+  .produto-card[data-tipo="poster"] .tam-info-btn {
+    flex:0 0 auto; width:21px; padding:3px 0; text-align:center;
+    font-size:9px; font-weight:700; letter-spacing:0; text-decoration:none;
+    color:rgba(13,13,11,.45); border:1.5px solid rgba(13,13,11,.25);
+    border-radius:999px; background:transparent; line-height:1.25;
+  }
+`;
+
+const moveOPreco = (d) => d.querySelectorAll('.produto-card[data-tipo="poster"]').forEach((c) => {
+  const selo = c.querySelector('.preco-selo'), info = c.querySelector('.produto-info');
+  if (selo && info) info.appendChild(selo);
+});
+const viraInterrogacao = (d) => d.querySelectorAll('.produto-card[data-tipo="poster"]').forEach((c) => {
+  const sel = c.querySelector('.tam-selector'), link = c.querySelector('.tam-info-btn');
+  if (sel && link) { link.textContent = '?'; link.title = 'Ver tabela de tamanhos'; sel.appendChild(link); }
+});
+
+const GRUPOS = {
+  cima: {
+    nota: '<b>O balão de preço tem 81px num quadro de 165px.</b> É metade da largura do pôster, ' +
+          '14,2% da área. Somando os selos, o Farol de Atalaia chega a 24,6% coberto. ' +
+          'É aqui que está o espaço, não embaixo da imagem.',
+    itens: [
+      { nome:'Atual', tag:'como está hoje' },
+      { nome:'A · Preço em pílula', tag:'o balão vira uma pílula pequena no canto', css:PRECO_PILULA },
+      { nome:'B · Preço fora da imagem', tag:'o preço desce pra linha do nome', css:PRECO_FORA, dom:moveOPreco },
+      { nome:'C · Preço fora + um selo só', tag:'recomendada', rec:1, css:PRECO_FORA + UM_SELO, dom:moveOPreco }
+    ]
+  },
+  baixo: {
+    nota: '<b>Estas três mexem só no que está embaixo da imagem.</b> A largura vem da grade de duas ' +
+          'colunas e a altura segue a proporção da moldura, então tirar texto encurta o card e faz ' +
+          'a imagem mandar mais na composição, mas não descobre o pôster. Compare com o grupo de cima.',
+    itens: [
+      { nome:'Atual', tag:'como está hoje' },
+      { nome:'1 · Sem corte', tag:'moldura 1:1,414, pôster inteiro', css:SEM_CORTE },
+      { nome:'2 · Bloco enxuto', tag:'tabela vira "?", subtítulo sai', css:BLOCO_ENXUTO, dom:viraInterrogacao },
+      { nome:'3 · Os dois', tag:'', css:SEM_CORTE + BLOCO_ENXUTO, dom:viraInterrogacao }
+    ]
+  }
+};
+
+let escala = 0.8;
+
+function monta(cfg, i) {
+  const col = document.createElement('div');
+  col.className = 'col';
+  if (cfg.rec) col.dataset.rec = '1';
+  col.innerHTML = `<div class="cab"><span class="n">${cfg.nome}</span><span class="tag">${cfg.tag}</span></div>
+    <div class="tela"><iframe src="/index.html#v${i}"></iframe></div>
+    <div class="med">medindo…</div>`;
+  const frame = col.querySelector('iframe');
+  frame.addEventListener('load', () => aplica(frame, cfg, col.querySelector('.med')));
+  return col;
+}
+
+function aplica(frame, cfg, saida) {
+  const d = frame.contentDocument, w = frame.contentWindow;
+  const espera = setInterval(() => {
+    if (!d.querySelector('.produto-card[data-tipo="poster"] .preco-selo')) return;
+    clearInterval(espera);
+    const st = d.createElement('style');
+    st.textContent = (cfg.css || '') + '#maratu-splash{display:none!important}';
+    d.head.appendChild(st);
+    if (cfg.dom) cfg.dom(d);
+    setTimeout(() => {
+      const alvo = d.querySelector('.produto-card[data-tipo="poster"]');
+      w.scrollTo(0, alvo.getBoundingClientRect().top + w.scrollY - 40);
+      setTimeout(() => mede(d, saida), 600);
+    }, 350);
+  }, 250);
+}
+
+function cobertura(c) {
+  const w = c.querySelector('.produto-img-wrap'), wr = w.getBoundingClientRect();
+  const area = wr.width * wr.height;
+  const dentro = (el) => {
+    const r = el.getBoundingClientRect();
+    const x = Math.max(0, Math.min(r.right, wr.right) - Math.max(r.left, wr.left));
+    const y = Math.max(0, Math.min(r.bottom, wr.bottom) - Math.max(r.top, wr.top));
+    return { x, y, r };
+  };
+  let coberto = 0;
+  const selo = w.querySelector(':scope > .preco-selo');
+  if (selo) { const q = dentro(selo); coberto += Math.PI * (q.x / 2) * (q.y / 2); }
+  const badge = w.querySelector(':scope > .tag-badge');
+  if (badge) [...badge.children].forEach((e) => {
+    if (getComputedStyle(e).display === 'none') return;
+    const q = dentro(e); coberto += q.x * q.y;
+  });
+  return coberto / area * 100;
+}
+
+function mede(d, saida) {
+  const c = d.querySelector('.produto-card[data-tipo="poster"]');
+  const el = c.querySelector('.produto-img-wrap img.img-principal');
+  if (!el || !el.naturalWidth) { setTimeout(() => mede(d, saida), 400); return; }
+  const wr = c.querySelector('.produto-img-wrap').getBoundingClientRect();
+  const h = c.getBoundingClientRect().height;
+  const cob = cobertura(c);
+  const pn = el.naturalWidth / el.naturalHeight, pm = wr.width / wr.height;
+  const corte = pn >= pm ? 0 : (100 - pn / pm * 100);
+  const cor = cob < 8 ? 'var(--verde)' : cob < 16 ? 'var(--dourado)' : 'var(--laranja)';
+  saida.innerHTML =
+    `pôster visível <b style="color:${cor}">${(100 - cob).toFixed(0)}%</b> ` +
+    `<span class="d">· ${cob.toFixed(0)}% tapado por selo e preço</span><br>` +
+    `card <b>${Math.round(h)}px</b> <span class="d">· imagem ${Math.round(wr.height)}px, ` +
+    `${Math.round(wr.height / h * 100)}% do card</span><br>` +
+    (corte > 0.5 ? `<span style="color:var(--laranja)">a moldura ainda corta ${corte.toFixed(0)}% do pôster</span>`
+                 : `<span style="color:var(--verde)">pôster inteiro na moldura</span>`);
+}
+
+function desenha(g) {
+  const pista = document.getElementById('pista');
+  pista.innerHTML = '';
+  GRUPOS[g].itens.forEach((c, i) => pista.appendChild(monta(c, i)));
+  document.getElementById('nota').innerHTML = GRUPOS[g].nota;
+  aplicaEscala();
+}
+
+function aplicaEscala() {
+  document.querySelectorAll('.tela').forEach((t) => {
+    t.style.transform = 'scale(' + escala + ')';
+    t.style.transformOrigin = 'top left';
+    t.style.marginRight = (390 * escala - 390) + 'px';
+    t.style.marginBottom = (640 * escala - 640) + 'px';
+  });
+}
+
+document.querySelectorAll('#grupos button').forEach((b) => b.addEventListener('click', () => {
+  document.querySelectorAll('#grupos button').forEach((o) => o.classList.remove('on'));
+  b.classList.add('on'); desenha(b.dataset.g);
+}));
+document.querySelectorAll('[data-s]').forEach((b) => b.addEventListener('click', () => {
+  document.querySelectorAll('[data-s]').forEach((o) => o.classList.remove('on'));
+  b.classList.add('on'); escala = +b.dataset.s; aplicaEscala();
+}));
+
+desenha('cima');
+</script>
+</body></html>

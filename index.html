@@ -2386,6 +2386,10 @@
       function cardHTML(p, cfg, isExtra) {
         var img = R2 + p.imagem_principal;
         var hoverImg = p.imagem_hover ? R2 + p.imagem_hover : null;
+        // O card e o lightbox carregam a miniatura de 1000 px (?t=1) — cobre os 88vh
+        // do lightbox e evita baixar 2,5 MB por toque. O schema.org fica com o original.
+        var imgCard = img + '?t=1';
+        var hoverCard = hoverImg ? hoverImg + '?t=1' : null;
         var nomeAttr = esc(p.nome);
         var precoReais = Math.round(p.preco / 100);
         var precoCheioReais = p.preco_cheio ? Math.round(p.preco_cheio / 100) : null;
@@ -2411,20 +2415,20 @@
         if (precoCheioReais) precoSelo += '<span class="preco-riscado">R$' + precoCheioReais + '</span>';
         precoSelo += '<span class="preco-valor"><span class="preco-cifrao">R$</span>' + precoReais + '</span></div>';
 
-        var imgTag = '<img class="img-principal' + (hoverImg ? ' com-hover' : '') + '" src="' + esc(img) + '" alt="' + nomeAttr + '" loading="lazy">';
-        if (hoverImg) imgTag += '<img class="img-hover" src="' + esc(hoverImg) + '" alt="' + nomeAttr + ' hover" loading="lazy">';
+        var imgTag = '<img class="img-principal' + (hoverImg ? ' com-hover' : '') + '" src="' + esc(imgCard) + '" alt="' + nomeAttr + '" loading="lazy" decoding="async" fetchpriority="low">';
+        if (hoverImg) imgTag += '<img class="img-hover" src="' + esc(hoverCard) + '" alt="' + nomeAttr + ' hover" loading="lazy" decoding="async" fetchpriority="low">';
 
         var wrapClass, wrapStyle = '', wrapOnclick = '';
         if (cfg.tipo === 'adesivo') {
           wrapClass = 'produto-img-wrap';
           wrapStyle = ' style="aspect-ratio: 875 / 1241;"';
-          wrapOnclick = " onclick=\"abrirLightbox('" + jsStr(img) + "','" + jsStr(p.nome) + "')\"";
+          wrapOnclick = " onclick=\"abrirLightbox('" + jsStr(imgCard) + "','" + jsStr(p.nome) + "')\"";
         } else if (cfg.tipo === 'poster') {
           wrapClass = 'produto-img-wrap poster';
-          wrapOnclick = " onclick=\"abrirLightbox('" + jsStr(img) + "','" + jsStr(p.nome) + "')\"";
+          wrapOnclick = " onclick=\"abrirLightbox('" + jsStr(imgCard) + "','" + jsStr(p.nome) + "')\"";
         } else {
           wrapClass = 'produto-img-wrap quadrado';
-          wrapOnclick = " onclick=\"abrirLightbox('" + jsStr(img) + "','" + jsStr(p.nome) + "')\"";
+          wrapOnclick = " onclick=\"abrirLightbox('" + jsStr(imgCard) + "','" + jsStr(p.nome) + "')\"";
         }
 
         var subLines = String(p.subtitulo || '').split('|').map(function(s){return s.trim();}).filter(Boolean);
@@ -2459,7 +2463,7 @@
         // Essenciais com cores: card padrão; o botão abre o popup de cores (delegação via data-cor-id)
         if (cfg.tipo === 'essenciais' && hasCores) {
           window.__CORES = (window.__CORES || {});
-          window.__CORES[p.id] = { nome: p.nome, preco: precoReais, cores: p.cores.map(function(c){ return { nome: c.nome, hex: c.hex, img: R2 + c.img }; }) };
+          window.__CORES[p.id] = { nome: p.nome, preco: precoReais, cores: p.cores.map(function(c){ return { nome: c.nome, hex: c.hex, img: R2 + c.img + '?t=1' }; }) };
           btn = '<button type="button" class="btn-encomendar" data-cor-id="' + esc(p.id) + '" data-produto="' + nomeAttr + '">' + (cfg.btnLabel || 'Encomendar') + '</button>';
         }
         return '<div class="produto-card" data-tipo="' + cfg.tipo + '" data-faixa="' + esc(p.subcategoria) + '"' + extraAttr + '>' +

@@ -2,3 +2,7 @@
 _snap*.html
 .wrangler/
 .DS_Store
+
+# miniaturas: geradas por tools/gerar-thumbs.py, moram no R2
+tools/thumbs-src/
+tools/thumbs-out/

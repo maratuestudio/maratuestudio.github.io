@@ -237,11 +237,14 @@
 
     @media (max-width:680px){ .panel--pix{flex-direction:column;text-align:center;gap:clamp(14px,2.4vh,28px)} .pix__left{align-items:center;max-width:none} .pix__title{text-align:center} .aratu-pix{margin-left:auto;margin-right:auto} }
 
+    /* retrato: o QR sobe pro meio da direita pra nao tapar o lockup MARATU, que fica na base */
+    @media (max-width:680px){ .qr-card{bottom:auto;top:50%;transform:translateY(-50%);width:clamp(150px,44vw,210px)} }
+
     /* painel Pix ganha 2 dicas de arrastar (volta pro inicio / segue pra loja) */
     .panel--pix .swipe-hint{left:auto;transform:none}
-    .panel--pix .swipe-hint.back{left:var(--margem);animation:shbL 1.8s ease-in-out infinite}
+    /* o lockup fixo ocupa o canto inf-esq; o "inicio" fica centralizado, como na loja */
+    .panel--pix .swipe-hint.back{left:50%;transform:translateX(-50%);animation:shb 1.8s ease-in-out infinite}
     .panel--pix .swipe-hint.fwd{right:var(--margem);animation:shR 1.8s ease-in-out infinite}
-    @keyframes shbL{0%,100%{transform:translateX(0)}50%{transform:translateX(-7px)}}
     @keyframes shR{0%,100%{transform:translateX(0)}50%{transform:translateX(7px)}}
 
     /* ── LOJA (painel 3) — produto grande a esquerda, valor grande a direita ── */
@@ -266,7 +269,8 @@
     .loja__dots span{width:6px;height:6px;border-radius:50%;background:rgba(240,236,228,.35)}
     .loja__dots span.ativo{background:var(--areia)}
     @media (max-width:680px){ .lj-card{flex-direction:column-reverse;text-align:center} .lj-card__info{align-items:center;max-width:none} }
-    .brand-corner{position:fixed;left:var(--margem);bottom:clamp(20px,4vh,40px);z-index:20;font-size:clamp(22px,2.9vw,38px);pointer-events:none}
+    .brand-corner{position:fixed;left:var(--margem);bottom:clamp(20px,4vh,40px);z-index:20;font-size:clamp(22px,2.9vw,38px);pointer-events:none;opacity:1;visibility:visible;transition:opacity .35s ease}
+    .brand-corner.hide{opacity:0;visibility:hidden}
     .brand-corner__logo{display:block;width:6em;height:auto;filter:brightness(0) invert(1)}
     .brand-corner__est{display:block;overflow:hidden;width:3.3em;height:0.854em;margin-top:-0.05em;margin-left:-0.12em;line-height:0}
     .brand-corner__est .estudio-boil{display:block;height:100%;width:400%;max-width:none;animation:estudio-boil .28s steps(4) infinite}
@@ -280,6 +284,36 @@
 </head>
 <body>
   <div class="deck" id="deck">
+    <section class="panel panel--hero">
+      <section class="hero">
+        <div class="hero__bg">
+          <div class="hero__bg-slide ativo" style="background-image: url('/Artboard 1@300x.webp');"></div>
+          <div class="hero__bg-slide" data-bg="/blusa-destrua-frente.webp" style="background-position: center 60%;"></div>
+          <div class="hero__bg-slide" data-bg="/blusa-destrua-costas.webp" style="background-position: center 60%;"></div>
+          <div class="hero__bg-slide" data-bg="/blusa-azulejos-costas.webp" style="background-position: center 60%;"></div>
+          <div class="hero__bg-slide" data-bg="/blusa-maratu-print.webp" style="background-position: center 60%;"></div>
+          <div class="hero__bg-slide" data-bg="/Artboard 4@300x.webp"></div>
+          <div class="hero__bg-slide" data-bg="/Artboard 5@300x.webp"></div>
+          <div class="hero__bg-slide" data-bg="/vaso-pinda-cinza.webp"></div>
+          <div class="hero__bg-slide" data-bg="/kit-cobogo-praia.webp"></div>
+        </div>
+        <div class="hero__label-tl">
+          <span class="mono">EST. 2026 — Aracaju, SE</span>
+          <span class="mono">Impressão 3D · Design · Arte</span>
+        </div>
+        <div class="hero__label-tr">
+          <span class="mono">em atividade</span>
+        </div>
+        <h1 class="hero__title reveal">
+          <img class="hero__logo" src="/maratu-logo.svg?v=1" alt="MARATU"><span class="offset estudio-boil-wrap" aria-label="Estúdio"><img class="estudio-boil" src="/estudio-sprite.webp?v=1" alt="Estúdio"></span>
+        </h1>
+      </section>
+      <a class="qr-card" href="https://instagram.com/maratuestudio" target="_blank" rel="noopener" aria-label="Siga a MARATU no Instagram">
+        <img src="/divulgacao/ig-qr.png?v=2" alt="QR do Instagram @maratuestudio" width="462" height="462">
+        <span class="qr-card__lbl">Siga no Instagram<br><b>@maratuestudio</b></span>
+      </a>
+      <button class="swipe-hint" id="toPix" type="button">arraste para o pix &rarr;</button>
+    </section>
     <section class="panel panel--pix" id="pix">
       <div class="pix__left">
         <h1 class="pix__title">Pague<br>com Pix</h1>
@@ -296,6 +330,7 @@
       </div>
       </div>
       <div class="pix__card"><img src="/divulgacao/pix-qr.png?v=2" alt="QR de pagamento Pix" width="583" height="583"></div>
+      <button class="swipe-hint back" id="toHome" type="button">&larr; início</button>
       <button class="swipe-hint fwd" id="toLoja" type="button">arraste para os produtos &rarr;</button>
     </section>
     <section class="panel panel--loja" id="loja"><div class="loja__stage" id="ljStage">
@@ -358,11 +393,16 @@
     })();
     function goTo(i){ deck.scrollTo({left:i*window.innerWidth,behavior:'smooth'}); }
     // body herda a cor do painel visivel (o iPadOS "estende" o bg do body atras da barra de janela)
-    var panelBg=['#C8501A','#0E3272'];
-    function syncBg(){ var i=Math.round(deck.scrollLeft/window.innerWidth); document.body.style.background=panelBg[i]||panelBg[0]; var q=document.querySelector('.qr-corner'); if(q) q.classList.toggle('show', i===1); }
+    var panelBg=['#0D0D0B','#C8501A','#0E3272'];
+    function syncBg(){ var i=Math.round(deck.scrollLeft/window.innerWidth); document.body.style.background=panelBg[i]||panelBg[0];
+      var q=document.querySelector('.qr-corner'); if(q) q.classList.toggle('show', i===2);
+      // no hero a marca ja aparece gigante no meio; o lockup do canto some pra nao duplicar
+      var b=document.querySelector('.brand-corner'); if(b) b.classList.toggle('hide', i===0); }
     deck.addEventListener('scroll',syncBg,{passive:true}); syncBg();
-    document.getElementById('toLoja').addEventListener('click',function(){ goTo(1); });
-    document.getElementById('toPixFromLoja').addEventListener('click',function(){ goTo(0); });
+    document.getElementById('toPix').addEventListener('click',function(){ goTo(1); });
+    document.getElementById('toHome').addEventListener('click',function(){ goTo(0); });
+    document.getElementById('toLoja').addEventListener('click',function(){ goTo(2); });
+    document.getElementById('toPixFromLoja').addEventListener('click',function(){ goTo(1); });
 
     // LOJA: troca os blocos de produto um por vez (fade+slide)
     (function(){

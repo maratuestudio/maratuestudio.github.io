@@ -671,7 +671,11 @@
     }).catch(falhou);
   }
   function recarrega() {
-    carregaSelos({ status: $id("slFStatus").value, sku: $id("slFProd").value }).then(pintaTabela).catch(falhou);
+    /* O modal de acoes tambem abre pela tela Alertas, onde os filtros da Lista nao existem:
+       ali a saida e repintar a tela que esta no ar. */
+    var fs = $id("slFStatus");
+    if (!fs) return vaiPara(aba);
+    carregaSelos({ status: fs.value, sku: $id("slFProd").value }).then(pintaTabela).catch(falhou);
   }
   function pintaTabela() {
     var el = $id("slTabela");
@@ -724,6 +728,12 @@
         (s.pedido_ref ? '<p style="font-family:var(--clother);font-size:.8rem;opacity:.7;margin:0 0 10px;">pedido ' + esc(s.pedido_ref) + "</p>" : "") +
 
         '<div style="display:flex;flex-direction:column;gap:8px;">' +
+          /* Conserto de vinculo errado. Vincular so aceita selo em branco; quando o erro so
+             aparece depois, e por aqui que se troca a peca. Selo em branco nao entra: ali a
+             peca ainda nao existe, e quem faz isso e a tela Vincular. */
+        (s.status === "branco" ? "" :
+          '<button type="button" class="btn ghost" id="slEditar">Trocar a peça deste selo</button>' +
+          '<div id="slEdBox"></div>') +
           /* Texto so desta peca. Vazio volta a herdar o texto de origem do produto. */
         '<label class="f"><span>Texto desta peça</span>' +
           '<textarea id="slTexto" rows="2" placeholder="' +
@@ -749,6 +759,15 @@
     var fecha = function () { b.remove(); };
     b.addEventListener("click", function (ev) { if (ev.target === b) fecha(); });
     b.querySelector("[data-fecha]").onclick = fecha;
+    var editar = b.querySelector("#slEditar");
+    if (editar) {
+      editar.onclick = function () {
+        var box = b.querySelector("#slEdBox");
+        if (box.innerHTML) { box.innerHTML = ""; editar.textContent = "Trocar a peça deste selo"; return; }
+        editar.textContent = "Deixar como está";
+        formEditar(s, box, fecha);
+      };
+    }
     var apagar = b.querySelector("#slApagar");
     if (apagar) {
       var armado = false;
@@ -802,6 +821,77 @@
           recarrega();
         }).catch(function (er) { toast(String(er.message || er)); btn.disabled = false; });
       };
+    });
+  }
+
+  /* Trocar a peca de um selo que ja saiu do branco. Os dados vem do /um, e nao do que a
+     tabela ja tinha em mao: o modal tambem abre pela tela Alertas, que carrega so um resumo
+     de cada selo. */
+  function formEditar(s, box, fechaModal) {
+    box.innerHTML = '<p style="font-family:var(--clother);font-size:.8rem;opacity:.6;margin:6px 2px;">carregando…</p>';
+    Promise.all([
+      carregaProdutos(),
+      pedeJson(API + "/api/selos/um?codigo=" + encodeURIComponent(s.codigo))
+    ]).then(function (r) {
+      var sel = r[1].selo || s;
+      var temDono = !!(sel.dono_nome && sel.confirmado_em);
+      var lista = produtos.filter(function (p) { return p.ativo || p.id === sel.sku; });
+      box.innerHTML =
+        '<div style="padding:12px 13px;border:1.5px solid rgba(13,13,11,.14);border-radius:12px;">' +
+          (temDono
+            ? '<p style="font-family:var(--clother);font-size:.76rem;color:' + LARANJA + ';margin:0 2px 10px;line-height:1.45;">' +
+              "Esta peça já tem dono registrado. Trocar a peça muda o certificado que ele vê.</p>"
+            : "") +
+          '<label class="f"><span>Peça</span><select id="slEdProd">' +
+            lista.map(function (p) {
+              return '<option value="' + esc(p.id) + '"' + (p.id === sel.sku ? " selected" : "") + ">" +
+                esc(p.nome) + (p.ativo ? "" : " (despublicado)") + "</option>";
+            }).join("") +
+            '<option value=""' + (sel.sku ? "" : " selected") + ">— peça fora do catálogo —</option></select></label>" +
+          '<div id="slEdFora" style="display:' + (sel.sku ? "none" : "") + ';">' +
+            '<label class="f"><span>Nome da peça</span>' +
+              '<input id="slEdNome" value="' + esc(sel.nome_peca || "") + '" placeholder="ex: Carranca de Ouro"></label>' +
+            '<label class="f"><span>Linha de baixo (opcional)</span>' +
+              '<input id="slEdSub" value="' + esc(sel.sub_peca || "") + '" placeholder="ex: Peça única · 12 × 8 cm"></label>' +
+          "</div>" +
+          '<div style="display:flex;gap:8px;flex-wrap:wrap;">' +
+            '<label class="f" style="flex:1;min-width:130px;"><span>Impressa em</span>' +
+              '<input id="slEdData" type="date" value="' + esc(sel.data_impressao || "") + '"></label>' +
+            '<label class="f" style="flex:1;min-width:130px;"><span>Feita em</span>' +
+              '<input id="slEdCidade" value="' + esc(sel.cidade || "") + '"></label>' +
+          "</div>" +
+          '<label class="f"><span>Nota (só pra você; não sai no certificado)</span>' +
+            '<input id="slEdNota" value="' + esc(sel.nota || "") + '"></label>' +
+          '<button type="button" class="btn" id="slEdSalvar" style="width:100%;">Salvar a peça</button>' +
+        "</div>";
+      // sem produto do catalogo, o nome e a linha de baixo vem do proprio selo
+      $id("slEdProd").onchange = function () { $id("slEdFora").style.display = this.value ? "none" : ""; };
+      $id("slEdSalvar").onclick = function () {
+        var sku = $id("slEdProd").value;
+        var nome = $id("slEdNome").value.trim();
+        if (!sku && !nome) return toast("escolha a peça ou escreva o nome dela");
+        var btn = this;
+        btn.disabled = true;
+        pedeJson(API + "/api/selos/editar", {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            codigo: sel.codigo,
+            sku: sku || null,
+            nome_peca: sku ? null : nome,
+            sub_peca: sku ? null : ($id("slEdSub").value.trim() || null),
+            data_impressao: $id("slEdData").value || null,
+            cidade: $id("slEdCidade").value.trim() || null,
+            nota: $id("slEdNota").value.trim() || null
+          })
+        }).then(function (d) {
+          toast(sel.codigo + " agora é " + (d.peca || "outra peça"));
+          fechaModal();
+          recarrega();
+        }).catch(function (e) { toast(String(e.message || e)); btn.disabled = false; });
+      };
+    }).catch(function (e) {
+      box.innerHTML = '<p style="font-family:var(--clother);font-size:.8rem;color:' + LARANJA + ';margin:6px 2px;">' +
+        esc(String((e && e.message) || e)) + "</p>";
     });
   }
 

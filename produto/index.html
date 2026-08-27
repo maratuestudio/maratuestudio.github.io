@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Produto · MARATU</title>
+  <meta name="description" content="Peça do estúdio MARATU, feita em Aracaju.">
+  <link rel="canonical" href="https://maratu.com.br/produto">
+  <meta name="theme-color" content="#0E3272">
+  <link rel="icon" type="image/png" href="/favicon-v6.png">
+  <link rel="apple-touch-icon" href="/apple-touch-icon-v6.png">
+  <meta property="og:type" content="product">
+  <meta property="og:title" content="Produto · MARATU">
+  <meta property="og:description" content="Peça do estúdio MARATU, feita em Aracaju.">
+  <meta property="og:url" content="https://maratu.com.br/produto">
+  <meta property="og:image" content="https://maratu.com.br/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Produto · MARATU">
+  <meta name="twitter:description" content="Peça do estúdio MARATU, feita em Aracaju.">
+  <meta name="twitter:image" content="https://maratu.com.br/og-image.png">
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-HCJ291HL72"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-HCJ291HL72');
+  </script>
+  <link rel="preconnect" href="https://maratu-api.raphaelnascimento.workers.dev">
+  <style>
+    @font-face { font-family: 'Jack'; src: url('/TRYJackAlpha-Regular.woff2?v=2') format('woff2'), url('/TRYJackAlpha-Regular.ttf') format('truetype'); font-weight: 400; font-display: swap; }
+    @font-face { font-family: 'Clother'; src: url('/TRYClother-Regular.woff2') format('woff2'), url('/TRYClother-Regular.ttf') format('truetype'); font-weight: 400; font-style: normal; font-display: swap; }
+    @font-face { font-family: 'Clother'; src: url('/TRYClother-Italic.woff2') format('woff2'), url('/TRYClother-Italic.ttf') format('truetype'); font-weight: 400; font-style: italic; font-display: swap; }
+    @font-face { font-family: 'Clother'; src: url('/TRYClother-Bold.woff2') format('woff2'), url('/TRYClother-Bold.ttf') format('truetype'); font-weight: 700; font-display: swap; }
+    @font-face { font-family: 'Clother'; src: url('/TRYClother-Black.woff2') format('woff2'), url('/TRYClother-Black.ttf') format('truetype'); font-weight: 900; font-display: swap; }
+  </style>
+</head>
+<body>
+<style>
+:root{
+  --laranja:#C8501A; --azul:#0E3272; --azul-claro:#2E6FC4;
+  --areia:#F0ECE4; --areia-sombra:#E5DFD3; --preto:#0D0D0B; --dourado:#D4960A;
+  --img-fundo:#e4dfd6;
+
+  --mono:'Clother',sans-serif;
+  --jack:'Jack','Arial Black',sans-serif;
+  --clother:'Clother','Helvetica Neue',sans-serif;
+
+  --gutter:clamp(16px,2vw,32px);
+  --margem:clamp(20px,4vw,56px);
+  --secao-padding:clamp(56px,9vh,120px);
+}
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--areia);color:var(--preto);
+  font-family:var(--clother);font-weight:400;line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+h1,h2,h3{margin:0;font-weight:400}
+img{max-width:100%;display:block}
+
+/* ══ HEADER: mesmo do site ══ */
+.header{position:sticky;top:0;z-index:50;padding:20px var(--margem);
+  display:grid;grid-template-columns:1fr auto 1fr;align-items:center;
+  color:var(--areia);background:var(--azul)}
+.header__logo{font-family:var(--jack);font-size:1.4rem;letter-spacing:-.02em;
+  text-transform:lowercase}
+.header__nav{display:flex;gap:clamp(20px,3vw,48px);justify-content:center}
+.header__nav a{font-family:var(--clother);font-weight:700;font-size:12px;
+  letter-spacing:.12em;text-transform:uppercase;padding-bottom:3px;
+  border-bottom:1.5px solid transparent;transition:opacity .2s}
+.header__nav a:hover{opacity:.5}
+.header__nav a.active{border-bottom-color:currentColor}
+
+.secao{padding:var(--secao-padding) var(--margem);position:relative}
+.secao--preto{background:var(--preto);color:var(--areia)}
+.secao--areia{background:var(--areia);color:var(--preto)}
+
+.rodape{background:var(--preto);color:var(--areia);padding:28px var(--margem);
+  display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;opacity:.9}
+
+/* ══ MENU MOBILE: mesmo do site ══ */
+.header__menu-toggle{display:none;align-items:center;
+  padding:7px 12px 7px 16px;background:var(--dourado);color:var(--preto);
+  font-family:var(--clother);font-weight:900;font-size:11px;letter-spacing:.06em;text-transform:uppercase;
+  border-radius:999px;border:1.5px solid var(--preto);box-shadow:3px 3px 0 0 var(--preto);
+  transition:all .15s ease;cursor:pointer}
+.header__menu-toggle:hover{box-shadow:1px 1px 0 0 var(--preto);transform:translate(2px,2px)}
+.menu-overlay{position:fixed;inset:0;background:rgba(13,13,11,.6);opacity:0;pointer-events:none;
+  transition:opacity 250ms ease-out;z-index:99}
+.menu-overlay.open{opacity:1;pointer-events:auto}
+.mobile-menu{position:fixed;top:0;right:0;width:80%;max-width:320px;height:100vh;
+  background:var(--areia);color:var(--preto);z-index:100;
+  padding:max(env(safe-area-inset-top,0px),24px) var(--margem) var(--margem);
+  display:flex;flex-direction:column;justify-content:space-between;
+  transform:translateX(100%);transition:transform 250ms ease-out;overflow-y:auto}
+.mobile-menu.open{transform:translateX(0)}
+.mobile-menu__nav{display:flex;flex-direction:column;gap:20px;margin-top:48px}
+.mobile-menu__nav a{font-family:var(--clother);font-weight:400;font-size:clamp(1.5rem,6vw,2.4rem);
+  line-height:1;letter-spacing:.01em;text-transform:uppercase;color:var(--preto)}
+.mobile-menu__close{position:absolute;top:24px;right:var(--margem);font-family:var(--mono);
+  font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--preto);cursor:pointer;
+  background:none;border:0;padding:0}
+.mobile-menu__footer{font-family:var(--mono);font-size:.65rem;letter-spacing:.1em;
+  text-transform:uppercase;opacity:.5;color:var(--preto)}
+@media (max-width:768px){ .header__menu-toggle{display:inline-flex} }
+
+/* ══ PÁGINA DE PRODUTO ══ o Worker injeta a marcação no lugar do marcador de corpo,
+   mais abaixo, e manda os dados da peça num script de tipo application/json. O desenho
+   vive aqui, no repo. Cuidado: não escrever o marcador por extenso em comentário,
+   senão a troca pega ele. */
+
+.pd-volta{padding:18px var(--margem) 0;background:var(--areia)}
+.pd-volta a{font-family:var(--mono);font-size:.62rem;letter-spacing:.16em;
+  text-transform:uppercase;opacity:.55;display:inline-flex;align-items:center;gap:8px}
+.pd-volta a:hover{opacity:1;color:var(--laranja)}
+.pd-volta svg{width:14px;height:14px;stroke:currentColor;stroke-width:2;fill:none}
+
+.pd{padding-top:clamp(28px,4vh,48px)}
+.pd-grade{display:grid;grid-template-columns:1fr;gap:clamp(28px,4vw,56px);align-items:start}
+@media (min-width:900px){
+  .pd-grade{grid-template-columns:minmax(0,1.05fr) minmax(0,1fr)}
+  .pd-galeria{position:sticky;top:96px}
+}
+
+.pd-foto{position:relative;border:1.5px solid var(--preto);border-radius:8px;
+  box-shadow:4px 4px 0 0 var(--preto);overflow:hidden;background:var(--img-fundo);
+  aspect-ratio:1/1}
+.pd-foto img{width:100%;height:100%;object-fit:contain}
+.pd-foto .pd-selo{position:absolute;bottom:14px;right:14px;z-index:2}
+.pd-thumbs{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.pd-thumb{width:62px;height:62px;border-radius:6px;overflow:hidden;padding:0;
+  border:1.5px solid rgba(13,13,11,.28);background:var(--img-fundo);cursor:pointer;
+  transition:all .12s ease;-webkit-tap-highlight-color:transparent}
+.pd-thumb img{width:100%;height:100%;object-fit:cover}
+.pd-thumb:hover{border-color:var(--preto)}
+.pd-thumb.selected{border-color:var(--preto);box-shadow:2px 2px 0 0 var(--preto)}
+
+.pd-pills{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.pill-colecao{font-family:var(--clother);font-weight:700;font-size:9px;letter-spacing:.12em;
+  text-transform:uppercase;padding:3px 10px;border-radius:999px;border:1.5px solid var(--preto);
+  box-shadow:2px 2px 0 0 var(--preto);display:inline-flex;align-items:center;line-height:1;
+  background:var(--areia);color:var(--preto)}
+.pill-origens{background:var(--laranja);color:var(--areia)}
+.pill-manguehaus{background:var(--azul);color:var(--areia)}
+.pill-kit{background:var(--dourado);color:var(--preto)}
+.pill-novo{background:var(--preto);color:var(--areia)}
+.pill-prevenda{background:var(--areia);color:var(--preto)}
+
+.pd-nome{font-family:var(--clother);font-weight:900;
+  font-size:clamp(2rem,4.4vw,3.2rem);line-height:1.02;letter-spacing:-.03em;
+  text-transform:uppercase;margin:0}
+.pd-sub{font-family:var(--mono);font-size:.64rem;letter-spacing:.16em;text-transform:uppercase;
+  opacity:.5;margin:10px 0 0}
+
+.pd-precos{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;
+  margin:clamp(20px,3vh,30px) 0 0}
+.pd-valor{font-family:var(--clother);font-weight:900;font-size:clamp(1.8rem,3.4vw,2.6rem);
+  line-height:1;letter-spacing:-.02em}
+.pd-valor small{font-size:.5em;font-weight:700;margin-right:2px}
+.pd-riscado{font-family:var(--clother);font-weight:700;font-size:.95rem;opacity:.45;
+  text-decoration:line-through}
+.pd-parcela{font-family:var(--clother);font-weight:700;font-size:.72rem;letter-spacing:.06em;
+  text-transform:uppercase;background:var(--preto);color:var(--areia);
+  border:1.5px solid var(--preto);border-radius:999px;padding:5px 12px;line-height:1;
+  box-shadow:2px 2px 0 0 var(--preto)}
+
+.pd-bloco{margin-top:clamp(22px,3vh,30px)}
+.pd-rot{font-family:var(--mono);font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;
+  opacity:.5;margin:0 0 10px;display:flex;align-items:center;gap:10px}
+.pd-rot::before{content:'';display:block;width:20px;height:1px;background:currentColor}
+
+.pd-opcoes{display:flex;gap:6px;flex-wrap:wrap}
+.tam-btn{font-family:var(--clother);font-size:10px;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;padding:7px 14px;border-radius:999px;
+  border:1.5px solid rgba(13,13,11,.3);background:transparent;color:rgba(13,13,11,.55);
+  cursor:pointer;transition:all .12s ease;-webkit-tap-highlight-color:transparent}
+.tam-btn.selected{background:var(--dourado);color:var(--preto);border-color:var(--preto);
+  box-shadow:2px 2px 0 0 var(--preto)}
+.tam-btn:hover:not(.selected){border-color:var(--preto);color:var(--preto)}
+.tam-btn.tam-esgotado{opacity:.28;cursor:not-allowed;text-decoration:line-through;pointer-events:none}
+
+.pd-cores{display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+  width:fit-content;max-width:100%;padding:6px 10px;background:var(--areia);
+  border:1.5px solid var(--preto);border-radius:999px;box-shadow:2px 2px 0 0 var(--preto)}
+.cor-btn{width:22px;height:22px;border-radius:50%;border:1.5px solid rgba(13,13,11,.3);
+  box-sizing:border-box;cursor:pointer;padding:0;flex-shrink:0;
+  transition:transform .12s ease,box-shadow .12s ease,border-color .12s ease;
+  -webkit-tap-highlight-color:transparent}
+.cor-btn:hover:not(.selected){transform:scale(1.12);border-color:var(--preto)}
+.cor-btn.selected{border-color:var(--areia);box-shadow:0 0 0 2px var(--preto)}
+.pd-cor-nome{font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;
+  text-transform:uppercase;opacity:.55;margin:8px 0 0}
+
+.pd-acao{display:flex;gap:10px;align-items:stretch;margin-top:clamp(24px,3.5vh,34px);flex-wrap:wrap}
+.pd-qtd{display:flex;align-items:center;gap:0;border:1.5px solid var(--preto);
+  border-radius:999px;box-shadow:3px 3px 0 0 var(--preto);background:var(--areia);
+  overflow:hidden;flex-shrink:0}
+.pd-qtd button{width:38px;height:42px;border:0;background:transparent;cursor:pointer;
+  font-family:var(--clother);font-weight:900;font-size:16px;color:var(--preto);
+  -webkit-tap-highlight-color:transparent;transition:background .12s ease}
+.pd-qtd button:hover{background:var(--areia-sombra)}
+.pd-qtd button:disabled{opacity:.3;cursor:not-allowed;background:transparent}
+.pd-qtd span{min-width:34px;text-align:center;font-family:var(--clother);font-weight:900;
+  font-size:15px;font-variant-numeric:tabular-nums}
+
+.btn-encomendar{display:block;flex:1 1 200px;text-align:center;
+  font-family:var(--clother);font-weight:700;font-size:12px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--preto);background:var(--dourado);
+  padding:13px 20px;border-radius:999px;border:1.5px solid var(--preto);
+  box-shadow:3px 3px 0 0 var(--preto);cursor:pointer;transition:all .15s ease}
+.btn-encomendar:hover{box-shadow:1px 1px 0 0 var(--preto);transform:translate(2px,2px)}
+.btn-encomendar:active{box-shadow:0 0 0 0 var(--preto);transform:translate(3px,3px)}
+.btn-encomendar:focus-visible{outline:2.5px solid var(--laranja);outline-offset:3px}
+
+/* Secundário: mesma pílula, sem o dourado. Mesma regra do "Ver na parede" da loja.
+   Fica reservado pro botão de juntar a peça ao pedido, que entra na etapa do carrinho. */
+.btn-secundario{display:block;flex:1 1 160px;text-align:center;
+  font-family:var(--clother);font-weight:700;font-size:12px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--preto);background:transparent;
+  padding:13px 20px;border-radius:999px;border:1.5px solid var(--preto);
+  box-shadow:3px 3px 0 0 var(--preto);cursor:pointer;transition:all .15s ease}
+.btn-secundario:hover{box-shadow:1px 1px 0 0 var(--preto);transform:translate(2px,2px)}
+.btn-secundario:active{box-shadow:0 0 0 0 var(--preto);transform:translate(3px,3px)}
+
+.pd-conf{list-style:none;padding:0;margin:clamp(22px,3vh,30px) 0 0;
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px}
+.pd-conf li{display:flex;align-items:flex-start;gap:9px;font-family:var(--mono);
+  font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;opacity:.65;line-height:1.5}
+.pd-conf svg{width:15px;height:15px;flex-shrink:0;margin-top:1px;
+  stroke:currentColor;stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round}
+
+.pd-texto{margin-top:clamp(28px,4vh,40px);border-top:1.5px solid rgba(13,13,11,.18);
+  padding-top:22px;max-width:56ch}
+.pd-texto p{font-size:1rem;line-height:1.75;margin:0 0 1.1em}
+.pd-texto p:last-child{margin-bottom:0}
+
+.pd-ficha{margin:clamp(24px,3vh,32px) 0 0;padding-top:20px;
+  border-top:1.5px solid rgba(13,13,11,.18);
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:16px 22px}
+.pd-ficha dt{font-family:var(--mono);font-size:.58rem;letter-spacing:.16em;
+  text-transform:uppercase;opacity:.5;margin-bottom:5px}
+.pd-ficha dd{margin:0;font-family:var(--mono);font-weight:700;font-size:.7rem;
+  letter-spacing:.08em;text-transform:uppercase}
+
+/* ══ MARATU RECOMENDA ══ */
+.reco__topo{display:flex;align-items:baseline;justify-content:space-between;gap:20px;
+  flex-wrap:wrap;margin-bottom:clamp(28px,4vh,44px)}
+.reco__tit{font-family:var(--clother);font-weight:900;
+  font-size:clamp(1.6rem,3.4vw,2.6rem);line-height:1;letter-spacing:-.03em;text-transform:uppercase}
+.reco__sub{font-family:var(--mono);font-size:.6rem;letter-spacing:.18em;
+  text-transform:uppercase;opacity:.5}
+.reco__grade{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));
+  gap:var(--gutter)}
+.reco-card{display:flex;flex-direction:column;background:var(--areia);color:var(--preto);
+  border:1.5px solid var(--preto);border-radius:8px;box-shadow:3px 3px 0 0 var(--preto);
+  overflow:hidden;padding:0 10px 12px;transition:all .15s ease}
+.reco-card:hover{transform:translate(-2px,-2px);box-shadow:5px 5px 0 0 var(--preto)}
+.reco-card__img{margin:0 -10px 10px;background:var(--img-fundo);aspect-ratio:1/1;overflow:hidden}
+.reco-card__img img{width:100%;height:100%;object-fit:cover}
+.reco-card__nome{font-family:var(--clother);font-weight:700;font-size:12px;
+  text-transform:uppercase;line-height:1.2}
+.reco-card__preco{font-family:var(--clother);font-weight:900;font-size:14px;margin-top:6px}
+.reco-card__preco small{font-size:.7em;font-weight:700}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@media (max-width:768px){
+  .header{grid-template-columns:1fr auto;gap:8px}
+  .header__nav{display:none}
+}
+</style>
+
+<header class="header">
+  <a class="header__logo" href="/">maratu</a>
+  <nav class="header__nav">
+    <a href="/">início</a>
+    <a href="/#loja" class="active">loja</a>
+    <a href="/#sobre">estúdio</a>
+    <a href="/mare">diário</a>
+    <a href="/#contato">contato</a>
+    <a href="/servicos" data-servico="geral" data-origem="menu">serviços</a>
+    <a href="/#parceiros">parceiros</a>
+  </nav>
+  <button class="header__menu-toggle" aria-label="abrir menu" aria-expanded="false">MENU</button>
+</header>
+
+<div class="menu-overlay" id="menu-overlay"></div>
+<div class="mobile-menu" aria-hidden="true" id="mobile-menu">
+  <button class="mobile-menu__close" aria-label="fechar menu">fechar</button>
+  <nav class="mobile-menu__nav">
+    <a href="/">início</a>
+    <a href="/#loja">loja</a>
+    <a href="/#sobre">estúdio</a>
+    <a href="/mare">diário</a>
+    <a href="/#contato">contato</a>
+    <a href="/servicos" data-servico="geral" data-origem="menu">serviços</a>
+    <a href="/#parceiros">parceiros</a>
+  </nav>
+  <div class="mobile-menu__footer">maratu · aracaju / se · 2026</div>
+</div>
+
+<!--PRODUTO:CORPO-->
+
+<footer class="rodape">
+  <span>MARATU · Aracaju, SE</span>
+  <span><a href="/#loja">ver a loja</a></span>
+</footer>
+
+<script>
+  // MENU MOBILE — mesmo comportamento do resto do site
+  (function () {
+    var toggle = document.querySelector('.header__menu-toggle');
+    var menu = document.getElementById('mobile-menu');
+    var fechar = document.querySelector('.mobile-menu__close');
+    var fundo = document.getElementById('menu-overlay');
+    if (!toggle || !menu) return;
+    function abre() {
+      menu.classList.add('open'); fundo.classList.add('open');
+      menu.setAttribute('aria-hidden', 'false'); toggle.setAttribute('aria-expanded', 'true');
+      document.body.style.overflow = 'hidden';
+    }
+    function fecha() {
+      menu.classList.remove('open'); fundo.classList.remove('open');
+      menu.setAttribute('aria-hidden', 'true'); toggle.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+    }
+    toggle.addEventListener('click', abre);
+    if (fechar) fechar.addEventListener('click', fecha);
+    if (fundo) fundo.addEventListener('click', fecha);
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') fecha(); });
+    menu.querySelectorAll('a').forEach(function (a) { a.addEventListener('click', fecha); });
+  })();
+</script>
+
+<script>
+/* ══ COMPORTAMENTO DA PÁGINA ══
+   Os dados da peça chegam do Worker num script de tipo application/json com id
+   "pd-dados". Aqui só reagimos: troca de foto, escolha de tamanho ou cor, quantidade
+   e montagem do link do WhatsApp.
+
+   Sobre o link: wa.me/p/<sku> abre o cartão do catálogo mas ignora o texto. Então
+   quantidade 1 e sem variação escolhida usa o cartão; qualquer outra combinação vai
+   por texto, senão o pedido chega sem a cor e sem a quantidade. */
+(function () {
+  var raw = document.getElementById('pd-dados');
+  if (!raw) return;
+  var P;
+  try { P = JSON.parse(raw.textContent); } catch (e) { return; }
+
+  var WA_NUM = '5579991957415';
+  var estado = { tam: null, cor: null, qtd: 1 };
+
+  var elValor   = document.getElementById('pd-valor');
+  var elParcela = document.getElementById('pd-parcela');
+  var elCta     = document.getElementById('pd-cta');
+  var elQtd     = document.getElementById('pd-qtd-n');
+  var elMenos   = document.getElementById('pd-menos');
+  var elMais    = document.getElementById('pd-mais');
+  var elFoto    = document.getElementById('pd-foto-img');
+  var elCorNome = document.getElementById('pd-cor-nome');
+
+  var QTD_MAX = P.qtd_max && P.qtd_max > 0 ? P.qtd_max : 20;
+
+  function reais(centavos) { return Math.round(centavos / 100); }
+  function fmt(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }
+
+  // preço da combinação atual: pôster tem preço por tamanho, o resto tem preço único
+  function precoUnit() {
+    if (estado.tam && P.precos_tam && P.precos_tam[estado.tam]) return P.precos_tam[estado.tam];
+    return P.preco;
+  }
+
+  function pintaPreco() {
+    var unit = precoUnit();
+    var total = unit * estado.qtd;
+    elValor.innerHTML = '<small>R$</small>' + fmt(reais(total));
+    // 3x sem juros a partir de R$150, mesma régua do selo da loja
+    if (total >= 15000) {
+      elParcela.style.display = '';
+      elParcela.textContent = 'ou 3x de R$ ' + fmt(reais(Math.round(total / 3)));
+    } else {
+      elParcela.style.display = 'none';
+    }
+  }
+
+  function variacaoTexto() {
+    var v = [];
+    if (estado.tam) v.push(estado.tam);
+    if (estado.cor) v.push(estado.cor);
+    return v.join(', ');
+  }
+
+  function pintaCta() {
+    var simples = estado.qtd === 1 && !estado.tam && !estado.cor;
+    var href;
+    if (simples && P.sku) {
+      href = 'https://wa.me/p/' + encodeURIComponent(P.sku) + '/' + WA_NUM;
+    } else {
+      var msg = 'Olá! Quero ' + (estado.qtd > 1 ? estado.qtd + ' unidades' : '1 unidade') +
+                ' de ' + P.nome;
+      var v = variacaoTexto();
+      if (v) msg += ' (' + v + ')';
+      msg += '. Vi no site: maratu.com.br/produto/' + P.id;
+      href = 'https://wa.me/' + WA_NUM + '?text=' + encodeURIComponent(msg);
+    }
+    elCta.setAttribute('href', href);
+    elCta.setAttribute('data-produto', P.nome + (variacaoTexto() ? ' — ' + variacaoTexto() : ''));
+  }
+
+  function atualiza() { pintaPreco(); pintaCta(); }
+
+  // tamanhos
+  document.querySelectorAll('[data-pd-tam]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      document.querySelectorAll('[data-pd-tam]').forEach(function (o) { o.classList.remove('selected'); });
+      b.classList.add('selected');
+      estado.tam = b.getAttribute('data-pd-tam');
+      atualiza();
+    });
+    if (b.classList.contains('selected')) estado.tam = b.getAttribute('data-pd-tam');
+  });
+
+  // cores
+  document.querySelectorAll('[data-pd-cor]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      document.querySelectorAll('[data-pd-cor]').forEach(function (o) { o.classList.remove('selected'); });
+      b.classList.add('selected');
+      estado.cor = b.getAttribute('data-pd-cor');
+      if (elCorNome) elCorNome.textContent = estado.cor;
+      var img = b.getAttribute('data-pd-cor-img');
+      if (img && elFoto) elFoto.src = img;
+      atualiza();
+    });
+  });
+
+  // quantidade
+  function setQtd(n) {
+    estado.qtd = Math.max(1, Math.min(QTD_MAX, n));
+    elQtd.textContent = estado.qtd;
+    elMenos.disabled = estado.qtd <= 1;
+    elMais.disabled = estado.qtd >= QTD_MAX;
+    atualiza();
+  }
+  if (elMenos) elMenos.addEventListener('click', function () { setQtd(estado.qtd - 1); });
+  if (elMais)  elMais.addEventListener('click', function () { setQtd(estado.qtd + 1); });
+
+  // galeria
+  document.querySelectorAll('[data-pd-foto]').forEach(function (t) {
+    t.addEventListener('click', function () {
+      document.querySelectorAll('[data-pd-foto]').forEach(function (o) { o.classList.remove('selected'); });
+      t.classList.add('selected');
+      if (elFoto) elFoto.src = t.getAttribute('data-pd-foto');
+    });
+  });
+
+  setQtd(1);
+
+  if (typeof gtag === 'function') {
+    gtag('event', 'view_item', {
+      items: [{ item_id: P.id, item_name: P.nome, price: reais(P.preco) }]
+    });
+  }
+})();
+</script>
+<script src="/js/tracking.js?v=3"></script>
+</body>
+</html>

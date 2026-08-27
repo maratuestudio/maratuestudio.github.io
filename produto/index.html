@@ -178,9 +178,9 @@ img{max-width:100%;display:block}
 .pill-kit{background:var(--preto);color:var(--areia)}
 .pill-novo{background:var(--preto);color:var(--areia)}
 .pill-prevenda{background:var(--areia);color:var(--preto)}
-/* Indisponível não é coleção: pílula apagada, sem sombra, pra não competir com as outras */
-.pill-indisponivel{background:rgba(13,13,11,.08);color:rgba(13,13,11,.6);
-  border-color:rgba(13,13,11,.35);box-shadow:none}
+/* Mesma pílula da loja: fundo sólido, porque lá ela cai sobre a arte e o translúcido
+   sumia em foto escura. Texto esmaecido pra ler como estado, não como coleção. */
+.pill-indisponivel{background:var(--preto);color:rgba(240,236,228,.75);border-color:var(--preto)}
 
 .pd-nome{font-family:var(--clother);font-weight:900;
   font-size:clamp(2rem,4.4vw,3.2rem);line-height:1.02;letter-spacing:-.03em;

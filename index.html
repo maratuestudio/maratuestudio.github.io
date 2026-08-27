@@ -1066,9 +1066,12 @@
     }
     .produto-card--off:hover { transform: none; }
     .produto-card--off:hover .img-principal { transform: none; }
+    /* Fundo sólido, não translúcido: a pílula fica sobre a arte, e sobre foto escura o
+       translúcido sumia. Preto com texto esmaecido lê como estado e não se confunde
+       com a pílula vazada da pré-venda. */
     .pill-indisponivel {
-      background: rgba(13,13,11,0.08); color: rgba(13,13,11,0.6);
-      border-color: rgba(13,13,11,0.35); box-shadow: none;
+      background: var(--preto); color: rgba(240,236,228,0.75);
+      border-color: var(--preto);
     }
     .produto-indisponivel {
       display: block; width: 100%; text-align: center; margin-top: auto;

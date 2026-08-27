@@ -2454,8 +2454,17 @@
         var label = c.charAt(0).toUpperCase() + c.slice(1);
         return '<span class="pill-colecao pill-' + esc(c) + '">' + esc(label) + '</span>';
       }
-      function waHref(sku) {
-        return sku ? 'https://wa.me/p/' + encodeURIComponent(sku) + '/5579991957415' : 'https://wa.me/5579991957415';
+      /* O link de catálogo (wa.me/p/<sku>) abre uma ficha de produto dentro do WhatsApp.
+         Com sku que não existe lá — "0", "111", "XXX" — a ficha abre em branco e parece
+         que o botão não fez nada. Id do catálogo do WhatsApp é só dígito e comprido, então
+         qualquer coisa fora disso cai na conversa com o nome da peça no texto. */
+      function skuValido(sku) {
+        return /^[0-9]{10,}$/.test(String(sku || ''));
+      }
+      function waHref(sku, nome) {
+        if (skuValido(sku)) return 'https://wa.me/p/' + encodeURIComponent(sku) + '/5579991957415';
+        var msg = nome ? 'Olá! Tenho interesse em: ' + nome + '.' : 'Olá! Tenho interesse numa peça do site.';
+        return 'https://wa.me/5579991957415?text=' + encodeURIComponent(msg);
       }
       function cardHTML(p, cfg, isExtra) {
         var img = R2 + p.imagem_principal;
@@ -2538,7 +2547,7 @@
             '<button class="tam-info-btn" onclick="abrirTamPopup()">Ficou na dúvida do tamanho? Ver tabela</button>';
           btn = '<a href="' + esc(linkPedidoPoster(p.nome, 'A4', precoReais)) + '" id="btn-' + esc(p.id) + '" target="_blank" rel="noopener" class="btn-encomendar" data-produto="' + nomeAttr + '">' + cfg.btnLabel + '</a>';
         } else {
-          btn = '<a href="' + esc(waHref(p.sku_whatsapp)) + '" target="_blank" rel="noopener" class="btn-encomendar" data-produto="' + nomeAttr + '">' + cfg.btnLabel + '</a>';
+          btn = '<a href="' + esc(waHref(p.sku_whatsapp, p.nome)) + '" target="_blank" rel="noopener" class="btn-encomendar" data-produto="' + nomeAttr + '">' + cfg.btnLabel + '</a>';
         }
 
         var extraAttr = isExtra ? ' data-extra="1"' : '';

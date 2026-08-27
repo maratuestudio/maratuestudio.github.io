@@ -440,6 +440,8 @@ img{max-width:100%;display:block}
     if (simples && P.sku) {
       href = 'https://wa.me/p/' + encodeURIComponent(P.sku) + '/' + WA_NUM;
     } else {
+      // sem sku de catálogo válido a conversa é montada aqui; o Worker já filtra o
+      // sku falso, senão o WhatsApp abriria uma ficha de produto vazia
       var msg = 'Olá! Quero ' + (estado.qtd > 1 ? estado.qtd + ' unidades' : '1 unidade') +
                 ' de ' + P.nome;
       var v = variacaoTexto();

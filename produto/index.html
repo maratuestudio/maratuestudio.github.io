@@ -132,6 +132,16 @@ img{max-width:100%;display:block}
 .pd-foto img{width:100%;height:100%;object-fit:contain}
 .pd-foto .pd-selo{position:absolute;bottom:14px;right:14px;z-index:2}
 .pd-foto img{cursor:zoom-in}
+/* Peça indisponível: a arte continua lá, só sai de foco. Escurece e perde cor, pra ler
+   como "existe, mas não agora". A ampliação continua valendo. */
+.pd-foto--off img{filter:grayscale(.55) brightness(.62);}
+.pd-foto--off::after{content:'';position:absolute;inset:0;background:rgba(13,13,11,.18);
+  pointer-events:none}
+.pd-esgotado{margin-top:clamp(24px,3.5vh,34px);padding:18px;border-radius:12px;
+  border:1.5px dashed var(--preto);background:rgba(13,13,11,.04)}
+.pd-esgotado__tit{font-family:var(--clother);font-weight:900;font-size:.95rem;
+  text-transform:uppercase;letter-spacing:.02em;margin:0 0 6px}
+.pd-esgotado__txt{font-size:.86rem;line-height:1.55;opacity:.7;margin:0 0 14px;max-width:44ch}
 /* Ampliação da arte. Saiu do card da loja, que agora leva pra cá, e passou a morar
    na própria página. Mesma assinatura dos popups da loja: fundo escuro com desfoque. */
 .pd-lupa{position:fixed;inset:0;z-index:120;background:rgba(13,13,11,.82);
@@ -168,6 +178,9 @@ img{max-width:100%;display:block}
 .pill-kit{background:var(--preto);color:var(--areia)}
 .pill-novo{background:var(--preto);color:var(--areia)}
 .pill-prevenda{background:var(--areia);color:var(--preto)}
+/* Indisponível não é coleção: pílula apagada, sem sombra, pra não competir com as outras */
+.pill-indisponivel{background:rgba(13,13,11,.08);color:rgba(13,13,11,.6);
+  border-color:rgba(13,13,11,.35);box-shadow:none}
 
 .pd-nome{font-family:var(--clother);font-weight:900;
   font-size:clamp(2rem,4.4vw,3.2rem);line-height:1.02;letter-spacing:-.03em;
@@ -420,6 +433,8 @@ img{max-width:100%;display:block}
   }
 
   function pintaCta() {
+    // peça indisponível não tem botão de pedido: o Worker não emite o #pd-cta
+    if (!elCta) return;
     var simples = estado.qtd === 1 && !estado.tam && !estado.cor;
     var href;
     if (simples && P.sku) {
@@ -465,9 +480,9 @@ img{max-width:100%;display:block}
   // quantidade
   function setQtd(n) {
     estado.qtd = Math.max(1, Math.min(QTD_MAX, n));
-    elQtd.textContent = estado.qtd;
-    elMenos.disabled = estado.qtd <= 1;
-    elMais.disabled = estado.qtd >= QTD_MAX;
+    if (elQtd) elQtd.textContent = estado.qtd;   // sem seletor quando a peça está indisponível
+    if (elMenos) elMenos.disabled = estado.qtd <= 1;
+    if (elMais) elMais.disabled = estado.qtd >= QTD_MAX;
     atualiza();
   }
   if (elMenos) elMenos.addEventListener('click', function () { setQtd(estado.qtd - 1); });

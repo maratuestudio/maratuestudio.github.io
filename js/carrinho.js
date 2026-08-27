@@ -250,10 +250,12 @@
         var porId = {};
         (dados.produtos || []).forEach(function (p) { if (p.ativo) porId[p.id] = p; });
         var base = dados.precos_base || null;
-        var sumiram = [], mudaram = [];
+        var sumiram = [], mudaram = [], esgotaram = [];
         itens = itens.filter(function (i) {
           var p = porId[i.id];
           if (!p) { sumiram.push(i.nome); return false; }
+          // peça marcada como indisponível não pode seguir num pedido que vai virar recado
+          if (p.indisponivel) { esgotaram.push(p.nome); return false; }
           var novo = i.preco;
           if (i.variacao && TAMS.indexOf(i.variacao) >= 0) {
             var pt = precoDoTamanho(p, i.variacao, base);
@@ -268,6 +270,7 @@
         grava();
         var avisos = [];
         if (sumiram.length) avisos.push(sumiram.join(', ') + (sumiram.length > 1 ? ' saíram' : ' saiu') + ' do ar');
+        if (esgotaram.length) avisos.push(esgotaram.join(', ') + (esgotaram.length > 1 ? ' ficaram' : ' ficou') + ' sem estoque');
         if (mudaram.length) avisos.push('preço atualizado: ' + mudaram.join(', '));
         if (avisos.length) {
           statusEl.textContent = avisos.join(' · ');

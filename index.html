@@ -1058,6 +1058,26 @@
     a.produto-img-wrap:focus-visible, a.produto-nome:focus-visible {
       outline: 2.5px solid var(--laranja); outline-offset: 3px;
     }
+    /* SEM ESTOQUE — a peça continua na grade, só sai de foco: arte escurecida, sem
+       botão de pedido, e no lugar dele um aviso apagado. Quem clica ainda abre a
+       página da peça. O selo do preço fica, porque o preço não deixou de existir. */
+    .produto-card--off .img-principal, .produto-card--off .img-hover {
+      filter: grayscale(0.55) brightness(0.62);
+    }
+    .produto-card--off:hover { transform: none; }
+    .produto-card--off:hover .img-principal { transform: none; }
+    .pill-indisponivel {
+      background: rgba(13,13,11,0.08); color: rgba(13,13,11,0.6);
+      border-color: rgba(13,13,11,0.35); box-shadow: none;
+    }
+    .produto-indisponivel {
+      display: block; width: 100%; text-align: center; margin-top: auto;
+      font-family: 'Clother', sans-serif; font-weight: 700;
+      font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+      color: rgba(13,13,11,0.45); background: transparent;
+      padding: 10px 16px; border-radius: 999px;
+      border: 1.5px dashed rgba(13,13,11,0.3);
+    }
     .produto-tipo {
       font-family: 'Clother', sans-serif; font-size: 9px;
       color: rgba(13,13,11,0.5); letter-spacing: 0.1em; text-transform: uppercase;
@@ -2455,8 +2475,11 @@
         }
 
         var badges = '<div class="tag-badge">';
-        if (p.prevenda) badges += '<span class="pill-colecao pill-prevenda">Pré-venda</span>';
-        if (p.novo) badges += '<div class="tag-novo"><span>NOVO</span></div>';
+        // Indisponível manda sobre os outros selos: quem não pode comprar não precisa
+        // saber que a peça é nova nem que está em pré-venda.
+        if (p.indisponivel) badges += '<span class="pill-colecao pill-indisponivel">Indisponível</span>';
+        if (p.prevenda && !p.indisponivel) badges += '<span class="pill-colecao pill-prevenda">Pré-venda</span>';
+        if (p.novo && !p.indisponivel) badges += '<div class="tag-novo"><span>NOVO</span></div>';
         (p.colecoes || []).forEach(function(c) { badges += pill(c); });
         badges += '</div>';
 
@@ -2518,7 +2541,15 @@
           window.__CORES[p.id] = { nome: p.nome, preco: precoReais, cores: p.cores.map(function(c){ return { nome: c.nome, hex: c.hex, img: R2 + c.img + '?t=1' }; }) };
           btn = '<button type="button" class="btn-encomendar" data-cor-id="' + esc(p.id) + '" data-produto="' + nomeAttr + '">' + (cfg.btnLabel || 'Encomendar') + '</button>';
         }
-        return '<div class="produto-card" data-tipo="' + cfg.tipo + '" data-faixa="' + esc(p.subcategoria) + '"' + extraAttr + '>' +
+        /* Peça indisponível fica no lugar dela, com a arte escurecida e sem botão de
+           pedido. Some também o seletor de tamanho e o de cor: não há o que escolher
+           quando não dá pra pedir. A página da peça continua aberta pelo card. Vem
+           depois de todos os ramos de botão, senão o de cores reescreve por cima. */
+        if (p.indisponivel) {
+          extraBlock = '';
+          btn = '<span class="produto-indisponivel">Sem estoque</span>';
+        }
+        return '<div class="produto-card' + (p.indisponivel ? ' produto-card--off' : '') + '" data-tipo="' + cfg.tipo + '" data-faixa="' + esc(p.subcategoria) + '"' + extraAttr + '>' +
           '<a class="' + wrapClass + '"' + wrapStyle + ' href="' + esc(hrefPeca) + '" data-peca="' + esc(p.id) + '" aria-label="' + nomeAttr + '">' +
             badges + imgTag + precoSelo +
           '</a>' +

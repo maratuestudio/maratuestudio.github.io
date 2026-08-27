@@ -82,14 +82,15 @@
   .card__ver{font-family:var(--clother);font-size:8px;letter-spacing:.08em;text-transform:uppercase;
     opacity:.45;margin:6px 0 0;text-decoration:underline}
 
-  /* o "+" no canto da arte, como as lojas fazem na grade do celular */
-  .card__mais{position:absolute;left:6px;bottom:6px;z-index:2;width:34px;height:34px;
-    border-radius:50%;background:var(--areia);border:1.5px solid var(--preto);
-    box-shadow:2px 2px 0 0 var(--preto);cursor:pointer;display:flex;align-items:center;
-    justify-content:center;padding:0;-webkit-tap-highlight-color:transparent}
-  .card__mais svg{width:16px;height:16px;fill:none;stroke:var(--preto);stroke-width:2;
-    stroke-linecap:round}
-  .card__mais.feito{background:var(--dourado)}
+  /* o botão de adicionar ocupa o lugar do "Peça agora", com a sacola antes do texto */
+  .card__add{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;
+    margin-top:8px;font-family:var(--clother);font-weight:700;font-size:9px;letter-spacing:.1em;
+    text-transform:uppercase;background:var(--dourado);color:var(--preto);
+    border:1.5px solid var(--preto);border-radius:999px;padding:7px 6px;
+    box-shadow:2px 2px 0 0 var(--preto);cursor:pointer;-webkit-tap-highlight-color:transparent}
+  .card__add svg{width:13px;height:13px;flex:0 0 auto;fill:none;stroke:currentColor;
+    stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .card__add.feito{background:var(--preto);color:var(--areia)}
 
   /* ── página da peça ── */
   .pc__arte{border:1.5px solid var(--preto);border-radius:8px;overflow:hidden;
@@ -129,6 +130,24 @@
     transform:translateY(0)}
   .barra--peca .barra__btn{border-color:var(--preto)}
 
+  .palavras{max-width:760px;margin:0 auto}
+  .tab{width:100%;border-collapse:collapse;background:var(--areia);
+    border:1.5px solid var(--preto);box-shadow:4px 4px 0 0 var(--preto);border-radius:8px;
+    overflow:hidden;margin-top:10px}
+  .tab th{font-family:var(--clother);font-weight:900;font-size:.6rem;letter-spacing:.12em;
+    text-transform:uppercase;text-align:left;padding:10px 10px;background:var(--preto);
+    color:var(--areia)}
+  .tab td{padding:9px 10px;font-size:.78rem;border-top:1px solid rgba(13,13,11,.14);
+    vertical-align:top}
+  .tab td:first-child{font-size:.62rem;letter-spacing:.06em;text-transform:uppercase;
+    opacity:.55;white-space:nowrap}
+  .tab td:nth-child(2){opacity:.55;text-decoration:line-through}
+  .tab td:last-child{font-weight:700}
+  @media (max-width:560px){
+    .tab td:first-child{white-space:normal}
+    .tab th:first-child, .tab td:first-child{display:none}
+  }
+
   .legenda{max-width:900px;margin:0 auto;padding:0 20px 40px}
   .legenda h2{font-family:var(--clother);font-weight:900;font-size:.9rem;text-transform:uppercase;
     margin:26px 0 8px}
@@ -140,13 +159,13 @@
 
 <div class="topo">
   <h1>Comparador de fluxo da loja</h1>
-  <p>À esquerda o que está no ar hoje, à direita a proposta. As peças são as do catálogo de
-     verdade. Pode tocar: o "+" junta ao pedido e a barra do pé responde.</p>
+  <p>Em cima o que está no ar hoje, embaixo a proposta. As peças são as do catálogo de verdade.
+     Pode tocar: o botão de adicionar põe no carrinho e a barra do pé responde.</p>
 </div>
 
 <div class="abas">
   <button class="aba on" data-aba="loja">Na loja</button>
-  <button class="aba" data-aba="peca">Na peça</button>
+  <button class="aba" data-aba="peca">As palavras</button>
 </div>
 
 <div class="painel on" id="painel-loja">
@@ -164,19 +183,19 @@
     </div>
     <div class="col">
       <p class="rot rot--novo">Proposta</p>
-      <p class="nota">O card abre a peça, como em qualquer loja no celular. O "+" no canto da
-        arte junta ao pedido sem sair da loja, e a barra do pé mostra o que já foi juntado.</p>
+      <p class="nota">No lugar do "Peça agora" entra "Adicionar", com a sacola. Produto com
+        tamanho ou cor mostra "Escolher" e abre a página. Tocar na arte ou no nome também abre.</p>
       <div class="fone">
         <div class="fone__tela">
           <div class="fone__cab">
             <span class="fone__marca">maratu</span>
-            <span class="fone__conta" id="conta-novo">0 no pedido</span>
+            <span class="fone__conta" id="conta-novo">carrinho · 0</span>
           </div>
           <div class="grade" id="grade-novo"></div>
         </div>
         <div class="barra" id="barra-loja">
-          <div class="barra__txt">no pedido<b id="barra-loja-txt">0 itens · R$0</b></div>
-          <button class="barra__btn">Fechar pedido</button>
+          <div class="barra__txt">carrinho<b id="barra-loja-txt">0 itens · R$0</b></div>
+          <button class="barra__btn">Finalizar compra</button>
         </div>
       </div>
     </div>
@@ -184,30 +203,34 @@
 </div>
 
 <div class="painel" id="painel-peca">
-  <div class="par">
-    <div class="col">
-      <p class="rot rot--hoje">Hoje</p>
-      <p class="nota">Os dois botões ficam no meio da página. Quem rola até a descrição perde
-        os dois de vista e precisa voltar.</p>
-      <div class="fone">
-        <div class="fone__tela" id="peca-hoje"></div>
-      </div>
-    </div>
-    <div class="col">
-      <p class="rot rot--novo">Proposta</p>
-      <p class="nota">As ações moram numa barra presa no pé da tela, que acompanha a rolagem.
-        É o que Shopee e afins fazem no celular.</p>
-      <div class="fone">
-        <div class="fone__tela" id="peca-nova"></div>
-        <div class="barra barra--peca">
-          <div class="pc__qtd">
-            <button type="button" id="pq-menos">-</button><span id="pq-n">1</span><button type="button" id="pq-mais">+</button>
-          </div>
-          <button class="barra__btn" style="background:transparent" id="pq-juntar">Juntar</button>
-          <button class="barra__btn" id="pq-pedir">Pedir</button>
-        </div>
-      </div>
-    </div>
+  <div class="palavras">
+    <p class="nota" style="max-width:60ch">O desenho da página da peça fica como está. O que
+      muda são as palavras: sai o vocabulário inventado e entra o que qualquer loja usa.</p>
+    <table class="tab">
+      <thead><tr><th>Onde</th><th>Hoje</th><th>Passa a ser</th></tr></thead>
+      <tbody>
+        <tr><td>Card na loja</td><td>Peça agora</td><td>Adicionar</td></tr>
+        <tr><td>Card com tamanho ou cor</td><td>Peça agora</td><td>Escolher</td></tr>
+        <tr><td>Card esgotado</td><td>Sem estoque</td><td>Esgotado</td></tr>
+        <tr><td>Página da peça</td><td>Juntar ao pedido</td><td>Adicionar ao carrinho</td></tr>
+        <tr><td>Página da peça</td><td>Pedir no WhatsApp</td><td>Comprar pelo WhatsApp</td></tr>
+        <tr><td>Página, pré-venda</td><td>Reservar no WhatsApp</td><td>Reservar pelo WhatsApp</td></tr>
+        <tr><td>Confirmação</td><td>Está no pedido</td><td>Adicionado ao carrinho</td></tr>
+        <tr><td>Página, esgotado</td><td>Peça indisponível</td><td>Produto esgotado</td></tr>
+        <tr><td>Página, esgotado</td><td>Avisar quando voltar</td><td>Avise-me quando chegar</td></tr>
+        <tr><td>Gaveta</td><td>Meu pedido</td><td>Meu carrinho</td></tr>
+        <tr><td>Gaveta vazia</td><td>Seu pedido está vazio</td><td>Seu carrinho está vazio</td></tr>
+        <tr><td>Linha da gaveta</td><td>tirar</td><td>remover</td></tr>
+        <tr><td>Gaveta</td><td>Fechar pedido no WhatsApp</td><td>Finalizar compra pelo WhatsApp</td></tr>
+        <tr><td>Botão flutuante</td><td>ver meu pedido</td><td>ver carrinho</td></tr>
+        <tr><td>Aviso da gaveta</td><td>saiu do ar</td><td>indisponível</td></tr>
+        <tr><td>Aviso da gaveta</td><td>ficou sem estoque</td><td>esgotado</td></tr>
+        <tr><td>Recomenda</td><td>combina com esta peça</td><td>produtos relacionados</td></tr>
+        <tr><td>Volta pra loja</td><td>voltar pra loja</td><td>continuar comprando</td></tr>
+      </tbody>
+    </table>
+    <p class="nota" style="max-width:60ch;margin-top:18px">O nome do bloco de sugestões segue
+      "MARATU recomenda", que é da casa. Só o subtítulo entra na norma.</p>
   </div>
 </div>
 
@@ -249,16 +272,20 @@
       '<span class="card__btn">Peça agora</span>' +
     '</div>';
   }
+  var SACOLA = '<svg viewBox="0 0 24 24" aria-hidden="true">' +
+    '<path d="M5 7h14l-1.2 12.1a2 2 0 0 1-2 1.9H8.2a2 2 0 0 1-2-1.9z"/>' +
+    '<path d="M9 7V5.5A3 3 0 0 1 12 2.5h0A3 3 0 0 1 15 5.5V7"/></svg>';
+
   function cardNovo(p) {
+    var comVar = temVariacao(p);
     return '<div class="card" data-peca="' + esc(p.id) + '">' +
       '<div class="card__arte"><img src="' + esc(IMG + p.imagem_principal) + '?t=1" alt="" loading="lazy">' +
         '<div class="card__preco">R$' + reais(p.preco) + '</div>' +
-        '<button class="card__mais" data-add="' + esc(p.id) + '" aria-label="juntar ao pedido">' +
-          '<svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>' +
       '</div>' +
       '<p class="card__nome">' + esc(p.nome) + '</p>' +
       '<p class="card__tipo">' + esc((p.subtitulo || '').split('|')[0]) + '</p>' +
-      '<p class="card__ver">ver a peça ›</p>' +
+      '<button class="card__add" data-add="' + esc(p.id) + '">' + SACOLA +
+        (comVar ? 'Escolher' : 'Adicionar') + '</button>' +
     '</div>';
   }
 
@@ -268,7 +295,7 @@
     var barra = document.getElementById('barra-loja');
     var conta = document.getElementById('conta-novo');
     document.getElementById('barra-loja-txt').textContent = n + (n === 1 ? ' item' : ' itens') + ' · R$' + reais(t);
-    conta.textContent = n + ' no pedido';
+    conta.textContent = 'carrinho · ' + n;
     barra.classList.toggle('on', n > 0);
     conta.classList.toggle('on', n > 0);
   }
@@ -280,28 +307,6 @@
       document.getElementById('grade-hoje').innerHTML = ps.map(cardHoje).join('');
       document.getElementById('grade-novo').innerHTML = ps.map(cardNovo).join('');
 
-      // página da peça: usa a primeira peça sem variação
-      var peca = ps.filter(function (p) { return !temVariacao(p); })[0] || ps[0];
-      var corpo = function (comBotoes) {
-        return '<div class="fone__cab"><span class="fone__marca">maratu</span></div>' +
-          '<div class="pc__arte"><img src="' + esc(IMG + peca.imagem_principal) + '?w=1" alt=""></div>' +
-          '<h2 class="pc__nome">' + esc(peca.nome) + '</h2>' +
-          '<p class="pc__tipo">' + esc((peca.subtitulo || '').split('|')[0]) + '</p>' +
-          '<p class="pc__preco">R$' + reais(peca.preco) + '</p>' +
-          (comBotoes
-            ? '<div class="pc__acao">' +
-                '<div class="pc__qtd"><button type="button">-</button><span>1</span><button type="button">+</button></div>' +
-                '<span class="btn">Pedir no WhatsApp</span>' +
-                '<span class="btn btn--fraco">Juntar ao pedido</span>' +
-              '</div>'
-            : '') +
-          '<p class="pc__txt">Peça feita no estúdio, em Aracaju. Texto de exemplo pra mostrar o que acontece quando a pessoa rola a página atrás da descrição e da ficha.</p>' +
-          '<p class="pc__txt">Aqui embaixo entram a ficha técnica e o MARATU recomenda. É neste ponto que os botões do formato de hoje já saíram da tela.</p>' +
-          '<p class="pc__txt">Mais texto pra dar rolagem de verdade dentro do quadro.</p>';
-      };
-      document.getElementById('peca-hoje').innerHTML = corpo(true);
-      document.getElementById('peca-nova').innerHTML = corpo(false);
-
       // interações
       document.getElementById('grade-novo').addEventListener('click', function (e) {
         var b = e.target.closest('[data-add]');
@@ -309,11 +314,17 @@
           e.stopPropagation();
           var p = ps.filter(function (x) { return x.id === b.getAttribute('data-add'); })[0];
           if (!p) return;
-          if (temVariacao(p)) { alert('Esta peça tem tamanho ou cor pra escolher, então o "+" abre a página dela.'); return; }
+          if (temVariacao(p)) {
+            // produto com tamanho ou cor não entra no carrinho pela grade: abre a página
+            document.querySelector('.aba[data-aba="peca"]').click();
+            return;
+          }
           var linha = pedido.filter(function (i) { return i.id === p.id; })[0];
           if (linha) linha.qtd++; else pedido.push({ id: p.id, preco: p.preco, qtd: 1 });
+          var antes = b.innerHTML;
           b.classList.add('feito');
-          setTimeout(function () { b.classList.remove('feito'); }, 700);
+          b.innerHTML = SACOLA + 'No carrinho';
+          setTimeout(function () { b.classList.remove('feito'); b.innerHTML = antes; }, 1200);
           pintaPedido();
           return;
         }
@@ -327,11 +338,6 @@
     .catch(function (e) {
       document.getElementById('grade-hoje').innerHTML = '<p>não deu pra carregar o catálogo: ' + esc(e.message) + '</p>';
     });
-
-  // quantidade da barra da peça
-  var n = 1;
-  document.getElementById('pq-mais').addEventListener('click', function () { n++; document.getElementById('pq-n').textContent = n; });
-  document.getElementById('pq-menos').addEventListener('click', function () { if (n > 1) n--; document.getElementById('pq-n').textContent = n; });
 
   // abas
   document.querySelectorAll('.aba').forEach(function (b) {

@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Comparador de fluxo · MARATU</title>
+<meta name="robots" content="noindex">
+<style>
+  @font-face { font-family:'Clother'; src:url('/TRYClother-Regular.woff2') format('woff2'); font-weight:400; font-display:swap; }
+  @font-face { font-family:'Clother'; src:url('/TRYClother-Bold.woff2') format('woff2'); font-weight:700; font-display:swap; }
+  @font-face { font-family:'Clother'; src:url('/TRYClother-Black.woff2') format('woff2'); font-weight:900; font-display:swap; }
+  @font-face { font-family:'Jack'; src:url('/TRYJackAlpha-Regular.woff2?v=2') format('woff2'); font-weight:400; font-display:swap; }
+
+  :root{
+    --laranja:#C8501A; --azul:#0E3272; --areia:#F0ECE4; --areia-sombra:#E5DFD3;
+    --preto:#0D0D0B; --dourado:#D4960A; --img-fundo:#e4dfd6;
+    --clother:'Clother','Helvetica Neue',sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--areia-sombra);color:var(--preto);
+    font-family:var(--clother);line-height:1.6;-webkit-font-smoothing:antialiased}
+  a{color:inherit}
+
+  .topo{background:var(--azul);color:var(--areia);padding:18px 20px}
+  .topo h1{font-family:var(--clother);font-weight:900;font-size:1.1rem;margin:0;
+    text-transform:uppercase;letter-spacing:-.01em}
+  .topo p{font-size:.78rem;opacity:.75;margin:6px 0 0;max-width:60ch}
+
+  .abas{display:flex;gap:8px;padding:14px 20px 0;flex-wrap:wrap}
+  .aba{font-family:var(--clother);font-weight:700;font-size:11px;letter-spacing:.1em;
+    text-transform:uppercase;padding:8px 14px;border-radius:999px;cursor:pointer;
+    border:1.5px solid var(--preto);background:transparent;color:var(--preto)}
+  .aba.on{background:var(--dourado);box-shadow:2px 2px 0 0 var(--preto)}
+
+  .painel{display:none;padding:16px 20px 60px}
+  .painel.on{display:block}
+  .par{display:grid;grid-template-columns:1fr;gap:26px;justify-items:center}
+  @media (min-width:820px){ .par{grid-template-columns:1fr 1fr} }
+
+  .col{width:100%;max-width:360px}
+  .rot{font-family:var(--clother);font-weight:900;font-size:.72rem;letter-spacing:.14em;
+    text-transform:uppercase;margin:0 0 4px}
+  .rot--hoje{color:rgba(13,13,11,.45)}
+  .rot--novo{color:var(--laranja)}
+  .nota{font-size:.72rem;line-height:1.5;opacity:.7;margin:0 0 12px;min-height:2.6em}
+
+  /* moldura de celular: a barra fixa só faz sentido dentro de uma tela com pé */
+  .fone{position:relative;height:560px;border:2px solid var(--preto);border-radius:26px;
+    background:var(--areia);overflow:hidden;box-shadow:5px 5px 0 0 var(--preto)}
+  .fone__tela{position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;
+    padding:12px 12px 96px}
+  .fone__cab{position:sticky;top:0;z-index:3;background:var(--azul);color:var(--areia);
+    margin:-12px -12px 12px;padding:10px 14px;display:flex;align-items:center;
+    justify-content:space-between}
+  .fone__marca{font-family:'Jack','Arial Black',sans-serif;font-size:1rem;text-transform:lowercase}
+  .fone__conta{font-family:var(--clother);font-weight:700;font-size:10px;letter-spacing:.1em;
+    background:var(--dourado);color:var(--preto);border:1.5px solid var(--preto);
+    border-radius:999px;padding:3px 9px;display:none}
+  .fone__conta.on{display:inline-block}
+
+  /* ── card, mesmo desenho do site ── */
+  .grade{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .card{position:relative;border:1.5px solid var(--preto);border-radius:8px;
+    box-shadow:3px 3px 0 0 var(--preto);background:var(--areia);overflow:hidden;
+    padding:0 8px 8px;display:flex;flex-direction:column;cursor:pointer}
+  .card__arte{position:relative;margin:0 -8px 6px;aspect-ratio:1/1;background:var(--img-fundo);
+    overflow:hidden}
+  .card__arte img{width:100%;height:100%;object-fit:cover;display:block}
+  .card__preco{position:absolute;right:6px;bottom:6px;width:44px;height:44px;border-radius:50%;
+    background:var(--areia);border:1.5px solid var(--preto);box-shadow:2px 2px 0 0 var(--preto);
+    display:flex;align-items:center;justify-content:center;transform:rotate(-8deg);
+    font-family:var(--clother);font-weight:900;font-size:13px}
+  .card__nome{font-family:var(--clother);font-weight:700;font-size:10px;text-transform:uppercase;
+    line-height:1.2;margin:0}
+  .card__tipo{font-family:var(--clother);font-size:8px;letter-spacing:.1em;text-transform:uppercase;
+    opacity:.5;margin:2px 0 0}
+  .card__btn{display:block;width:100%;margin-top:8px;text-align:center;
+    font-family:var(--clother);font-weight:700;font-size:9px;letter-spacing:.1em;
+    text-transform:uppercase;background:var(--dourado);color:var(--preto);
+    border:1.5px solid var(--preto);border-radius:999px;padding:7px 6px;
+    box-shadow:2px 2px 0 0 var(--preto);cursor:pointer}
+  .card__ver{font-family:var(--clother);font-size:8px;letter-spacing:.08em;text-transform:uppercase;
+    opacity:.45;margin:6px 0 0;text-decoration:underline}
+
+  /* o "+" no canto da arte, como as lojas fazem na grade do celular */
+  .card__mais{position:absolute;left:6px;bottom:6px;z-index:2;width:34px;height:34px;
+    border-radius:50%;background:var(--areia);border:1.5px solid var(--preto);
+    box-shadow:2px 2px 0 0 var(--preto);cursor:pointer;display:flex;align-items:center;
+    justify-content:center;padding:0;-webkit-tap-highlight-color:transparent}
+  .card__mais svg{width:16px;height:16px;fill:none;stroke:var(--preto);stroke-width:2;
+    stroke-linecap:round}
+  .card__mais.feito{background:var(--dourado)}
+
+  /* ── página da peça ── */
+  .pc__arte{border:1.5px solid var(--preto);border-radius:8px;overflow:hidden;
+    background:var(--img-fundo);aspect-ratio:1/1;box-shadow:3px 3px 0 0 var(--preto)}
+  .pc__arte img{width:100%;height:100%;object-fit:contain;display:block}
+  .pc__nome{font-family:var(--clother);font-weight:900;font-size:1.3rem;text-transform:uppercase;
+    line-height:1.05;margin:14px 0 0}
+  .pc__tipo{font-family:var(--clother);font-size:9px;letter-spacing:.14em;text-transform:uppercase;
+    opacity:.5;margin:6px 0 0}
+  .pc__preco{font-family:var(--clother);font-weight:900;font-size:1.5rem;margin:12px 0 0}
+  .pc__txt{font-size:.8rem;line-height:1.6;opacity:.72;margin:14px 0 0}
+  .pc__acao{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
+  .btn{flex:1 1 120px;text-align:center;font-family:var(--clother);font-weight:700;
+    font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:11px 10px;
+    border-radius:999px;border:1.5px solid var(--preto);box-shadow:3px 3px 0 0 var(--preto);
+    cursor:pointer;background:var(--dourado);color:var(--preto)}
+  .btn--fraco{background:transparent}
+  .pc__qtd{display:flex;align-items:center;border:1.5px solid var(--preto);border-radius:999px;
+    overflow:hidden;background:var(--areia);box-shadow:3px 3px 0 0 var(--preto);flex:0 0 auto}
+  .pc__qtd button{width:30px;height:36px;border:0;background:none;cursor:pointer;
+    font-family:var(--clother);font-weight:900;font-size:14px}
+  .pc__qtd span{min-width:24px;text-align:center;font-family:var(--clother);font-weight:900;font-size:13px}
+
+  /* barra fixa no pé da tela */
+  .barra{position:absolute;left:0;right:0;bottom:0;z-index:5;background:var(--preto);
+    color:var(--areia);padding:10px 12px;display:flex;align-items:center;gap:10px;
+    transform:translateY(110%);transition:transform .2s ease}
+  .barra.on{transform:translateY(0)}
+  .barra__txt{font-family:var(--clother);font-size:10px;letter-spacing:.08em;
+    text-transform:uppercase;line-height:1.3}
+  .barra__txt b{display:block;font-weight:900;font-size:13px;letter-spacing:0}
+  .barra__btn{margin-left:auto;font-family:var(--clother);font-weight:700;font-size:10px;
+    letter-spacing:.1em;text-transform:uppercase;background:var(--dourado);color:var(--preto);
+    border:1.5px solid var(--areia);border-radius:999px;padding:9px 12px;cursor:pointer;
+    white-space:nowrap}
+  .barra--peca{background:var(--areia);color:var(--preto);border-top:1.5px solid var(--preto);
+    transform:translateY(0)}
+  .barra--peca .barra__btn{border-color:var(--preto)}
+
+  .legenda{max-width:900px;margin:0 auto;padding:0 20px 40px}
+  .legenda h2{font-family:var(--clother);font-weight:900;font-size:.9rem;text-transform:uppercase;
+    margin:26px 0 8px}
+  .legenda p, .legenda li{font-size:.84rem;line-height:1.65}
+  .legenda ul{padding-left:1.1em;margin:6px 0}
+</style>
+</head>
+<body>
+
+<div class="topo">
+  <h1>Comparador de fluxo da loja</h1>
+  <p>À esquerda o que está no ar hoje, à direita a proposta. As peças são as do catálogo de
+     verdade. Pode tocar: o "+" junta ao pedido e a barra do pé responde.</p>
+</div>
+
+<div class="abas">
+  <button class="aba on" data-aba="loja">Na loja</button>
+  <button class="aba" data-aba="peca">Na peça</button>
+</div>
+
+<div class="painel on" id="painel-loja">
+  <div class="par">
+    <div class="col">
+      <p class="rot rot--hoje">Hoje</p>
+      <p class="nota">O botão dourado leva direto pro WhatsApp. Nada diz que existe uma página
+        da peça, e o pedido com várias peças não tem como começar aqui.</p>
+      <div class="fone">
+        <div class="fone__tela">
+          <div class="fone__cab"><span class="fone__marca">maratu</span></div>
+          <div class="grade" id="grade-hoje"></div>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <p class="rot rot--novo">Proposta</p>
+      <p class="nota">O card abre a peça, como em qualquer loja no celular. O "+" no canto da
+        arte junta ao pedido sem sair da loja, e a barra do pé mostra o que já foi juntado.</p>
+      <div class="fone">
+        <div class="fone__tela">
+          <div class="fone__cab">
+            <span class="fone__marca">maratu</span>
+            <span class="fone__conta" id="conta-novo">0 no pedido</span>
+          </div>
+          <div class="grade" id="grade-novo"></div>
+        </div>
+        <div class="barra" id="barra-loja">
+          <div class="barra__txt">no pedido<b id="barra-loja-txt">0 itens · R$0</b></div>
+          <button class="barra__btn">Fechar pedido</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="painel" id="painel-peca">
+  <div class="par">
+    <div class="col">
+      <p class="rot rot--hoje">Hoje</p>
+      <p class="nota">Os dois botões ficam no meio da página. Quem rola até a descrição perde
+        os dois de vista e precisa voltar.</p>
+      <div class="fone">
+        <div class="fone__tela" id="peca-hoje"></div>
+      </div>
+    </div>
+    <div class="col">
+      <p class="rot rot--novo">Proposta</p>
+      <p class="nota">As ações moram numa barra presa no pé da tela, que acompanha a rolagem.
+        É o que Shopee e afins fazem no celular.</p>
+      <div class="fone">
+        <div class="fone__tela" id="peca-nova"></div>
+        <div class="barra barra--peca">
+          <div class="pc__qtd">
+            <button type="button" id="pq-menos">-</button><span id="pq-n">1</span><button type="button" id="pq-mais">+</button>
+          </div>
+          <button class="barra__btn" style="background:transparent" id="pq-juntar">Juntar</button>
+          <button class="barra__btn" id="pq-pedir">Pedir</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="legenda">
+  <h2>O que muda, em uma linha cada</h2>
+  <ul>
+    <li>O card deixa de ter botão grande e passa a abrir a peça, com um "+" pequeno para juntar ao pedido.</li>
+    <li>Peça com tamanho ou cor: o "+" leva pra página, porque falta escolher.</li>
+    <li>Na página, quantidade, "Juntar" e "Pedir" ficam presos no pé da tela.</li>
+    <li>Com item no pedido, a barra do pé aparece em qualquer página, com o total e o "Fechar pedido".</li>
+    <li>O WhatsApp continua sendo o fechamento, e não a primeira porta.</li>
+  </ul>
+  <h2>O que fica de fora</h2>
+  <p>Nada de pagamento, frete ou cadastro. O pedido segue virando uma conversa no WhatsApp.</p>
+</div>
+
+<script>
+(function () {
+  var API = 'https://maratu-api.raphaelnascimento.workers.dev/api/catalog';
+  var IMG = 'https://maratu-api.raphaelnascimento.workers.dev/img/';
+  var pedido = [];
+
+  function reais(c) { return String(Math.round(c / 100)).replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+    });
+  }
+  function temVariacao(p) {
+    return (p.cores && p.cores.length) || (p.tamanhos && p.tamanhos.length) || p.subcategoria === 'posteres';
+  }
+
+  function cardHoje(p) {
+    return '<div class="card">' +
+      '<div class="card__arte"><img src="' + esc(IMG + p.imagem_principal) + '?t=1" alt="" loading="lazy">' +
+        '<div class="card__preco">R$' + reais(p.preco) + '</div></div>' +
+      '<p class="card__nome">' + esc(p.nome) + '</p>' +
+      '<p class="card__tipo">' + esc((p.subtitulo || '').split('|')[0]) + '</p>' +
+      '<span class="card__btn">Peça agora</span>' +
+    '</div>';
+  }
+  function cardNovo(p) {
+    return '<div class="card" data-peca="' + esc(p.id) + '">' +
+      '<div class="card__arte"><img src="' + esc(IMG + p.imagem_principal) + '?t=1" alt="" loading="lazy">' +
+        '<div class="card__preco">R$' + reais(p.preco) + '</div>' +
+        '<button class="card__mais" data-add="' + esc(p.id) + '" aria-label="juntar ao pedido">' +
+          '<svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>' +
+      '</div>' +
+      '<p class="card__nome">' + esc(p.nome) + '</p>' +
+      '<p class="card__tipo">' + esc((p.subtitulo || '').split('|')[0]) + '</p>' +
+      '<p class="card__ver">ver a peça ›</p>' +
+    '</div>';
+  }
+
+  function pintaPedido() {
+    var n = pedido.reduce(function (s, i) { return s + i.qtd; }, 0);
+    var t = pedido.reduce(function (s, i) { return s + i.preco * i.qtd; }, 0);
+    var barra = document.getElementById('barra-loja');
+    var conta = document.getElementById('conta-novo');
+    document.getElementById('barra-loja-txt').textContent = n + (n === 1 ? ' item' : ' itens') + ' · R$' + reais(t);
+    conta.textContent = n + ' no pedido';
+    barra.classList.toggle('on', n > 0);
+    conta.classList.toggle('on', n > 0);
+  }
+
+  fetch(API, { cache: 'no-store' })
+    .then(function (r) { return r.json(); })
+    .then(function (d) {
+      var ps = (d.produtos || []).filter(function (p) { return p.ativo && !p.indisponivel; }).slice(0, 6);
+      document.getElementById('grade-hoje').innerHTML = ps.map(cardHoje).join('');
+      document.getElementById('grade-novo').innerHTML = ps.map(cardNovo).join('');
+
+      // página da peça: usa a primeira peça sem variação
+      var peca = ps.filter(function (p) { return !temVariacao(p); })[0] || ps[0];
+      var corpo = function (comBotoes) {
+        return '<div class="fone__cab"><span class="fone__marca">maratu</span></div>' +
+          '<div class="pc__arte"><img src="' + esc(IMG + peca.imagem_principal) + '?w=1" alt=""></div>' +
+          '<h2 class="pc__nome">' + esc(peca.nome) + '</h2>' +
+          '<p class="pc__tipo">' + esc((peca.subtitulo || '').split('|')[0]) + '</p>' +
+          '<p class="pc__preco">R$' + reais(peca.preco) + '</p>' +
+          (comBotoes
+            ? '<div class="pc__acao">' +
+                '<div class="pc__qtd"><button type="button">-</button><span>1</span><button type="button">+</button></div>' +
+                '<span class="btn">Pedir no WhatsApp</span>' +
+                '<span class="btn btn--fraco">Juntar ao pedido</span>' +
+              '</div>'
+            : '') +
+          '<p class="pc__txt">Peça feita no estúdio, em Aracaju. Texto de exemplo pra mostrar o que acontece quando a pessoa rola a página atrás da descrição e da ficha.</p>' +
+          '<p class="pc__txt">Aqui embaixo entram a ficha técnica e o MARATU recomenda. É neste ponto que os botões do formato de hoje já saíram da tela.</p>' +
+          '<p class="pc__txt">Mais texto pra dar rolagem de verdade dentro do quadro.</p>';
+      };
+      document.getElementById('peca-hoje').innerHTML = corpo(true);
+      document.getElementById('peca-nova').innerHTML = corpo(false);
+
+      // interações
+      document.getElementById('grade-novo').addEventListener('click', function (e) {
+        var b = e.target.closest('[data-add]');
+        if (b) {
+          e.stopPropagation();
+          var p = ps.filter(function (x) { return x.id === b.getAttribute('data-add'); })[0];
+          if (!p) return;
+          if (temVariacao(p)) { alert('Esta peça tem tamanho ou cor pra escolher, então o "+" abre a página dela.'); return; }
+          var linha = pedido.filter(function (i) { return i.id === p.id; })[0];
+          if (linha) linha.qtd++; else pedido.push({ id: p.id, preco: p.preco, qtd: 1 });
+          b.classList.add('feito');
+          setTimeout(function () { b.classList.remove('feito'); }, 700);
+          pintaPedido();
+          return;
+        }
+        var card = e.target.closest('[data-peca]');
+        if (card) {
+          document.querySelector('.aba[data-aba="peca"]').click();
+        }
+      });
+      pintaPedido();
+    })
+    .catch(function (e) {
+      document.getElementById('grade-hoje').innerHTML = '<p>não deu pra carregar o catálogo: ' + esc(e.message) + '</p>';
+    });
+
+  // quantidade da barra da peça
+  var n = 1;
+  document.getElementById('pq-mais').addEventListener('click', function () { n++; document.getElementById('pq-n').textContent = n; });
+  document.getElementById('pq-menos').addEventListener('click', function () { if (n > 1) n--; document.getElementById('pq-n').textContent = n; });
+
+  // abas
+  document.querySelectorAll('.aba').forEach(function (b) {
+    b.addEventListener('click', function () {
+      document.querySelectorAll('.aba').forEach(function (o) { o.classList.remove('on'); });
+      document.querySelectorAll('.painel').forEach(function (o) { o.classList.remove('on'); });
+      b.classList.add('on');
+      document.getElementById('painel-' + b.getAttribute('data-aba')).classList.add('on');
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    });
+  });
+})();
+</script>
+</body>
+</html>

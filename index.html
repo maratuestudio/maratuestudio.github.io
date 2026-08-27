@@ -1050,6 +1050,14 @@
       font-size: 12px; color: var(--preto); text-transform: uppercase;
       line-height: 1.2; margin-bottom: 2px;
     }
+    /* A arte e o nome viraram link pra /produto/<id>. O wrap era div, e sem display
+       block o <a> volta a ser inline e derruba a razão de aspecto do quadro. */
+    a.produto-img-wrap { display: block; }
+    a.produto-nome { display: block; }
+    a.produto-nome:hover { color: var(--laranja); }
+    a.produto-img-wrap:focus-visible, a.produto-nome:focus-visible {
+      outline: 2.5px solid var(--laranja); outline-offset: 3px;
+    }
     .produto-tipo {
       font-family: 'Clother', sans-serif; font-size: 9px;
       color: rgba(13,13,11,0.5); letter-spacing: 0.1em; text-transform: uppercase;
@@ -2459,21 +2467,24 @@
         var imgTag = '<img class="img-principal' + (hoverImg ? ' com-hover' : '') + '" src="' + esc(imgCard) + '" alt="' + nomeAttr + '" loading="lazy" decoding="async" fetchpriority="low">';
         if (hoverImg) imgTag += '<img class="img-hover" src="' + esc(hoverCard) + '" alt="' + nomeAttr + ' hover" loading="lazy" decoding="async" fetchpriority="low">';
 
-        var wrapClass, wrapStyle = '', wrapOnclick = '';
+        /* A arte e o nome levam pra página da peça (/produto/<id>), que é onde estão a
+           descrição, a quantidade e o "MARATU recomenda". Antes a arte abria o lightbox;
+           a ampliação continua existindo, agora dentro da própria página. Link de verdade,
+           não onclick, senão o Google não segue. */
+        var wrapClass, wrapStyle = '';
         if (cfg.tipo === 'adesivo') {
           wrapClass = 'produto-img-wrap';
           wrapStyle = ' style="aspect-ratio: 875 / 1241;"';
-          wrapOnclick = " onclick=\"abrirLightbox('" + jsStr(imgCheia) + "','" + jsStr(p.nome) + "')\"";
         } else if (cfg.tipo === 'poster') {
           wrapClass = 'produto-img-wrap poster';
-          wrapOnclick = " onclick=\"abrirLightbox('" + jsStr(imgCheia) + "','" + jsStr(p.nome) + "')\"";
         } else {
           wrapClass = 'produto-img-wrap quadrado';
-          wrapOnclick = " onclick=\"abrirLightbox('" + jsStr(imgCheia) + "','" + jsStr(p.nome) + "')\"";
         }
+        var hrefPeca = '/produto/' + encodeURIComponent(p.id);
 
         var subLines = String(p.subtitulo || '').split('|').map(function(s){return s.trim();}).filter(Boolean);
-        var info = '<div class="produto-info"><div><p class="produto-nome">' + nomeAttr + '</p>' +
+        var info = '<div class="produto-info"><div>' +
+          '<a class="produto-nome" href="' + esc(hrefPeca) + '" data-peca="' + esc(p.id) + '">' + nomeAttr + '</a>' +
           subLines.map(function(s){ return '<p class="produto-tipo">' + esc(s) + '</p>'; }).join('') +
           '</div></div>';
 
@@ -2508,9 +2519,9 @@
           btn = '<button type="button" class="btn-encomendar" data-cor-id="' + esc(p.id) + '" data-produto="' + nomeAttr + '">' + (cfg.btnLabel || 'Encomendar') + '</button>';
         }
         return '<div class="produto-card" data-tipo="' + cfg.tipo + '" data-faixa="' + esc(p.subcategoria) + '"' + extraAttr + '>' +
-          '<div class="' + wrapClass + '"' + wrapStyle + wrapOnclick + '>' +
+          '<a class="' + wrapClass + '"' + wrapStyle + ' href="' + esc(hrefPeca) + '" data-peca="' + esc(p.id) + '" aria-label="' + nomeAttr + '">' +
             badges + imgTag + precoSelo +
-          '</div>' +
+          '</a>' +
           info + extraBlock + btn +
         '</div>';
       }
@@ -2597,8 +2608,67 @@
             script.textContent = JSON.stringify(itemList);
             document.head.appendChild(script);
           } catch (e) { console.warn('[seo] JSON-LD produto falhou:', e); }
+          if (typeof restauraLoja === 'function') restauraLoja();
         })
         .catch(function(err) { console.warn('[catalog] fetch falhou, mantendo HTML hardcoded:', err); });
+    })();
+
+    /* Volta da página da peça. Quem clica num card sai da loja; ao voltar, o navegador
+       devolve a página no topo e com o filtro zerado, porque a grade é remontada pelo
+       fetch do catálogo. Aqui a posição e o filtro ficam guardados na aba e voltam
+       depois da hidratação, que é quem recria os cards. */
+    (function lembraLoja() {
+      var CHAVE = 'maratu_loja_pos';
+      var VALIDADE = 30 * 60 * 1000; // meia hora: passou disso, o visitante voltou por outro caminho
+
+      document.addEventListener('click', function (e) {
+        var a = e.target.closest && e.target.closest('a[data-peca]');
+        if (!a) return;
+        // separa "abriu a peça" do pageview da página, pra dar pra ver quanto card vira visita
+        if (typeof gtag === 'function') {
+          var card = a.closest('.produto-card');
+          gtag('event', 'select_item', {
+            items: [{ item_id: a.getAttribute('data-peca'),
+                      item_name: (card && card.querySelector('.produto-nome') || {}).textContent || '',
+                      item_category: card ? card.dataset.tipo : '' }]
+          });
+        }
+        try {
+          sessionStorage.setItem(CHAVE, JSON.stringify({
+            y: window.scrollY, em: Date.now(),
+            filtro: state.filtro,
+            faixas: ['chaveiros', 'adesivos', 'blusas', 'posteres', 'essenciais']
+              .reduce(function (o, f) { o[f] = !!state[f]; return o; }, {})
+          }));
+        } catch (err) {}
+      });
+
+      window.restauraLoja = function () {
+        var bruto;
+        try { bruto = sessionStorage.getItem(CHAVE); } catch (err) { return; }
+        if (!bruto) return;
+        try { sessionStorage.removeItem(CHAVE); } catch (err) {}
+        var pos;
+        try { pos = JSON.parse(bruto); } catch (err) { return; }
+        if (!pos || Date.now() - pos.em > VALIDADE) return;
+        // só recoloca quem chegou de uma página de peça; link direto pra home abre normal
+        if (document.referrer.indexOf('/produto/') < 0) return;
+        state.filtro = pos.filtro || 'todos';
+        Object.keys(pos.faixas || {}).forEach(function (f) { state[f] = pos.faixas[f]; });
+        if (typeof applyVisibility === 'function') applyVisibility();
+        if (typeof atualizarContadores === 'function') atualizarContadores();
+        // Duas voltas de quadro: a primeira aplica a visibilidade, a segunda já tem a
+        // altura final da grade pra rolar até onde o visitante estava.
+        // behavior instant é obrigatório: a home tem scroll-behavior smooth, e sem isso
+        // a volta vira uma descida animada desde o topo em vez de devolver a página
+        // no lugar onde ela estava.
+        requestAnimationFrame(function () {
+          requestAnimationFrame(function () {
+            try { window.scrollTo({ top: pos.y || 0, left: 0, behavior: 'instant' }); }
+            catch (err) { window.scrollTo(0, pos.y || 0); }
+          });
+        });
+      };
     })();
   </script>
 
@@ -2609,6 +2679,9 @@
   </div>
   <script src="components/radio/radio.js?v=5"  defer></script>
   <script src="js/tracking.js?v=3"></script>
+  <!-- Pedido montado nas páginas das peças. Aqui a bolha só aparece se já houver item,
+       pra quem voltou pra loja poder fechar sem procurar. -->
+  <script src="js/carrinho.js?v=1"></script>
   <script src="js/ar-parede.js?v=6" defer></script>
 
   <!-- Parcelamento automático: produtos com preço > R$150 ganham selo "3x sem juros" -->

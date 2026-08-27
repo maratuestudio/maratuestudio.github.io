@@ -121,7 +121,9 @@ img{max-width:100%;display:block}
 .pd-grade{display:grid;grid-template-columns:1fr;gap:clamp(28px,4vw,56px);align-items:start}
 @media (min-width:900px){
   .pd-grade{grid-template-columns:minmax(0,1.05fr) minmax(0,1fr)}
-  .pd-galeria{position:sticky;top:96px}
+  /* teto na foto: sem ele, em tela grande a arte estica e o painel do lado fica
+     com um vão enorme entre o botão e o rodapé */
+  .pd-galeria{position:sticky;top:96px;max-width:560px}
 }
 
 .pd-foto{position:relative;border:1.5px solid var(--preto);border-radius:8px;
@@ -129,6 +131,22 @@ img{max-width:100%;display:block}
   aspect-ratio:1/1}
 .pd-foto img{width:100%;height:100%;object-fit:contain}
 .pd-foto .pd-selo{position:absolute;bottom:14px;right:14px;z-index:2}
+.pd-foto img{cursor:zoom-in}
+/* Ampliação da arte. Saiu do card da loja, que agora leva pra cá, e passou a morar
+   na própria página. Mesma assinatura dos popups da loja: fundo escuro com desfoque. */
+.pd-lupa{position:fixed;inset:0;z-index:120;background:rgba(13,13,11,.82);
+  -webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);
+  display:flex;align-items:center;justify-content:center;padding:clamp(16px,4vw,48px)}
+.pd-lupa[hidden]{display:none}
+.pd-lupa img{max-width:100%;max-height:88vh;object-fit:contain;border-radius:8px;
+  border:1.5px solid var(--preto);box-shadow:6px 6px 0 0 var(--preto);background:var(--img-fundo)}
+.pd-lupa-fechar{position:absolute;top:clamp(16px,3vw,28px);right:clamp(16px,3vw,28px);
+  background:var(--areia);border:1.5px solid var(--preto);color:var(--preto);
+  font-family:var(--clother);font-size:.65rem;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;padding:8px 14px;border-radius:999px;cursor:pointer;
+  box-shadow:2px 2px 0 0 var(--preto);transition:all .12s ease}
+.pd-lupa-fechar:hover{background:var(--dourado);transform:translate(1px,1px);
+  box-shadow:1px 1px 0 0 var(--preto)}
 .pd-thumbs{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
 .pd-thumb{width:62px;height:62px;border-radius:6px;overflow:hidden;padding:0;
   border:1.5px solid rgba(13,13,11,.28);background:var(--img-fundo);cursor:pointer;
@@ -142,9 +160,12 @@ img{max-width:100%;display:block}
   text-transform:uppercase;padding:3px 10px;border-radius:999px;border:1.5px solid var(--preto);
   box-shadow:2px 2px 0 0 var(--preto);display:inline-flex;align-items:center;line-height:1;
   background:var(--areia);color:var(--preto)}
-.pill-origens{background:var(--laranja);color:var(--areia)}
-.pill-manguehaus{background:var(--azul);color:var(--areia)}
-.pill-kit{background:var(--dourado);color:var(--preto)}
+/* As cores das coleções são as mesmas da loja (index.html). Estavam trocadas aqui, e a
+   pílula mudava de cor quando o visitante saía do card e entrava na página. */
+.pill-origens{background:#2E6FC4;color:var(--areia)}
+.pill-manguehaus{background:#C8501A;color:var(--areia)}
+.pill-essenciais{background:var(--dourado);color:var(--preto)}
+.pill-kit{background:var(--preto);color:var(--areia)}
 .pill-novo{background:var(--preto);color:var(--areia)}
 .pill-prevenda{background:var(--areia);color:var(--preto)}
 
@@ -251,7 +272,9 @@ img{max-width:100%;display:block}
   font-size:clamp(1.6rem,3.4vw,2.6rem);line-height:1;letter-spacing:-.03em;text-transform:uppercase}
 .reco__sub{font-family:var(--mono);font-size:.6rem;letter-spacing:.18em;
   text-transform:uppercase;opacity:.5}
-.reco__grade{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));
+/* 150px de piso: no celular a grade fica em duas colunas, como a loja. Com 210 caía
+   pra uma coluna só e cada sugestão virava um bloco de tela inteira. */
+.reco__grade{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
   gap:var(--gutter)}
 .reco-card{display:flex;flex-direction:column;background:var(--areia);color:var(--preto);
   border:1.5px solid var(--preto);border-radius:8px;box-shadow:3px 3px 0 0 var(--preto);
@@ -301,6 +324,11 @@ img{max-width:100%;display:block}
 </div>
 
 <!--PRODUTO:CORPO-->
+
+<div class="pd-lupa" id="pd-lupa" hidden>
+  <button type="button" class="pd-lupa-fechar" id="pd-lupa-fechar">fechar</button>
+  <img id="pd-lupa-img" alt="">
+</div>
 
 <footer class="rodape">
   <span>MARATU · Aracaju, SE</span>
@@ -456,6 +484,50 @@ img{max-width:100%;display:block}
 
   setQtd(1);
 
+  /* Juntar ao pedido. O botão vive na casca e não na marcação do Worker porque só faz
+     sentido quando o módulo do carrinho carregou; se o script falhar, a página continua
+     inteira com o botão do WhatsApp. */
+  (function juntar() {
+    var cta = document.getElementById('pd-cta');
+    if (!cta || !cta.parentNode) return;
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'btn-secundario';
+    b.id = 'pd-juntar';
+    b.textContent = 'Juntar ao pedido';
+    cta.parentNode.insertBefore(b, cta.nextSibling);
+    b.addEventListener('click', function () {
+      if (!window.MaratuCarrinho) { window.location.href = cta.href; return; }
+      window.MaratuCarrinho.add({
+        id: P.id, nome: P.nome, variacao: variacaoTexto(),
+        qtd: estado.qtd, preco: precoUnit(),
+        img: elFoto ? elFoto.src.replace('?w=1', '?t=1') : ''
+      });
+      b.textContent = 'Está no pedido';
+      setTimeout(function () { b.textContent = 'Juntar ao pedido'; }, 1800);
+    });
+  })();
+
+  // ampliar a arte
+  (function lupa() {
+    var caixa = document.getElementById('pd-lupa');
+    var img = document.getElementById('pd-lupa-img');
+    var fechar = document.getElementById('pd-lupa-fechar');
+    if (!caixa || !img || !elFoto) return;
+    function abre() {
+      img.src = elFoto.src;
+      img.alt = P.nome;
+      caixa.hidden = false;
+      document.body.style.overflow = 'hidden';
+      fechar.focus();
+    }
+    function fecha() { caixa.hidden = true; document.body.style.overflow = ''; }
+    elFoto.addEventListener('click', abre);
+    fechar.addEventListener('click', fecha);
+    caixa.addEventListener('click', function (e) { if (e.target === caixa) fecha(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !caixa.hidden) fecha(); });
+  })();
+
   if (typeof gtag === 'function') {
     gtag('event', 'view_item', {
       items: [{ item_id: P.id, item_name: P.nome, price: reais(P.preco) }]
@@ -463,6 +535,7 @@ img{max-width:100%;display:block}
   }
 })();
 </script>
+<script src="/js/carrinho.js?v=1"></script>
 <script src="/js/tracking.js?v=3"></script>
 </body>
 </html>

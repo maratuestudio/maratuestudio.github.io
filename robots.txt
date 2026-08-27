@@ -7,3 +7,4 @@ Disallow: /login.html
 Disallow: /tools/
 
 Sitemap: https://maratu.com.br/sitemap.xml
+Sitemap: https://maratu.com.br/sitemap-produtos.xml

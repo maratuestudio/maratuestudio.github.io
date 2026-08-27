@@ -1074,7 +1074,8 @@
       display: block; width: 100%; text-align: center; margin-top: auto;
       font-family: 'Clother', sans-serif; font-weight: 700;
       font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
-      color: rgba(13,13,11,0.45); background: transparent;
+      /* 0.62 e não 0.45: em 11px o texto precisa de 4,5:1 sobre a areia pra ser legível */
+      color: rgba(13,13,11,0.62); background: transparent;
       padding: 10px 16px; border-radius: 999px;
       border: 1.5px dashed rgba(13,13,11,0.3);
     }
@@ -1216,7 +1217,10 @@
       .produto-card:not(:has(.tam-selector)):not(:has(.cor-selector)) > .produto-info { margin-bottom: 0; min-width: 0; }
       .produto-card:not(:has(.tam-selector)):not(:has(.cor-selector)) .produto-info > div { min-width: 0; }
       .produto-card:not(:has(.tam-selector)):not(:has(.cor-selector)) .produto-nome { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-      .produto-card:not(:has(.tam-selector)):not(:has(.cor-selector)) > .btn-encomendar { width: auto; margin-top: 0; white-space: nowrap; font-size: 10px; letter-spacing: 0.03em; padding: 7px 11px; }
+      /* O aviso de sem estoque ocupa o lugar do botão, então segue a mesma regra do
+         compacto à direita: sem ela ficava com 100% de largura numa coluna auto. */
+      .produto-card:not(:has(.tam-selector)):not(:has(.cor-selector)) > .btn-encomendar,
+      .produto-card:not(:has(.tam-selector)):not(:has(.cor-selector)) > .produto-indisponivel { width: auto; margin-top: 0; white-space: nowrap; font-size: 10px; letter-spacing: 0.03em; padding: 7px 11px; }
       /* Decor COM cores: pilula de cores a esquerda + botao Encomendar a direita (mesma linha), como os outros */
       .produto-card:has(.cor-selector) { display: grid; grid-template-columns: 1fr auto; grid-template-areas: "img img" "info info" "cores btn"; column-gap: 10px; align-items: center; }
       .produto-card:has(.cor-selector) > .produto-img-wrap, .produto-card:has(.cor-selector) > figure.vaso-slideshow { grid-area: img; }
@@ -2709,7 +2713,7 @@
     <div class="mr-drop-inner" id="mr-drop-inner"></div>
   </div>
   <script src="components/radio/radio.js?v=5"  defer></script>
-  <script src="js/tracking.js?v=3"></script>
+  <script src="js/tracking.js?v=4"></script>
   <!-- Pedido montado nas páginas das peças. Aqui a bolha só aparece se já houver item,
        pra quem voltou pra loja poder fechar sem procurar. -->
   <script src="js/carrinho.js?v=1"></script>

@@ -24,6 +24,16 @@
     // clique_encomendar — loja (inalterado)
     var el = t.closest('a[href*="wa.me"], a[href*="api.whatsapp.com"], .btn-encomendar[data-produto]');
     if (!el) return;
+
+    /* "Avisar quando voltar", da peça sem estoque, também abre o WhatsApp, mas não é
+       encomenda: se cair no clique_encomendar, a demanda por produto do painel passa a
+       contar interesse como pedido. Evento próprio, mesma ideia do clique_servico. */
+    if (el.getAttribute('data-origem') === 'indisponivel') {
+      if (typeof gtag === 'function') {
+        gtag('event', 'avisar_voltar', { produto: el.getAttribute('data-produto') || 'nao_identificado' });
+      }
+      return;
+    }
     var produto = el.getAttribute('data-produto')
       || (el.closest('[data-produto]') ? el.closest('[data-produto]').getAttribute('data-produto') : null)
       || 'nao_identificado';

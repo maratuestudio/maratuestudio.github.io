@@ -62,7 +62,7 @@
       if (!prev || !prev.parentNode) return;
       var b = document.createElement("button");
       b.type = "button";
-      b.className = "btn ghost";
+      b.className = "btn danger";   // mesma classe do "Excluir produto"
       b.id = "btnImg" + (qual === "hover" ? "Hover" : "Principal") + "X";
       b.textContent = "remover";
       b.style.cssText = "padding:5px 10px;font-size:10px;margin-left:auto;align-self:center;";
@@ -74,9 +74,18 @@
       });
       prev.parentNode.appendChild(b);
 
-      // escolher arquivo novo também dá o que remover
+      /* Escolher arquivo novo desfaz a remoção. Sem isto, remover e em seguida escolher
+         outra imagem subia o arquivo pro R2 e salvava o produto sem hover: a imagem nova
+         nascia órfã, que é justamente o que este módulo existe pra evitar. */
       var input = document.getElementById(qual === "hover" ? "fImgHover" : "fImgPrincipal");
-      if (input) input.addEventListener("change", function () { setTimeout(mostraBotoes, 50); });
+      if (input) input.addEventListener("change", function () {
+        if (input.files && input.files.length) {
+          removido[qual] = false;
+          var h = document.getElementById(qual === "hover" ? "fImgHoverHint" : "fImgPrincipalHint");
+          if (h) h.textContent = "imagem nova escolhida";
+        }
+        setTimeout(mostraBotoes, 50);
+      });
     });
     return true;
   }
@@ -111,7 +120,13 @@
     var input = document.getElementById(qual === "hover" ? "fImgHover" : "fImgPrincipal");
     if (input) input.value = "";
     var hint = document.getElementById(qual === "hover" ? "fImgHoverHint" : "fImgPrincipalHint");
-    if (hint) hint.textContent = atual ? "removida — some do site ao salvar" : "nenhuma imagem";
+    if (hint) {
+      /* A principal é obrigatória: salvar sem escolher outra mantém a que já estava.
+         Prometer que ela "some ao salvar" seria mentira. */
+      hint.textContent = qual === "principal"
+        ? "escolha outra imagem — sem isso a atual continua"
+        : (atual ? "removida — some do site ao salvar" : "nenhuma imagem");
+    }
     mostraBotoes();
     // o arquivo só sai do balde quando o produto for salvo, senão desistir da edição
     // deixaria o produto apontando pra uma imagem que não existe mais
@@ -130,7 +145,9 @@
         var corpo = JSON.parse(init.body);
         if (corpo && typeof corpo === "object" && corpo.nome) {
           var antes = daPeca();
-          if (removido.hover) corpo.imagem_hover = null;
+          var inputHover = document.getElementById("fImgHover");
+          var escolheuHover = inputHover && inputHover.files && inputHover.files.length;
+          if (removido.hover && !escolheuHover) corpo.imagem_hover = null;
           init = Object.assign({}, init, { body: JSON.stringify(corpo) });
 
           /* Some com o que saiu de cena: o removido e o que foi trocado por outro

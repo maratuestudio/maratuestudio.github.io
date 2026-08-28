@@ -1073,6 +1073,16 @@
       background: var(--preto); color: rgba(240,236,228,0.75);
       border-color: var(--preto);
     }
+    /* Botão do carrinho no card: mesma pílula dourada de antes, com a sacola antes do texto */
+    .btn-carrinho {
+      display: flex; align-items: center; justify-content: center; gap: 9px;
+    }
+    .btn-carrinho svg {
+      width: 14px; height: 14px; flex: 0 0 auto; fill: none; stroke: currentColor;
+      stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
+    }
+    /* confirmação curta no próprio botão, sem tirar o visitante da grade */
+    .btn-carrinho.feito { background: var(--preto); color: var(--areia); }
     .produto-indisponivel {
       display: block; width: 100%; text-align: center; margin-top: auto;
       font-family: 'Clother', sans-serif; font-weight: 700;
@@ -2267,6 +2277,13 @@
     function atualizarLink(pid, tam) {
       var btn = document.getElementById('btn-' + pid);
       if (!btn) return;
+      /* O botão do pôster deixou de ir pro WhatsApp e passou a abrir a página da peça.
+         O tamanho escolhido aqui viaja na URL, então a página abre já nele em vez de
+         voltar pro A4 e obrigar a escolher de novo. */
+      if (btn.classList.contains('btn-carrinho')) {
+        btn.href = '/produto/' + encodeURIComponent(pid) + '?t=' + encodeURIComponent(tam);
+        return;
+      }
       btn.href = linkPedidoPoster(nomePoster(pid), tam, precoPoster(pid, tam));
     }
 
@@ -2557,13 +2574,38 @@
           window.__CORES[p.id] = { nome: p.nome, preco: precoReais, cores: p.cores.map(function(c){ return { nome: c.nome, hex: c.hex, img: R2 + c.img + '?t=1' }; }) };
           btn = '<button type="button" class="btn-encomendar" data-cor-id="' + esc(p.id) + '" data-produto="' + nomeAttr + '">' + (cfg.btnLabel || 'Encomendar') + '</button>';
         }
+
+        /* ── O botão do card ──
+           No lugar do "Peça agora" entra o carrinho, como em qualquer loja. Produto sem
+           variação vai direto pro carrinho; produto com tamanho ou cor mostra "Escolher"
+           e abre a página, porque cravar tamanho pelo card seria adivinhar. O tamanho
+           escolhido no card do pôster viaja na URL, então a página abre nele.
+           Vem depois de todos os ramos acima, inclusive o do popup de cores, senão um
+           deles reescreve por cima. */
+        var SACOLA = '<svg viewBox="0 0 24 24" aria-hidden="true">' +
+          '<path d="M5 7h14l-1.2 12.1a2 2 0 0 1-2 1.9H8.2a2 2 0 0 1-2-1.9z"/>' +
+          '<path d="M9 7V5.5A3 3 0 0 1 12 2.5h0A3 3 0 0 1 15 5.5V7"/></svg>';
+        var precisaEscolher = cfg.tipo === 'poster' || cfg.tipo === 'blusa' || hasCores;
+        // o que o carrinho precisa saber da peça, sem ir buscar de novo na API
+        window.__PECAS = window.__PECAS || {};
+        window.__PECAS[p.id] = { nome: p.nome, preco: p.preco, img: imgCard };
+        if (precisaEscolher) {
+          // id no botão porque o seletor de tamanho do pôster atualiza esse href
+          btn = '<a class="btn-encomendar btn-carrinho" id="btn-' + esc(p.id) + '" href="' + esc(hrefPeca) +
+            '" data-peca="' + esc(p.id) + '" data-produto="' + nomeAttr +
+            '" data-origem="card-escolher">' + SACOLA + 'Escolher</a>';
+        } else {
+          btn = '<button type="button" class="btn-encomendar btn-carrinho" data-add="' + esc(p.id) +
+            '" data-produto="' + nomeAttr + '" data-origem="card">' + SACOLA + 'Adicionar</button>';
+        }
+
         /* Peça indisponível fica no lugar dela, com a arte escurecida e sem botão de
            pedido. Some também o seletor de tamanho e o de cor: não há o que escolher
            quando não dá pra pedir. A página da peça continua aberta pelo card. Vem
            depois de todos os ramos de botão, senão o de cores reescreve por cima. */
         if (p.indisponivel) {
           extraBlock = '';
-          btn = '<span class="produto-indisponivel">Sem estoque</span>';
+          btn = '<span class="produto-indisponivel">Esgotado</span>';
         }
         return '<div class="produto-card' + (p.indisponivel ? ' produto-card--off' : '') + '" data-tipo="' + cfg.tipo + '" data-faixa="' + esc(p.subcategoria) + '"' + extraAttr + '>' +
           '<a class="' + wrapClass + '"' + wrapStyle + ' href="' + esc(hrefPeca) + '" data-peca="' + esc(p.id) + '" aria-label="' + nomeAttr + '">' +
@@ -2660,6 +2702,25 @@
         .catch(function(err) { console.warn('[catalog] fetch falhou, mantendo HTML hardcoded:', err); });
     })();
 
+    /* Adicionar ao carrinho pelo card. Um ouvinte só, porque a grade é remontada a cada
+       hidratação e botão preso a nó morre junto. Produto com tamanho ou cor não passa por
+       aqui: o botão dele é link e abre a página. */
+    document.addEventListener('click', function (e) {
+      var b = e.target.closest && e.target.closest('[data-add]');
+      if (!b) return;
+      e.preventDefault();
+      var peca = (window.__PECAS || {})[b.getAttribute('data-add')];
+      if (!peca || !window.MaratuCarrinho) return;
+      window.MaratuCarrinho.add({
+        id: b.getAttribute('data-add'), nome: peca.nome, variacao: '',
+        qtd: 1, preco: peca.preco, img: peca.img
+      });
+      var antes = b.innerHTML;
+      b.classList.add('feito');
+      b.innerHTML = b.innerHTML.replace(/Adicionar\s*$/, 'No carrinho');
+      setTimeout(function () { b.classList.remove('feito'); b.innerHTML = antes; }, 1400);
+    });
+
     /* Volta da página da peça. Quem clica num card sai da loja; ao voltar, o navegador
        devolve a página no topo e com o filtro zerado, porque a grade é remontada pelo
        fetch do catálogo. Aqui a posição e o filtro ficam guardados na aba e voltam
@@ -2725,10 +2786,10 @@
     <div class="mr-drop-inner" id="mr-drop-inner"></div>
   </div>
   <script src="components/radio/radio.js?v=5"  defer></script>
-  <script src="js/tracking.js?v=4"></script>
+  <script src="js/tracking.js?v=5"></script>
   <!-- Pedido montado nas páginas das peças. Aqui a bolha só aparece se já houver item,
        pra quem voltou pra loja poder fechar sem procurar. -->
-  <script src="js/carrinho.js?v=1"></script>
+  <script src="js/carrinho.js?v=2"></script>
   <script src="js/ar-parede.js?v=6" defer></script>
 
   <!-- Parcelamento automático: produtos com preço > R$150 ganham selo "3x sem juros" -->

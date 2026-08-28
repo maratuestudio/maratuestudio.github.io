@@ -40,6 +40,9 @@
   function grava() {
     try { localStorage.setItem(CHAVE, JSON.stringify(itens)); } catch (e) {}
     pintaBotao();
+    // com a gaveta aberta, quem adiciona por trás dela precisa ver a lista mudar;
+    // antes disso, quem repintava era o abre(), que deixou de rodar a cada adição
+    if (aberto) pinta();
     document.dispatchEvent(new CustomEvent('maratu:carrinho', { detail: { n: conta() } }));
   }
   function conta() {
@@ -81,7 +84,8 @@
           items: [{ item_id: novo.id, item_name: novo.nome, quantity: novo.qtd, price: Math.round(novo.preco / 100) }]
         });
       }
-      abre();
+      // não abre a gaveta: quem avisa é a barra do pé, e assim ninguém é interrompido
+      // no meio da loja. A gaveta abre quando o visitante pedir.
       return true;
     },
     abrir: abre,
@@ -94,23 +98,29 @@
   var botao;
   function montaBotao() {
     if (botao) return;
-    botao = document.createElement('button');
-    botao.type = 'button';
-    botao.className = 'mc-bolha';
-    botao.setAttribute('aria-label', 'ver meu pedido');
+    /* Barra presa no pé da tela, e não uma bolha no canto: é assim que loja de celular
+       mostra o carrinho, e o total fica sempre à vista sem cobrir a página. */
+    botao = document.createElement('div');
+    botao.className = 'mc-barra';
     botao.innerHTML =
-      '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16l-1.4 9.3a2 2 0 0 1-2 1.7H7.4a2 2 0 0 1-2-1.7L4 6z"/>' +
-      '<path d="M9 6V4.6A2.6 2.6 0 0 1 11.6 2h.8A2.6 2.6 0 0 1 15 4.6V6"/></svg>' +
-      '<span class="mc-bolha__n">0</span>';
-    botao.addEventListener('click', abre);
+      '<button type="button" class="mc-barra__ver" aria-label="ver carrinho">' +
+        '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14l-1.2 12.1a2 2 0 0 1-2 1.9H8.2a2 2 0 0 1-2-1.9z"/>' +
+        '<path d="M9 7V5.5A3 3 0 0 1 12 2.5h0A3 3 0 0 1 15 5.5V7"/></svg>' +
+        '<span class="mc-barra__txt">carrinho<b class="mc-barra__n">0 itens</b></span>' +
+      '</button>' +
+      '<button type="button" class="mc-barra__btn">Finalizar compra</button>';
+    botao.querySelectorAll('button').forEach(function (b) { b.addEventListener('click', abre); });
     document.body.appendChild(botao);
     pintaBotao();
   }
   function pintaBotao() {
     if (!botao) return;
     var n = conta();
-    botao.querySelector('.mc-bolha__n').textContent = n;
+    botao.querySelector('.mc-barra__n').textContent =
+      n + (n === 1 ? ' item' : ' itens') + ' · R$' + reais(total());
     botao.classList.toggle('on', n > 0);
+    // a barra cobre o pé da página; o corpo cede a altura dela enquanto estiver à vista
+    document.body.style.paddingBottom = n > 0 ? '72px' : '';
   }
 
   // ── gaveta ──
@@ -121,9 +131,9 @@
     caixa.className = 'mc-fundo';
     caixa.hidden = true;
     caixa.innerHTML =
-      '<aside class="mc-gaveta" role="dialog" aria-modal="true" aria-label="meu pedido">' +
+      '<aside class="mc-gaveta" role="dialog" aria-modal="true" aria-label="meu carrinho">' +
         '<div class="mc-topo">' +
-          '<p class="mc-tit">Meu pedido</p>' +
+          '<p class="mc-tit">Meu carrinho</p>' +
           '<button type="button" class="mc-fechar">fechar</button>' +
         '</div>' +
         '<p class="mc-status" hidden></p>' +
@@ -176,8 +186,8 @@
   function pinta() {
     if (!corpo) return;
     if (!itens.length) {
-      corpo.innerHTML = '<p class="mc-vazio">Seu pedido está vazio. Escolha uma peça na loja.</p>';
-      rodape.innerHTML = '<a class="mc-btn mc-btn--fraco" href="/#loja">ver a loja</a>';
+      corpo.innerHTML = '<p class="mc-vazio">Seu carrinho está vazio. Escolha um produto na loja.</p>';
+      rodape.innerHTML = '<a class="mc-btn mc-btn--fraco" href="/#loja">continuar comprando</a>';
       return;
     }
     corpo.innerHTML = itens.map(function (i, idx) {
@@ -194,15 +204,15 @@
             '<span>' + i.qtd + '</span>' +
             '<button type="button" data-mc="mais" data-i="' + idx + '" aria-label="mais um">+</button>' +
           '</div>' +
-          '<button type="button" class="mc-tira" data-mc="tira" data-i="' + idx + '">tirar</button>' +
+          '<button type="button" class="mc-tira" data-mc="tira" data-i="' + idx + '">remover</button>' +
         '</div>' +
       '</div>';
     }).join('');
     rodape.innerHTML =
       '<div class="mc-total"><span>Total</span><strong>R$' + reais(total()) + '</strong></div>' +
       (total() >= 15000 ? '<p class="mc-parcela">ou 3x de R$' + reais(Math.round(total() / 3)) + ' sem juros</p>' : '') +
-      '<a class="mc-btn" id="mc-fechar-pedido" target="_blank" rel="noopener" data-produto="pedido" data-origem="carrinho">Fechar pedido no WhatsApp</a>' +
-      '<p class="mc-nota">A conversa abre no WhatsApp com a lista pronta. Nada é cobrado aqui.</p>';
+      '<a class="mc-btn" id="mc-fechar-pedido" target="_blank" rel="noopener" data-produto="carrinho" data-origem="carrinho">Finalizar compra pelo WhatsApp</a>' +
+      '<p class="mc-nota">Você finaliza a compra pelo WhatsApp. Nada é cobrado neste site.</p>';
     var cta = rodape.querySelector('#mc-fechar-pedido');
     cta.setAttribute('href', linkWhats());
     cta.addEventListener('click', function () {
@@ -223,7 +233,7 @@
                  : '- ' + i.qtd + 'x ' + nome + ' — R$' + reais(i.preco * i.qtd);
   }
   function montaMsg(curto) {
-    return 'Olá! Quero fechar este pedido:\n\n' +
+    return 'Olá! Quero finalizar esta compra:\n\n' +
       itens.map(function (i) { return linhaTexto(i, curto); }).join('\n') +
       '\n\nTotal: R$' + reais(total()) +
       '\nMontei no site: maratu.com.br';
@@ -269,8 +279,8 @@
         });
         grava();
         var avisos = [];
-        if (sumiram.length) avisos.push(sumiram.join(', ') + (sumiram.length > 1 ? ' saíram' : ' saiu') + ' do ar');
-        if (esgotaram.length) avisos.push(esgotaram.join(', ') + (esgotaram.length > 1 ? ' ficaram' : ' ficou') + ' sem estoque');
+        if (sumiram.length) avisos.push(sumiram.join(', ') + (sumiram.length > 1 ? ' ficaram' : ' ficou') + ' indisponível');
+        if (esgotaram.length) avisos.push(esgotaram.join(', ') + (esgotaram.length > 1 ? ' ficaram' : ' ficou') + ' esgotado');
         if (mudaram.length) avisos.push('preço atualizado: ' + mudaram.join(', '));
         if (avisos.length) {
           statusEl.textContent = avisos.join(' · ');
@@ -288,17 +298,25 @@
 
   // ── estilo ──
   var CSS =
-    '.mc-bolha{position:fixed;right:clamp(14px,3vw,28px);bottom:clamp(14px,3vw,28px);z-index:95;' +
-      'display:none;align-items:center;gap:7px;padding:11px 16px;border-radius:999px;cursor:pointer;' +
-      'background:var(--dourado,#D4960A);color:var(--preto,#0D0D0B);border:1.5px solid var(--preto,#0D0D0B);' +
-      'box-shadow:3px 3px 0 0 var(--preto,#0D0D0B);font-family:Clother,sans-serif;font-weight:700;' +
-      'font-size:12px;letter-spacing:.1em;text-transform:uppercase;transition:all .15s ease;' +
-      '-webkit-tap-highlight-color:transparent}' +
-    '.mc-bolha.on{display:inline-flex}' +
-    '.mc-bolha:hover{box-shadow:1px 1px 0 0 var(--preto,#0D0D0B);transform:translate(2px,2px)}' +
-    '.mc-bolha svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.8;' +
-      'stroke-linecap:round;stroke-linejoin:round}' +
-    '.mc-bolha__n{font-variant-numeric:tabular-nums}' +
+    '.mc-barra{position:fixed;left:0;right:0;bottom:0;z-index:95;display:none;align-items:center;' +
+      'gap:10px;padding:10px clamp(12px,3vw,20px);padding-bottom:max(env(safe-area-inset-bottom,0px),10px);' +
+      'background:var(--preto,#0D0D0B);color:var(--areia,#F0ECE4);' +
+      'border-top:1.5px solid var(--preto,#0D0D0B);' +
+      'font-family:Clother,sans-serif;-webkit-tap-highlight-color:transparent}' +
+    '.mc-barra.on{display:flex}' +
+    '.mc-barra__ver{display:flex;align-items:center;gap:9px;background:none;border:0;padding:0;' +
+      'color:inherit;cursor:pointer;text-align:left;font-family:inherit}' +
+    '.mc-barra__ver svg{width:20px;height:20px;flex:0 0 auto;fill:none;stroke:currentColor;' +
+      'stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}' +
+    '.mc-barra__txt{font-size:10px;letter-spacing:.14em;text-transform:uppercase;opacity:.65;' +
+      'line-height:1.25}' +
+    '.mc-barra__n{display:block;font-weight:900;font-size:14px;letter-spacing:0;opacity:1;' +
+      'font-variant-numeric:tabular-nums}' +
+    '.mc-barra__btn{margin-left:auto;background:var(--dourado,#D4960A);color:var(--preto,#0D0D0B);' +
+      'border:1.5px solid var(--areia,#F0ECE4);border-radius:999px;padding:11px 16px;cursor:pointer;' +
+      'font-family:inherit;font-weight:700;font-size:11px;letter-spacing:.1em;text-transform:uppercase;' +
+      'white-space:nowrap;transition:transform .12s ease}' +
+    '.mc-barra__btn:active{transform:translateY(2px)}' +
 
     '.mc-fundo{position:fixed;inset:0;z-index:130;background:rgba(13,13,11,.55);' +
       '-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);opacity:0;transition:opacity .2s ease}' +

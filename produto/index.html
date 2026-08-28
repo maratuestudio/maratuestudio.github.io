@@ -249,7 +249,7 @@ img{max-width:100%;display:block}
 .btn-encomendar:focus-visible{outline:2.5px solid var(--laranja);outline-offset:3px}
 
 /* Secundário: mesma pílula, sem o dourado. Mesma regra do "Ver na parede" da loja.
-   Fica reservado pro botão de juntar a peça ao pedido, que entra na etapa do carrinho. */
+   É o botão de adicionar ao carrinho, ao lado do de comprar. */
 .btn-secundario{display:block;flex:1 1 160px;text-align:center;
   font-family:var(--clother);font-weight:700;font-size:12px;letter-spacing:.12em;
   text-transform:uppercase;color:var(--preto);background:transparent;
@@ -455,6 +455,17 @@ img{max-width:100%;display:block}
 
   function atualiza() { pintaPreco(); pintaCta(); }
 
+  /* Tamanho escolhido no card da loja chega em ?t=. Sem isso a página voltaria pro A4 e
+     obrigaria a escolher de novo o que já tinha sido escolhido lá atrás. */
+  (function tamanhoDaUrl() {
+    var t = new URLSearchParams(window.location.search).get('t');
+    if (!t) return;
+    var alvo = document.querySelector('[data-pd-tam="' + t.replace(/"/g, '') + '"]:not(.tam-esgotado)');
+    if (!alvo) return;
+    document.querySelectorAll('[data-pd-tam]').forEach(function (o) { o.classList.remove('selected'); });
+    alvo.classList.add('selected');
+  })();
+
   // tamanhos
   document.querySelectorAll('[data-pd-tam]').forEach(function (b) {
     b.addEventListener('click', function () {
@@ -501,9 +512,9 @@ img{max-width:100%;display:block}
 
   setQtd(1);
 
-  /* Juntar ao pedido. O botão vive na casca e não na marcação do Worker porque só faz
-     sentido quando o módulo do carrinho carregou; se o script falhar, a página continua
-     inteira com o botão do WhatsApp. */
+  /* Adicionar ao carrinho. O botão vive na casca e não na marcação do Worker porque só
+     faz sentido quando o módulo do carrinho carregou; se o script falhar, a página
+     continua inteira com o botão de comprar. */
   (function juntar() {
     var cta = document.getElementById('pd-cta');
     if (!cta || !cta.parentNode) return;
@@ -511,7 +522,7 @@ img{max-width:100%;display:block}
     b.type = 'button';
     b.className = 'btn-secundario';
     b.id = 'pd-juntar';
-    b.textContent = 'Juntar ao pedido';
+    b.textContent = 'Adicionar ao carrinho';
     cta.parentNode.insertBefore(b, cta.nextSibling);
     b.addEventListener('click', function () {
       if (!window.MaratuCarrinho) { window.location.href = cta.href; return; }
@@ -520,8 +531,8 @@ img{max-width:100%;display:block}
         qtd: estado.qtd, preco: precoUnit(),
         img: elFoto ? elFoto.src.replace('?w=1', '?t=1') : ''
       });
-      b.textContent = 'Está no pedido';
-      setTimeout(function () { b.textContent = 'Juntar ao pedido'; }, 1800);
+      b.textContent = 'Adicionado ao carrinho';
+      setTimeout(function () { b.textContent = 'Adicionar ao carrinho'; }, 1800);
     });
   })();
 
@@ -552,7 +563,7 @@ img{max-width:100%;display:block}
   }
 })();
 </script>
-<script src="/js/carrinho.js?v=1"></script>
-<script src="/js/tracking.js?v=4"></script>
+<script src="/js/carrinho.js?v=2"></script>
+<script src="/js/tracking.js?v=5"></script>
 </body>
 </html>

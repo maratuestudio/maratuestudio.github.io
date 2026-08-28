@@ -34,6 +34,12 @@
       }
       return;
     }
+
+    /* O botão do card virou carrinho: "Adicionar" põe no carrinho e "Escolher" abre a
+       página. Nenhum dos dois é encomenda. Quem conta esses cliques é o add_to_cart e o
+       select_item; deixar cair aqui inflaria a demanda por produto do painel. */
+    var origem = el.getAttribute('data-origem');
+    if (origem === 'card' || origem === 'card-escolher') return;
     var produto = el.getAttribute('data-produto')
       || (el.closest('[data-produto]') ? el.closest('[data-produto]').getAttribute('data-produto') : null)
       || 'nao_identificado';

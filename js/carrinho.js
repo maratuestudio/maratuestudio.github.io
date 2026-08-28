@@ -16,6 +16,7 @@
 
   var CHAVE = 'maratu_carrinho_v1';
   var API = 'https://maratu-api.raphaelnascimento.workers.dev/api/catalog';
+  var API_PEDIDO = 'https://maratu-api.raphaelnascimento.workers.dev/api/pedido';
   var IMG = 'https://maratu-api.raphaelnascimento.workers.dev/img/';
   var WA_NUM = '5579991957415';
   var TAMS = ['A4', 'A3', 'A2', 'A1'];
@@ -114,16 +115,7 @@
     // ver carrinho abre a lista pra conferir; finalizar já leva a conversa pronta
     botao.querySelector('.mc-barra__ver').addEventListener('click', abre);
     botao.querySelector('.mc-barra__conta').addEventListener('click', abre);
-    botao.querySelector('#mc-barra-fim').addEventListener('click', function () {
-      if (typeof gtag === 'function') {
-        gtag('event', 'begin_checkout', {
-          value: Math.round(total() / 100), currency: 'BRL',
-          items: itens.map(function (i) {
-            return { item_id: i.id, item_name: i.nome, quantity: i.qtd, price: Math.round(i.preco / 100) };
-          })
-        });
-      }
-    });
+    botao.querySelector('#mc-barra-fim').addEventListener('click', finaliza);
     document.body.appendChild(botao);
     pintaBotao();
   }
@@ -138,7 +130,7 @@
        nova como janela não pedida e bloquear. Quem confere o preço antes é a revalidação
        silenciosa, disparada quando a barra aparece. */
     var fim = botao.querySelector('#mc-barra-fim');
-    if (fim) fim.setAttribute('href', linkWhats());
+    if (fim) fim.setAttribute('href', linkWhats(''));
     botao.classList.toggle('on', n > 0);
     // a barra cobre o pé da página; o corpo cede a altura dela enquanto estiver à vista
     document.body.style.paddingBottom = n > 0 ? '86px' : '';
@@ -238,17 +230,8 @@
       '<a class="mc-btn" id="mc-fechar-pedido" target="_blank" rel="noopener" data-produto="carrinho" data-origem="carrinho">Finalizar compra pelo WhatsApp</a>' +
       '<p class="mc-nota">Você finaliza a compra pelo WhatsApp. Nada é cobrado neste site.</p>';
     var cta = rodape.querySelector('#mc-fechar-pedido');
-    cta.setAttribute('href', linkWhats());
-    cta.addEventListener('click', function () {
-      if (typeof gtag === 'function') {
-        gtag('event', 'begin_checkout', {
-          value: Math.round(total() / 100), currency: 'BRL',
-          items: itens.map(function (i) {
-            return { item_id: i.id, item_name: i.nome, quantity: i.qtd, price: Math.round(i.preco / 100) };
-          })
-        });
-      }
-    });
+    cta.setAttribute('href', linkWhats(''));   // troca pelo link com código no clique
+    cta.addEventListener('click', finaliza);
   }
 
   function linhaTexto(i, curto) {
@@ -256,16 +239,68 @@
     return curto ? '- ' + i.qtd + 'x ' + nome
                  : '- ' + i.qtd + 'x ' + nome + ' — R$' + reais(i.preco * i.qtd);
   }
-  function montaMsg(curto) {
+  function montaMsg(curto, codigo) {
     return 'Olá! Quero finalizar esta compra:\n\n' +
       itens.map(function (i) { return linhaTexto(i, curto); }).join('\n') +
       '\n\nTotal: R$' + reais(total()) +
-      '\nMontei no site: maratu.com.br';
+      (codigo ? '\nPedido nº ' + codigo : '\nmaratu.com.br');
   }
-  function linkWhats() {
-    var msg = montaMsg(false);
-    if (encodeURIComponent(msg).length > LIMITE_MSG) msg = montaMsg(true);
+  function linkWhats(codigo) {
+    var msg = montaMsg(false, codigo);
+    if (encodeURIComponent(msg).length > LIMITE_MSG) msg = montaMsg(true, codigo);
     return 'https://wa.me/' + WA_NUM + '?text=' + encodeURIComponent(msg);
+  }
+
+  /* ── Fechar o pedido ──
+     O valor que vale é o do servidor, não o que está guardado neste navegador. Então, ao
+     finalizar, o site manda id, variação e quantidade para /api/pedido; de lá volta um
+     código curto, que entra na mensagem e é por onde o estúdio confere no admin.
+
+     A aba do WhatsApp é aberta no próprio toque, ainda vazia, porque abrir depois da
+     resposta faria o navegador tratar como janela não pedida e bloquear. Se o servidor
+     não responder, a aba recebe o link sem código: o pedido chega do mesmo jeito. */
+  function finaliza(ev) {
+    if (!itens.length) return;
+    var alvo = ev && ev.currentTarget;
+    var aba = null;
+    try { aba = window.open('', '_blank'); } catch (e) {}
+    if (aba) {
+      if (ev) ev.preventDefault();
+      try { aba.document.write('<p style="font-family:sans-serif;padding:24px">abrindo o WhatsApp…</p>'); } catch (e) {}
+    }
+    if (typeof gtag === 'function') {
+      gtag('event', 'begin_checkout', {
+        value: Math.round(total() / 100), currency: 'BRL',
+        items: itens.map(function (i) {
+          return { item_id: i.id, item_name: i.nome, quantity: i.qtd, price: Math.round(i.preco / 100) };
+        })
+      });
+    }
+    var corpo = {
+      origem: (location.pathname.indexOf('/produto/') === 0 ? 'peca' : 'loja'),
+      itens: itens.map(function (i) { return { id: i.id, variacao: i.variacao || '', qtd: i.qtd }; })
+    };
+    var seguir = function (codigo) {
+      var url = linkWhats(codigo);
+      if (aba) { try { aba.location.replace(url); return; } catch (e) {} }
+      if (alvo && alvo.setAttribute) alvo.setAttribute('href', url);
+      window.location.href = url;
+    };
+    var socorro = setTimeout(function () { seguir(''); }, 6000);
+    fetch(API_PEDIDO, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(corpo)
+    })
+      .then(function (r) { return r.ok ? r.json() : Promise.reject(new Error('HTTP ' + r.status)); })
+      .then(function (d) {
+        clearTimeout(socorro);
+        seguir(d && d.codigo ? d.codigo : '');
+      })
+      .catch(function (e) {
+        clearTimeout(socorro);
+        console.warn('[carrinho] não deu pra registrar o pedido:', e);
+        seguir('');
+      });
   }
 
   /* ── revalidação ──

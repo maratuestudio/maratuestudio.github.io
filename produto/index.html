@@ -227,7 +227,12 @@ img{max-width:100%;display:block}
 .pd-cor-nome{font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;
   text-transform:uppercase;opacity:.55;margin:8px 0 0}
 
+/* Os três ficam na mesma linha de base e com a mesma altura. Sem o nowrap, "Adicionar ao
+   carrinho" quebrava em duas linhas e crescia mais que os vizinhos, desalinhando a fileira.
+   Quando não couber, o flex empurra o botão inteiro pra linha de baixo, sem quebrar texto. */
 .pd-acao{display:flex;gap:10px;align-items:stretch;margin-top:clamp(24px,3.5vh,34px);flex-wrap:wrap}
+.pd-acao .btn-encomendar,.pd-acao .btn-secundario{white-space:nowrap;display:flex;
+  align-items:center;justify-content:center}
 .pd-qtd{display:flex;align-items:center;gap:0;border:1.5px solid var(--preto);
   border-radius:999px;box-shadow:3px 3px 0 0 var(--preto);background:var(--areia);
   overflow:hidden;flex-shrink:0}
@@ -282,7 +287,13 @@ img{max-width:100%;display:block}
 .reco__topo{display:flex;align-items:baseline;justify-content:space-between;gap:20px;
   flex-wrap:wrap;margin-bottom:clamp(28px,4vh,44px)}
 .reco__tit{font-family:var(--clother);font-weight:900;
-  font-size:clamp(1.6rem,3.4vw,2.6rem);line-height:1;letter-spacing:-.03em;text-transform:uppercase}
+  font-size:clamp(1.6rem,3.4vw,2.6rem);line-height:1;letter-spacing:-.03em;text-transform:uppercase;
+  display:flex;align-items:baseline;gap:.28em;flex-wrap:wrap}
+/* o nome da marca no lettering da casa; o resto continua em Clother */
+.reco__marca{font-family:var(--jack);font-weight:400;text-transform:lowercase;
+  letter-spacing:0;font-size:1.12em}
+/* a seção acompanha a página em vez de virar faixa escura; a linha marca a separação */
+.reco{border-top:1.5px solid rgba(13,13,11,.18)}
 .reco__sub{font-family:var(--mono);font-size:.6rem;letter-spacing:.18em;
   text-transform:uppercase;opacity:.5}
 /* 150px de piso: no celular a grade fica em duas colunas, como a loja. Com 210 caía
@@ -563,7 +574,7 @@ img{max-width:100%;display:block}
   }
 })();
 </script>
-<script src="/js/carrinho.js?v=2"></script>
+<script src="/js/carrinho.js?v=3"></script>
 <script src="/js/tracking.js?v=5"></script>
 </body>
 </html>

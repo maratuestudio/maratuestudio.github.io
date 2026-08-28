@@ -103,24 +103,45 @@
     botao = document.createElement('div');
     botao.className = 'mc-barra';
     botao.innerHTML =
-      '<button type="button" class="mc-barra__ver" aria-label="ver carrinho">' +
+      '<span class="mc-barra__conta">' +
         '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14l-1.2 12.1a2 2 0 0 1-2 1.9H8.2a2 2 0 0 1-2-1.9z"/>' +
         '<path d="M9 7V5.5A3 3 0 0 1 12 2.5h0A3 3 0 0 1 15 5.5V7"/></svg>' +
         '<span class="mc-barra__txt">carrinho<b class="mc-barra__n">0 itens</b></span>' +
-      '</button>' +
-      '<button type="button" class="mc-barra__btn">Finalizar compra</button>';
-    botao.querySelectorAll('button').forEach(function (b) { b.addEventListener('click', abre); });
+      '</span>' +
+      '<button type="button" class="mc-btn-barra mc-btn-barra--fraco mc-barra__ver">Ver carrinho</button>' +
+      '<a class="mc-btn-barra" id="mc-barra-fim" target="_blank" rel="noopener" ' +
+        'data-produto="carrinho" data-origem="barra">Finalizar compra</a>';
+    // ver carrinho abre a lista pra conferir; finalizar já leva a conversa pronta
+    botao.querySelector('.mc-barra__ver').addEventListener('click', abre);
+    botao.querySelector('.mc-barra__conta').addEventListener('click', abre);
+    botao.querySelector('#mc-barra-fim').addEventListener('click', function () {
+      if (typeof gtag === 'function') {
+        gtag('event', 'begin_checkout', {
+          value: Math.round(total() / 100), currency: 'BRL',
+          items: itens.map(function (i) {
+            return { item_id: i.id, item_name: i.nome, quantity: i.qtd, price: Math.round(i.preco / 100) };
+          })
+        });
+      }
+    });
     document.body.appendChild(botao);
     pintaBotao();
   }
   function pintaBotao() {
     if (!botao) return;
     var n = conta();
-    botao.querySelector('.mc-barra__n').textContent =
-      n + (n === 1 ? ' item' : ' itens') + ' · R$' + reais(total());
+    var resumo = n + (n === 1 ? ' item' : ' itens') + ' · R$' + reais(total());
+    botao.querySelector('.mc-barra__n').textContent = resumo;
+    // em tela estreita o rótulo "carrinho" some e quem mostra o resumo é o próprio bloco
+    botao.querySelector('.mc-barra__conta').setAttribute('data-n', resumo);
+    /* O link fica pronto o tempo todo: montar no clique faria o navegador tratar a aba
+       nova como janela não pedida e bloquear. Quem confere o preço antes é a revalidação
+       silenciosa, disparada quando a barra aparece. */
+    var fim = botao.querySelector('#mc-barra-fim');
+    if (fim) fim.setAttribute('href', linkWhats());
     botao.classList.toggle('on', n > 0);
     // a barra cobre o pé da página; o corpo cede a altura dela enquanto estiver à vista
-    document.body.style.paddingBottom = n > 0 ? '72px' : '';
+    document.body.style.paddingBottom = n > 0 ? '86px' : '';
   }
 
   // ── gaveta ──
@@ -171,6 +192,9 @@
     aberto = true;
     document.body.style.overflow = 'hidden';
     requestAnimationFrame(function () { caixa.classList.add('on'); });
+    // leva o foco pra dentro do diálogo, como a lupa da página da peça já faz
+    var fecharBtn = caixa.querySelector('.mc-fechar');
+    if (fecharBtn) fecharBtn.focus();
     pinta();
     revalida();
     if (typeof gtag === 'function') gtag('event', 'view_cart', { value: Math.round(total() / 100) });
@@ -298,25 +322,39 @@
 
   // ── estilo ──
   var CSS =
+    /* Barra clara, como o resto do site: a faixa preta pesava demais no pé da tela.
+       Os dois botões seguem a pílula da casa, com borda e sombra dura. */
     '.mc-barra{position:fixed;left:0;right:0;bottom:0;z-index:95;display:none;align-items:center;' +
-      'gap:10px;padding:10px clamp(12px,3vw,20px);padding-bottom:max(env(safe-area-inset-bottom,0px),10px);' +
-      'background:var(--preto,#0D0D0B);color:var(--areia,#F0ECE4);' +
+      'gap:8px;padding:12px clamp(12px,3vw,20px);' +
+      'padding-bottom:max(env(safe-area-inset-bottom,0px),12px);' +
+      'background:var(--areia,#F0ECE4);color:var(--preto,#0D0D0B);' +
       'border-top:1.5px solid var(--preto,#0D0D0B);' +
       'font-family:Clother,sans-serif;-webkit-tap-highlight-color:transparent}' +
     '.mc-barra.on{display:flex}' +
-    '.mc-barra__ver{display:flex;align-items:center;gap:9px;background:none;border:0;padding:0;' +
-      'color:inherit;cursor:pointer;text-align:left;font-family:inherit}' +
-    '.mc-barra__ver svg{width:20px;height:20px;flex:0 0 auto;fill:none;stroke:currentColor;' +
+    '.mc-barra__conta{display:flex;align-items:center;gap:9px;margin-right:auto;cursor:pointer;' +
+      'min-width:0}' +
+    '.mc-barra__conta svg{width:20px;height:20px;flex:0 0 auto;fill:none;stroke:currentColor;' +
       'stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}' +
-    '.mc-barra__txt{font-size:10px;letter-spacing:.14em;text-transform:uppercase;opacity:.65;' +
-      'line-height:1.25}' +
+    '.mc-barra__txt{font-size:9px;letter-spacing:.14em;text-transform:uppercase;opacity:.5;' +
+      'line-height:1.25;min-width:0}' +
     '.mc-barra__n{display:block;font-weight:900;font-size:14px;letter-spacing:0;opacity:1;' +
-      'font-variant-numeric:tabular-nums}' +
-    '.mc-barra__btn{margin-left:auto;background:var(--dourado,#D4960A);color:var(--preto,#0D0D0B);' +
-      'border:1.5px solid var(--areia,#F0ECE4);border-radius:999px;padding:11px 16px;cursor:pointer;' +
-      'font-family:inherit;font-weight:700;font-size:11px;letter-spacing:.1em;text-transform:uppercase;' +
-      'white-space:nowrap;transition:transform .12s ease}' +
-    '.mc-barra__btn:active{transform:translateY(2px)}' +
+      'color:var(--preto,#0D0D0B);white-space:nowrap;font-variant-numeric:tabular-nums}' +
+    '.mc-btn-barra{flex:0 0 auto;background:var(--dourado,#D4960A);color:var(--preto,#0D0D0B);' +
+      'border:1.5px solid var(--preto,#0D0D0B);border-radius:999px;padding:11px 15px;cursor:pointer;' +
+      'box-shadow:3px 3px 0 0 var(--preto,#0D0D0B);font-family:inherit;font-weight:700;font-size:11px;' +
+      'letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;text-decoration:none;' +
+      'transition:all .15s ease}' +
+    '.mc-btn-barra:hover{box-shadow:1px 1px 0 0 var(--preto,#0D0D0B);transform:translate(2px,2px)}' +
+    '.mc-btn-barra:active{box-shadow:0 0 0 0 var(--preto,#0D0D0B);transform:translate(3px,3px)}' +
+    '.mc-btn-barra--fraco{background:transparent}' +
+    // telas estreitas: o rótulo do total encolhe antes de qualquer botão sumir
+    '@media (max-width:420px){' +
+      '.mc-barra{gap:9px;padding-left:12px;padding-right:12px}' +
+      '.mc-barra__txt{display:none}' +
+      '.mc-barra__conta::after{content:attr(data-n);font-weight:900;font-size:14px;' +
+        'font-variant-numeric:tabular-nums;white-space:nowrap}' +
+      '.mc-btn-barra{padding:10px 12px;font-size:10px;letter-spacing:.06em}' +
+    '}' +
 
     '.mc-fundo{position:fixed;inset:0;z-index:130;background:rgba(13,13,11,.55);' +
       '-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);opacity:0;transition:opacity .2s ease}' +

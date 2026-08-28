@@ -2590,10 +2590,12 @@
         window.__PECAS = window.__PECAS || {};
         window.__PECAS[p.id] = { nome: p.nome, preco: p.preco, img: imgCard };
         if (precisaEscolher) {
+          /* Mesmo rótulo dos outros, pra grade não ficar com dois verbos: o que muda é
+             o destino, porque tamanho e cor se escolhem na página. */
           // id no botão porque o seletor de tamanho do pôster atualiza esse href
           btn = '<a class="btn-encomendar btn-carrinho" id="btn-' + esc(p.id) + '" href="' + esc(hrefPeca) +
             '" data-peca="' + esc(p.id) + '" data-produto="' + nomeAttr +
-            '" data-origem="card-escolher">' + SACOLA + 'Escolher</a>';
+            '" data-origem="card-escolher">' + SACOLA + 'Adicionar</a>';
         } else {
           btn = '<button type="button" class="btn-encomendar btn-carrinho" data-add="' + esc(p.id) +
             '" data-produto="' + nomeAttr + '" data-origem="card">' + SACOLA + 'Adicionar</button>';

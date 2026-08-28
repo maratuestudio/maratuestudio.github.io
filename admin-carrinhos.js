@@ -197,10 +197,11 @@
       "-" + String(hoje.getDate()).padStart(2, "0");
     var nomes = (p.itens || []).map(function (i) { return i.qtd + "× " + i.nome; }).join(", ");
     MaratuStore.setLancamentos(MaratuStore.getLancamentos().concat([{
-      id: "ped-" + p.codigo,
+      id: "ped-" + p.codigo + "-" + Date.now(),   // o código fica no rótulo, pro cruzamento
       data: iso,
       label: "Pedido " + p.codigo + (nomes ? " · " + nomes : ""),
-      valor: Math.round(Number(p.total || 0) / 100)
+      // valor em reais com centavos: arredondar aqui viraria R$50 num pedido de R$49,90
+      valor: Number(p.total || 0) / 100
     }]));
     if (typeof renderVendas === "function") renderVendas();
     if (typeof renderPainel === "function") renderPainel();
@@ -209,16 +210,24 @@
 
   // ── estilo, no vocabulário do admin ──
   var CSS =
+    /* A régua de sub-abas foi desenhada para três botões. Com o quarto, em tela estreita
+       o último ficava cortado na borda. Aqui ela passa a rolar de lado, e cada botão fica
+       numa linha só em vez de quebrar em duas. */
+    "@media (max-width:640px){" +
+      "#orcSeg{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}" +
+      "#orcSeg::-webkit-scrollbar{display:none}" +
+      "#orcSeg button{flex:0 0 auto;white-space:nowrap}" +
+    "}" +
     "#sub-carrinhos .ped-card{border:1px solid var(--line,#e3ddd2);border-radius:12px;" +
-      "padding:12px 14px;margin-bottom:10px;background:var(--card,#fff)}" +
+      "padding:12px 14px;margin-bottom:10px;background:var(--areia)}" +
     "#sub-carrinhos .ped-topo{display:flex;align-items:center;justify-content:space-between;gap:10px}" +
     "#sub-carrinhos .ped-cod{font-family:var(--clother),sans-serif;font-weight:900;font-size:15px;" +
       "letter-spacing:.04em}" +
     "#sub-carrinhos .ped-quando{display:block;font-size:11px;opacity:.55;margin-top:2px}" +
     "#sub-carrinhos .ped-status{font-size:10px;letter-spacing:.1em;text-transform:uppercase;" +
       "padding:3px 9px;border-radius:999px;border:1px solid var(--line,#e3ddd2)}" +
-    "#sub-carrinhos .ped-status--aberto{background:#D4960A;color:#0D0D0B;border-color:#0D0D0B}" +
-    "#sub-carrinhos .ped-status--atendido{background:#0D0D0B;color:#F0ECE4;border-color:#0D0D0B}" +
+    "#sub-carrinhos .ped-status--aberto{background:var(--dourado,#D4960A);color:#0D0D0B;border-color:var(--preto,#0D0D0B)}" +
+    "#sub-carrinhos .ped-status--atendido{background:var(--preto,#0D0D0B);color:var(--areia,#F0ECE4);border-color:var(--preto,#0D0D0B)}" +
     "#sub-carrinhos .ped-itens{margin:10px 0 8px;font-size:13px}" +
     "#sub-carrinhos .ped-item{display:flex;justify-content:space-between;gap:12px;padding:3px 0;" +
       "border-bottom:1px dashed rgba(13,13,11,.12)}" +

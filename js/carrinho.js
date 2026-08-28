@@ -280,7 +280,12 @@
       origem: (location.pathname.indexOf('/produto/') === 0 ? 'peca' : 'loja'),
       itens: itens.map(function (i) { return { id: i.id, variacao: i.variacao || '', qtd: i.qtd }; })
     };
+    // uma navegação só: se o servidor responder depois do socorro, a aba já foi e não
+    // pode ser recarregada por cima de quem começou a digitar
+    var resolvido = false;
     var seguir = function (codigo) {
+      if (resolvido) return;
+      resolvido = true;
       var url = linkWhats(codigo);
       if (aba) { try { aba.location.replace(url); return; } catch (e) {} }
       if (alvo && alvo.setAttribute) alvo.setAttribute('href', url);

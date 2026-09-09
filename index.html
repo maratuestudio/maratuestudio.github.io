@@ -1462,12 +1462,15 @@
       border-bottom: 0.5px solid rgba(13,13,11,0.1);
     }
     /* CASA MARATU entra como selo: a casinha com o lettering, no lugar do texto em Jack.
-       A altura fica pouco acima da linha do título pra marca ter peso sem virar banner. */
-    .marca-titulo--selo { padding-top: 34px; padding-bottom: 20px; }
+       O selo já se separa sozinho da faixa de baixo, então dispensa a linha e o vão
+       que o título de texto precisava. Quem dá o respiro seguinte é a sub-faixa. */
+    .marca-titulo--selo { padding: 30px var(--margem) 0; border-bottom: none; }
     .marca-titulo--selo img { display: block; height: 68px; width: auto; }
+    .marca-titulo--selo + .sub-faixa { padding-top: 18px; }
     @media (max-width: 600px) {
-      .marca-titulo--selo { padding-top: 28px; padding-bottom: 16px; }
+      .marca-titulo--selo { padding-top: 24px; }
       .marca-titulo--selo img { height: 42px; }
+      .marca-titulo--selo + .sub-faixa { padding-top: 14px; }
     }
     .sub-faixa {
       padding: 32px var(--margem) 40px;

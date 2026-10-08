@@ -184,7 +184,7 @@
     if (!j.conectada) {
       box.className = "pn-imp compacto";
       pinta(box, topo(null, "Impressora · K1C", "Ainda não conectada",
-        "O vigia entra no ar quando for instalado na rede da impressora.", "Aguardando", "mudo", false));
+        "O vigia roda no Mac de casa e aparece aqui quando a impressora ligar.", "Aguardando", "mudo", false));
       return;
     }
 
@@ -203,7 +203,7 @@
       var sub = (d.camada && d.camadas ? "Camada " + d.camada + " de " + d.camadas : "") +
         (d.decorrido ? (d.camada && d.camadas ? " · " : "") + dur(d.decorrido) + " imprimindo" : "");
       var lado;
-      if (semSinal) lado = (isFinite(passou) ? "Sem relato há " + dur(passou) : "Sem relato") + "<small>pode ter caído a luz ou o Wi-Fi dela</small>";
+      if (semSinal) lado = (isFinite(passou) ? "Sem relato há " + dur(passou) : "Sem relato") + "<small>caiu a luz, o Wi-Fi, ou o Mac saiu de casa</small>";
       else if (pausa) lado = "Esperando você<small>" + esc(motivo(d.msg) || "confere a K1C") + "</small>";
       else if (falta != null) lado = "Faltam " + dur(falta) + "<small>pronta às " + hora(Date.now() + falta * 1e3) + "</small>";
       else lado = "Calculando<small>o tempo aparece depois dos primeiros minutos</small>";

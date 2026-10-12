@@ -110,7 +110,8 @@ html.sem-motion .carga, html.pronto .carga { display: none; }
 .montagem__canvas { position: absolute; inset: 0; }
 .montagem__canvas canvas { width: 100% !important; height: 100% !important; display: block; }
 .montagem__ui { position: absolute; inset: 0; pointer-events: none; padding: 84px var(--margem) 28px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-rows: auto 1fr auto; gap: 16px; transition: color .6s var(--ease); }
-.montagem.is-escuro .montagem__ui, .montagem.is-escuro .montagem__cab { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: baseline; }
+.montagem.is-escuro .montagem__ui { color: var(--areia); }
+.montagem__cab { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: baseline; }
 .montagem__idx { font-size: .9rem; font-variant-numeric: tabular-nums; letter-spacing: .08em; }
 .montagem__idx b { font-size: 1.6rem; }
 .montagem__texto { align-self: center; max-width: 40rem; }

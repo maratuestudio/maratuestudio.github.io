@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Raphael Nascimento · Portfólio · MARATU</title>
+  <meta name="description" content="Portfólio de Raphael Nascimento: arquiteto, designer e diretor de arte. Identidade visual, ilustração, modelagem 3D e impressão 3D. Aracaju, Sergipe.">
+  <link rel="canonical" href="https://maratu.com.br/portfolio">
+  <link rel="icon" type="image/png" href="/favicon-v6.png">
+  <link rel="apple-touch-icon" href="/apple-touch-icon-v6.png">
+  <meta name="theme-color" content="#F0ECE4">
+  <meta property="og:type" content="profile">
+  <meta property="og:title" content="Raphael Nascimento · Portfólio">
+  <meta property="og:description" content="Arquiteto, designer e diretor de arte. Peça por peça.">
+  <meta property="og:url" content="https://maratu.com.br/portfolio">
+  <meta property="og:image" content="https://maratu.com.br/portfolio/og.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:image" content="https://maratu.com.br/portfolio/og.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"ProfilePage","url":"https://maratu.com.br/portfolio","inLanguage":"pt-BR",
+   "mainEntity":{"@type":"Person","name":"Raphael Nascimento","jobTitle":"Arquiteto, designer e diretor de arte",
+     "address":{"@type":"PostalAddress","addressLocality":"Aracaju","addressRegion":"SE","addressCountry":"BR"},
+     "sameAs":["https://www.behance.net/rapheu","https://www.linkedin.com/in/raphaelnascimento96/","https://www.instagram.com/maratuestudio"],
+     "worksFor":{"@type":"Organization","name":"MARATU Estúdio","url":"https://maratu.com.br"},
+     "knowsAbout":["Identidade visual","Branding","Direção de arte","Ilustração","Modelagem 3D","Impressão 3D","Renderização","Arquitetura"]}}
+  </script>
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-HCJ291HL72"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-HCJ291HL72');
+  </script>
+
+  <noscript><style>.carga{display:none}</style></noscript>
+  <link rel="preload" href="/TRYClother-Black.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="modulepreload" href="/vendor/three/three.module.min.js">
+  <link rel="stylesheet" href="/portfolio/portfolio.css?v=3">
+  <script type="importmap">{"imports":{"three":"/vendor/three/three.module.min.js"}}</script>
+</head>
+<body>
+  <a class="pular" href="#objetos">Pular para os trabalhos</a>
+
+  <!-- CARREGAMENTO: o portfólio "imprime" camada por camada -->
+  <div class="carga" id="carga" aria-hidden="true">
+    <div class="carga__nome"><span class="carga__fantasma">RAPHAEL</span><span class="carga__tinta" id="carga-tinta">RAPHAEL</span><span class="carga__bico" id="carga-bico"></span></div>
+    <div class="carga__info">
+      <span>imprimindo portfólio</span>
+      <span class="carga__camada">camada <b id="carga-num">000</b>/240</span>
+    </div>
+  </div>
+
+  <header class="topo" id="topo">
+    <a href="/" class="topo__marca" aria-label="MARATU, voltar ao site">maratu</a>
+    <nav class="topo__nav" aria-label="Seções">
+      <a href="#objetos">objetos</a>
+      <a href="#marcas">marcas</a>
+      <a href="#ilustracao">ilustração</a>
+      <a href="#sobre">sobre</a>
+      <a href="#contato" class="topo__cta">vamos conversar</a>
+    </nav>
+  </header>
+
+  <div class="cursor" id="cursor" aria-hidden="true"><span id="cursor-txt"></span></div>
+
+  <main>
+    <!-- ABERTURA -->
+    <section class="hero" id="inicio" data-tema="claro" aria-label="Apresentação">
+      <div class="hero__canvas" id="palco-hero" aria-hidden="true"></div>
+      <div class="hero__topo">
+        <span>Portfólio 2026</span>
+        <span class="hero__coord">10°54′S · 37°03′O · Aracaju</span>
+      </div>
+      <h1 class="hero__nome" aria-label="Raphael Nascimento">
+        <span class="hero__linha" data-split aria-hidden="true">Raphael</span>
+        <span class="hero__linha hero__linha--b" data-split aria-hidden="true">Nascimento</span>
+      </h1>
+      <div class="hero__pe">
+        <p class="hero__lema"><b>Arquiteto, designer e diretor de arte.</b> Desenho marcas, ilustro, modelo em 3D e imprimo objetos. Peça por peça.</p>
+      </div>
+    </section>
+
+    <!-- MANIFESTO: quebra de expectativa na tipografia -->
+    <section class="manifesto" data-tema="escuro" aria-label="Manifesto">
+      <div class="manifesto__fixo">
+        <p class="manifesto__frase" id="manifesto">
+          <span class="mf mf--a">Começa no papel.</span>
+          <span class="mf mf--b">Passa pela tela.</span>
+          <span class="mf mf--c">Termina na sua mão.</span>
+        </p>
+        <div class="manifesto__pecas" aria-hidden="true">
+          <span>01 ideia</span><span>02 desenho</span><span>03 modelo</span><span>04 impressão</span><span>05 acabamento</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- MONTAGEM: objetos que se montam com a rolagem -->
+    <section class="montagem" id="objetos" aria-label="Objetos em 3D">
+      <div class="montagem__fixo">
+        <div class="montagem__canvas" id="palco-montagem" aria-hidden="true"></div>
+        <div class="montagem__ui">
+          <div class="montagem__cab">
+            <span class="rotulo">Objetos · geometria tomando forma</span>
+            <span class="montagem__idx"><b id="m-idx">01</b> / <span id="m-total">04</span></span>
+          </div>
+          <div class="montagem__texto">
+            <h2 class="montagem__nome" id="m-nome">Relógio Farol</h2>
+            <p class="montagem__desc" id="m-desc"></p>
+            <ol class="montagem__passos" id="m-passos"></ol>
+          </div>
+          <div class="montagem__ficha" id="m-ficha"></div>
+          <div class="montagem__barra"><span id="m-barra"></span><em id="m-camada">camada 000</em></div>
+        </div>
+      </div>
+      <div class="montagem__trilho" id="m-trilho"></div>
+    </section>
+
+    <!-- SELO: a certidão de cada peça -->
+    <section class="selo" id="selo" data-tema="escuro" aria-label="Selo de autenticidade">
+      <div class="selo__fixo">
+        <p class="selo__antes" data-montar>Toda peça nasce com certidão.</p>
+        <div class="selo__palco" id="selo-palco">
+          <div class="selo__moeda" id="selo-moeda">
+            <svg class="selo-svg" aria-hidden="true" viewBox="0 0 324.5 323.3"> <defs> <style> .mrtsl0 { fill: none; } .mrtsl1 { fill: #fffcf6; stroke: #fffcf6; stroke-linejoin: round; stroke-width: 5px; } .mrtsl2 { font-family: "Clother", -apple-system, "Helvetica Neue", Arial, sans-serif; font-size: 12px; font-weight: 700; } .mrtsl2, .mrtsl3, .mrtsl4, .mrtsl5 { isolation: isolate; } .mrtsl2, .mrtsl6 { fill: #f7f4ee; } .mrtsl7 { fill: url(#mrtMetal); } .mrtsl4 { fill: url(#mrtRb); mix-blend-mode: screen; opacity: .6; } .mrtsl5 { fill: url(#mrtSpec); mix-blend-mode: overlay; } .mrtsl8 { clip-path: url(#mrtDisc); } </style> <clipPath id="mrtDisc"> <path class="mrtsl0" d="M213.9,291.4l-1.8-.8c-.1.3-.3.6-.4,1-8.4,19.2-33.7,23.6-48.1,8.4l-.5-.5c-.4.4-.8.9-1.2,1.3-14.2,15.5-39.7,11.4-48.3-7.8l-.9-2c-.8.3-1.5.6-2.3,1-18.6,8-39.6-4.9-40.8-25.1l-.2-2.8c-.5,0-1.1,0-1.6,0-20.6,1.1-35.8-18.9-29.3-38.5l.6-1.7c-.6-.2-1.2-.4-1.8-.6-19.5-6.6-26.3-30.8-13.1-46.6l1.1-1.3c-.6-.5-1.2-1-1.8-1.5-15.6-13.1-13.4-37.8,4.3-47.9l2-1.2c-.3-.6-.7-1.2-1-1.8-9.9-17.9,1-40.1,21.2-43.2l2.6-.4c0-.6-.2-1.1-.2-1.7-2.9-20.3,15.4-37.2,35.4-32.7l2.1.5c.2-.6.3-1.2.4-1.8,4.8-20,28.2-29,45.2-17.2l1.6,1.1c.4-.5.7-1.1,1.1-1.6,11.5-17.1,36.7-17.2,48.4-.2l1,1.5c.6-.4,1.1-.7,1.6-1.1,17-11.6,40.3-2.4,45,17.6l.4,1.7c.9-.2,1.9-.4,2.8-.6,19.8-4.3,37.8,12.2,35.3,32.2l-.3,2.7c.7,0,1.4.2,2,.3,20.2,2.9,31.3,25,21.6,43l-1.1,2c.5.3,1,.6,1.5.9,18,10.1,20.2,35.1,4.2,48.2l-1.4,1.1c.4.5.9,1,1.3,1.6,13.2,15.9,6.3,40-13.2,46.5l-1.9.6c.2.6.4,1.1.6,1.7,6.6,19.6-8.6,39.7-29.2,38.6h-1.7c0,.6,0,1.2,0,1.9-.9,20.7-22.4,33.9-41.2,25.5h0Z"/> </clipPath> <linearGradient id="mrtMetal" x1="28.2" y1="-1.3" x2="288.2" y2="315.7" gradientUnits="userSpaceOnUse"> <stop offset="0" stop-color="#c2c3cb"/> <stop offset=".4" stop-color="#70717b"/> <stop offset=".8" stop-color="#3f4048"/> <stop offset="1" stop-color="#2c2d34"/> </linearGradient> <linearGradient spreadMethod="repeat" id="mrtRb" x1="-29.7" y1="73.1" x2="270.3" y2="213.1" gradientUnits="userSpaceOnUse"> <stop offset="0" stop-color="#ff4d9c"/> <stop offset=".1" stop-color="#ffa04a"/> <stop offset=".3" stop-color="#ffe86a"/> <stop offset=".4" stop-color="#5cf3a4"/> <stop offset=".6" stop-color="#4fcfff"/> <stop offset=".7" stop-color="#8f70ff"/> <stop offset=".8" stop-color="#3c3c48"/> <stop offset=".9" stop-color="#343440"/> <stop offset="1" stop-color="#ff4d9c"/> </linearGradient> <linearGradient id="mrtSpec" x1="-87" y1="-57.0" x2="413" y2="383.0" gradientUnits="userSpaceOnUse"> <stop offset="0" stop-color="#3a3a3a"/> <stop offset=".3" stop-color="#4a4a4a"/> <stop offset=".5" stop-color="#f4f4f4"/> <stop offset=".7" stop-color="#4a4a4a"/> <stop offset="1" stop-color="#3a3a3a"/> </linearGradient> </defs> <path class="mrtsl1" d="M140.4,320.3c-13.1,0-25.1-6.5-32.4-17-3,.7-6,1.1-9.1,1.1-18.6,0-34.3-13-38.3-30.7-10.4-1.5-19.8-7.2-26.1-15.9-6-8.3-8.4-18.2-7.1-28.1-9-5.1-15.7-13.5-18.5-23.6-2.8-10-1.5-20.6,3.4-29.5-6.7-7.9-10-18.3-9.1-28.8.9-10.5,6-20.1,14-26.7-3.2-9.7-2.6-20.4,2-29.8,4.7-9.6,13-16.7,23-20,.5-8.6,3.8-17,9.5-23.6,7.5-8.6,18.3-13.6,29.6-13.6s1.1,0,1.7,0c6.2-13.9,20.1-23.2,35.9-23.2s10.9,1.2,15.9,3.4c7.3-7.3,17.2-11.5,27.8-11.5s20.3,4.1,27.5,11.3c4.9-2.2,10.2-3.3,15.6-3.3,15.8,0,29.6,9.2,35.9,23.1.8,0,1.5,0,2.3,0,11.2,0,21.9,4.9,29.4,13.3,6,6.8,9.4,15.4,9.8,24.4,9.7,3.3,17.8,10.3,22.5,19.6,4.7,9.4,5.4,20.2,2.2,30.1,7.8,6.6,12.8,16.1,13.7,26.5.9,10.4-2.3,20.6-8.8,28.4,5,9,6.3,19.7,3.5,29.9-2.9,10.1-9.6,18.5-18.6,23.6,1.4,9.8-1.1,19.8-7,28.1-6.2,8.7-15.8,14.4-26.2,16-4.1,17.5-19.7,30.3-38.2,30.3s-6.2-.4-9.2-1.1c-7.3,10.1-19.1,16.2-31.9,16.2s-15.1-2.2-21.4-6.4c-6.6,4.9-14.6,7.5-23.1,7.5h0Z"/> <g class="mrtsl8"> <g class="mrtsl3"> <rect class="mrtsl7" x="-37" y="-37" width="400" height="400"/> <rect id="mrt-rbr" class="mrtsl4" x="-37" y="-37" width="400" height="400"/> <rect class="mrtsl5" x="-37" y="-37" width="400" height="400"/> </g> </g> <g> <polygon class="mrtsl6" points="98.8 132.4 93.9 115.2 65 115.2 65 136.5 93 141.2 65 141.2 65 162.9 93.9 162.9 93.9 141.9 98.9 157.9 103.9 141.9 103.9 162.9 132.7 162.9 132.7 115.2 103.9 115.2 98.8 132.4"/> <path class="mrtsl6" d="M184.6,115.2h-51.9v21.2l29,4.4h-29v22.1h11.9c10,0,17.2-8.1,17.5-22l6,21.8v.2h28.8v-20.5h0c0,0-12.4-27.1-12.4-27.2Z"/> <path class="mrtsl6" d="M259.5,128.7c0-10-6.6-13.4-23.1-13.4h-39.5v47.7h28.9v-25.4c3.8.1,4.8,1.2,4.8,3.7v2.6h-4.8c3.2,15,15.7,19.1,26.1,19.1h7.7v-19.1h-26.4c19.4-1.1,26.4-4.8,26.4-15.2h0Z"/> <path class="mrtsl6" d="M118.6,162.9h-53.6v22.2c0,0,30.1,4.6,30.1,4.6h-30.1v23.1h12.4c10.4,0,17.8-8.7,18.2-23l6.2,22.6v.4h29.9v-21.5h0c0,0-13.1-28.4-13.1-28.4h0Z"/> <polygon class="mrtsl6" points="131.7 187.2 148.6 187.2 148.6 212.8 178.4 212.8 178.4 187.2 195.3 187.2 195.3 162.9 131.7 162.9 131.7 187.2"/> <path class="mrtsl6" d="M259.6,162.8v-19.1h-23.8c17.8-1.3,23.8-5.3,23.8-15.1s-6.3-13.5-23.2-13.5h-39.6v26.5c0,0-12.2-26.5-12.2-26.5h-80.8l-5,16.9-4.9-16.9h-29v21.4l27.1,4.5h-27.1v21.7h0v.2s0,0,0,0h0v22.2c0,0,29,4.4,29,4.4h-29v23.3h12.5c10.6,0,17.7-8.8,18.3-22.5l6.2,22.5h29.9v-21.5s0-.1,0-.1l-13.2-28.2h13v24.3h16.8v25.5h30v-25.5h16.8v1.5c0,17.3,4.6,24,16.3,24s16.2-6.8,17.4-25.7v25.7h30.7v-50h0ZM225.8,137.6c3.9.1,4.6,1.3,4.6,3.6v2.6h-4.6v-6.1ZM160.6,140.7h-27.8v-4.2l27.8,4.2ZM93.9,162.8v-20.4l5,15.7,4.9-15.7v20.4h-9.8ZM146.9,162.8c8.9-1.2,14.8-9.3,15.3-21.3l5.8,21.2h0c0,.1-21.1.1-21.1.1ZM229,162.8v19.9h-.7c-2,0-2.4-.6-2.4-3.8v-16.1h0v-18.2c3.4,14,14.9,17.5,22.4,18.2h-19.2Z"/> <path class="mrtsl6" d="M229.1,162.9v19.9h-.8c-2.1,0-2.5-.8-2.5-3.9v-16h-30.5v25.9c0,17.1,4.4,23.9,16.2,23.9s16.4-7.6,17.5-28.6v28.6h30.5v-49.9h-30.5Z"/> <path class="mrtsl6" d="M65,224h13.5v3.8h-9.2v4.8h8.4v3.8h-8.4v5.2h9.2v3.8h-13.5v-21.4h0Z"/> <path class="mrtsl6" d="M90.7,233c4,1.4,6,3,6,6.3s-3.2,6.4-7.5,6.4-6-1.2-8.2-3.4l2.3-2.9c1.7,1.7,3.7,2.5,5.9,2.5s3.3-1,3.3-2.6-1.3-2.1-4.3-3.1c-4.2-1.4-6.4-3-6.4-6.5s3.1-6.2,7.2-6.2,5.1,1,7.1,2.9l-2.4,2.9c-1.5-1.4-2.9-2.1-4.6-2.1s-3,.8-3,2.3,1.4,2.2,4.7,3.3h0Z"/> <path class="mrtsl6" d="M104.7,227.8h-6.3v-3.8h16.9v3.8h-6.3v17.6h-4.3v-17.6h0Z"/> <path class="mrtsl6" d="M118.1,236.8v-12.9h4.3v12.8c0,3.1,1.6,5,4.2,5s4.2-1.9,4.2-5v-12.8h4.3v12.9c0,5.4-3.3,8.9-8.5,8.9s-8.5-3.4-8.5-8.9h0ZM129.2,215.5l1.9,3.1-6.3,3.4-1.4-2.2s5.8-4.4,5.8-4.4Z"/> <path class="mrtsl6" d="M139.8,224h6.1c7.6,0,12.2,4,12.2,10.7s-4.6,10.7-12.2,10.7h-6.1v-21.4ZM153.7,234.7c0-4.4-2.7-6.8-7.6-6.8h-1.9v13.6h1.9c4.9,0,7.6-2.5,7.6-6.8Z"/> <path class="mrtsl6" d="M162,224h4.3v21.4h-4.3v-21.4Z"/> <path class="mrtsl6" d="M192.1,234.7c0,6.3-4.7,11-10.9,11s-10.9-4.8-10.9-11,4.7-11,10.9-11,10.9,4.8,10.9,11ZM174.6,234.7c0,4.1,2.8,7.1,6.5,7.1s6.5-3,6.5-7.1-2.8-7.1-6.5-7.1-6.5,3-6.5,7.1Z"/> </g> <g class="mrtsl3"> <text class="mrtsl2" transform="translate(114.9 80.4)"><tspan x="0" y="0">CERTIFICADO DE</tspan></text> <text class="mrtsl2" transform="translate(115.4 98.2)"><tspan x="0" y="0">AUTENTICIDADE</tspan></text> </g> </svg>
+          </div>
+          <div class="selo__sombra"></div>
+        </div>
+        <div class="selo__pe">
+          <p class="selo__codigo"><span id="selo-cod">MRT·7K2Q·9H4X</span></p>
+          <p class="selo__txt">Cada peça da MARATU sai com um selo e um código só dela. O QR abre a certidão daquela unidade. Desenhei o selo, o sistema e a página.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- MARCAS: um capítulo por marca, colagem com profundidade -->
+    <section class="marcas" id="marcas" aria-label="Marcas">
+      <div class="marcas__abre" data-tema="claro">
+        <span class="rotulo">Marcas · identidade e campanhas</span>
+        <h2 class="gigante" data-montar>Marcas</h2>
+        <p class="marcas__sub">Sistemas que contam quem a marca é. Do nome à fachada.</p>
+      </div>
+
+      <article class="cap" style="--fundo:#C8501A;--tinta:#F0ECE4" data-tema="escuro">
+        <h3 class="cap__nome" data-montar>MARATU</h3>
+        <div class="cap__info">
+          <span class="cap__ano">2026 · meu estúdio</span>
+          <p>Identidade, pôsteres, mascote, camisetas, objetos e o site. Cores e formas tiradas de Aracaju, do mangue à Orla.</p>
+          <div class="cap__tags"><span>Identidade</span><span>Pôsteres</span><span>Produto</span></div>
+        </div>
+        <figure class="col col--1" data-vel="0.25"><img src="/portfolio/img/maratu-cores.webp" alt="Grade de cores e fotos de Aracaju da identidade MARATU" loading="lazy" width="1280" height="1600"></figure>
+        <figure class="col col--2" data-vel="-0.15"><img src="/portfolio/img/maratu-origens.webp" alt="Pôster Origens com o aratu" loading="lazy" width="1132" height="1600"></figure>
+        <figure class="col col--3" data-vel="0.45"><img src="/portfolio/img/maratu-tees.webp" alt="Camisetas e chaveiros da MARATU" loading="lazy" width="1280" height="1600"></figure>
+        <figure class="col col--4" data-vel="0.1"><img src="/portfolio/img/maratu-areias.webp" alt="Pôster Areias" loading="lazy" width="1132" height="1600"></figure>
+        <figure class="col col--5" data-vel="-0.3"><img src="/portfolio/img/maratu-ritmo.webp" alt="Pôster Ritmo" loading="lazy" width="1131" height="1600"></figure>
+      </article>
+
+      <article class="cap" style="--fundo:#E9D3CC;--tinta:#3B1E22" data-tema="claro">
+        <h3 class="cap__nome" data-montar>Bonjour</h3>
+        <div class="cap__info">
+          <span class="cap__ano">Campanha anual · Clínica Splendore</span>
+          <p>Paris como tema do ano. Ilustrei um monumento por mês em aquarela digital e levei a linguagem pra jornal, brindes, bandejas e o evento.</p>
+          <div class="cap__tags"><span>Direção de arte</span><span>Ilustração</span><span>Evento</span></div>
+        </div>
+        <figure class="col col--1" data-vel="0.2"><img src="/portfolio/img/bonjour-julho.webp" alt="Ilustração Bonjour Julho" loading="lazy" width="1600" height="1600"></figure>
+        <figure class="col col--2" data-vel="-0.25"><img src="/portfolio/img/bonjour-evento.webp" alt="Cenografia do evento com fachada parisiense" loading="lazy" width="900" height="1600"></figure>
+        <figure class="col col--3" data-vel="0.4"><img src="/portfolio/img/bonjour-trio.webp" alt="Ilustrações de moda da campanha" loading="lazy" width="1600" height="800"></figure>
+        <figure class="col col--4" data-vel="0.05"><img src="/portfolio/img/bonjour-agosto.webp" alt="Ilustração Bonjour Agosto" loading="lazy" width="1600" height="1600"></figure>
+        <figure class="col col--5" data-vel="-0.35"><img src="/portfolio/img/bonjour-setembro.webp" alt="Ilustração Bonjour Setembro" loading="lazy" width="1600" height="1600"></figure>
+      </article>
+
+      <article class="cap" style="--fundo:#0D0D0B;--tinta:#F0ECE4" data-tema="escuro">
+        <h3 class="cap__nome" data-montar>Bansby</h3>
+        <div class="cap__info">
+          <span class="cap__ano">Streetwear · identidade autoral</span>
+          <p>Tipografia própria desenhada à mão, como a língua de outro mundo. Minimalismo, brutalismo e cor no volume máximo.</p>
+          <div class="cap__tags"><span>Branding</span><span>Tipografia</span></div>
+        </div>
+        <figure class="col col--1" data-vel="0.3"><img src="/portfolio/img/bansby-cartazes.webp" alt="Cartazes da Bansby" loading="lazy" width="1600" height="800"></figure>
+        <figure class="col col--2" data-vel="-0.2"><img src="/portfolio/img/bansby-sinal.webp" alt="Placa da Bansby na fachada" loading="lazy" width="1600" height="1148"></figure>
+        <figure class="col col--3" data-vel="0.5"><img src="/portfolio/img/bansby-moletom.webp" alt="Moletons com a marca Bansby" loading="lazy" width="1600" height="800"></figure>
+        <figure class="col col--4" data-vel="0.1"><img src="/portfolio/img/bansby-papelaria.webp" alt="Papelaria da Bansby" loading="lazy" width="1600" height="800"></figure>
+      </article>
+
+      <article class="cap" style="--fundo:#0E3272;--tinta:#F0ECE4" data-tema="escuro">
+        <h3 class="cap__nome" data-montar>Camarote Sky</h3>
+        <div class="cap__info">
+          <span class="cap__ano">Camarote · Pré-Caju 2022</span>
+          <p>Lançamento e atrações do camarote com formas fluidas em 3D e retratos tratados numa linguagem única.</p>
+          <div class="cap__tags"><span>Campanha</span><span>3D</span><span>Social</span></div>
+        </div>
+        <figure class="col col--1" data-vel="0.25"><img src="/portfolio/img/sky-cartaz.webp" alt="Cartaz principal do Camarote Sky" loading="lazy" width="1080" height="1080"></figure>
+        <figure class="col col--2" data-vel="-0.3"><img src="/portfolio/img/sky-maysa.webp" alt="Atração Maysa Reis" loading="lazy" width="900" height="1600"></figure>
+        <figure class="col col--3" data-vel="0.45"><img src="/portfolio/img/sky-navi.webp" alt="Atração Navi" loading="lazy" width="900" height="1600"></figure>
+        <figure class="col col--4" data-vel="0.05"><img src="/portfolio/img/sky-jao.webp" alt="Atração do camarote" loading="lazy" width="900" height="1600"></figure>
+      </article>
+
+    </section>
+
+
+    <!-- ILUSTRAÇÃO -->
+    <section class="ilustra" id="ilustracao" data-tema="escuro" aria-label="Ilustração">
+      <div class="ilustra__fixo">
+        <div class="ilustra__cab">
+          <span class="rotulo">Ilustração</span>
+          <h2 class="gigante" data-montar>Traço</h2>
+        </div>
+        <div class="ilustra__trilho" id="trilho">
+          <figure class="ilustra__card"><img src="/portfolio/img/ilu-beija.webp" alt="Capa Beija e Pega" loading="lazy" width="1600" height="1600"><figcaption><span>Beija e Pega</span><span>capa de single</span></figcaption></figure>
+          <figure class="ilustra__card"><img src="/portfolio/img/ilu-orixas.webp" alt="Ilustração de orixás" loading="lazy" width="1600" height="1600"><figcaption><span>Orixás</span><span>autoral</span></figcaption></figure>
+          <figure class="ilustra__card"><img src="/portfolio/img/ilu-olho.webp" alt="Ilustração de olho em amarelo" loading="lazy" width="1600" height="1600"><figcaption><span>Emotion Ranger</span><span>autoral</span></figcaption></figure>
+          <figure class="ilustra__card"><img src="/portfolio/img/trama-poster.webp" alt="Pôster Sensações de uma trama" loading="lazy" width="1131" height="1600"><figcaption><span>Sensações de uma trama</span><span>camiseta</span></figcaption></figure>
+          <figure class="ilustra__card"><img src="/portfolio/img/ilu-supernova.webp" alt="Ilustração Supernova" loading="lazy" width="1600" height="1600"><figcaption><span>Supernova</span><span>autoral</span></figcaption></figure>
+          <figure class="ilustra__card"><img src="/portfolio/img/ilu-take.webp" alt="Ilustração Take these" loading="lazy" width="1143" height="1600"><figcaption><span>Take these</span><span>autoral</span></figcaption></figure>
+          <figure class="ilustra__card"><img src="/portfolio/img/ilu-gate.webp" alt="Ilustração The gate" loading="lazy" width="1600" height="1600"><figcaption><span>The gate</span><span>autoral</span></figcaption></figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- TECNOLOGIA -->
+    <section class="tec" id="tecnologia" data-tema="claro" aria-label="Tecnologia">
+      <span class="rotulo">Tecnologia</span>
+      <h2 class="gigante" data-montar>Ferramentas</h2>
+      <p class="tec__intro">Também construo as ferramentas que rodam a MARATU: o site, a loja e o sistema do estúdio.</p>
+      <div class="tec__grade">
+        <article class="tec__card">
+          <span class="tec__n">01</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18M8 21h8M12 18v3"/></svg>
+          <h3>Loja e sistema de gestão</h3><p>Catálogo, carrinho, caixa, agenda, CRM e newsletter. O Pix entra sozinho no caixa.</p>
+        </article>
+        <article class="tec__card">
+          <span class="tec__n">02</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l9 5v10l-9 5-9-5V7z"/><path d="M12 22V12M21 7l-9 5-9-5"/></svg>
+          <h3>Pôster na sua parede</h3><p>Realidade aumentada no site: o cliente vê o pôster em escala real antes de comprar.</p>
+        </article>
+        <article class="tec__card">
+          <span class="tec__n">03</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="12" rx="2"/><circle cx="12" cy="11" r="3"/><path d="M8 21h8"/></svg>
+          <h3>Monitor da impressora</h3><p>Acompanho cada impressão pela câmera e por um painel próprio, de qualquer lugar.</p>
+        </article>
+        <article class="tec__card">
+          <span class="tec__n">04</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h16M6 20V9l6-5 6 5v11"/><path d="M10 20v-5h4v5"/></svg>
+          <h3>Fatiamento sob medida</h3><p>Perfis próprios de impressão, costura escondida e face visível perfeita em cada peça.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- SOBRE -->
+    <section class="sobre" id="sobre" data-tema="escuro" aria-label="Sobre">
+      <span class="rotulo">Sobre</span>
+      <h2 class="sobre__titulo" data-montar>Arquiteto de formação, designer de ofício.</h2>
+      <div class="sobre__grade">
+        <div class="sobre__texto">
+          <p>Sou Raphael Nascimento, arquiteto e urbanista com pós em Bioarquitetura. Há mais de 8 anos trabalho entre arquitetura, design e 3D.</p>
+          <p>Lidero a equipe criativa da The Sign Pack, com 6 designers em regime remoto, criando letreiros, fachadas, monumentos e identidades. Antes, fui diretor de arte em agência.</p>
+          <p>Também toco a MARATU, meu estúdio em Aracaju, onde desenho, modelo e imprimo objetos com referência sergipana.</p>
+        </div>
+        <div class="numeros">
+          <div class="numero"><b data-contar="8" data-suf="+">8+</b><span>anos de experiência</span></div>
+          <div class="numero"><b data-contar="6">6</b><span>designers liderados</span></div>
+          <div class="numero"><b data-contar="30" data-suf="%">30%</b><span>mais produtividade da equipe</span></div>
+          <div class="numero"><b data-contar="3">3</b><span>idiomas</span></div>
+        </div>
+      </div>
+      <ul class="trajetoria">
+        <li><span>2023 · atual</span>Líder de equipe criativa<br>The Sign Pack</li>
+        <li><span>2026 · atual</span>Fundador e diretor criativo<br>MARATU Estúdio</li>
+        <li><span>2022 · 2023</span>Diretor de arte<br>Agência IDEM</li>
+        <li><span>2020</span>Arquiteto<br>Thiago Perez Arquitetura</li>
+        <li><span>2016 · 2018</span>Analista de projetos<br>EMURB</li>
+      </ul>
+    </section>
+
+    <!-- CONTATO -->
+    <section class="contato" id="contato" data-tema="claro" aria-label="Contato">
+      <span class="rotulo">Contato</span>
+      <p class="contato__grande"><a href="https://wa.me/5579981165359?text=Ol%C3%A1%2C%20Raphael!%20Vi%20seu%20portf%C3%B3lio." target="_blank" rel="noopener" data-servico="portfolio" data-origem="portfolio" data-cursor="conversar"><span data-montar>Vamos montar</span> <span data-montar>alguma coisa?</span></a></p>
+      <div class="contato__acoes">
+        <a class="botao" href="https://wa.me/5579981165359?text=Ol%C3%A1%2C%20Raphael!%20Vi%20seu%20portf%C3%B3lio." target="_blank" rel="noopener" data-servico="portfolio" data-origem="portfolio" data-magnetico>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-12.5 7.4L3 20.5l1.6-5.3A8.4 8.4 0 1 1 21 11.5z"/></svg>WhatsApp
+        </a>
+        <a class="botao botao--claro" href="mailto:raphaelnascimento@outlook.com" data-magnetico>raphaelnascimento@outlook.com</a>
+        <a class="botao botao--claro" href="/portfolio/Raphael_Nascimento_Curriculo.pdf" download data-magnetico>Baixar currículo</a>
+        <a class="botao botao--claro" href="https://www.linkedin.com/in/raphaelnascimento96/" target="_blank" rel="noopener" data-magnetico>LinkedIn</a>
+        <a class="botao botao--claro" href="https://www.behance.net/rapheu" target="_blank" rel="noopener" data-magnetico>Behance</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="rodape" data-tema="claro">
+    <a href="/" class="rodape__marca">maratu</a>
+    <span>Raphael Nascimento · Aracaju, Sergipe · 2026</span>
+    <span class="rodape__hora">Aracaju agora <b id="hora-aju">--:--</b></span>
+  </footer>
+
+  <script src="/vendor/gsap.min.js"></script>
+  <script src="/vendor/ScrollTrigger.min.js"></script>
+  <script src="/vendor/lenis.min.js"></script>
+  <script src="/js/tracking.js?v=5" defer></script>
+  <script type="module" src="/portfolio/portfolio.js?v=3"></script>
+</body>
+</html>

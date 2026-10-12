@@ -58,6 +58,17 @@ function renderizador(el) {
   el.appendChild(r.domElement);
   return r;
 }
+function adaptar(renderer, medir) {
+  let soma = 0, n = 0, ant = 0;
+  return (agora) => {
+    if (ant) { soma += agora - ant; n++; }
+    ant = agora;
+    if (n < 45) return;
+    const media = soma / n; soma = 0; n = 0;
+    const pr = renderer.getPixelRatio();
+    if (media > 20 && pr > 1.25) { renderer.setPixelRatio(Math.max(1.25, pr - 0.25)); medir(); }
+  };
+}
 function ambiente(renderer, cena) {
   const pm = new THREE.PMREMGenerator(renderer);
   cena.environment = pm.fromScene(new RoomEnvironment(), 0.04).texture;
@@ -70,7 +81,7 @@ function visivel(el, cb) {
 /* ================= rolagem suave ================= */
 let lenis = null;
 if (gsap && !reduzir && window.Lenis) {
-  lenis = new Lenis({ lerp: 0.085, smoothWheel: true });
+  lenis = new Lenis({ lerp: 0.13, smoothWheel: true });
   lenis.on('scroll', ScrollTrigger.update);
   gsap.ticker.add((t) => lenis.raf(t * 1000));
   gsap.ticker.lagSmoothing(0);
@@ -115,7 +126,8 @@ function corTopo() {
   }
   topo.classList.toggle('is-claro', escuro);
 }
-addEventListener('scroll', () => requestAnimationFrame(corTopo), { passive: true });
+let topoPedido = false;
+addEventListener('scroll', () => { if (!topoPedido) { topoPedido = true; requestAnimationFrame(() => { topoPedido = false; corTopo(); }); } }, { passive: true });
 
 /* ================= hora de Aracaju ================= */
 const fmtHora = new Intl.DateTimeFormat('pt-BR', { timeZone: 'America/Maceio', hour: '2-digit', minute: '2-digit' });
@@ -252,7 +264,7 @@ async function abertura() {
         if (dist >= min || dist < 1e-5) continue;
         d.divideScalar(dist); const sob = (min - dist) / 2;
         a.p.addScaledVector(d, -sob); b.p.addScaledVector(d, sob);
-        const vr = b.v.clone().sub(a.v).dot(d);
+        const vr = (b.v.x - a.v.x) * d.x + (b.v.y - a.v.y) * d.y + (b.v.z - a.v.z) * d.z;
         if (vr < 0) { const imp = -(1.25) * vr / 2; a.v.addScaledVector(d, -imp); b.v.addScaledVector(d, imp); }
         a.v.multiplyScalar(0.995); b.v.multiplyScalar(0.995);
       }
@@ -266,19 +278,29 @@ async function abertura() {
     }
   }
 
-  let rodando = false, t0 = 0, relogio = 0, comecou = false;
+  let rodando = false, t0 = 0, relogio = 0, comecou = false, quieto = 0;
+  const ajusta = adaptar(renderer, medir);
+  // acorda a simulação quando o mouse mexe nas peças
+  ['pointermove', 'pointerdown'].forEach((ev) => hero.addEventListener(ev, () => { quieto = 0; }, { passive: true }));
+  addEventListener('resize', () => { quieto = 0; });
   function quadro(agora) {
     if (!rodando) return;
+    requestAnimationFrame(quadro);
     const dt = Math.min(0.033, (agora - t0) / 1000 || 0.016); t0 = agora;
+    // a luz acompanha o mouse: a sombra corre pelo chão
+    const solX = -5 + mouse.nx * 7, solMove = Math.abs(solX - sol.position.x) > 0.01;
+    // tudo assentado e nada mexendo: não simula nem desenha
+    if (quieto > 30 && !solMove && !ptrAtivo) return;
     if (comecou) {
       relogio += dt;
       for (const c of corpos) if (!c.vivo && relogio > c.nasce) soltar(c);
       passo(dt / 2); passo(dt / 2);
+      const parado = corpos.every((c) => c.vivo && c.v.lengthSq() < 0.0004 && c.w.lengthSq() < 0.0025);
+      quieto = parado ? quieto + 1 : 0;
     }
-    // a luz acompanha o mouse: a sombra corre pelo chão
-    sol.position.x += ((-5 + mouse.nx * 7) - sol.position.x) * 0.06;
+    sol.position.x += (solX - sol.position.x) * 0.06;
     renderer.render(cena, cam);
-    requestAnimationFrame(quadro);
+    ajusta(agora);
   }
   visivel(el, (v) => { if (v && !rodando) { rodando = true; t0 = performance.now(); requestAnimationFrame(quadro); } else if (!v) rodando = false; });
 
@@ -292,7 +314,7 @@ async function abertura() {
 /* ================= MONTAGEM: objetos explodidos que se juntam ================= */
 const OBJETOS = [
   {
-    id: 'relogio-farol', nome: 'Relógio Farol', fundo: '#E7E1D6',
+    id: 'relogio-farol', nome: 'Relógio Farol', fundo: '#F2B705',
     desc: 'O farol de Aracaju vira relógio de quina. Duas torres empilhadas, janelas em arco e o tempo passando por dentro delas.',
     passos: ['Módulo de baixo', 'Arcos nas janelas', 'Três cavilhas', 'Módulo de cima', 'Arcos brancos', 'Ponteiros'],
     ficha: [['13', 'peças'], ['0', 'parafusos']],
@@ -305,7 +327,7 @@ const OBJETOS = [
     },
   },
   {
-    id: 'porta-incenso', nome: 'Porta-incenso Arco', fundo: '#DCD3C3',
+    id: 'porta-incenso', nome: 'Porta-incenso Arco', fundo: '#EE6A2E',
     desc: 'Um arco da Orla de Atalaia vira objeto. A vareta pende do alto e a cinza cai no pratinho.',
     passos: ['Tablado com pilares', 'Pratinho', 'Arco da Orla', 'Vareta acesa'],
     ficha: [['3', 'peças'], ['1', 'arco da Orla']],
@@ -313,7 +335,7 @@ const OBJETOS = [
     partes: { base: [0, [0, 0.05, 0], [0, -0.8, 0]], pratinho: [1, [0, 0.45, 0.45], [0.9, 0, 0]], arco: [2, [0, 0.7, 0], [0, 1.6, 0]] },
   },
   {
-    id: 'luminaria-mangue', nome: 'Luminária Mangue', fundo: '#D9DDCF', escuroNoFim: '#10140F',
+    id: 'luminaria-mangue', nome: 'Luminária Mangue', fundo: '#2F6FD8', claro: true, escuroNoFim: '#0B1430',
     desc: 'Raízes de mangue se torcem e sobem até a luz. A cúpula estriada pousa por cima e esconde o encaixe.',
     passos: ['Base torcida', 'Anel de encaixe', 'Cúpula estrela', 'Acende'],
     ficha: [['3', 'peças'], ['1', 'encaixe escondido']],
@@ -321,7 +343,7 @@ const OBJETOS = [
     partes: { base: [0, [0, 0.05, 0], [0, -2.4, 0]], anel: [1, [0, 0.45, 0], [0, 2, 0]], cupula: [2, [0, 0.6, 0], [0, 1.4, 0]] },
   },
   {
-    id: 'cobogo', nome: 'Cobogó MARATU', fundo: '#E3D8BF',
+    id: 'cobogo', nome: 'Cobogó MARATU', fundo: '#FF8FB1',
     desc: 'Ondas e arcos da Orla vazados em bloco. O sol atravessa e a cidade aparece desenhada no chão.',
     passos: ['Ondas', 'Arcos', 'Chico', 'Círculos', 'Luz e sombra'],
     ficha: [['4', 'blocos'], ['15 cm', 'cada']],
@@ -418,7 +440,7 @@ async function montagem() {
       gsap.fromTo(chs, { yPercent: 110, rotation: 8 }, { yPercent: 0, rotation: 0, duration: 1.1, ease: 'expo.out', stagger: 0.025 });
       gsap.fromTo([ui.desc, ui.passos], { y: 24, opacity: 0 }, { y: 0, opacity: 1, duration: 1.1, ease: 'expo.out', stagger: 0.08, delay: 0.1 });
     }
-    sec.style.backgroundColor = d.fundo;
+    sec.style.backgroundColor = d.fundo; if (typeof ult !== 'undefined') ult.bg = d.fundo;
   }
 
   // ---------- estado por rolagem ----------
@@ -426,10 +448,19 @@ async function montagem() {
   if (ScrollTrigger) ScrollTrigger.create({ trigger: trilho, start: 'top top', end: 'bottom bottom', onUpdate: (s) => { prog = s.progress; } });
 
   const alvo = new THREE.Vector3(), luzAlvo = new THREE.Vector3();
-  let rodando = false, tAnt = 0, tempo = 0, giroLivre = 0;
+  let rodando = false, tAnt = 0, tempo = 0;
+  const ajusta = adaptar(renderer, medir);
+  const qTmp = new THREE.Quaternion(), eTmp = new THREE.Euler();
+  const ult = { prog: -1, nx: 9, ny: 9, ativo: -1, camada: '', p: '', ficha: null, bg: '', escuro: null, seg: -1 };
   function quadro(agora) {
     if (!rodando) return;
+    requestAnimationFrame(quadro);
     const dt = Math.min(0.05, (agora - tAnt) / 1000 || 0.016); tAnt = agora; tempo += dt;
+    // nada mudou (rolagem, mouse, luz, efeito vivo): pula o quadro inteiro
+    const seg = new Date().getSeconds();
+    const vivo = ult.vivo || sol.position.distanceToSquared(luzAlvo) > 0.0004;
+    if (prog === ult.prog && mouse.nx === ult.nx && mouse.ny === ult.ny && !vivo && seg === ult.seg) return;
+    ult.prog = prog; ult.nx = mouse.nx; ult.ny = mouse.ny; ult.seg = seg;
     const total = OBJETOS.length, pos = clamp(prog) * total;
     const i = Math.min(total - 1, Math.floor(pos)), local = clamp(pos - i);
     if (i !== atual) trocar(i);
@@ -445,18 +476,18 @@ async function montagem() {
       if (!p.centro) { p.o.geometry.computeBoundingBox(); p.centro = p.o.geometry.boundingBox.getCenter(new THREE.Vector3()); }
       p.o.scale.setScalar(Math.max(0.001, cresce));
       p.o.position.copy(p.p0).addScaledVector(p.d, 1 - e).addScaledVector(p.centro, 1 - cresce);
-      p.o.quaternion.copy(p.q0); if (e < 1) p.o.quaternion.multiply(new THREE.Quaternion().setFromEuler(new THREE.Euler(p.r.x * (1 - e), p.r.y * (1 - e), p.r.z * (1 - e))));
+      p.o.quaternion.copy(p.q0); if (e < 1) p.o.quaternion.multiply(qTmp.setFromEuler(eTmp.set(p.r.x * (1 - e), p.r.y * (1 - e), p.r.z * (1 - e))));
     });
     // passo em destaque e barra de "impressão"
     const ativo = local >= 0.8 ? n - 1 : Math.min(n - 1, Math.floor(t * pecasPassos));
-    [...ui.passos.children].forEach((li, k) => { li.classList.toggle('is-agora', k === ativo); li.classList.toggle('is-feito', k < ativo); });
-    ui.barra.style.setProperty('--p', local.toFixed(3));
-    ui.camada.textContent = local >= 0.78 ? 'montado' : 'camada ' + String(Math.round(t * 400)).padStart(3, '0');
-    ui.ficha.classList.toggle('is-on', local >= 0.78);
+    if (ativo !== ult.ativo) { ult.ativo = ativo; [...ui.passos.children].forEach((li, k) => { li.classList.toggle('is-agora', k === ativo); li.classList.toggle('is-feito', k < ativo); }); }
+    const pTxt = local.toFixed(3); if (pTxt !== ult.p) { ult.p = pTxt; ui.barra.style.setProperty('--p', pTxt); }
+    const cTxt = local >= 0.78 ? 'montado' : 'camada ' + String(Math.round(t * 400)).padStart(3, '0');
+    if (cTxt !== ult.camada) { ult.camada = cTxt; ui.camada.textContent = cTxt; }
+    const fOn = local >= 0.78; if (fOn !== ult.ficha) { ult.ficha = fOn; ui.ficha.classList.toggle('is-on', fOn); }
 
     // giro do objeto: gira enquanto monta e para de frente quando fica pronto
-    giroLivre += dt * 0.12;
-    it.grupo.rotation.y = d.giro * (1 - suave(t)) + Math.sin(giroLivre) * 0.12 + mouse.nx * 0.18;
+    it.grupo.rotation.y = d.giro * (1 - suave(t)) + mouse.nx * 0.18;
 
     // câmera enquadra o objeto
     const dist = Math.max(it.altura, it.larg) * (W > 860 ? 2.55 : 3.7) * (1 + 0.15 * (1 - suave(t))) * (d.zoom || 1);
@@ -497,20 +528,22 @@ async function montagem() {
     }
     hemi.intensity = 0.8 - lum * 0.62; sol.intensity = 2.6 - lum * 2.3; renderer.toneMappingExposure = 1.05 + lum * 0.15;
     chao.material.opacity = (0.06 + 0.14 * suave(t)) + lum * 0.25;
-    const escuro = lum > 0.5;
-    sec.classList.toggle('is-escuro', escuro);
-    sec.style.backgroundColor = lum > 0 ? misturar(d.fundo, d.escuroNoFim, lum) : d.fundo;
-    sec.dataset.tema = escuro ? 'escuro' : 'claro';
+    const escuro = !!d.claro || lum > 0.5;
+    if (escuro !== ult.escuro) { ult.escuro = escuro; sec.classList.toggle('is-escuro', escuro); sec.dataset.tema = escuro ? 'escuro' : 'claro'; }
+    let bg = lum > 0 ? misturar(d.fundo, d.escuroNoFim, lum) : d.fundo;
     // placa: balança no prego
     // cobogó: o sol atravessa e a sombra corre no chão
     if (d.id === 'cobogo' && fim > 0) {
       const a = THREE.MathUtils.lerp(-1.2, 1.2, fim);
       sol.position.set(Math.sin(a) * 6, 2.2 + Math.cos(a) * 1.2, -5); sol.intensity = 3.2;
       chao.material.opacity = 0.32;
-      sec.style.backgroundColor = misturar(d.fundo, '#E9B776', Math.sin(fim * Math.PI) * 0.7);
+      bg = misturar(d.fundo, '#FFC857', Math.sin(fim * Math.PI) * 0.7);
     }
+    if (bg !== ult.bg) { ult.bg = bg; sec.style.backgroundColor = bg; }
+    // efeitos que se mexem sozinhos mantêm o desenho ligado
+    ult.vivo = (d.id === 'relogio-farol' && fim > 0 && fim < 1) || (d.id === 'porta-incenso' && fim > 0.02) || lum > 0;
     renderer.render(cena, cam);
-    requestAnimationFrame(quadro);
+    ajusta(agora);
   }
   visivel(sec, (v) => { if (v && !rodando) { rodando = true; tAnt = performance.now(); requestAnimationFrame(quadro); } else if (!v) rodando = false; });
   trocar(0);
@@ -654,24 +687,13 @@ function numeros() {
   if (gsap && !reduzir) $$('.trajetoria li, .tec__card, .sobre__texto p').forEach((li) => gsap.fromTo(li, { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 1.1, ease: 'expo.out', scrollTrigger: { trigger: li, start: 'top 90%' } }));
 }
 
-/* ================= granulação do fundo ================= */
-function granulacao() {
-  const c = document.createElement('canvas'); c.width = c.height = 160;
-  const g = c.getContext('2d'), img = g.createImageData(160, 160);
-  for (let i = 0; i < img.data.length; i += 4) { const v = Math.random() * 255; img.data[i] = img.data[i + 1] = img.data[i + 2] = v; img.data[i + 3] = 255; }
-  g.putImageData(img, 0, 0);
-  const el = document.createElement('div'); el.className = 'grao'; el.setAttribute('aria-hidden', 'true');
-  el.style.backgroundImage = `url(${c.toDataURL('image/png')})`;
-  document.body.appendChild(el);
-}
-
 /* ================= CARREGAMENTO + início ================= */
 async function iniciar() {
   const carga = $('#carga');
   // trava de segurança: aconteça o que acontecer, a página aparece
   setTimeout(() => { if (!document.documentElement.classList.contains('pronto')) { document.documentElement.classList.add('pronto'); lenis && lenis.start(); } }, 9000);
   const heroChs = $$('.hero__linha').map(partir);
-  granulacao(); montarTitulos(); manifesto(); marcas(); selo(); ilustra(); numeros(); corTopo();
+  montarTitulos(); manifesto(); marcas(); selo(); ilustra(); numeros(); corTopo();
 
   if (!gsap || reduzir) {
     document.documentElement.classList.add('pronto');

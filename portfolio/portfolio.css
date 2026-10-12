@@ -60,7 +60,8 @@ html.sem-motion .carga, html.pronto .carga { display: none; }
 .topo { position: fixed; inset: 0 0 auto 0; z-index: 50; display: flex; align-items: center; justify-content: space-between; padding: 18px var(--margem); color: var(--preto); pointer-events: none; transition: color .5s var(--ease); }
 .topo.is-claro { color: var(--areia); }
 .topo a { pointer-events: auto; }
-.topo__marca { font-family: var(--jack); font-size: 1.6rem; text-decoration: none; letter-spacing: .01em; }
+.topo__marca { font-weight: 900; font-size: 1.05rem; text-transform: uppercase; letter-spacing: -.01em; text-decoration: none; line-height: 1; }
+.topo__marca span { color: var(--laranja); }
 .topo__nav { display: flex; gap: clamp(14px, 2.4vw, 36px); font-size: .95rem; align-items: center; }
 .topo__nav a { text-decoration: none; position: relative; }
 .topo__nav a::after { content: ''; position: absolute; left: 0; right: 0; bottom: -3px; height: 1.5px; background: currentColor; transform: scaleX(0); transform-origin: right; transition: transform .5s var(--ease); }
@@ -147,12 +148,12 @@ html.sem-motion .carga, html.pronto .carga { display: none; }
 .marcas__sub { margin-top: 24px; max-width: 32ch; font-size: clamp(1.1rem, 1rem + .6vw, 1.5rem); }
 .cap { position: relative; min-height: 180vh; background: var(--fundo); color: var(--tinta); overflow: hidden; padding: 8vh var(--margem) 16vh; }
 .cap__nome { position: sticky; top: 13vh; z-index: 1; font-weight: 900; font-size: clamp(4rem, 1rem + 16vw, 19rem); line-height: .8; letter-spacing: -.05em; text-transform: uppercase; white-space: nowrap; pointer-events: none; }
-.cap__info { position: absolute; right: var(--margem); bottom: 10vh; z-index: 3; max-width: 26rem; padding: 22px; border-radius: 18px; background: color-mix(in srgb, var(--fundo) 82%, transparent); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+.cap__info { position: absolute; right: var(--margem); bottom: 10vh; z-index: 3; max-width: 26rem; padding: 22px; border-radius: 18px; background: color-mix(in srgb, var(--fundo) 94%, transparent); }
 .cap__ano { font-size: .78rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; opacity: .75; }
 .cap__info p { margin-top: 10px; line-height: 1.45; }
 .cap__tags { margin-top: 16px; display: flex; flex-wrap: wrap; gap: 8px; }
 .cap__tags > * { border: 1.5px solid currentColor; border-radius: 999px; padding: 5px 12px; font-size: .78rem; text-decoration: none; }
-.col { position: absolute; z-index: 2; border-radius: 14px; overflow: hidden; box-shadow: 0 30px 60px -20px rgba(0, 0, 0, .45); will-change: transform; }
+.col { position: absolute; z-index: 2; border-radius: 14px; overflow: hidden; box-shadow: 0 22px 40px -18px rgba(0, 0, 0, .42); will-change: transform; }
 .col img { width: 100%; height: 100%; object-fit: cover; }
 .col--1 { width: clamp(220px, 36vw, 620px); aspect-ratio: 4 / 5; left: 4%; top: 30vh; }
 .col--2 { width: clamp(180px, 24vw, 420px); aspect-ratio: 3 / 4; left: 44%; top: 70vh; z-index: 0; }
@@ -250,11 +251,3 @@ html.sem-motion .ch { transform: none !important; opacity: 1 !important; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   }
-
-/* granulação: ruído fixo por cima de tudo, pulando de posição como filme */
-.grao { position: fixed; inset: -50%; z-index: 70; pointer-events: none; opacity: .075; background-size: 160px 160px; animation: grao 1s steps(8) infinite; will-change: transform; }
-@keyframes grao {
-  0% { transform: translate(0, 0); } 12% { transform: translate(-5%, -8%); } 25% { transform: translate(7%, 3%); } 37% { transform: translate(-3%, 9%); }
-  50% { transform: translate(9%, -4%); } 62% { transform: translate(-8%, 5%); } 75% { transform: translate(4%, 8%); } 87% { transform: translate(-6%, -3%); } 100% { transform: translate(0, 0); }
-}
-@media (prefers-reduced-motion: reduce), (hover: none) { .grao { animation: none; } }

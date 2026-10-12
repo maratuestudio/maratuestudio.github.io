@@ -610,6 +610,8 @@ function marcas() {
       const img = f.querySelector('img'); gsap.fromTo(img, { scale: 1.35 }, { scale: 1, ease: 'expo.out', duration: 1.8, scrollTrigger: { trigger: f, start: 'top 92%' } });
     });
     gsap.fromTo($('.cap__nome', cap), { xPercent: 8 }, { xPercent: -14, ease: 'none', scrollTrigger: { trigger: cap, start: 'top bottom', end: 'bottom top', scrub: true } });
+    const logo = $('.cap__logo .logo', cap);
+    if (logo) gsap.fromTo(logo, { yPercent: 40, scale: 0.86, opacity: 0, clipPath: 'inset(0 0 100% 0)' }, { yPercent: 0, scale: 1, opacity: 1, clipPath: 'inset(0 0 0% 0)', ease: 'expo.out', scrollTrigger: { trigger: cap, start: 'top 85%', end: 'top 30%', scrub: 0.8 } });
   });
 }
 

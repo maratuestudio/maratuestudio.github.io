@@ -187,15 +187,16 @@ html.sem-motion .carga, html.pronto .carga { display: none; }
 .ilustra__cab { padding: 0 var(--margem); display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; }
 .ilustra__cab .gigante { font-size: clamp(3.4rem, 1rem + 10vw, 11rem); }
 .ilustra__trilho { display: flex; gap: clamp(16px, 2vw, 28px); padding: 4vh var(--margem) 0; align-items: center; will-change: transform; }
-.ilustra__card { flex: 0 0 auto; width: clamp(240px, 30vw, 440px); }
-.ilustra__card img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 14px; transition: transform .8s var(--ease); }
+.ilustra__card { flex: 0 0 auto; }
+.ilustra__card img { height: min(56vh, 540px); width: auto; border-radius: 14px; transition: transform .8s var(--ease); }
 .ilustra__card:hover img { transform: scale(1.03) rotate(-1deg); }
 .ilustra__card figcaption { display: flex; justify-content: space-between; margin-top: 10px; font-size: .9rem; }
 .ilustra__card figcaption span:last-child { opacity: .55; }
 @media (max-width: 760px) {
   .ilustra__fixo { position: relative; height: auto; display: block; padding: 14vh 0 10vh; }
   .ilustra__trilho { overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 12px; }
-  .ilustra__card { width: 78vw; scroll-snap-align: center; }
+  .ilustra__card { scroll-snap-align: center; }
+  .ilustra__card img { height: 52vh; }
 }
 
 /* ---------- tecnologia ---------- */
@@ -251,3 +252,12 @@ html.sem-motion .ch { transform: none !important; opacity: 1 !important; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   }
+
+/* logos das marcas no lugar do nome */
+.cap__logo { line-height: 0; }
+.cap__logo .logo { display: block; height: auto; max-width: 92vw; will-change: transform; }
+.logo--maratu { width: min(78vw, 1100px); }
+.logo--bonjour { width: min(52vw, 640px); }
+.logo--bansby { width: min(46vw, 560px); }
+.logo--sky { width: min(50vw, 620px); }
+@media (max-width: 760px) { .logo--maratu { width: 86vw; } .logo--bonjour, .logo--bansby, .logo--sky { width: 70vw; } }

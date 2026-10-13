@@ -603,16 +603,13 @@ function manifesto() {
 function marcas() {
   if (!gsap || reduzir || innerWidth < 760) return;
   $$('.cap').forEach((cap) => {
-    $$('.col', cap).forEach((f, i) => {
-      gsap.fromTo(f, { y: 120 + (i % 3) * 60 }, { y: -100 - (i % 2) * 80, ease: 'none', scrollTrigger: { trigger: f, start: 'top bottom', end: 'bottom top', scrub: true } });
-      gsap.fromTo(f, { clipPath: 'inset(100% 0% 0% 0% round 14px)' }, { clipPath: 'inset(0% 0% 0% 0% round 14px)', ease: 'expo.out', duration: 1.4, scrollTrigger: { trigger: f, start: 'top 92%' } });
-      const img = f.querySelector('img'); gsap.fromTo(img, { scale: 1.3 }, { scale: 1, ease: 'expo.out', duration: 1.8, scrollTrigger: { trigger: f, start: 'top 92%' } });
+    $$('.col', cap).forEach((f) => {
+      gsap.fromTo(f, { clipPath: 'inset(100% 0% 0% 0% round 16px)' }, { clipPath: 'inset(0% 0% 0% 0% round 16px)', ease: 'expo.out', duration: 1.4, scrollTrigger: { trigger: f, start: 'top 90%' } });
+      const img = f.querySelector('img'); gsap.fromTo(img, { scale: 1.25 }, { scale: 1, ease: 'expo.out', duration: 1.8, scrollTrigger: { trigger: f, start: 'top 90%' } });
     });
     const logo = $('.cap__logo .logo', cap);
-    if (logo) {
-      gsap.fromTo(logo, { scale: 0.7, opacity: 0, clipPath: 'inset(0 0 100% 0)' }, { scale: 1, opacity: 1, clipPath: 'inset(0 0 0% 0)', duration: 1.4, ease: 'expo.out', scrollTrigger: { trigger: cap, start: 'top 60%' } });
-      gsap.fromTo(logo, { xPercent: 6 }, { xPercent: -10, ease: 'none', scrollTrigger: { trigger: cap, start: 'top top', end: 'bottom top', scrub: true } });
-    }
+    if (logo) gsap.fromTo(logo, { yPercent: 30, opacity: 0, clipPath: 'inset(0 0 100% 0)' }, { yPercent: 0, opacity: 1, clipPath: 'inset(0 0 0% 0)', duration: 1.3, ease: 'expo.out', scrollTrigger: { trigger: cap, start: 'top 70%' } });
+    gsap.fromTo($('.cap__info', cap), { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 1.1, ease: 'expo.out', delay: 0.15, scrollTrigger: { trigger: cap, start: 'top 70%' } });
   });
 }
 
@@ -664,8 +661,7 @@ function selo() {
 
 /* ================= ILUSTRAÇÃO: sketchbook que folheia ================= */
 function ilustra() {
-  const livro = $('#livro'), folhas = $$('.folha', livro), N = folhas.length, pag = $('#livro-pag');
-  const legs = folhas.map((f) => [f.querySelector('.folha__frente .folha__leg b'), f.querySelector('.folha__verso .folha__leg b')]);
+  const livro = $('#livro'), folhas = $$('.folha', livro), N = folhas.length;
   function pintar(p) {
     // p vai de 0 a N: cada unidade vira uma folha
     livro.classList.toggle('is-aberto', p > 0.15);
@@ -678,10 +674,6 @@ function ilustra() {
       f.style.zIndex = k < 0.5 ? N - i : i + 1;
       f.style.setProperty('--sombra', (Math.sin(k * Math.PI) * 0.35).toFixed(3));
     });
-    const i = Math.min(N - 1, Math.floor(p));
-    if (p < 0.5) pag.textContent = 'capa';
-    else { const a = legs[Math.min(N - 1, Math.round(p) - 1)], e = a && a[1], d = legs[Math.min(N - 1, Math.round(p))] && legs[Math.min(N - 1, Math.round(p))][0];
-      pag.textContent = [e && e.textContent, d && d.textContent].filter(Boolean).join(' · ') || 'fim'; }
   }
   pintar(0);
   if (!gsap || reduzir) { pintar(1); return; }

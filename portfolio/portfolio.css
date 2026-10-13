@@ -145,28 +145,28 @@ html.sem-motion .carga, html.pronto .carga { display: none; }
 .gigante { font-weight: 900; font-size: var(--gigante); line-height: .8; letter-spacing: -.045em; text-transform: uppercase; padding-bottom: .04em; }
 .marcas__abre { padding: 22vh var(--margem) 12vh; background: var(--areia); overflow: clip; }
 .marcas__abre .rotulo { margin-bottom: 18px; }
+.marcas__abre .gigante { font-size: clamp(3rem, 1rem + 8vw, 10rem); max-width: 12ch; }
 .marcas__sub { margin-top: 24px; max-width: 32ch; font-size: clamp(1.1rem, 1rem + .6vw, 1.5rem); }
-.cap { position: relative; background: var(--fundo); color: var(--tinta); overflow: clip; padding: 0 var(--margem) 18vh; }
-/* o logo grande fica preso no meio da tela; as fotos só chegam depois que ele aparece sozinho */
-.cap__nome { position: sticky; top: 0; height: 100vh; height: 100svh; display: grid; place-items: center; z-index: 1; pointer-events: none; margin: 0; }
-.cap__info { position: relative; z-index: 3; max-width: 26rem; margin: -26vh 0 0 auto; padding: 22px; border-radius: 18px; background: color-mix(in srgb, var(--fundo) 94%, transparent); }
+.cap { position: relative; background: var(--fundo); color: var(--tinta); padding: 16vh var(--margem); display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: clamp(28px, 5vw, 80px); align-items: start; overflow: clip; }
+.cap__lado { position: sticky; top: 18vh; z-index: 2; }
+.cap__nome { margin: 0; }
+.cap__info { margin-top: 5vh; max-width: 28rem; }
 .cap__ano { font-size: .78rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; opacity: .8; }
-.cap__info p { margin-top: 10px; line-height: 1.45; }
+.cap__info p { margin-top: 10px; line-height: 1.45; font-size: clamp(1rem, .95rem + .3vw, 1.2rem); }
 .cap__tags { margin-top: 16px; display: flex; flex-wrap: wrap; gap: 8px; }
 .cap__tags > * { border: 1.5px solid currentColor; border-radius: 999px; padding: 5px 12px; font-size: .78rem; text-decoration: none; }
-.cap__fotos { position: relative; z-index: 2; margin-top: 30vh; display: grid; grid-template-columns: repeat(12, 1fr); row-gap: 10vh; }
-.col { position: relative; border-radius: 14px; overflow: hidden; box-shadow: 0 22px 40px -18px rgba(0, 0, 0, .42); will-change: transform; }
-.col img { width: 100%; height: auto; display: block; }
-.col--1 { grid-column: 1 / 6; }
-.col--2 { grid-column: 8 / 12; margin-top: 18vh; }
-.col--3 { grid-column: 3 / 8; }
-.col--4 { grid-column: 9 / 13; margin-top: 12vh; }
-.col--5 { grid-column: 2 / 6; }
-@media (max-width: 760px) {
-  .cap__info { margin: -30vh 0 0; }
-  .cap__fotos { grid-template-columns: 1fr 1fr; gap: 14px; row-gap: 6vh; margin-top: 18vh; }
-  .col { grid-column: auto !important; margin-top: 0 !important; }
-  .col:nth-child(even) { margin-top: 8vh !important; }
+/* imagens grandes: a primeira ocupa a coluna inteira, depois pares lado a lado, tudo alinhado */
+.cap__fotos { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(14px, 1.8vw, 28px); }
+.cap__fotos .col:nth-child(3n+1) { grid-column: 1 / -1; }
+.col { position: relative; border-radius: 16px; overflow: hidden; box-shadow: 0 22px 40px -18px rgba(0, 0, 0, .42); }
+.col img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.cap__fotos .col:nth-child(3n+1) img { aspect-ratio: 16 / 11; }
+.cap__fotos .col:not(:nth-child(3n+1)) img { aspect-ratio: 4 / 5; }
+@media (max-width: 860px) {
+  .cap { grid-template-columns: 1fr; padding: 12vh var(--margem) 10vh; }
+  .cap__lado { position: relative; top: 0; }
+  .cap__fotos { grid-template-columns: 1fr; }
+  .cap__fotos .col img { aspect-ratio: auto !important; }
 }
 
 /* ---------- selo ---------- */
@@ -182,8 +182,8 @@ html.sem-motion .carga, html.pronto .carga { display: none; }
 .selo__txt { margin-top: 12px; opacity: .78; line-height: 1.45; }
 
 /* ---------- ilustração: sketchbook ---------- */
-.ilustra { position: relative; height: 900vh; background: #1C1B2A; color: var(--areia); }
-.ilustra__fixo { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; display: grid; grid-template-rows: auto 1fr auto; padding: 78px var(--margem) 18px; background: radial-gradient(120% 90% at 50% 60%, #3A3B5C 0%, #1C1B2A 70%); }
+.ilustra { position: relative; height: 850vh; background: #1C1B2A; color: var(--areia); }
+.ilustra__fixo { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; display: grid; grid-template-rows: auto 1fr; padding: 78px var(--margem) 4vh; background: radial-gradient(120% 90% at 50% 60%, #3A3B5C 0%, #1C1B2A 70%); }
 .ilustra__cab { display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; }
 .ilustra__cab .gigante { font-size: clamp(2.4rem, 1rem + 5vw, 6rem); }
 .livro { --pw: min(40vw, 52vh); --ph: calc(var(--pw) * 1.25); align-self: center; justify-self: center; width: calc(var(--pw) * 2); height: var(--ph); perspective: 2200px; }
@@ -266,8 +266,8 @@ html.sem-motion .ch { transform: none !important; opacity: 1 !important; }
 /* logos das marcas no lugar do nome */
 .cap__logo { line-height: 0; }
 .cap__logo .logo { display: block; height: auto; max-width: 100%; will-change: transform; }
-.logo--maratu { width: min(88vw, 1500px); }
-.logo--bonjour { width: min(60vw, 900px); }
-.logo--bansby { width: min(56vw, 820px); }
-.logo--sky { width: min(62vw, 900px); }
-@media (max-width: 760px) { .logo--maratu { width: 90vw; } .logo--bonjour, .logo--bansby, .logo--sky { width: 80vw; } }
+.logo--maratu { width: 100%; }
+.logo--bonjour { width: 86%; }
+.logo--bansby { width: 70%; }
+.logo--sky { width: 84%; }
+@media (max-width: 860px) { .logo--maratu { width: 90%; } .logo--bonjour, .logo--bansby, .logo--sky { width: 66%; } }

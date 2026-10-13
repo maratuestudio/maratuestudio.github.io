@@ -87,23 +87,15 @@ html.sem-motion .carga, html.pronto .carga { display: none; }
 .hero__linha--b { padding-left: .5em; }
 .hero__pe { position: relative; z-index: 3; display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; pointer-events: none; }
 .hero__lema { max-width: 30ch; font-size: clamp(1.05rem, .9rem + .5vw, 1.35rem); line-height: 1.35; }
-.hero__linha { transform-origin: left center; }
+/* cada letra é um bloco que pousa e estica pela base */
+.hero__linha .ch { display: inline-block; transform-origin: 50% 100%; will-change: transform; }
+.hero__linha.solta { overflow: visible; }
 @media (max-width: 700px) {
   .hero__nome { font-size: clamp(2.6rem, 14vw, 5rem); align-self: start; margin-top: 18vh; }
   .hero__linha--b { padding-left: 0; }
   .hero__pe { flex-direction: column; align-items: flex-start; }
 }
 
-/* ---------- manifesto ---------- */
-.manifesto { position: relative; height: 320vh; background: transparent; color: var(--areia); }
-.manifesto__fixo { position: sticky; top: 0; height: 100vh; height: 100svh; display: grid; place-content: center; padding: 0 var(--margem); overflow: hidden; }
-.manifesto__frase { font-weight: 900; font-size: clamp(2.4rem, 1rem + 6.6vw, 8.6rem); line-height: .95; letter-spacing: -.03em; text-transform: uppercase; }
-.mf { display: block; }
-.mf em { font-style: normal; color: var(--laranja); }
-.manifesto__pecas { position: absolute; left: var(--margem); right: var(--margem); bottom: 32px; display: flex; justify-content: space-between; gap: 12px; font-size: .78rem; letter-spacing: .12em; text-transform: uppercase; }
-.manifesto__pecas span { opacity: .25; transition: opacity .4s, color .4s; }
-.manifesto__pecas span.is-on { opacity: 1; color: var(--laranja); }
-@media (max-width: 700px) { .manifesto__pecas { flex-wrap: wrap; justify-content: flex-start; gap: 6px 16px; } }
 
 /* ---------- montagem ---------- */
 .montagem { position: relative; background: transparent; }

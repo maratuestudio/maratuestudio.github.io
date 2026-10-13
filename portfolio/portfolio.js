@@ -583,24 +583,6 @@ function criarFumaca() {
   };
 }
 
-/* ================= MANIFESTO ================= */
-function manifesto() {
-  const linhas = $$('#manifesto .mf');
-  const chs = linhas.map(partir);
-  const pecas = $$('.manifesto__pecas span');
-  if (!gsap || reduzir) { pecas.forEach((p) => p.classList.add('is-on')); return; }
-  const tl = gsap.timeline({ scrollTrigger: { trigger: '.manifesto', start: 'top top', end: 'bottom bottom', scrub: 0.6,
-    onUpdate: (s) => pecas.forEach((p, k) => p.classList.toggle('is-on', s.progress > 0.12 + k * 0.16)) } });
-  // cada frase chega solta e se monta; a anterior apaga um pouco quando a próxima entra
-  chs.forEach((c, i) => {
-    if (i > 0) tl.to(linhas[i - 1], { opacity: 0.28, duration: 0.4 }, '<0.2');
-    tl.fromTo(c, { x: () => gsap.utils.random(-300, 300), y: () => gsap.utils.random(-260, 260), rotation: () => gsap.utils.random(-160, 160), opacity: 0 },
-      { x: 0, y: 0, rotation: 0, opacity: 1, ease: 'expo.out', stagger: { each: 0.015, from: 'random' }, duration: 1 });
-  });
-  tl.to(linhas.slice(0, 2), { opacity: 1, duration: 0.5 }, '+=0.2');
-  tl.to({}, { duration: 0.3 });
-}
-
 /* ================= MARCAS: colagem com profundidade ================= */
 function marcas() {
   if (!gsap || reduzir || innerWidth < 760) return;
@@ -741,13 +723,26 @@ function lupa() {
 }
 
 /* ================= CARREGAMENTO + início ================= */
-function esticar(atraso) {
+function esticar() {
+  // a rolagem estica as letras pela base; cada uma responde com um pequeno atraso, em onda
   if (!gsap || reduzir) return;
   const linhas = $$('.hero__linha');
-  gsap.timeline({ delay: atraso })
-    .to(linhas, { scaleX: 1.22, scaleY: 0.82, duration: 0.45, ease: 'power3.inOut', stagger: 0.06 })
-    .to(linhas, { scaleX: 0.78, scaleY: 1.14, duration: 0.4, ease: 'power3.inOut', stagger: 0.06 })
-    .to(linhas, { scaleX: 1, scaleY: 1, duration: 1.1, ease: 'elastic.out(1, 0.35)', stagger: 0.06 });
+  linhas.forEach((l) => l.classList.add('solta'));
+  const chs = linhas.flatMap((l) => $$('.ch', l));
+  const setY = chs.map((c) => gsap.quickTo(c, 'scaleY', { duration: 0.5, ease: 'power3.out' }));
+  const setX = chs.map((c) => gsap.quickTo(c, 'scaleX', { duration: 0.5, ease: 'power3.out' }));
+  let antes = 0;
+  gsap.ticker.add(() => {
+    // fora do hero não há o que esticar
+    const v = lenis && scrollY < innerHeight ? lenis.velocity : 0;
+    const alvo = clamp(Math.abs(v) / 25, 0, 1);
+    if (alvo === 0 && antes === 0) return;
+    antes = alvo;
+    chs.forEach((c, i) => {
+      const k = alvo * (0.55 + 0.45 * Math.sin(i * 0.9));
+      setY[i](1 + k * 0.4); setX[i](1 - k * 0.1);
+    });
+  });
 }
 
 async function iniciar() {
@@ -755,14 +750,14 @@ async function iniciar() {
   // trava de segurança: aconteça o que acontecer, a página aparece
   setTimeout(() => { if (!document.documentElement.classList.contains('pronto')) { document.documentElement.classList.add('pronto'); lenis && lenis.start(); } }, 9000);
   const heroChs = $$('.hero__linha').map(partir);
-  montarTitulos(); coresDeFundo(); lupa(); manifesto(); marcas(); selo(); ilustra(); numeros(); corTopo();
+  montarTitulos(); coresDeFundo(); lupa(); marcas(); selo(); ilustra(); numeros(); corTopo();
 
   if (!gsap || reduzir) {
     document.documentElement.classList.add('pronto');
     const h = await abertura().catch(() => null); h && h.comecar(); montagem().catch(() => {}); return;
   }
   lenis && lenis.stop(); scrollTo(0, 0);
-  gsap.set(heroChs.flat(), { yPercent: 115, rotation: 6 });
+  gsap.set(heroChs.flat(), { yPercent: -115, rotation: -4 });
   gsap.set(['.hero__topo', '.hero__pe', '.topo'], { opacity: 0, y: 20 });
 
   const tinta = $('#carga-tinta'), num = $('#carga-num'), bico = $('#carga-bico');
@@ -791,10 +786,10 @@ async function iniciar() {
   const tl = gsap.timeline();
   tl.to(carga, { yPercent: -100, duration: 1.1, ease: 'expo.inOut' })
     .add(() => { document.documentElement.classList.add('pronto'); lenis && lenis.start(); hero && hero.comecar(); })
-    .to(heroChs.flat(), { yPercent: 0, rotation: 0, duration: 1.2, ease: 'expo.out', stagger: 0.035 }, '-=0.35')
+    .to(heroChs.flat(), { yPercent: 0, rotation: 0, duration: 0.7, ease: 'power3.in', stagger: 0.035 }, '-=0.35')
+    .to(heroChs.flat(), { keyframes: [{ scaleY: 0.72, scaleX: 1.16, duration: 0.12, ease: 'power2.out' }, { scaleY: 1, scaleX: 1, duration: 0.9, ease: 'elastic.out(1.1, 0.32)' }], stagger: 0.035 }, '<0.7')
     .to(['.hero__topo', '.hero__pe', '.topo'], { opacity: 1, y: 0, duration: 1.1, ease: 'expo.out', stagger: 0.08 }, '-=0.9');
-  // o nome estica, comprime e volta, como um material sendo testado
-  esticar(0.5);
+  tl.add(esticar);
 
   if (!hero) heroPronto.then((h) => h && h.comecar());
   montagem().then(() => ScrollTrigger.refresh()).catch(() => {});

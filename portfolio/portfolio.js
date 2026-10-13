@@ -603,15 +603,14 @@ function manifesto() {
 function marcas() {
   if (!gsap || reduzir || innerWidth < 760) return;
   $$('.cap').forEach((cap) => {
-    $$('.col', cap).forEach((f) => {
-      const v = +f.dataset.vel || 0;
-      gsap.fromTo(f, { y: 260 * v + 120, rotation: v * 6 }, { y: -320 * v, rotation: -v * 4, ease: 'none', scrollTrigger: { trigger: cap, start: 'top bottom', end: 'bottom top', scrub: true } });
+    $$('.col', cap).forEach((f, i) => {
+      gsap.fromTo(f, { y: i % 2 ? 140 : 60 }, { y: i % 2 ? -80 : -20, ease: 'none', scrollTrigger: { trigger: cap, start: 'top bottom', end: 'bottom top', scrub: true } });
       gsap.fromTo(f, { clipPath: 'inset(100% 0% 0% 0% round 14px)' }, { clipPath: 'inset(0% 0% 0% 0% round 14px)', ease: 'expo.out', duration: 1.4, scrollTrigger: { trigger: f, start: 'top 92%' } });
-      const img = f.querySelector('img'); gsap.fromTo(img, { scale: 1.35 }, { scale: 1, ease: 'expo.out', duration: 1.8, scrollTrigger: { trigger: f, start: 'top 92%' } });
+      const img = f.querySelector('img'); gsap.fromTo(img, { scale: 1.3 }, { scale: 1, ease: 'expo.out', duration: 1.8, scrollTrigger: { trigger: f, start: 'top 92%' } });
     });
-    gsap.fromTo($('.cap__nome', cap), { xPercent: 8 }, { xPercent: -14, ease: 'none', scrollTrigger: { trigger: cap, start: 'top bottom', end: 'bottom top', scrub: true } });
     const logo = $('.cap__logo .logo', cap);
-    if (logo) gsap.fromTo(logo, { yPercent: 40, scale: 0.86, opacity: 0, clipPath: 'inset(0 0 100% 0)' }, { yPercent: 0, scale: 1, opacity: 1, clipPath: 'inset(0 0 0% 0)', ease: 'expo.out', scrollTrigger: { trigger: cap, start: 'top 85%', end: 'top 30%', scrub: 0.8 } });
+    if (logo) gsap.fromTo(logo, { yPercent: 30, opacity: 0, clipPath: 'inset(0 0 100% 0)' }, { yPercent: 0, opacity: 1, clipPath: 'inset(0 0 0% 0)', duration: 1.3, ease: 'expo.out', scrollTrigger: { trigger: cap, start: 'top 70%' } });
+    gsap.fromTo($('.cap__info', cap), { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 1.1, ease: 'expo.out', delay: 0.15, scrollTrigger: { trigger: cap, start: 'top 70%' } });
   });
 }
 
@@ -661,21 +660,32 @@ function selo() {
   gsap.fromTo('.selo__pe', { y: 40, opacity: 0 }, { y: 0, opacity: 1, ease: 'expo.out', scrollTrigger: { trigger: '.selo', start: '55% bottom', end: '75% bottom', scrub: 0.6 } });
 }
 
-/* ================= ILUSTRAÇÃO: trilho horizontal com inclinação pela velocidade ================= */
+/* ================= ILUSTRAÇÃO: sketchbook que folheia ================= */
 function ilustra() {
-  if (!gsap || reduzir || innerWidth < 760) return;
-  const sec = $('.ilustra'), trilho = $('#trilho');
-  const dist = () => trilho.scrollWidth - innerWidth;
-  sec.style.height = `calc(100vh + ${dist()}px)`;
-  addEventListener('resize', () => { sec.style.height = `calc(100vh + ${dist()}px)`; ScrollTrigger.refresh(); });
-  const cards = $$('.ilustra__card');
-  const skew = gsap.quickTo(cards, 'skewX', { duration: 0.5, ease: 'power3' });
-  gsap.to(trilho, {
-    x: () => -dist(), ease: 'none',
-    scrollTrigger: { trigger: sec, start: 'top top', end: 'bottom bottom', scrub: 0.5, invalidateOnRefresh: true,
-      onUpdate: (s) => skew(clamp(s.getVelocity() / -300, -9, 9)) },
-  });
-  cards.forEach((c, i) => gsap.fromTo(c, { y: i % 2 ? 60 : -30 }, { y: i % 2 ? -40 : 30, ease: 'none', scrollTrigger: { trigger: sec, start: 'top top', end: 'bottom bottom', scrub: true } }));
+  const livro = $('#livro'), folhas = $$('.folha', livro), N = folhas.length, pag = $('#livro-pag');
+  const legs = folhas.map((f) => [f.querySelector('.folha__frente .folha__leg b'), f.querySelector('.folha__verso .folha__leg b')]);
+  function pintar(p) {
+    // p vai de 0 a N: cada unidade vira uma folha
+    livro.classList.toggle('is-aberto', p > 0.15);
+    folhas.forEach((f, i) => {
+      const k = clamp(p - i), ang = -180 * (k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2);
+      // leque: folhas ainda fechadas abrem um pouco, como no caderno real
+      const leque = k === 0 ? Math.max(0, 6 - (i - p) * 2.2) : 0;
+      const z = k < 0.5 ? (N - i) * 0.6 : i * 0.6;
+      f.style.transform = `translateZ(${z}px) rotateY(${(ang - leque).toFixed(2)}deg)`;
+      f.style.zIndex = k < 0.5 ? N - i : i + 1;
+      f.style.setProperty('--sombra', (Math.sin(k * Math.PI) * 0.35).toFixed(3));
+    });
+    const i = Math.min(N - 1, Math.floor(p));
+    if (p < 0.5) pag.textContent = 'capa';
+    else { const a = legs[Math.min(N - 1, Math.round(p) - 1)], e = a && a[1], d = legs[Math.min(N - 1, Math.round(p))] && legs[Math.min(N - 1, Math.round(p))][0];
+      pag.textContent = [e && e.textContent, d && d.textContent].filter(Boolean).join(' · ') || 'fim'; }
+  }
+  pintar(0);
+  if (!gsap || reduzir) { pintar(1); return; }
+  ScrollTrigger.create({ trigger: '.ilustra', start: 'top top', end: 'bottom bottom', scrub: 0.6, onUpdate: (s) => pintar(s.progress * (N + 0.2)) });
+  // o caderno inclina de leve com o mouse
+  if (!toque) addEventListener('pointermove', () => { livro.style.transform = `rotateY(${(mouse.nx * 6).toFixed(2)}deg) rotateX(${(mouse.ny * 3).toFixed(2)}deg)`; }, { passive: true });
 }
 
 /* ================= números ================= */

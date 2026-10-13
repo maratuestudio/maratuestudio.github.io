@@ -145,30 +145,29 @@ html.sem-motion .carga, html.pronto .carga { display: none; }
 .gigante { font-weight: 900; font-size: var(--gigante); line-height: .8; letter-spacing: -.045em; text-transform: uppercase; padding-bottom: .04em; }
 .marcas__abre { padding: 22vh var(--margem) 12vh; background: var(--areia); overflow: clip; }
 .marcas__abre .rotulo { margin-bottom: 18px; }
+.marcas__abre .gigante { font-size: clamp(3rem, 1rem + 8vw, 10rem); max-width: 10ch; }
 .marcas__sub { margin-top: 24px; max-width: 32ch; font-size: clamp(1.1rem, 1rem + .6vw, 1.5rem); }
-.cap { position: relative; background: var(--fundo); color: var(--tinta); padding: 16vh var(--margem); display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: clamp(28px, 5vw, 80px); align-items: start; overflow: clip; }
-.cap__lado { position: sticky; top: 18vh; z-index: 2; }
-.cap__nome { margin: 0; }
-.cap__info { margin-top: 5vh; max-width: 28rem; }
+.cap { position: relative; background: var(--fundo); color: var(--tinta); overflow: clip; padding: 7vh var(--margem) 16vh; }
+/* logo gigante e texto ficam presos; os blocos de foto sobem por cima */
+.cap__lado { position: sticky; top: 10vh; z-index: 1; }
+.cap__nome { margin: 0; pointer-events: none; }
+.cap__info { margin-top: 5vh; max-width: 24rem; }
 .cap__ano { font-size: .78rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; opacity: .8; }
-.cap__info p { margin-top: 10px; line-height: 1.45; font-size: clamp(1rem, .95rem + .3vw, 1.2rem); }
+.cap__info p { margin-top: 10px; line-height: 1.45; font-size: clamp(1rem, .95rem + .3vw, 1.15rem); }
 .cap__tags { margin-top: 16px; display: flex; flex-wrap: wrap; gap: 8px; }
 .cap__tags > * { border: 1.5px solid currentColor; border-radius: 999px; padding: 5px 12px; font-size: .78rem; text-decoration: none; }
-/* blocos soltos que sobem em velocidades diferentes, como na primeira versão */
-.cap { padding-top: 8vh; }
-.cap__lado { top: 12vh; }
-.cap__fotos { position: relative; height: 175vh; }
+.cap__fotos { position: relative; z-index: 2; margin: -18vh 0 0 34%; height: 175vh; }
 .col { position: absolute; border-radius: 16px; overflow: hidden; box-shadow: 0 26px 50px -20px rgba(0, 0, 0, .45); will-change: transform; }
 .col img { width: 100%; height: auto; display: block; }
-.col--1 { left: 0; top: 0; width: 60%; z-index: 2; }
-.col--2 { right: 0; top: 14vh; width: 38%; z-index: 1; }
-.col--3 { left: 6%; top: 74vh; width: 48%; z-index: 3; }
-.col--4 { right: 3%; top: 64vh; width: 42%; z-index: 2; }
-.col--5 { left: 44%; top: 118vh; width: 34%; z-index: 4; }
+.col--1 { left: 0; top: 0; width: 56%; z-index: 2; }
+.col--2 { right: 0; top: 16vh; width: 38%; z-index: 1; }
+.col--3 { left: 8%; top: 76vh; width: 46%; z-index: 3; }
+.col--4 { right: 2%; top: 64vh; width: 40%; z-index: 2; }
+.col--5 { left: 40%; top: 120vh; width: 34%; z-index: 4; }
 @media (max-width: 860px) {
-  .cap { grid-template-columns: 1fr; padding: 12vh var(--margem) 10vh; }
+  .cap { padding: 10vh var(--margem); }
   .cap__lado { position: relative; top: 0; }
-  .cap__fotos { height: auto; display: grid; gap: 16px; }
+  .cap__fotos { margin: 6vh 0 0; height: auto; display: grid; gap: 16px; }
   .col { position: relative; left: auto !important; right: auto !important; top: auto !important; width: 88% !important; }
   .col:nth-child(even) { margin-left: auto; }
 }
@@ -270,8 +269,8 @@ html.sem-motion .ch { transform: none !important; opacity: 1 !important; }
 /* logos das marcas no lugar do nome */
 .cap__logo { line-height: 0; }
 .cap__logo .logo { display: block; height: auto; max-width: 100%; will-change: transform; }
-.logo--maratu { width: 100%; }
-.logo--bonjour { width: 86%; }
-.logo--bansby { width: 70%; }
-.logo--sky { width: 84%; }
-@media (max-width: 860px) { .logo--maratu { width: 90%; } .logo--bonjour, .logo--bansby, .logo--sky { width: 66%; } }
+.logo--maratu { width: min(90vw, 1600px); }
+.logo--bonjour { width: min(58vw, 900px); }
+.logo--bansby { width: min(50vw, 780px); }
+.logo--sky { width: min(60vw, 900px); }
+@media (max-width: 860px) { .logo--maratu { width: 90vw; } .logo--bonjour, .logo--bansby, .logo--sky { width: 76vw; } }

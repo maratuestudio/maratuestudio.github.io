@@ -610,7 +610,8 @@ function marcas() {
       const img = f.querySelector('img'); gsap.fromTo(img, { scale: 1.25 }, { scale: 1, ease: 'expo.out', duration: 1.8, scrollTrigger: { trigger: f, start: 'top 90%' } });
     });
     const logo = $('.cap__logo .logo', cap);
-    if (logo) gsap.fromTo(logo, { yPercent: 30, opacity: 0, clipPath: 'inset(0 0 100% 0)' }, { yPercent: 0, opacity: 1, clipPath: 'inset(0 0 0% 0)', duration: 1.3, ease: 'expo.out', scrollTrigger: { trigger: cap, start: 'top 70%' } });
+    if (logo) { gsap.fromTo(logo, { yPercent: 30, opacity: 0, clipPath: 'inset(0 0 100% 0)' }, { yPercent: 0, opacity: 1, clipPath: 'inset(0 0 0% 0)', duration: 1.3, ease: 'expo.out', scrollTrigger: { trigger: cap, start: 'top 70%' } });
+      gsap.fromTo(logo, { xPercent: 0 }, { xPercent: -8, ease: 'none', scrollTrigger: { trigger: cap, start: 'top top', end: 'bottom top', scrub: true } }); }
     gsap.fromTo($('.cap__info', cap), { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 1.1, ease: 'expo.out', delay: 0.15, scrollTrigger: { trigger: cap, start: 'top 70%' } });
   });
 }

@@ -741,6 +741,15 @@ function lupa() {
 }
 
 /* ================= CARREGAMENTO + início ================= */
+function esticar(atraso) {
+  if (!gsap || reduzir) return;
+  const linhas = $$('.hero__linha');
+  gsap.timeline({ delay: atraso })
+    .to(linhas, { scaleX: 1.22, scaleY: 0.82, duration: 0.45, ease: 'power3.inOut', stagger: 0.06 })
+    .to(linhas, { scaleX: 0.78, scaleY: 1.14, duration: 0.4, ease: 'power3.inOut', stagger: 0.06 })
+    .to(linhas, { scaleX: 1, scaleY: 1, duration: 1.1, ease: 'elastic.out(1, 0.35)', stagger: 0.06 });
+}
+
 async function iniciar() {
   const carga = $('#carga');
   // trava de segurança: aconteça o que acontecer, a página aparece
@@ -784,6 +793,9 @@ async function iniciar() {
     .add(() => { document.documentElement.classList.add('pronto'); lenis && lenis.start(); hero && hero.comecar(); })
     .to(heroChs.flat(), { yPercent: 0, rotation: 0, duration: 1.2, ease: 'expo.out', stagger: 0.035 }, '-=0.35')
     .to(['.hero__topo', '.hero__pe', '.topo'], { opacity: 1, y: 0, duration: 1.1, ease: 'expo.out', stagger: 0.08 }, '-=0.9');
+  // o nome estica, comprime e volta, como um material sendo testado
+  esticar(0.5);
+
   if (!hero) heroPronto.then((h) => h && h.comecar());
   montagem().then(() => ScrollTrigger.refresh()).catch(() => {});
 }

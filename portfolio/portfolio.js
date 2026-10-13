@@ -665,22 +665,23 @@ function selo() {
 /* ================= ILUSTRAÇÃO: sketchbook que folheia ================= */
 function ilustra() {
   const livro = $('#livro'), folhas = $$('.folha', livro), N = folhas.length;
+  // a última folha não vira: o caderno termina aberto na última ilustração
+  const ULT = folhas[N - 1].querySelector('.folha__verso') ? N : N - 1;
   function pintar(p) {
-    // p vai de 0 a N: cada unidade vira uma folha
+    p = Math.min(p, ULT);
     livro.classList.toggle('is-aberto', p > 0.15);
     folhas.forEach((f, i) => {
       const k = clamp(p - i), ang = -180 * (k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2);
-      // leque: folhas ainda fechadas abrem um pouco, como no caderno real
-      const leque = k === 0 ? Math.max(0, 6 - (i - p) * 2.2) : 0;
-      const z = k < 0.5 ? (N - i) * 0.6 : i * 0.6;
-      f.style.transform = `translateZ(${z}px) rotateY(${(ang - leque).toFixed(2)}deg)`;
+      // distância em z grande o bastante para as folhas nunca se cruzarem no Safari
+      const z = k < 0.5 ? (N - i) * 2 : i * 2;
+      f.style.transform = `translateZ(${z}px) rotateY(${ang.toFixed(2)}deg)`;
       f.style.zIndex = k < 0.5 ? N - i : i + 1;
       f.style.setProperty('--sombra', (Math.sin(k * Math.PI) * 0.35).toFixed(3));
     });
   }
   pintar(0);
   if (!gsap || reduzir) { pintar(1); return; }
-  ScrollTrigger.create({ trigger: '.ilustra', start: 'top top', end: 'bottom bottom', scrub: 0.6, onUpdate: (s) => pintar(s.progress * (N + 0.2)) });
+  ScrollTrigger.create({ trigger: '.ilustra', start: 'top top', end: 'bottom bottom', scrub: 0.6, onUpdate: (s) => pintar(s.progress * (ULT + 0.15)) });
   // o caderno inclina de leve com o mouse
   if (!toque) addEventListener('pointermove', () => { livro.style.transform = `rotateY(${(mouse.nx * 6).toFixed(2)}deg) rotateX(${(mouse.ny * 3).toFixed(2)}deg)`; }, { passive: true });
 }

@@ -273,5 +273,5 @@ html.sem-motion .ch { transform: none !important; opacity: 1 !important; }
 .logo--bonjour { width: min(58vw, 900px); }
 .logo--bansby { width: min(50vw, 780px); }
 .logo--sky { width: min(60vw, 900px); }
-.logo--trop { width: min(17vw, 34vh); height: auto; }
+.logo--trop { width: min(30vw, 44vh); height: auto; }
 @media (max-width: 860px) { .logo--trop { width: 46vw; } .logo--maratu { width: 90vw; } .logo--bonjour, .logo--bansby, .logo--sky { width: 76vw; } }

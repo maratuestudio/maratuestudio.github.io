@@ -604,13 +604,15 @@ function marcas() {
   if (!gsap || reduzir || innerWidth < 760) return;
   $$('.cap').forEach((cap) => {
     $$('.col', cap).forEach((f, i) => {
-      gsap.fromTo(f, { y: i % 2 ? 140 : 60 }, { y: i % 2 ? -80 : -20, ease: 'none', scrollTrigger: { trigger: cap, start: 'top bottom', end: 'bottom top', scrub: true } });
+      gsap.fromTo(f, { y: 120 + (i % 3) * 60 }, { y: -100 - (i % 2) * 80, ease: 'none', scrollTrigger: { trigger: f, start: 'top bottom', end: 'bottom top', scrub: true } });
       gsap.fromTo(f, { clipPath: 'inset(100% 0% 0% 0% round 14px)' }, { clipPath: 'inset(0% 0% 0% 0% round 14px)', ease: 'expo.out', duration: 1.4, scrollTrigger: { trigger: f, start: 'top 92%' } });
       const img = f.querySelector('img'); gsap.fromTo(img, { scale: 1.3 }, { scale: 1, ease: 'expo.out', duration: 1.8, scrollTrigger: { trigger: f, start: 'top 92%' } });
     });
     const logo = $('.cap__logo .logo', cap);
-    if (logo) gsap.fromTo(logo, { yPercent: 30, opacity: 0, clipPath: 'inset(0 0 100% 0)' }, { yPercent: 0, opacity: 1, clipPath: 'inset(0 0 0% 0)', duration: 1.3, ease: 'expo.out', scrollTrigger: { trigger: cap, start: 'top 70%' } });
-    gsap.fromTo($('.cap__info', cap), { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 1.1, ease: 'expo.out', delay: 0.15, scrollTrigger: { trigger: cap, start: 'top 70%' } });
+    if (logo) {
+      gsap.fromTo(logo, { scale: 0.7, opacity: 0, clipPath: 'inset(0 0 100% 0)' }, { scale: 1, opacity: 1, clipPath: 'inset(0 0 0% 0)', duration: 1.4, ease: 'expo.out', scrollTrigger: { trigger: cap, start: 'top 60%' } });
+      gsap.fromTo(logo, { xPercent: 6 }, { xPercent: -10, ease: 'none', scrollTrigger: { trigger: cap, start: 'top top', end: 'bottom top', scrub: true } });
+    }
   });
 }
 

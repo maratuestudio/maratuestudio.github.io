@@ -440,7 +440,7 @@ async function montagem() {
       gsap.fromTo(chs, { yPercent: 110, rotation: 8 }, { yPercent: 0, rotation: 0, duration: 1.1, ease: 'expo.out', stagger: 0.025 });
       gsap.fromTo([ui.desc, ui.passos], { y: 24, opacity: 0 }, { y: 0, opacity: 1, duration: 1.1, ease: 'expo.out', stagger: 0.08, delay: 0.1 });
     }
-    sec.style.backgroundColor = d.fundo; if (typeof ult !== 'undefined') ult.bg = d.fundo;
+    if (typeof ult !== 'undefined') ult.bg = '';
   }
 
   // ---------- estado por rolagem ----------
@@ -539,7 +539,10 @@ async function montagem() {
       chao.material.opacity = 0.32;
       bg = misturar(d.fundo, '#FFC857', Math.sin(fim * Math.PI) * 0.7);
     }
-    if (bg !== ult.bg) { ult.bg = bg; sec.style.backgroundColor = bg; }
+    // dentro da montagem o fundo da página segue o objeto quadro a quadro
+    const dentro = prog > 0 && prog < 1;
+    if (dentro !== ult.dentro) { ult.dentro = dentro; document.body.style.transition = dentro ? 'none' : ''; if (!dentro) { ult.bg = ''; requestAnimationFrame(() => window.__corAgora && window.__corAgora()); } }
+    if (dentro && bg !== ult.bg) { ult.bg = bg; document.body.style.backgroundColor = bg; }
     // efeitos que se mexem sozinhos mantêm o desenho ligado
     ult.vivo = (d.id === 'relogio-farol' && fim > 0 && fim < 1) || (d.id === 'porta-incenso' && fim > 0.02) || lum > 0;
     renderer.render(cena, cam);
@@ -697,13 +700,60 @@ function numeros() {
   if (gsap && !reduzir) $$('.trajetoria li, .tec__card, .sobre__texto p').forEach((li) => gsap.fromTo(li, { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 1.1, ease: 'expo.out', scrollTrigger: { trigger: li, start: 'top 90%' } }));
 }
 
+/* ================= cor de fundo que muda suave entre seções ================= */
+function coresDeFundo() {
+  if (!ScrollTrigger) return;
+  const pintar = (c) => { document.body.style.backgroundColor = c; };
+  $$('[data-cor]').forEach((el) => {
+    ScrollTrigger.create({ trigger: el, start: 'top 55%', end: 'bottom 55%',
+      onToggle: (s) => { if (s.isActive && document.body.style.transition !== 'none') pintar(el.dataset.cor); } });
+  });
+  pintar('#F0ECE4');
+  // usado quando a montagem devolve o controle do fundo
+  window.__corAgora = () => {
+    const y = innerHeight * 0.55;
+    const el = $$('[data-cor]').find((e) => { const r = e.getBoundingClientRect(); return r.top <= y && r.bottom > y; });
+    if (el) pintar(el.dataset.cor);
+  };
+}
+
+/* ================= foto das marcas em tela cheia ================= */
+function lupa() {
+  const ov = document.createElement('div'); ov.className = 'lupa'; ov.setAttribute('aria-hidden', 'true'); document.body.appendChild(ov);
+  let aberta = null;
+  function alvo(img) {
+    const m = Math.min(innerWidth, innerHeight) * 0.05, W = innerWidth - 2 * m, H = innerHeight - 2 * m;
+    const r = (img.naturalWidth || 4) / (img.naturalHeight || 3); let w = W, h = W / r; if (h > H) { h = H; w = H * r; }
+    return { left: (innerWidth - w) / 2, top: (innerHeight - h) / 2, width: w, height: h };
+  }
+  function abrir(img) {
+    if (aberta) return;
+    const r = img.getBoundingClientRect(), c = img.cloneNode(); c.className = 'lupa__img'; c.removeAttribute('loading');
+    Object.assign(c.style, { left: r.left + 'px', top: r.top + 'px', width: r.width + 'px', height: r.height + 'px' });
+    ov.appendChild(c); ov.classList.add('on'); img.style.visibility = 'hidden'; aberta = { img, c };
+    lenis && lenis.stop();
+    const a = alvo(img);
+    if (gsap && !reduzir) gsap.to(c, { left: a.left, top: a.top, width: a.width, height: a.height, duration: 0.9, ease: 'expo.inOut' });
+    else Object.assign(c.style, { left: a.left + 'px', top: a.top + 'px', width: a.width + 'px', height: a.height + 'px' });
+  }
+  function fechar() {
+    if (!aberta) return;
+    const { img, c } = aberta; aberta = null; ov.classList.remove('on');
+    const r = img.getBoundingClientRect(), fim = () => { c.remove(); img.style.visibility = ''; lenis && lenis.start(); };
+    if (gsap && !reduzir) gsap.to(c, { left: r.left, top: r.top, width: r.width, height: r.height, duration: 0.7, ease: 'expo.inOut', onComplete: fim }); else fim();
+  }
+  $$('.col img').forEach((img) => img.addEventListener('click', () => abrir(img)));
+  ov.addEventListener('click', fechar);
+  addEventListener('keydown', (e) => { if (e.key === 'Escape') fechar(); });
+}
+
 /* ================= CARREGAMENTO + início ================= */
 async function iniciar() {
   const carga = $('#carga');
   // trava de segurança: aconteça o que acontecer, a página aparece
   setTimeout(() => { if (!document.documentElement.classList.contains('pronto')) { document.documentElement.classList.add('pronto'); lenis && lenis.start(); } }, 9000);
   const heroChs = $$('.hero__linha').map(partir);
-  montarTitulos(); manifesto(); marcas(); selo(); ilustra(); numeros(); corTopo();
+  montarTitulos(); coresDeFundo(); lupa(); manifesto(); marcas(); selo(); ilustra(); numeros(); corTopo();
 
   if (!gsap || reduzir) {
     document.documentElement.classList.add('pronto');

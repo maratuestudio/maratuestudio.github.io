@@ -698,13 +698,13 @@ function coresDeFundo() {
   if (!ScrollTrigger) return;
   const pintar = (c) => { document.body.style.backgroundColor = c; };
   $$('[data-cor]').forEach((el) => {
-    ScrollTrigger.create({ trigger: el, start: 'top 55%', end: 'bottom 55%',
+    ScrollTrigger.create({ trigger: el, start: 'top 82%', end: 'bottom 82%',
       onToggle: (s) => { if (s.isActive && document.body.style.transition !== 'none') pintar(el.dataset.cor); } });
   });
   pintar('#F0ECE4');
   // usado quando a montagem devolve o controle do fundo
   window.__corAgora = () => {
-    const y = innerHeight * 0.55;
+    const y = innerHeight * 0.82;
     const el = $$('[data-cor]').find((e) => { const r = e.getBoundingClientRect(); return r.top <= y && r.bottom > y; });
     if (el) pintar(el.dataset.cor);
   };

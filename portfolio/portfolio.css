@@ -34,7 +34,7 @@ a { color: inherit; }
 .pular { position: absolute; left: 12px; top: -60px; z-index: 100; background: var(--preto); color: var(--areia); padding: 10px 16px; border-radius: 999px; text-decoration: none; }
 .pular:focus { top: 12px; }
 :focus-visible { outline: 2px solid var(--laranja); outline-offset: 3px; }
-.rotulo { display: inline-block; font-size: .78rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; opacity: .75; }
+.rotulo { display: inline-block; font-size: 1rem; font-weight: 700; opacity: .8; }
 .so-mob { display: none; }
 @media (hover: none) { .so-desk { display: none !important; } .so-mob { display: inline; } }
 
@@ -81,10 +81,10 @@ html.sem-motion .carga, html.pronto .carga { display: none; }
 .hero { position: relative; height: 100vh; height: 100svh; min-height: 560px; overflow: hidden; display: grid; grid-template-rows: auto 1fr auto; padding: 84px var(--margem) max(28px, env(safe-area-inset-bottom)); }
 .hero__canvas { position: absolute; inset: 0; z-index: 2; touch-action: pan-y; }
 .hero__canvas canvas { width: 100% !important; height: 100% !important; display: block; }
-.hero__topo { position: relative; z-index: 3; display: flex; justify-content: space-between; font-size: .8rem; letter-spacing: .14em; text-transform: uppercase; opacity: .7; pointer-events: none; }
+.hero__topo { position: relative; z-index: 3; display: flex; justify-content: flex-end; font-size: 1rem; opacity: .75; pointer-events: none; }
 .hero__nome { position: relative; z-index: 1; align-self: center; font-weight: 900; text-transform: uppercase; line-height: .82; letter-spacing: -.035em; font-size: clamp(3.4rem, 12.6vw, 14rem); pointer-events: none; }
 .hero__linha { display: block; overflow: hidden; padding-bottom: .04em; }
-.hero__linha--b { color: var(--laranja); padding-left: .5em; }
+.hero__linha--b { padding-left: .5em; }
 .hero__pe { position: relative; z-index: 3; display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; pointer-events: none; }
 .hero__lema { max-width: 30ch; font-size: clamp(1.05rem, .9rem + .5vw, 1.35rem); line-height: 1.35; }
 @media (max-width: 700px) {
@@ -152,7 +152,7 @@ html.sem-motion .carga, html.pronto .carga { display: none; }
 .cap__lado { position: sticky; top: 10vh; z-index: 1; }
 .cap__nome { margin: 0; pointer-events: none; }
 .cap__info { margin-top: 5vh; max-width: 24rem; }
-.cap__ano { font-size: .78rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; opacity: .8; }
+.cap__ano { font-size: 1rem; font-weight: 700; opacity: .85; }
 .cap__info p { margin-top: 10px; line-height: 1.45; font-size: clamp(1rem, .95rem + .3vw, 1.15rem); }
 .cap__tags { margin-top: 16px; display: flex; flex-wrap: wrap; gap: 8px; }
 .cap__tags > * { border: 1.5px solid currentColor; border-radius: 999px; padding: 5px 12px; font-size: .78rem; text-decoration: none; }
@@ -217,15 +217,10 @@ html.sem-motion .carga, html.pronto .carga { display: none; }
 .tec .rotulo { margin-bottom: 18px; }
 .tec .gigante { font-size: clamp(3rem, 1rem + 9.4vw, 12rem); }
 .tec__intro { margin-top: 24px; max-width: 34ch; font-size: clamp(1.1rem, 1rem + .6vw, 1.5rem); }
-.tec__grade { margin-top: 8vh; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
-.tec__card { position: relative; padding: 26px 22px 30px; border-radius: 18px; background: var(--areia-2); transition: background-color .5s var(--ease), color .5s var(--ease), transform .6s var(--ease); min-height: 280px; display: flex; flex-direction: column; }
-.tec__card:hover { background: var(--laranja); color: var(--areia); transform: translateY(-6px); }
-.tec__card svg { width: 34px; height: 34px; margin: 22px 0 auto; }
-.tec__card h3 { margin-top: 28px; font-size: 1.2rem; line-height: 1.15; }
-.tec__card p { margin-top: 8px; font-size: .95rem; line-height: 1.4; opacity: .8; }
-.tec__n { font-size: .75rem; font-weight: 700; letter-spacing: .12em; opacity: .6; }
-@media (max-width: 960px) { .tec__grade { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (max-width: 560px) { .tec__grade { grid-template-columns: 1fr; } .tec__card { min-height: 0; } }
+.tec__lista { margin-top: 8vh; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6vh clamp(32px, 6vw, 120px); max-width: 1100px; }
+.tec__lista dt { font-weight: 900; font-size: clamp(1.4rem, 1rem + 1.2vw, 2.2rem); line-height: 1.05; letter-spacing: -.02em; }
+.tec__lista dd { margin-top: 10px; max-width: 36ch; line-height: 1.45; opacity: .85; }
+@media (max-width: 700px) { .tec__lista { grid-template-columns: 1fr; } }
 
 /* ---------- sobre ---------- */
 .sobre { padding: 20vh var(--margem); background: transparent; color: var(--areia); overflow: clip; }
@@ -239,7 +234,7 @@ html.sem-motion .carga, html.pronto .carga { display: none; }
 .numero span { font-size: .92rem; }
 .trajetoria { list-style: none; margin-top: 10vh; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); border-top: 1.5px solid rgba(240, 236, 228, .35); }
 .trajetoria li { padding: 16px 16px 0 0; font-size: .98rem; line-height: 1.35; }
-.trajetoria li span { display: block; margin-bottom: 6px; font-weight: 700; font-size: .82rem; letter-spacing: .06em; font-variant-numeric: tabular-nums; }
+.trajetoria li span { display: block; margin-bottom: 6px; font-weight: 700; font-size: .9rem; font-variant-numeric: tabular-nums; }
 @media (max-width: 960px) { .trajetoria { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 16px; } .trajetoria li { padding-bottom: 14px; } }
 @media (max-width: 760px) { .sobre__grade { grid-template-columns: 1fr; } .trajetoria { grid-template-columns: 1fr; } }
 

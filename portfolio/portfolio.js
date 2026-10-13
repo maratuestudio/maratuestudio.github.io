@@ -587,7 +587,6 @@ function criarFumaca() {
 function manifesto() {
   const linhas = $$('#manifesto .mf');
   const chs = linhas.map(partir);
-  $$('.pal', linhas[2]).forEach((w) => { if (/mão/.test(w.textContent)) w.style.color = 'var(--laranja)'; });
   const pecas = $$('.manifesto__pecas span');
   if (!gsap || reduzir) { pecas.forEach((p) => p.classList.add('is-on')); return; }
   const tl = gsap.timeline({ scrollTrigger: { trigger: '.manifesto', start: 'top top', end: 'bottom bottom', scrub: 0.6,
@@ -691,13 +690,7 @@ function ilustra() {
 
 /* ================= números ================= */
 function numeros() {
-  $$('[data-contar]').forEach((b) => {
-    const fim = +b.dataset.contar, suf = b.dataset.suf || '';
-    if (!gsap || reduzir) { b.textContent = fim + suf; return; }
-    const o = { v: 0 };
-    gsap.to(o, { v: fim, duration: 2, ease: 'expo.out', scrollTrigger: { trigger: b, start: 'top 85%' }, onUpdate: () => { b.textContent = Math.round(o.v) + suf; } });
-  });
-  if (gsap && !reduzir) $$('.trajetoria li, .tec__card, .sobre__texto p').forEach((li) => gsap.fromTo(li, { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 1.1, ease: 'expo.out', scrollTrigger: { trigger: li, start: 'top 90%' } }));
+  // números ficam parados: contador animado é um clichê de página gerada
 }
 
 /* ================= cor de fundo que muda suave entre seções ================= */

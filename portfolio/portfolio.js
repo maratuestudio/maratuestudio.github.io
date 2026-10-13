@@ -604,6 +604,8 @@ function marcas() {
   if (!gsap || reduzir || innerWidth < 760) return;
   $$('.cap').forEach((cap) => {
     $$('.col', cap).forEach((f) => {
+      const v = +f.dataset.vel || 0;
+      if (innerWidth > 860) gsap.fromTo(f, { y: 160 * v + 80 }, { y: -260 * v, ease: 'none', scrollTrigger: { trigger: cap, start: 'top bottom', end: 'bottom top', scrub: true } });
       gsap.fromTo(f, { clipPath: 'inset(100% 0% 0% 0% round 16px)' }, { clipPath: 'inset(0% 0% 0% 0% round 16px)', ease: 'expo.out', duration: 1.4, scrollTrigger: { trigger: f, start: 'top 90%' } });
       const img = f.querySelector('img'); gsap.fromTo(img, { scale: 1.25 }, { scale: 1, ease: 'expo.out', duration: 1.8, scrollTrigger: { trigger: f, start: 'top 90%' } });
     });

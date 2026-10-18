@@ -65,14 +65,16 @@
       mouseY = -9999;
     });
 
-    function animate() {
-      requestAnimationFrame(animate);
+    // Só anima com o rodapé na tela. Antes o loop rodava desde a abertura
+    // e lia a posição do rodapé a cada quadro, forçando layout durante a carga.
+    var visible = false;
+    var rafId = 0;
 
-      var footerRect = footer.getBoundingClientRect();
-      if (footerRect.bottom < 0 || footerRect.top > window.innerHeight) return;
+    function animate() {
+      if (!visible) { rafId = 0; return; }
+      rafId = requestAnimationFrame(animate);
 
       var now = Date.now();
-      arenaWidth = footer.offsetWidth || window.innerWidth;
 
       var containerRect = container.getBoundingClientRect();
       var crabCenterX = containerRect.left + crabWidth / 2;
@@ -140,7 +142,18 @@
       container.style.transform = 'translate(' + posX + 'px, ' + wiggle + 'px) scaleX(' + facing + ')';
     }
 
-    animate();
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function(entries) {
+        visible = entries[0].isIntersecting;
+        if (visible) {
+          arenaWidth = footer.offsetWidth || window.innerWidth;
+          if (!rafId) rafId = requestAnimationFrame(animate);
+        }
+      }).observe(footer);
+    } else {
+      visible = true;
+      rafId = requestAnimationFrame(animate);
+    }
   }
 
   if (document.readyState === 'loading') {

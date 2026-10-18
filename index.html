@@ -408,13 +408,15 @@
     }
     .hero__scroll-line::before {
       content: ''; position: absolute;
-      top: -100%; left: 0; right: 0; height: 100%;
+      top: 0; left: 0; right: 0; height: 100%;
       background: var(--laranja);
+      transform: translateY(-100%);
       animation: scroll-tick 2.5s cubic-bezier(0.4,0,0.2,1) infinite;
     }
+    /* transform em vez de top: não força layout a cada quadro */
     @keyframes scroll-tick {
-      0%   { top: -100%; }
-      100% { top: 100%; }
+      0%   { transform: translateY(-100%); }
+      100% { transform: translateY(100%); }
     }
     @media (max-width: 768px) {
       .hero { padding-top: 100px; min-height: 46vh; padding-bottom: 24px; }
@@ -983,18 +985,31 @@
       position: relative;
       padding: 2px;
       border-radius: 999px;
+      overflow: hidden;
+      isolation: isolate;
+      display: inline-flex; align-items: center;
+      border: none;
+      box-shadow: 2px 2px 0 0 var(--preto);
+    }
+    /* O cromado corre num pseudo-elemento movido por transform (compositor),
+       em vez de animar background-position (repaint a cada quadro).
+       Faixa = 6x a tag, ladrilho = 3x a tag; anda 1 ladrilho a cada 2s,
+       mesma velocidade do antigo 0%→300% em 4s. */
+    .tag-novo::before {
+      content: '';
+      position: absolute; top: 0; bottom: 0; left: 0;
+      width: 600%;
       background: linear-gradient(
         90deg,
         #0D0D0B, #D4960A, #F4C055, #D4960A, #0D0D0B,
         #D4960A, #F4C055, #D4960A, #0D0D0B
       );
-      background-size: 300% 100%;
-      animation: chrome-slide 4s linear infinite;
-      display: inline-flex; align-items: center;
-      border: none;
-      box-shadow: 2px 2px 0 0 var(--preto);
+      background-size: 50% 100%;
+      z-index: -1;
+      animation: chrome-slide 2s linear infinite;
     }
     .tag-novo > span {
+      position: relative;
       display: block;
       background: var(--areia);
       color: var(--preto);
@@ -1008,11 +1023,11 @@
       line-height: 1;
     }
     @keyframes chrome-slide {
-      0%   { background-position: 0% 50%; }
-      100% { background-position: 300% 50%; }
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
     }
     @media (prefers-reduced-motion: reduce) {
-      .tag-novo { animation: none; }
+      .tag-novo::before { animation: none; }
     }
     /* VINTAGE BADGE SYSTEM */
     .vintage-badge,
@@ -1792,7 +1807,7 @@
 
   <!-- ③ SOBRE — foto de fundo + overlay -->
   <div class="solido reveal" id="sobre" style="padding-top: 48px;">
-    <div class="solido-bg" style="background-image: url('foto-atalaia.webp');"></div>
+    <div class="solido-bg" data-bg="foto-atalaia.webp" data-bg-mob="foto-atalaia-1080.webp"></div>
     <div class="solido-overlay" style="background: linear-gradient(to bottom, rgba(240,236,228,1) 0%, rgba(240,236,228,1) 60px, rgba(240,236,228,0.88) 200px);"></div>
     <div class="solido-content">
       <p class="lbl" style="color:var(--laranja);">001 — MARATU</p>
@@ -1807,7 +1822,7 @@
   <!-- ④ ORIGEM — split foto estatuas | azul -->
   <div class="split foto-esquerda reveal">
     <div class="split-foto">
-      <img src="bg-estatuas.webp" alt="Estatuas de Aracaju" loading="lazy" decoding="async" width="4592" height="2576">
+      <img src="bg-estatuas-1600.webp" srcset="bg-estatuas-900.webp 900w, bg-estatuas-1600.webp 1600w, bg-estatuas-2400.webp 2400w" sizes="(max-width: 600px) 530px, (max-width: 900px) 100vw, 963px" alt="Estatuas de Aracaju" loading="lazy" decoding="async" width="4592" height="2576">
     </div>
     <div class="split-texto bg-azul" id="origem">
       <p class="lbl">002 — ORIGEM</p>
@@ -2062,7 +2077,9 @@
       }
     }
     if (heroSlides.length > 1) {
-      heroEnsureBg(heroSlides[1]); // aquece o proximo antes da primeira troca
+      // aquece o proximo só depois da carga, pra não disputar banda com o slide 1
+      window.addEventListener('load', function() { heroEnsureBg(heroSlides[1]); });
+      setTimeout(function() { heroEnsureBg(heroSlides[1]); }, 3000); // rede lenta: não espera o load
       setInterval(function() {
         var prox = (heroAtual + 1) % heroSlides.length;
         heroEnsureBg(heroSlides[prox]);
@@ -2072,6 +2089,19 @@
         heroSlides[heroAtual].classList.add('ativo');
       }, 5000);
     }
+
+    // FUNDO DO SOBRE (lazy: baixa a foto só quando a seção chega perto da tela)
+    document.querySelectorAll('.solido-bg[data-bg]').forEach(function(el) {
+      function aplica() {
+        var mob = el.dataset.bgMob && window.matchMedia('(max-width: 900px)').matches;
+        el.style.backgroundImage = "url('" + (mob ? el.dataset.bgMob : el.dataset.bg) + "')";
+      }
+      if (!('IntersectionObserver' in window)) return aplica();
+      var io = new IntersectionObserver(function(entries) {
+        if (entries[0].isIntersecting) { aplica(); io.disconnect(); }
+      }, { rootMargin: '600px 0px' });
+      io.observe(el);
+    });
 
     // HEADER HIDE ON SCROLL
     var header = document.querySelector('.header');
@@ -2793,7 +2823,7 @@
     })();
   </script>
 
-  <script src="aratu-mascote.js?v=8" defer></script>
+  <script src="aratu-mascote.js?v=9" defer></script>
 
   <div class="mr-drop" id="mr-drop">
     <div class="mr-drop-inner" id="mr-drop-inner"></div>

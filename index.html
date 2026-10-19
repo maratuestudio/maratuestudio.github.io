@@ -13,7 +13,9 @@
   <title>MARATU Estúdio — Impressão 3D · Design · Arte</title>
   <meta name="description" content="Estúdio criativo de Aracaju especializado em impressão 3D, design e arte. Pôsteres, adesivos e peças exclusivas com identidade sergipana.">
 
-  <link rel="preload" as="image" href="Artboard%201@300x.webp" fetchpriority="high">
+  <link rel="preload" as="image" href="hero-1-2000.webp" media="(max-width: 768.98px)" fetchpriority="high">
+  <link rel="preload" as="image" href="hero-1-2880.webp" media="(min-width: 768.99px) and (max-width: 1440.98px)" fetchpriority="high">
+  <link rel="preload" as="image" href="hero-1-3840.webp" media="(min-width: 1440.99px)" fetchpriority="high">
   <link rel="icon" type="image/png" href="favicon-v5.png">
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon-v5.png">
   <link rel="apple-touch-icon" href="apple-touch-icon-v5.png">
@@ -347,6 +349,10 @@
       opacity: 0; transition: opacity 1.2s ease;
     }
     .hero__bg-slide.ativo { opacity: 1; }
+    /* slide 1 no tamanho que a tela usa (o original tem 5334px); casa com os preloads do <head> */
+    .hero__bg-slide--1 { background-image: url('hero-1-2880.webp'); }
+    @media (max-width: 768.98px) { .hero__bg-slide--1 { background-image: url('hero-1-2000.webp'); } }
+    @media (min-width: 1440.99px) { .hero__bg-slide--1 { background-image: url('hero-1-3840.webp'); } }
     .hero__label-tl {
       position: absolute; top: 64px; left: var(--margem);
       display: flex; flex-direction: column; gap: 4px;
@@ -1585,7 +1591,7 @@
   <!-- ① HERO -->
   <section class="hero">
     <div class="hero__bg">
-      <div class="hero__bg-slide ativo" style="background-image: url('Artboard 1@300x.webp');"></div>
+      <div class="hero__bg-slide hero__bg-slide--1 ativo"></div>
       <div class="hero__bg-slide" data-bg="blusa-destrua-frente.webp" style="background-position: center 60%;"></div>
       <div class="hero__bg-slide" data-bg="blusa-destrua-costas.webp" style="background-position: center 60%;"></div>
       <div class="hero__bg-slide" data-bg="blusa-azulejos-costas.webp" style="background-position: center 60%;"></div>
@@ -2077,9 +2083,7 @@
       }
     }
     if (heroSlides.length > 1) {
-      // aquece o proximo só depois da carga, pra não disputar banda com o slide 1
-      window.addEventListener('load', function() { heroEnsureBg(heroSlides[1]); });
-      setTimeout(function() { heroEnsureBg(heroSlides[1]); }, 3000); // rede lenta: não espera o load
+      heroEnsureBg(heroSlides[1]); // aquece o proximo antes da primeira troca
       setInterval(function() {
         var prox = (heroAtual + 1) % heroSlides.length;
         heroEnsureBg(heroSlides[prox]);

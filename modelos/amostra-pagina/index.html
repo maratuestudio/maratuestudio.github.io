@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Prévia · modelo MARATU</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="/modelos/fontes/fontes.css">
+<style>
+  :root { --cor: #17382B; --claro: #F5F1E8; --tinta: #151512; --ease: cubic-bezier(.16,1,.3,1); }
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Switzer', sans-serif; color: var(--tinta); background: var(--claro); -webkit-font-smoothing: antialiased; }
+  img { display: block; max-width: 100%; }
+  a { color: inherit; text-decoration: none; }
+  .topo { position: fixed; inset: 0 0 auto 0; z-index: 10; display: flex; justify-content: space-between; align-items: center; padding: 16px clamp(18px, 4vw, 48px); color: #fff; }
+  .topo { transition: background .35s, color .35s; }
+  .topo.fundo { background: rgba(245,241,232,.92); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); color: var(--tinta); box-shadow: 0 1px 0 rgba(21,21,18,.08); }
+  .topo.fundo .bt--claro { background: var(--cor); color: #fff; }
+  .topo b { font-family: 'Zodiak'; font-weight: 700; font-size: 20px; letter-spacing: -.01em; }
+  .bt { display: inline-flex; align-items: center; gap: 10px; font-weight: 600; font-size: 15px; padding: 13px 20px; border-radius: 99px; background: var(--cor); color: #fff; }
+  .bt svg { width: 18px; height: 18px; }
+  .bt--claro { background: #fff; color: var(--tinta); }
+  .bt--vazio { background: transparent; color: #fff; box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.7); }
+
+  .abre { position: relative; height: 100vh; height: 100svh; min-height: 560px; color: #fff; overflow: hidden; }
+  .abre img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transform: scale(1.06); animation: assenta 1.6s var(--ease) both; }
+  @keyframes assenta { to { transform: scale(1); } }
+  .abre::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,.35) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,.65) 100%); }
+  .abre__txt { position: absolute; left: clamp(18px, 4vw, 48px); right: clamp(18px, 4vw, 48px); bottom: clamp(28px, 7vh, 64px); z-index: 2; }
+  .nota { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; background: rgba(0,0,0,.35); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); padding: 7px 13px; border-radius: 99px; margin-bottom: 18px; }
+  .nota svg { width: 15px; height: 15px; color: #F5B83D; }
+  h1 { font-family: 'Zodiak'; font-weight: 700; font-size: clamp(46px, 9vw, 120px); line-height: .92; letter-spacing: -.03em; max-width: 12ch; }
+  .abre__onde { font-size: clamp(17px, 1.6vw, 21px); margin: 14px 0 26px; opacity: .92; }
+  .acoes { display: flex; gap: 12px; flex-wrap: wrap; }
+
+  .sec { padding: clamp(56px, 10vh, 110px) clamp(18px, 4vw, 48px); }
+  .sec h2 { font-family: 'Zodiak'; font-weight: 700; font-size: clamp(30px, 4vw, 52px); letter-spacing: -.02em; line-height: 1; margin-bottom: clamp(24px, 4vh, 40px); }
+  .itens { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1.5px solid var(--tinta); }
+  .itens div { padding: 20px 0 22px; border-bottom: 1px solid rgba(21,21,18,.15); font-size: clamp(18px, 1.7vw, 22px); font-weight: 500; }
+  .itens div:not(:nth-child(3n+1)) { padding-left: 20px; border-left: 1px solid rgba(21,21,18,.15); }
+  .fotos { display: grid; grid-template-columns: 1.3fr 1fr 1fr; gap: 10px; padding: 0 clamp(18px, 4vw, 48px); }
+  .fotos img { width: 100%; aspect-ratio: 4/5; object-fit: cover; border-radius: 6px; }
+  .fotos img:first-child { aspect-ratio: auto; height: 100%; }
+  .info { display: grid; grid-template-columns: 1fr 1.3fr; gap: clamp(24px, 4vw, 56px); align-items: start; }
+  .hor { width: 100%; border-collapse: collapse; font-size: 17px; }
+  .hor td { padding: 12px 0; border-bottom: 1px solid rgba(21,21,18,.15); }
+  .hor td:last-child { text-align: right; font-weight: 500; }
+  .hor tr.hoje td { color: var(--cor); font-weight: 700; }
+  .end { font-size: 17px; line-height: 1.5; margin: 22px 0 18px; }
+  .mapa { width: 100%; aspect-ratio: 4/3; border: 0; border-radius: 8px; filter: saturate(.8); }
+  .pe { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding: 26px clamp(18px, 4vw, 48px) 32px; border-top: 1px solid rgba(21,21,18,.15); font-size: 14px; }
+  .pe span { opacity: .55; }
+  .zap { position: fixed; right: clamp(16px, 3vw, 32px); bottom: clamp(16px, 3vw, 32px); z-index: 20; width: 58px; height: 58px; border-radius: 50%; background: #25D366; display: grid; place-items: center; box-shadow: 0 10px 24px rgba(0,0,0,.25); opacity: 0; transform: translateY(16px) scale(.9); pointer-events: none; transition: opacity .4s var(--ease), transform .5s var(--ease); }
+  .zap.ve { opacity: 1; transform: none; pointer-events: auto; }
+  .zap svg { width: 30px; height: 30px; color: #fff; }
+  @media (max-width: 760px) {
+    .topo .bt { display: none; }
+    .itens { grid-template-columns: 1fr 1fr; }
+    .itens div:not(:nth-child(3n+1)) { padding-left: 0; border-left: 0; }
+    .itens div:nth-child(2n) { padding-left: 16px; border-left: 1px solid rgba(21,21,18,.15); }
+    .fotos { grid-template-columns: 1fr 1fr; }
+    .fotos img:first-child { grid-column: 1 / -1; aspect-ratio: 16/10; }
+    .info { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute"><symbol id="ic-zap" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.1 5.1 0 0 0 1.1 2.7 11.7 11.7 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.2-.2-.5-.3Z"/></symbol><symbol id="ic-estrela" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z"/></symbol></svg>
+
+<header class="topo"><b id="t-nome"></b><a class="bt bt--claro" id="t-zap"><svg><use href="#ic-zap"/></svg>WhatsApp</a></header>
+
+<section class="abre">
+  <img id="foto-1" alt="">
+  <div class="abre__txt">
+    <span class="nota" id="nota"><svg><use href="#ic-estrela"/></svg><span id="nota-txt"></span></span>
+    <h1 id="nome"></h1>
+    <p class="abre__onde" id="onde"></p>
+    <div class="acoes"><a class="bt" id="zap1"><svg><use href="#ic-zap"/></svg><span id="cta"></span></a><a class="bt bt--vazio" id="chegar" target="_blank" rel="noopener">Como chegar</a></div>
+  </div>
+</section>
+
+<section class="sec"><h2 id="h-itens"></h2><div class="itens" id="itens"></div></section>
+
+<div class="fotos"><img id="foto-2" alt=""><img id="foto-3" alt=""><img id="foto-1b" alt=""></div>
+
+<section class="sec info">
+  <div><h2>Horário</h2><table class="hor" id="hor"></table></div>
+  <div><h2>Onde fica</h2><p class="end" id="end"></p><iframe class="mapa" id="mapa" loading="lazy" title="Mapa"></iframe></div>
+</section>
+
+<footer class="pe"><b id="pe-nome"></b><span>Prévia feita pela MARATU</span></footer>
+<a class="zap" id="zap2" aria-label="WhatsApp"><svg><use href="#ic-zap"/></svg></a>
+
+<script>
+(() => {
+  const $ = (s) => document.getElementById(s);
+  // conteúdo por ramo; nome, bairro, cidade, nota, avaliações, cor e WhatsApp vêm pelo endereço
+  const RAMOS = {
+    cafe: { foto: 'cafe', titulo: 'No balcão', cta: 'Pedir no WhatsApp', tipo: 'Café', cor: '#17382B',
+      itens: ['Café coado', 'Espresso e cappuccino', 'Bolos do dia', 'Pão de queijo', 'Sanduíches', 'Sucos e chás'],
+      hor: ['7h às 19h', '7h às 19h', '7h às 19h', '7h às 19h', '7h às 20h', '8h às 20h', 'Fechado'] },
+    restaurante: { foto: 'rest', titulo: 'No cardápio', cta: 'Pedir no WhatsApp', tipo: 'Restaurante', cor: '#7A2E1F',
+      itens: ['Prato do dia', 'Executivo', 'Peixes e frutos do mar', 'Porções', 'Sobremesas', 'Entrega'],
+      hor: ['11h às 15h', '11h às 15h', '11h às 15h', '11h às 22h', '11h às 23h', '11h às 23h', '11h às 16h'] },
+    beleza: { foto: 'beleza', titulo: 'Serviços', cta: 'Agendar no WhatsApp', tipo: 'Salão', cor: '#6E2C46',
+      itens: ['Manicure e pedicure', 'Esmaltação em gel', 'Alongamento', 'Sobrancelha', 'Spa dos pés', 'Pacotes do mês'],
+      hor: ['9h às 19h', '9h às 19h', '9h às 19h', '9h às 19h', '9h às 20h', '8h às 17h', 'Fechado'] },
+    saude: { foto: 'saude', titulo: 'Atendimento', cta: 'Agendar no WhatsApp', tipo: 'Clínica', cor: '#1F3A5F',
+      itens: ['Avaliação', 'Sessão individual', 'Pacote de sessões', 'Pilates', 'Reabilitação', 'Recibo pra reembolso'],
+      hor: ['7h às 20h', '7h às 20h', '7h às 20h', '7h às 20h', '7h às 18h', '8h às 12h', 'Fechado'] },
+    loja: { foto: 'loja', titulo: 'Na loja', cta: 'Comprar no WhatsApp', tipo: 'Loja', cor: '#3A3328',
+      itens: ['Peças novas toda semana', 'Encomenda', 'Embrulho pra presente', 'Retirada na loja', 'Entrega na cidade', 'Troca em 7 dias'],
+      hor: ['9h às 18h', '9h às 18h', '9h às 18h', '9h às 18h', '9h às 18h', '9h às 14h', 'Fechado'] },
+  };
+  const q = new URLSearchParams(location.search);
+  const R = RAMOS[q.get('ramo')] || RAMOS.cafe;
+  const nome = q.get('nome') || 'Café do Largo', bairro = q.get('bairro') || 'Centro', cidade = q.get('cidade') || 'Aracaju';
+  const nota = q.get('nota') || '4,7', aval = q.get('avaliacoes') || '120', tipo = q.get('tipo') || R.tipo;
+  const whats = (q.get('whats') || '').replace(/\D/g, ''), cor = q.get('cor') || R.cor;
+  document.documentElement.style.setProperty('--cor', cor);
+  document.title = nome + ' · prévia MARATU';
+  $('t-nome').textContent = nome; $('nome').textContent = nome; $('pe-nome').textContent = nome;
+  $('onde').textContent = tipo + ' em ' + bairro + ', ' + cidade;
+  $('nota-txt').textContent = nota + ' no Google, ' + aval + ' avaliações';
+  $('cta').textContent = R.cta; $('h-itens').textContent = R.titulo;
+  const zap = 'https://wa.me/' + (whats ? '55' + whats.replace(/^55/, '') : '') + '?text=' + encodeURIComponent('Oi! Vi o site do ' + nome + ' e queria fazer um pedido.');
+  ['t-zap', 'zap1', 'zap2'].forEach((i) => { $(i).href = zap; $(i).target = '_blank'; });
+  const busca = encodeURIComponent(nome + ' ' + bairro + ' ' + cidade);
+  $('chegar').href = 'https://www.google.com/maps/search/?api=1&query=' + busca;
+  $('mapa').src = 'https://www.google.com/maps?q=' + busca + '&output=embed';
+  $('end').textContent = bairro + ', ' + cidade;
+  ['foto-1', 'foto-2', 'foto-3'].forEach((i, k) => { $(i).src = 'f/' + R.foto + '-' + (k + 1) + '.jpg'; });
+  $('foto-1b').src = 'f/' + R.foto + '-1.jpg';
+  $('itens').innerHTML = R.itens.map((t) => `<div>${t}</div>`).join('');
+  const DIAS = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'], hoje = (new Date().getDay() + 6) % 7;
+  // o botão flutuante só aparece depois da abertura, onde os botões já estão na tela
+  new IntersectionObserver(([e]) => { $('zap2').classList.toggle('ve', !e.isIntersecting); document.querySelector('.topo').classList.toggle('fundo', !e.isIntersecting); }, { threshold: 0.15 }).observe(document.querySelector('.abre'));
+  $('hor').innerHTML = DIAS.map((d, k) => `<tr class="${k === hoje ? 'hoje' : ''}"><td>${d}</td><td>${R.hor[k]}</td></tr>`).join('');
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel · modelo MARATU</title>
+<meta name="robots" content="noindex">
+<meta name="description" content="Modelo de painel de gestão para MEI e autônomo, feito pela MARATU.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<style>
+  /* base do painel Taipa, com cor por ramo (--lado e --cor vêm do script) */
+  :root { --lado: #20382F; --lado-tx: #E7EEE9; --fundo: #F7F5F0; --papel: #FFFFFF; --tinta: #1D1F1C; --suave: #73776F; --linha: #E6E3DB; --cor: #20382F; --azul: #3E6A86; --verde: #3F7350; --verm: #A2453A; --ease: cubic-bezier(.16,1,.3,1); }
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { font-family: 'DM Sans', sans-serif; color: var(--tinta); background: var(--fundo); -webkit-font-smoothing: antialiased; font-size: 15px; }
+  button, input, select { font: inherit; color: inherit; }
+  button { background: none; border: 0; cursor: pointer; }
+  .app { display: grid; grid-template-columns: 260px 1fr; min-height: 100vh; }
+
+  /* lateral */
+  .lado { position: sticky; top: 0; height: 100vh; background: var(--lado); color: var(--lado-tx); padding: 26px 22px; display: flex; flex-direction: column; }
+  .marca { display: flex; align-items: center; gap: 14px; margin-bottom: 40px; }
+  .marca__sinal { width: 34px; height: 40px; border-radius: 10px 10px 16px 16px; background: var(--lado-tx); color: var(--lado); display: grid; place-items: center; font-weight: 700; font-size: 20px; }
+  .marca__nome { font-weight: 600; font-size: 15px; letter-spacing: .06em; text-transform: uppercase; line-height: 1.2; }
+  .marca__sub { font-size: 13px; opacity: .7; letter-spacing: .02em; }
+  .nav { display: flex; flex-direction: column; gap: 6px; }
+  .nav button { display: flex; align-items: center; gap: 14px; padding: 13px 16px; border-radius: 10px; font-size: 16px; color: var(--lado-tx); text-align: left; transition: background .35s var(--ease), color .35s var(--ease); }
+  .nav button::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: .45; }
+  .nav button:hover { background: rgba(255,255,255,.06); }
+  .nav button.on { background: var(--papel); color: var(--tinta); }
+  .lado__pe { margin-top: auto; font-size: 14px; }
+  .lado__pe b { display: block; font-weight: 500; }
+  .lado__pe span { opacity: .65; font-size: 13px; }
+  .lado__bts { display: flex; gap: 8px; margin-top: 12px; }
+  .lado__bts button { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; padding: 7px 10px; border-radius: 6px; background: rgba(255,255,255,.1); color: var(--lado-tx); }
+
+  /* conteúdo */
+  .tela { padding: 34px 44px 60px; min-width: 0; }
+  .vista { display: none; }
+  .vista.on { display: block; animation: entra .5s var(--ease); }
+  @keyframes entra { from { opacity: 0; transform: translateY(10px); } }
+  .cab { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 26px; }
+  .cab h1 { font-size: 27px; font-weight: 600; letter-spacing: -.01em; }
+  .cab__acoes { display: flex; gap: 12px; align-items: center; }
+  .seg { display: flex; border: 1px solid var(--linha); border-radius: 12px; background: var(--papel); padding: 3px; }
+  .seg button { padding: 9px 16px; border-radius: 9px; font-weight: 500; }
+  .seg button.on { background: var(--cor); color: #fff; }
+  .bt { background: var(--cor); color: #fff; font-weight: 500; padding: 12px 20px; border-radius: 12px; }
+  .caixa { background: var(--papel); border: 1px solid var(--linha); border-radius: 16px; padding: 26px; }
+  .rot { font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--suave); font-weight: 500; }
+
+  /* dashboard */
+  .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 18px; }
+  .kpi { border: 1px solid var(--linha); border-radius: 12px; padding: 18px 20px; background: var(--papel); }
+  .kpi b { display: block; font-size: 28px; font-weight: 600; margin-bottom: 2px; }
+  .kpi span { font-size: 14px; color: var(--suave); }
+  .duas { display: grid; grid-template-columns: 1.4fr 1fr; gap: 18px; }
+  .barras { display: flex; align-items: flex-end; gap: 14px; height: 190px; margin-top: 18px; }
+  .barras div { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8px; height: 100%; justify-content: flex-end; font-size: 12px; color: var(--suave); }
+  .barras i { display: block; width: 100%; border-radius: 6px 6px 2px 2px; background: var(--cor); transform-origin: bottom; animation: sobe 1s var(--ease) both; }
+  .barras div:last-child i { background: var(--azul); }
+  @keyframes sobe { from { transform: scaleY(0); } }
+  .lista > div { display: flex; justify-content: space-between; gap: 12px; padding: 14px 0; border-top: 1px solid var(--linha); }
+  .lista > div:first-of-type { border-top: 0; }
+  .lista b { font-weight: 600; text-transform: uppercase; font-size: 14px; }
+  .lista small { display: block; color: var(--suave); font-size: 13px; }
+  .lista em { font-style: normal; color: var(--suave); font-size: 13px; white-space: nowrap; }
+
+  /* projeto (portal) */
+  .proj__topo { display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 20px; border-bottom: 1px solid var(--linha); }
+  .proj__nome { font-size: 24px; font-weight: 600; text-transform: uppercase; }
+  .proj__onde { color: var(--suave); margin-top: 4px; }
+  .pilula { background: #E6ECEF; color: var(--azul); font-weight: 500; font-size: 14px; padding: 6px 14px; border-radius: 99px; }
+  .proj__meta { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 20px 0 6px; }
+  .proj__meta p { font-size: 17px; margin-top: 4px; }
+  .etapas { display: grid; grid-template-columns: repeat(4, 1fr); position: relative; padding: 22px 0 24px; border-bottom: 1px solid var(--linha); }
+  .etapas::before { content: ''; position: absolute; left: 12.5%; right: 12.5%; top: 31px; height: 3px; background: var(--linha); }
+  .etapas::after { content: ''; position: absolute; left: 12.5%; top: 31px; height: 3px; width: 25%; background: var(--cor); transform-origin: left; animation: risca 1.2s var(--ease) both .2s; }
+  @keyframes risca { from { transform: scaleX(0); } }
+  .etapa { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 12px; font-size: 14px; color: var(--suave); }
+  .etapa i { width: 21px; height: 21px; border-radius: 50%; background: var(--cor); }
+  .etapa.agora { color: var(--tinta); font-weight: 600; }
+  .etapa.agora i { box-shadow: 0 0 0 6px rgba(32,56,47,.15); }
+  .etapa.depois i { background: var(--papel); border: 2px solid #D6D3CA; }
+  .arq { display: flex; justify-content: space-between; align-items: center; padding-top: 20px; }
+  .arq a { color: var(--cor); font-weight: 600; text-decoration: none; }
+  .titulo2 { font-size: 19px; font-weight: 600; margin: 28px 0 14px; }
+
+  /* financeiro */
+  .fin { display: grid; grid-template-columns: 1.5fr 1fr; gap: 20px; align-items: start; }
+  .fin h3 { font-size: 17px; font-weight: 600; margin-bottom: 16px; }
+  .tab { width: 100%; border-collapse: collapse; }
+  .tab th { text-align: left; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--suave); font-weight: 500; padding: 0 8px 10px 0; }
+  .tab td { padding: 5px 8px 5px 0; }
+  .tab .campo { border: 1px solid var(--linha); border-radius: 9px; padding: 9px 11px; }
+  .tab td:last-child { text-align: right; font-weight: 600; white-space: nowrap; }
+  .preco .linha { display: flex; justify-content: space-between; padding: 12px 0; border-top: 1px solid var(--linha); }
+  .preco .final { display: flex; justify-content: space-between; padding: 16px 0 4px; border-top: 2.5px solid var(--cor); color: var(--cor); font-size: 22px; font-weight: 700; margin-top: 8px; }
+  .duo { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+  .duo label { font-weight: 600; font-size: 14px; display: block; margin-bottom: 6px; }
+  .duo .campo { border: 1px solid var(--linha); border-radius: 10px; padding: 11px 13px; }
+
+  /* agenda */
+  .semana { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+  .dia { background: var(--papel); border: 1px solid var(--linha); border-radius: 14px; padding: 16px; min-height: 300px; }
+  .dia h4 { font-weight: 600; font-size: 14px; margin-bottom: 12px; }
+  .dia h4 span { color: var(--suave); font-weight: 400; }
+  .ev { border-left: 3px solid var(--cor); background: #EEF2EF; border-radius: 6px; padding: 8px 10px; margin-bottom: 8px; font-size: 13px; }
+  .ev b { display: block; font-weight: 600; }
+  .ev.obra { border-color: var(--azul); background: #E9EFF3; }
+  .ev.pg { border-color: var(--verm); background: #F6EAE8; }
+
+  /* clientes */
+  .kpis5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; }
+  .kpis5 .kpi:nth-child(2) b { color: var(--azul); }
+  .kpis5 .kpi:nth-child(3) b { color: var(--verde); }
+  .kpis5 .kpi:nth-child(4) b { color: var(--verm); }
+  .barra3 { display: flex; height: 12px; border-radius: 99px; overflow: hidden; margin: 22px 0 12px; }
+  .barra3 i { display: block; transform-origin: left; animation: risca 1.1s var(--ease) both; }
+  .leg { display: flex; gap: 20px; font-size: 14px; color: var(--suave); }
+  .leg span::before { content: ''; display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: var(--c); margin-right: 7px; }
+  .filtros { display: flex; gap: 12px; margin: 22px 0 14px; }
+  .filtros .campo { background: var(--papel); border: 1px solid var(--linha); border-radius: 10px; padding: 11px 14px; color: var(--suave); min-width: 280px; }
+  .tabela { background: var(--papel); border: 1px solid var(--linha); border-radius: 14px; overflow: hidden; }
+  .tabela table { width: 100%; border-collapse: collapse; }
+  .tabela th { text-align: left; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--suave); font-weight: 500; padding: 16px 20px; background: #FAF9F6; border-bottom: 1px solid var(--linha); }
+  .tabela td { padding: 15px 20px; border-bottom: 1px solid var(--linha); font-size: 14px; }
+  .tabela tr:last-child td { border-bottom: 0; }
+  .st { font-size: 13px; font-weight: 500; padding: 4px 11px; border-radius: 99px; background: #E6ECEF; color: var(--azul); }
+  .st.g { background: #E5EFE8; color: var(--verde); }
+  .st.n { background: #F6E7E5; color: var(--verm); }
+  .tabela tr.realce td { background: #F3F7F4; transition: background .4s; }
+
+  /* marketing */
+  .posts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .post { background: var(--papel); border: 1px solid var(--linha); border-radius: 14px; overflow: hidden; }
+  .post__img { aspect-ratio: 4/5; background: center / cover; }
+  .post__pe { padding: 14px 16px; font-size: 14px; }
+  .post__pe b { display: block; font-weight: 600; }
+  .post__pe span { color: var(--suave); font-size: 13px; }
+
+  .gauge { margin-top: 14px; }
+  .gauge__barra { height: 12px; border-radius: 99px; background: var(--linha); overflow: hidden; }
+  .gauge__barra i { display: block; height: 100%; background: var(--cor); border-radius: 99px; transform-origin: left; animation: risca 1.2s var(--ease) both; }
+  .gauge__pe { display: flex; justify-content: space-between; font-size: 13px; color: var(--suave); margin-top: 8px; }
+  .tag { font-size: 12px; font-weight: 500; padding: 3px 9px; border-radius: 99px; background: #EEF2EF; color: var(--verde); white-space: nowrap; }
+  .tag.atraso { background: #F6EAE8; color: var(--verm); }
+  .tag.paga { background: #E6ECEF; color: var(--azul); }
+  .lista > div { align-items: center; }
+</style>
+
+</head>
+<body>
+<div class="app">
+  <aside class="lado">
+    <div class="marca"><span class="marca__sinal" id="sinal"></span><div><div class="marca__nome" id="nome"></div><div class="marca__sub" id="oficio"></div></div></div>
+    <nav class="nav" id="nav">
+      <button class="on" data-v="hoje">Hoje</button>
+      <button data-v="agenda">Agenda</button>
+      <button data-v="cob">Cobranças</button>
+      <button data-v="cli">Clientes</button>
+      <button data-v="caixa">Caixa</button>
+    </nav>
+    <div class="lado__pe"><b id="dono-pe"></b><span>MEI</span><div class="lado__bts"><button>Exportar</button><button>Sair</button></div></div>
+  </aside>
+  <main class="tela">
+    <section class="vista on" id="v-hoje">
+      <div class="cab"><h1 id="saud"></h1><div class="cab__acoes"><button class="bt" id="bt-novo"></button></div></div>
+      <div class="kpis">
+        <div class="kpi"><b id="k-hoje"></b><span id="k-hoje-r"></span></div>
+        <div class="kpi"><b id="k-semana"></b><span>Na semana</span></div>
+        <div class="kpi"><b id="k-receber"></b><span>A receber</span></div>
+        <div class="kpi"><b id="k-mes"></b><span>Faturado no mês</span></div>
+      </div>
+      <div class="duas">
+        <div class="caixa lista" id="l-hoje"><span class="rot">Hoje</span></div>
+        <div class="caixa">
+          <span class="rot">Limite do MEI em 2026</span>
+          <div class="gauge"><b style="font-size:26px;font-weight:600" id="g-ano"></b>
+            <div class="gauge__barra" style="margin-top:12px"><i id="g-barra"></i></div>
+            <div class="gauge__pe"><span id="g-pct"></span><span>limite R$ 81.000</span></div>
+          </div>
+          <div class="lista" style="margin-top:22px" id="l-cob"><span class="rot">Cobranças da semana</span></div>
+        </div>
+      </div>
+    </section>
+    <section class="vista" id="v-agenda">
+      <div class="cab"><h1>Agenda</h1><div class="cab__acoes"><div class="seg"><button class="on">Semana</button><button>Mês</button></div><button class="bt" id="bt-novo2"></button></div></div>
+      <div class="semana" id="semana"></div>
+    </section>
+    <section class="vista" id="v-cob">
+      <div class="cab"><h1>Cobranças</h1><div class="cab__acoes"><button class="bt">+ Parcelamento</button></div></div>
+      <div class="tabela"><table><thead><tr><th>Cliente</th><th id="th-item"></th><th>Parcela</th><th>Valor</th><th>Vence</th><th>Situação</th></tr></thead><tbody id="cobs"></tbody></table></div>
+    </section>
+    <section class="vista" id="v-cli">
+      <div class="cab"><h1>Clientes</h1><div class="cab__acoes"><button class="bt">+ Cliente</button></div></div>
+      <div class="tabela"><table><thead><tr><th>Nome</th><th>Última vez</th><th>Vezes</th><th>Total</th><th>WhatsApp</th></tr></thead><tbody id="clis"></tbody></table></div>
+    </section>
+    <section class="vista" id="v-caixa">
+      <div class="cab"><h1>Caixa</h1></div>
+      <div class="duas">
+        <div class="caixa"><span class="rot">Recebido por mês</span><div class="barras" id="barras"></div></div>
+        <div class="caixa lista" id="l-entradas"><span class="rot">Últimas entradas</span></div>
+      </div>
+    </section>
+  </main>
+</div>
+<script>
+(() => {
+  const $ = (s) => document.querySelector(s);
+  const brl = (n) => 'R$ ' + n.toLocaleString('pt-BR');
+  // um conjunto de dados por ramo; nome, dono e cor podem vir pelo endereço (?ramo=&nome=&dono=&cor=)
+  const RAMOS = {
+    saude: { nome: 'Clínica Movimento', dono: 'Ana', oficio: 'Fisioterapia', cor: '#20382F', novo: '+ Sessão', item: 'Tratamento', preco: 120,
+      agenda: [['08:00', 'Sessão · Marina', 'joelho'], ['09:00', 'Sessão · Roberto', 'lombar'], ['10:30', 'Avaliação · Joana', 'primeira vez'], ['14:00', 'Sessão · Paulo', 'ombro'], ['16:00', 'Pilates · Grupo das 16h', '4 alunos']],
+      cobs: [['Marina Lima', 'Pacote 10 sessões', '2/3', 400], ['Roberto Dias', 'Pacote 10 sessões', '3/3', 400], ['Joana Prado', 'Avaliação', '1/1', 150], ['Grupo Pilates', 'Mensalidade', '1/1', 280]] },
+    beleza: { nome: 'Studio Rosa', dono: 'Carla', oficio: 'Unhas e sobrancelha', cor: '#7A2E4A', novo: '+ Horário', item: 'Serviço', preco: 60,
+      agenda: [['09:00', 'Pé e mão · Juliana', 'esmaltação em gel'], ['10:00', 'Sobrancelha · Bia', 'henna'], ['11:00', 'Mão · Fernanda', ''], ['14:30', 'Alongamento · Larissa', 'manutenção'], ['17:00', 'Pé e mão · Dona Cida', '']],
+      cobs: [['Larissa Melo', 'Alongamento', '2/2', 90], ['Juliana Reis', 'Pacote do mês', '1/1', 160], ['Bia Santos', 'Henna', '1/1', 45], ['Fernanda Luz', 'Pacote do mês', '1/1', 160]] },
+    encomenda: { nome: 'Doces da Lu', dono: 'Luana', oficio: 'Bolos e doces', cor: '#6B3A1E', novo: '+ Encomenda', item: 'Encomenda', preco: 180,
+      agenda: [['08:00', 'Bolo 2 kg · Patrícia', 'retirada às 15h'], ['10:00', '100 docinhos · Buffet Maré', 'entrega'], ['13:00', 'Torta de limão · Sérgio', 'retirada'], ['16:00', 'Bolo de aniversário · Rita', 'tema fundo do mar'], ['18:00', 'Comprar leite condensado', '']],
+      cobs: [['Buffet Maré', '300 docinhos', '2/2', 270], ['Rita Alves', 'Bolo de aniversário', '1/2', 120], ['Patrícia Cruz', 'Bolo 2 kg', '1/1', 180], ['Escola Arco-íris', 'Festa junina', '3/3', 350]] },
+    tecnico: { nome: 'Frio Certo', dono: 'Diego', oficio: 'Ar-condicionado', cor: '#1F3A5F', novo: '+ Visita', item: 'Serviço', preco: 150,
+      agenda: [['08:00', 'Limpeza split · Paulo', 'Atalaia'], ['10:00', 'Instalação 12 mil · Loja Siri', 'Centro'], ['13:30', 'Orçamento · Clínica Bem', 'Jardins'], ['15:00', 'Recarga de gás · Vera', 'Farolândia'], ['17:00', 'Limpeza 2 aparelhos · Hotel Orla', '']],
+      cobs: [['Loja Siri', 'Instalação', '2/3', 300], ['Hotel Orla', 'Contrato mensal', '1/1', 450], ['Paulo Nunes', 'Limpeza', '1/1', 150], ['Clínica Bem', 'Manutenção', '1/2', 200]] },
+  };
+  const q = new URLSearchParams(location.search);
+  const R = Object.assign({}, RAMOS[q.get('ramo')] || RAMOS.saude);
+  ['nome', 'dono', 'oficio', 'cor'].forEach((k) => { if (q.get(k)) R[k] = q.get(k); });
+  document.documentElement.style.setProperty('--lado', R.cor);
+  document.documentElement.style.setProperty('--cor', R.cor);
+  document.title = R.nome + ' · painel · modelo MARATU';
+  $('#sinal').textContent = R.nome.trim()[0].toLowerCase();
+  $('#nome').textContent = R.nome; $('#oficio').textContent = R.oficio; $('#dono-pe').textContent = R.dono;
+  $('#saud').textContent = 'Bom dia, ' + R.dono;
+  $('#bt-novo').textContent = R.novo; $('#bt-novo2').textContent = R.novo; $('#th-item').textContent = R.item;
+  // números do dia e do ano
+  const hoje = R.agenda.length, mes = R.preco * 46, ano = Math.round(mes * 9.2 / 100) * 100;
+  $('#k-hoje').textContent = hoje; $('#k-hoje-r').textContent = 'Hoje, com lembrete enviado';
+  $('#k-semana').textContent = hoje * 5 - 3;
+  $('#k-receber').textContent = brl(R.cobs.reduce((t, c) => t + c[3], 0));
+  $('#k-mes').textContent = brl(mes);
+  $('#g-ano').textContent = brl(ano);
+  const pct = Math.round(ano / 81000 * 100);
+  $('#g-barra').style.width = pct + '%'; $('#g-pct').textContent = pct + '% usado, faltam ' + brl(81000 - ano);
+  $('#l-hoje').insertAdjacentHTML('beforeend', R.agenda.map(([h, t, n], k) => `<div><div><b>${t}</b><small>${h}${n ? ' · ' + n : ''}</small></div><span class="tag">${k < 3 ? 'lembrete enviado' : 'agendado'}</span></div>`).join(''));
+  const VENCE = ['hoje', 'amanhã', 'qui', 'sex'];
+  $('#l-cob').insertAdjacentHTML('beforeend', R.cobs.slice(0, 3).map(([c, it, p, v], k) => `<div><div><b>${c}</b><small>${it} · ${p}</small></div><em>${brl(v)} · ${VENCE[k]}</em></div>`).join(''));
+  // agenda da semana
+  const DIAS = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex'];
+  $('#semana').innerHTML = DIAS.map((d, i) => `<div class="dia"><h4>${d} <span>${19 + i}</span></h4>${R.agenda.filter((_, k) => (k + i) % 2 === 0 || k === i).slice(0, 3).map(([h, t]) => `<div class="ev"><b>${h}</b>${t}</div>`).join('')}${i === 3 ? `<div class="ev pg"><b>Cobrança</b>${R.cobs[0][0]}, ${R.cobs[0][2]}</div>` : ''}</div>`).join('');
+  // cobranças
+  const SIT = [['lembrete enviado', ''], ['atrasada 2 dias', 'atraso'], ['paga', 'paga'], ['vence sexta', '']];
+  $('#cobs').innerHTML = R.cobs.map(([c, it, p, v], k) => `<tr><td><b>${c}</b></td><td>${it}</td><td>${p}</td><td>${brl(v)}</td><td>${['20/10', '18/10', '17/10', '24/10'][k]}</td><td><span class="tag ${SIT[k][1]}">${SIT[k][0]}</span></td></tr>`).join('');
+  // clientes
+  $('#clis').innerHTML = R.cobs.concat(R.agenda.slice(0, 2).map(([, t]) => [t.split(' · ')[1] || t, '', '', R.preco])).map(([c, , , v], k) => `<tr><td><b>${c}</b></td><td>${['ontem', 'há 3 dias', 'há 1 semana', 'há 2 semanas', 'hoje', 'hoje'][k]}</td><td>${[12, 4, 7, 2, 9, 3][k]}</td><td>${brl(v * [6, 2, 3, 1, 5, 2][k])}</td><td>79 9••••-••${10 + k}</td></tr>`).join('');
+  // caixa
+  const M = ['mai', 'jun', 'jul', 'ago', 'set', 'out'], H = [52, 61, 48, 70, 66, 82];
+  $('#barras').innerHTML = M.map((m, k) => `<div><i style="height:${H[k]}%"></i>${m}</div>`).join('');
+  $('#l-entradas').insertAdjacentHTML('beforeend', R.cobs.map(([c, it, , v], k) => `<div><div><b>${c}</b><small>${it} · ${['Pix', 'Pix', 'Cartão', 'Dinheiro'][k]}</small></div><em>${brl(v)}</em></div>`).join(''));
+  // navegação
+  const nav = [...document.querySelectorAll('#nav button')];
+  nav.forEach((b) => b.addEventListener('click', () => {
+    nav.forEach((x) => x.classList.toggle('on', x === b));
+    document.querySelectorAll('.vista').forEach((v) => v.classList.toggle('on', v.id === 'v-' + b.dataset.v));
+    scrollTo(0, 0);
+  }));
+})();
+</script>
+<script type="application/json" id="demo-roteiro">
+{"inicio": 1.4, "passos": [["espera", 1.4], ["cursor", "#l-hoje > div:nth-child(2)", 0.8], ["espera", 0.8], ["clica", "#nav button[data-v=\"agenda\"]"], ["espera", 2.2], ["clica", "#nav button[data-v=\"cob\"]"], ["espera", 1.2], ["cursor", "#cobs tr:nth-child(2)", 0.8], ["espera", 1.4], ["clica", "#nav button[data-v=\"caixa\"]"], ["espera", 2.2], ["clica", "#nav button[data-v=\"hoje\"]"], ["espera", 1.6], ["recomeca"]]}
+</script>
+<script src="/modelos/demo.js"></script>
+</body>
+</html>

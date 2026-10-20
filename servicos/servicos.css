@@ -311,6 +311,46 @@ button { font: inherit; cursor: pointer; border: none; background: none; color: 
 }
 @media (max-width: 560px) { .entrega__grade { grid-template-columns: 1fr; } }
 
+/* comparação: MARATU, construtor de site e app de agenda */
+.cmp { margin-top: clamp(40px, 8vh, 80px); border: 1.5px solid var(--preto); border-radius: 18px; box-shadow: 5px 5px 0 0 var(--preto); background: #fff; overflow-x: auto; }
+.cmp table { width: 100%; min-width: 640px; border-collapse: collapse; }
+.cmp th, .cmp td { text-align: left; padding: 16px clamp(14px, 1.8vw, 26px); font-size: 1rem; line-height: 1.35; border-top: 1px solid var(--linha); vertical-align: middle; }
+.cmp thead th { border-top: 0; font-weight: 900; font-size: 1.05rem; padding-top: 22px; padding-bottom: 18px; }
+.cmp thead th span { display: block; font-weight: 400; font-size: .85rem; opacity: .55; margin-top: 2px; }
+.cmp tbody th { font-weight: 700; width: 30%; }
+.cmp td { opacity: .7; }
+.cmp .cmp__nos { background: var(--areia); opacity: 1; font-weight: 700; }
+.cmp thead .cmp__nos { color: var(--laranja); }
+.cmp svg { width: 22px; height: 22px; display: block; }
+.cmp__sim { color: var(--laranja); }
+.cmp__nao { color: rgba(13, 13, 11, .35); }
+/* celular: cada linha vira um bloco (o item, a MARATU em destaque e os outros embaixo) */
+@media (max-width: 700px) {
+  .cmp { overflow: visible; }
+  .cmp table, .cmp tbody, .cmp tr, .cmp th, .cmp td { display: block; min-width: 0; width: auto; }
+  .cmp thead { display: none; }
+  .cmp tbody tr { padding: 16px 18px; border-top: 1px solid var(--linha); }
+  .cmp tbody tr:first-child { border-top: 0; }
+  .cmp tbody th, .cmp td { border: 0; padding: 0; }
+  .cmp tbody th { width: auto; margin-bottom: 8px; }
+  .cmp td { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 4px 0; font-size: .95rem; }
+  .cmp td::before { content: attr(data-col); font-weight: 400; opacity: .7; }
+  .cmp td.cmp__nos { background: none; color: var(--laranja); }
+  .cmp td.cmp__nos::before { color: var(--preto); font-weight: 700; opacity: 1; }
+}
+
+/* planos avulsos: painel sem site e portfólio */
+.extras { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(16px, 2vw, 28px); margin-top: clamp(20px, 3vh, 32px); }
+.extra { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: clamp(18px, 2vw, 26px) clamp(22px, 2.4vw, 32px); border: 1.5px solid var(--preto); border-radius: 18px; }
+.extra__nome { font-weight: 900; font-size: 1.25rem; }
+.extra__nome span { color: var(--laranja); margin-left: 6px; }
+.extra p { font-size: 1rem; line-height: 1.45; margin-top: 4px; }
+.extra .lnk { flex-shrink: 0; }
+@media (max-width: 900px) {
+  .extras { grid-template-columns: 1fr; }
+  .extra { flex-direction: column; align-items: flex-start; }
+}
+
 /* manutenção: com e sem, lado a lado */
 .manut { display: grid; grid-template-columns: 1fr 1fr; margin-top: clamp(28px, 5vh, 48px); border: 1.5px solid var(--preto); border-radius: 18px; overflow: hidden; }
 .manut__col { padding: clamp(22px, 2.4vw, 34px); }

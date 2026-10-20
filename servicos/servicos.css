@@ -134,7 +134,7 @@ button { font: inherit; cursor: pointer; border: none; background: none; color: 
 .mont__h1 .linha, .tipo__h2 .linha { display: block; overflow: hidden; padding-bottom: 0.2em; margin-bottom: -0.2em; }
 .mont__h1 .linha > span, .tipo__h2 .linha > span { display: block; }
 .mont__p { font-size: clamp(1.1rem, 1.35vw, 1.25rem); line-height: 1.5; max-width: 30ch; margin: 28px 0 30px; }
-.mont__acoes { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
+.mont__acoes { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; margin-top: clamp(28px, 4vh, 44px); }
 .mont__palco { min-width: 0; }
 .mont__palco .janela__tela { background: var(--areia); }
 
@@ -333,8 +333,8 @@ button { font: inherit; cursor: pointer; border: none; background: none; color: 
 /* tipos: pra quem e o plano */
 .tipo__quem { font-weight: 700; font-size: clamp(1.05rem, 1.3vw, 1.2rem); line-height: 1.45; margin-top: 20px; max-width: 36ch; }
 .tipo__quem + .tipo__p { margin-top: 10px; }
-.tipo__preco { display: block; font-size: .95rem; opacity: .7; margin: -10px 0 22px; transition: opacity .2s; }
-.tipo__preco:hover { opacity: 1; color: var(--laranja); }
+.tipo__preco { display: block; font-size: .95rem; font-weight: 700; margin: -6px 0 22px; transition: color .2s; }
+.tipo__preco:hover { color: var(--laranja); }
 
 /* ════════ CONTATO ════════ */
 .cta-final { background: var(--preto); color: var(--areia); padding: clamp(80px, 16vh, 180px) var(--margem); display: grid; grid-template-columns: 7fr 5fr; gap: clamp(32px, 5vw, 80px); align-items: center; }

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>MARATU Estúdio · objetos</title>
+  <meta name="description" content="Objetos da MARATU Estúdio em 3D.">
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#F0ECE4">
+
+  
+
+  
+
+  <noscript><style>.carga{display:none}</style></noscript>
+  <link rel="preload" href="/TRYClother-Black.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="modulepreload" href="/vendor/three/three.module.min.js">
+  <link rel="stylesheet" href="/portfolio/portfolio.css?v=22">
+  <script type="importmap">{"imports":{"three":"/vendor/three/three.module.min.js"}}</script>
+</head>
+<body>
+  <a class="pular" href="#objetos">Pular para os objetos</a>
+
+  <!-- CARREGAMENTO: o portfólio "imprime" camada por camada -->
+  <div class="carga" id="carga" aria-hidden="true">
+    <div class="carga__nome"><span class="carga__fantasma">MARATU</span><span class="carga__tinta" id="carga-tinta">MARATU</span><span class="carga__bico" id="carga-bico"></span></div>
+    <div class="carga__info">
+      <span>imprimindo os objetos</span>
+      <span class="carga__camada">camada <b id="carga-num">000</b>/240</span>
+    </div>
+  </div>
+
+  <header class="topo" id="topo">
+    <a href="#inicio" class="topo__marca">MARATU<span>.</span></a>
+    <nav class="topo__nav" aria-label="Seções">
+      <a href="#objetos">objetos</a>
+      <a href="#sobre">estúdio</a>
+      <a href="/#loja" class="topo__cta" target="_top">ver na loja</a>
+    </nav>
+  </header>
+
+  <div class="cursor" id="cursor" aria-hidden="true"><span id="cursor-txt"></span></div>
+
+  <main>
+    <!-- ABERTURA -->
+    <section class="hero" id="inicio" data-tema="claro" aria-label="Apresentação" data-cor="#F0ECE4">
+      <div class="hero__canvas" id="palco-hero" aria-hidden="true"></div>
+      <div class="hero__topo">
+        <span class="hero__coord">Aracaju, Sergipe</span>
+      </div>
+      <h1 class="hero__nome" aria-label="MARATU Estúdio">
+        <span class="hero__linha" data-split aria-hidden="true">MARATU</span>
+        <span class="hero__linha hero__linha--b" data-split aria-hidden="true">Estúdio</span>
+      </h1>
+      <div class="hero__pe">
+        <p class="hero__lema"><b>Objetos com referência sergipana.</b> Desenhados, modelados e impressos no estúdio, uma peça por vez.</p>
+      </div>
+    </section>
+
+    <!-- MONTAGEM: objetos que se montam com a rolagem -->
+    <section class="montagem" id="objetos" aria-label="Objetos em 3D" data-cor="#F2B705">
+      <div class="montagem__fixo">
+        <div class="montagem__canvas" id="palco-montagem" aria-hidden="true"></div>
+        <div class="montagem__ui">
+          <div class="montagem__cab">
+            <span class="rotulo" data-montar>Objetos</span>
+            <span class="montagem__idx"><b id="m-idx">01</b> / <span id="m-total">04</span></span>
+          </div>
+          <div class="montagem__texto">
+            <h2 class="montagem__nome" id="m-nome">Relógio Farol</h2>
+            <p class="montagem__desc" id="m-desc"></p>
+            <ol class="montagem__passos" id="m-passos"></ol>
+          </div>
+          <div class="montagem__ficha" id="m-ficha"></div>
+          <div class="montagem__barra"><span id="m-barra"></span><em id="m-camada">camada 000</em></div>
+        </div>
+      </div>
+      <div class="montagem__trilho" id="m-trilho"></div>
+    </section>
+
+    
+
+    
+
+
+    
+
+    
+
+    <!-- SOBRE -->
+    <section class="sobre" id="sobre" data-tema="escuro" aria-label="Sobre" data-cor="#C8501A">
+      <h2 class="sobre__titulo" data-montar>Peça por peça.</h2>
+      <div class="sobre__grade">
+        <div class="sobre__texto">
+          <p>As peças da loja a gente desenhou, modelou e imprimiu, uma por uma, aqui em Aracaju.</p>
+          <p>Cada objeto passa pelo modelo 3D antes de virar peça. Só vai pra impressora quando encaixa do jeito certo.</p>
+        </div>
+        <div class="numeros">
+          <div class="numero"><b>13</b><span>peças no Relógio Farol</span></div>
+          <div class="numero"><b>0</b><span>parafusos</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTATO -->
+    <section class="contato" id="contato" data-tema="claro" aria-label="Contato" data-cor="#F0ECE4">
+      <p class="contato__grande"><a href="/#loja" target="_top" data-cursor="ver"><span data-montar>Leve uma</span> <span data-montar>pra casa.</span></a></p>
+      <div class="contato__acoes">
+        <a class="botao" href="/#loja" target="_top" data-magnetico>Ver na loja</a>
+        <a class="botao botao--claro" href="https://wa.me/5579991957415" target="_blank" rel="noopener" data-magnetico>WhatsApp</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="rodape" data-tema="claro">
+    <a href="/" class="rodape__marca" target="_top">maratu</a>
+    <span>Feito em Aracaju, 2026</span>
+    <span class="rodape__hora">Aracaju agora <b id="hora-aju">--:--</b></span>
+  </footer>
+
+  <script src="/vendor/gsap.min.js"></script>
+  <script src="/vendor/ScrollTrigger.min.js"></script>
+  <script src="/vendor/lenis.min.js"></script>
+  <script type="module" src="/modelos/maratu-estudio/estudio.js?v=1"></script>
+<script type="application/json" id="demo-roteiro">
+{"inicio": 6, "passos": [["cursor", [0.55, 0.45], 1.2], ["cursor", [0.8, 0.7], 1.0], ["rola", 900, 1.6], ["rola", 2738, 4], ["rola", 4770, 1.2], ["rola", 6608, 4], ["espera", 0.6], ["rola", "#contato", 2], ["espera", 1], ["recomeca"]]}
+</script>
+<script src="/modelos/demo.js"></script>
+</body>
+</html>

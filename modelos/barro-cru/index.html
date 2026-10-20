@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Barro Cru · modelo de site MARATU</title>
+<meta name="robots" content="noindex">
+<meta name="description" content="Modelo de loja online para cerâmica autoral, feito pela MARATU.">
+<link rel="stylesheet" href="/modelos/fontes/fontes.css">
+<style>
+  :root { --osso: #ECE8E1; --tinta: #151413; --suave: #5D5750; --barro: #A4643E; --m: clamp(16px, 3.6vw, 52px); }
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html { background: var(--osso); -webkit-font-smoothing: antialiased; overflow-x: clip; }
+  body { font-family: 'Ranade', sans-serif; color: var(--tinta); background: var(--osso); font-size: 17px; }
+  img { display: block; max-width: 100%; }
+  a { color: inherit; text-decoration: none; }
+  button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+  .zo { font-family: 'Zodiak', serif; }
+  .linha { display: block; overflow: hidden; padding-bottom: .06em; margin-bottom: -.06em; }
+  .linha > span { display: block; }
+
+  .topo { position: fixed; inset: 0 0 auto; z-index: 30; display: flex; align-items: center; justify-content: space-between; padding: 22px var(--m); background: rgba(236,232,225,.92); }
+  .topo .marca { font-family: 'Zodiak', serif; font-weight: 700; font-size: 22px; letter-spacing: -.01em; }
+  .sacola { font-size: 15px; display: inline-flex; gap: 6px; }
+  .sacola b { font-weight: 500; display: inline-block; }
+
+  .abre { display: grid; grid-template-columns: minmax(0, 520px) 1fr; gap: clamp(24px, 3vw, 48px); padding: clamp(110px, 15vh, 140px) var(--m) clamp(40px, 7vh, 60px); min-height: 100svh; }
+  .abre__esq { display: flex; flex-direction: column; justify-content: space-between; gap: 40px; }
+  .abre h1 { font-family: 'Zodiak', serif; font-weight: 300; font-size: clamp(76px, 7.8vw, 112px); line-height: .95; letter-spacing: -.035em; }
+  .abre__esq p { line-height: 1.5; max-width: 34ch; margin-top: 28px; }
+  .venda { border-top: 1px solid var(--tinta); padding-top: 16px; display: flex; justify-content: space-between; align-items: baseline; gap: 16px; flex-wrap: wrap; }
+  .venda b { font-family: 'Zodiak', serif; font-weight: 400; font-size: 26px; }
+  .destaques { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; align-self: center; }
+  @media (max-width: 860px) { .abre { grid-template-columns: 1fr; padding-top: 100px; } .destaques { display: none; } }
+
+  .peca__img { position: relative; aspect-ratio: 3 / 4; overflow: hidden; background: #DDD6CB; }
+  .peca__img img { width: 100%; height: 100%; object-fit: cover; transition: transform .9s cubic-bezier(.16,1,.3,1); }
+  .peca:hover .peca__img img { transform: scale(1.04); }
+  .peca h3 { font-family: 'Zodiak', serif; font-weight: 400; font-size: 21px; margin-top: 12px; }
+  .peca p { font-size: 14px; line-height: 1.45; color: var(--suave); margin-top: 3px; }
+  .peca__pe { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; font-size: 15px; }
+  .add { font-size: 14px; font-weight: 500; padding: 8px 14px; border-radius: 99px; border: 1px solid var(--tinta); transition: background .3s, color .3s; }
+  .add:hover, .add.ok { background: var(--tinta); color: var(--osso); }
+
+  /* a fornada inteira: a rolagem vira deslocamento lateral */
+  .vitrine { height: 100svh; overflow: hidden; display: flex; flex-direction: column; justify-content: center; gap: 28px; border-top: 1px solid var(--tinta); }
+  .vitrine__cab { display: flex; justify-content: space-between; align-items: baseline; padding: 0 var(--m); gap: 16px; }
+  .vitrine h2 { font-family: 'Zodiak', serif; font-weight: 300; font-size: clamp(44px, 5vw, 72px); letter-spacing: -.03em; line-height: 1; }
+  .vitrine__cab span { color: var(--suave); }
+  .trilho { display: flex; gap: clamp(12px, 1.6vw, 22px); width: max-content; padding: 0 var(--m); }
+  .trilho .peca { width: clamp(240px, 24vw, 330px); flex-shrink: 0; }
+
+  .oficio { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(28px, 5vw, 80px); padding: clamp(72px, 12vh, 140px) var(--m); align-items: center; }
+  .oficio > * { min-width: 0; }
+  .oficio__img { aspect-ratio: 4 / 5; overflow: hidden; }
+  .oficio__img img { width: 100%; height: 115%; object-fit: cover; }
+  .oficio h2 { font-family: 'Zodiak', serif; font-weight: 300; font-size: clamp(40px, 4.4vw, 64px); letter-spacing: -.03em; line-height: 1; margin-bottom: 30px; }
+  .etapas { list-style: none; border-top: 1px solid var(--tinta); }
+  .etapas li { display: grid; grid-template-columns: 120px 1fr; gap: 20px; padding: 16px 0; border-bottom: 1px solid #CFC8BC; }
+  .etapas li b { font-family: 'Zodiak', serif; font-weight: 400; font-size: 19px; }
+  .etapas li span { color: var(--suave); line-height: 1.45; }
+  @media (max-width: 860px) { .oficio { grid-template-columns: 1fr; } .etapas li { grid-template-columns: 1fr; gap: 2px; } }
+
+  .aviso { position: fixed; left: 50%; bottom: 22px; z-index: 40; translate: -50% 0; background: var(--tinta); color: var(--osso); padding: 12px 18px; border-radius: 99px; font-size: 15px; opacity: 0; pointer-events: none; white-space: nowrap; }
+  .rodape { padding: 26px var(--m); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; font-size: 14px; color: var(--suave); border-top: 1px solid var(--tinta); }
+  .rodape a { text-decoration: underline; }
+</style>
+</head>
+<body>
+  <header class="topo"><a class="marca" href="#">barro cru</a><button class="sacola" id="sacola">Sacola <b id="conta">(0)</b></button></header>
+
+  <section class="abre">
+    <div class="abre__esq">
+      <div>
+        <h1><span class="linha"><span>Fornada</span></span><span class="linha"><span>14</span></span></h1>
+        <p>37 peças queimadas a 1240 °C em outubro. Cada uma existe uma vez só, e a cor do esmalte muda com o lugar no forno.</p>
+      </div>
+      <div class="venda"><span>Abre a venda</span><b>sábado, 25 de outubro, 10h</b></div>
+    </div>
+    <div class="destaques" id="destaques"></div>
+  </section>
+
+  <section class="vitrine" id="vitrine">
+    <div class="vitrine__cab"><h2>A fornada inteira</h2><span id="restam"></span></div>
+    <div class="trilho" id="trilho"></div>
+  </section>
+
+  <section class="oficio">
+    <div class="oficio__img"><img src="f/maos.jpg" alt="Mãos modelando argila no torno"></div>
+    <div>
+      <h2>Três semanas por peça</h2>
+      <ol class="etapas">
+        <li><b>Torno</b><span>Argila de alta temperatura, modelada à mão. Uma tarde pra cada lote de tigelas.</span></li>
+        <li><b>Secagem</b><span>Dez dias à sombra, virando a peça pra não empenar.</span></li>
+        <li><b>Biscoito</b><span>Primeira queima a 900 °C. A peça fica porosa e pronta pro esmalte.</span></li>
+        <li><b>Esmalte</b><span>Mergulhado à mão. As marcas dos dedos ficam na base.</span></li>
+        <li><b>Alta</b><span>Segunda queima a 1240 °C por onze horas. A peça vira vidro por dentro e vai pra máquina de lavar.</span></li>
+      </ol>
+    </div>
+  </section>
+
+  <div class="aviso" id="aviso"></div>
+  <footer class="rodape"><span>Barro Cru é uma marca fictícia.</span><span>Modelo de site feito pela <a href="/servicos" target="_top">MARATU</a></span></footer>
+
+<script src="/vendor/gsap.min.js"></script>
+<script src="/vendor/ScrollTrigger.min.js"></script>
+<script src="/vendor/lenis.min.js"></script>
+<script>
+(() => {
+  const PECAS = [
+    ['Tigela pintada', '14 cm de diâmetro', 'esmalte branco com óxido', 3, 120, 'tigelas'],
+    ['Jarra escura', '1 litro', 'esmalte tenmoku', 1, 210, 'escuro'],
+    ['Xícara crua', '180 ml', 'sem esmalte por fora', 8, 85, 'xicaras'],
+    ['Prato raso', '26 cm', 'esmalte cinza-chumbo', 5, 140, 'pratos'],
+    ['Prato de borda', '22 cm', 'borda viva, sem esmalte', 4, 160, 'prato'],
+    ['Conjunto de mesa', '4 pratos e 4 tigelas', 'esmalte areia', 2, 480, 'prateleira'],
+    ['Caneca da estante', '300 ml', 'esmalte verde-oliva', 6, 95, 'estante'],
+  ];
+  const card = ([n, a, b, q, p, f], i) => `<article class="peca"><div class="peca__img"><img src="f/${f}.jpg" alt="${n}" loading="lazy"></div><h3>${n}</h3><p>${a}<br>${b}</p><div class="peca__pe"><span>R$ ${p}</span><button class="add" data-i="${i}">Adicionar</button></div></article>`;
+  document.getElementById('destaques').innerHTML = PECAS.slice(0, 3).map(card).join('');
+  document.getElementById('trilho').innerHTML = PECAS.map(card).join('');
+  const total = PECAS.reduce((s, x) => s + x[3], 0);
+  document.getElementById('restam').textContent = `${total} peças disponíveis`;
+
+  const forca = /[?&](motion|demo)\b/.test(location.search);
+  const reduzir = matchMedia('(prefers-reduced-motion: reduce)').matches && !forca;
+  const conta = document.getElementById('conta'), aviso = document.getElementById('aviso'), sacola = document.getElementById('sacola');
+  let n = 0;
+  document.addEventListener('click', (e) => {
+    const b = e.target.closest('.add'); if (!b) return;
+    n++; conta.textContent = `(${n})`; b.classList.add('ok'); b.textContent = 'Na sacola';
+    aviso.textContent = `${PECAS[+b.dataset.i][0]} foi pra sacola`;
+    if (reduzir || !window.gsap) return;
+    // a foto da peça encolhe até a sacola
+    const img = b.closest('.peca').querySelector('img'), r = img.getBoundingClientRect(), s = sacola.getBoundingClientRect();
+    const voa = img.cloneNode(); Object.assign(voa.style, { position: 'fixed', left: r.left + 'px', top: r.top + 'px', width: r.width + 'px', height: r.height + 'px', objectFit: 'cover', zIndex: 50, pointerEvents: 'none' });
+    document.body.appendChild(voa);
+    gsap.to(voa, { left: s.right - 14, top: s.top + s.height / 2 - 7, width: 14, height: 14, borderRadius: 99, duration: 0.85, ease: 'power3.inOut', onComplete: () => {
+      voa.remove();
+      gsap.fromTo(conta, { yPercent: -60, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.6, ease: 'expo.out' });
+    } });
+    gsap.timeline().fromTo(aviso, { y: 16, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: 'expo.out' }).to(aviso, { opacity: 0, duration: 0.4, delay: 1.3 });
+  });
+  if (reduzir || !window.gsap) return;
+
+  gsap.registerPlugin(ScrollTrigger);
+  const lenis = window.__lenis = new Lenis({ lerp: 0.1 });
+  lenis.on('scroll', ScrollTrigger.update);
+  gsap.ticker.add((t) => lenis.raf(t * 1000));
+  gsap.ticker.lagSmoothing(0);
+  const ease = 'expo.out';
+
+  // abertura: o número da fornada sobe por trás da máscara, as peças abrem de baixo
+  gsap.timeline({ delay: 0.15 })
+    .from('.abre h1 .linha > span', { yPercent: 100, duration: 1.4, ease, stagger: 0.12 })
+    .from('.abre__esq p', { clipPath: 'inset(0 0 100% 0)', y: 18, duration: 1.2, ease }, 0.45)
+    .from('.venda', { clipPath: 'inset(0 100% 0 0)', duration: 1.3, ease }, 0.6)
+    .from('.destaques .peca__img', { clipPath: 'inset(100% 0 0 0)', duration: 1.4, ease, stagger: 0.1 }, 0.2)
+    .from('.destaques .peca__img img', { scale: 1.2, duration: 2, ease, stagger: 0.1 }, 0.2)
+    .from('.destaques h3, .destaques p, .destaques .peca__pe', { clipPath: 'inset(0 0 100% 0)', duration: 1, ease, stagger: 0.03 }, 0.7);
+
+  // a fornada inteira presa na tela: a rolagem passa as peças de lado
+  const trilho = document.getElementById('trilho');
+  const dist = () => trilho.scrollWidth - innerWidth;
+  gsap.to(trilho, { x: () => -dist(), ease: 'none', scrollTrigger: { trigger: '#vitrine', start: 'top top', end: () => '+=' + dist(), pin: true, scrub: 0.6, invalidateOnRefresh: true } });
+  gsap.from('.vitrine h2', { yPercent: 100, clipPath: 'inset(0 0 100% 0)', duration: 1.2, ease, scrollTrigger: { trigger: '#vitrine', start: 'top 75%' } });
+  gsap.from('.trilho .peca__img', { clipPath: 'inset(100% 0 0 0)', duration: 1.3, ease, stagger: 0.07, scrollTrigger: { trigger: '#vitrine', start: 'top 70%' } });
+
+  gsap.fromTo('.oficio__img img', { yPercent: -12 }, { yPercent: 0, ease: 'none', scrollTrigger: { trigger: '.oficio', start: 'top bottom', end: 'bottom top', scrub: true } });
+  gsap.from('.oficio h2', { clipPath: 'inset(0 0 100% 0)', yPercent: 30, duration: 1.2, ease, scrollTrigger: { trigger: '.oficio', start: 'top 70%' } });
+  gsap.from('.etapas li', { clipPath: 'inset(0 100% 0 0)', duration: 1.2, ease, stagger: 0.08, scrollTrigger: { trigger: '.etapas', start: 'top 80%' } });
+})();
+</script>
+<script type="application/json" id="demo-roteiro">
+{"toque": true, "inicio": 2.4, "passos": [["rola", "#vitrine", 1.8], ["espera", 0.4], ["rola", "+700", 2.4], ["clica", "#trilho .add[data-i=\"2\"]"], ["espera", 1.4], ["rola", "+1000", 2.6], ["clica", "#trilho .add[data-i=\"5\"]"], ["espera", 1.4], ["rola", "fim", 2.6], ["espera", 1.2], ["recomeca"]]}
+</script>
+<script src="/modelos/demo.js"></script>
+</body>
+</html>

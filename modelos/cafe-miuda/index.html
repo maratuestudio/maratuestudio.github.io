@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Café Miúda · modelo de site MARATU</title>
+<meta name="robots" content="noindex">
+<meta name="description" content="Modelo de site para café, feito pela MARATU.">
+<link rel="stylesheet" href="/modelos/fontes/fontes.css">
+<style>
+  :root { --verde: #1E3A2C; --creme: #EFE6D2; --gema: #E8A93A; --tinta: #14261D; --m: clamp(20px, 4vw, 56px); }
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html { background: var(--verde); -webkit-font-smoothing: antialiased; overflow-x: clip; }
+  body { font-family: 'Switzer', sans-serif; color: var(--creme); background: var(--verde); font-size: 17px; }
+  img { display: block; max-width: 100%; }
+  a { color: inherit; text-decoration: none; }
+  button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+  .tk { font-family: 'Tanker', sans-serif; font-weight: 400; letter-spacing: .005em; }
+  .mascara { display: block; overflow: hidden; }
+  .mascara > span { display: block; }
+
+  .topo { position: fixed; inset: 0 0 auto; z-index: 20; display: flex; align-items: center; justify-content: space-between; padding: 22px var(--m); transition: background .4s; }
+  .topo.cheio { background: rgba(30,58,44,.94); }
+  .topo .marca { font-size: 30px; }
+  .topo nav { display: flex; gap: 26px; font-weight: 500; font-size: 15px; }
+  @media (max-width: 700px) { .topo nav a:not(.pedir) { display: none; } }
+
+  .abre { min-height: 100svh; display: grid; grid-template-columns: 1fr minmax(0, 520px); }
+  .abre__esq { padding: clamp(110px, 16vh, 140px) var(--m) clamp(36px, 7vh, 56px); display: flex; flex-direction: column; justify-content: space-between; gap: 48px; }
+  .abre h1 { font-size: clamp(130px, 16.4vw, 236px); line-height: .9; }
+  .abre h1 .b { color: var(--gema); }
+  .fatos { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; max-width: 760px; line-height: 1.45; }
+  .fatos b { display: block; font-weight: 600; color: var(--gema); margin-bottom: 4px; font-size: 15px; }
+  .abre__dir { position: relative; }
+  .abre__foto { position: absolute; inset: 0; overflow: hidden; }
+  .abre__foto img { width: 100%; height: 115%; object-fit: cover; object-position: 50% 70%; }
+  .coado { position: absolute; left: -64px; bottom: clamp(36px, 7vh, 56px); width: 360px; background: var(--creme); color: var(--tinta); padding: 22px 24px; border-radius: 4px; z-index: 2; }
+  .coado small { font-size: 14px; font-weight: 600; }
+  .coado p { font-size: 40px; line-height: 1; margin: 6px 0 8px; }
+  .coado span { font-size: 15px; line-height: 1.45; display: block; }
+  @media (max-width: 860px) {
+    .abre { grid-template-columns: 1fr; }
+    .abre__esq { padding-top: 104px; gap: 32px; }
+    .abre h1 { font-size: 34vw; }
+    .fatos { grid-template-columns: 1fr; gap: 18px; }
+    .abre__dir { height: 92vw; margin-bottom: 40px; }
+    .coado { left: var(--m); right: var(--m); width: auto; bottom: -40px; }
+  }
+
+  .card { background: var(--creme); color: var(--tinta); padding: clamp(96px, 14vh, 150px) var(--m) clamp(64px, 10vh, 120px); }
+  .card__cab { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; flex-wrap: wrap; margin-bottom: 34px; }
+  .card h2 { font-size: clamp(64px, 9vw, 128px); line-height: .9; }
+  .abas { display: flex; gap: 6px; }
+  .aba { font-weight: 600; font-size: 15px; padding: 10px 18px; border-radius: 99px; border: 1.5px solid var(--tinta); transition: background .3s, color .3s; }
+  .aba[aria-selected="true"] { background: var(--tinta); color: var(--creme); }
+  .lista { list-style: none; columns: 2; column-gap: 64px; }
+  .item { break-inside: avoid; padding: 20px 0; border-top: 1px solid rgba(20,38,29,.2); overflow: hidden; }
+  .item__l { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; }
+  .item__n { font-size: 30px; line-height: 1; }
+  .item__p { font-weight: 600; font-variant-numeric: tabular-nums; }
+  .item__d { margin-top: 6px; line-height: 1.45; color: #4a5a50; max-width: 46ch; }
+  @media (max-width: 860px) { .lista { columns: 1; } }
+
+  .onde { display: grid; grid-template-columns: 1fr 1fr; min-height: 90vh; }
+  .onde__foto { overflow: hidden; }
+  .onde__foto img { width: 100%; height: 115%; object-fit: cover; }
+  .onde__txt { padding: clamp(64px, 10vh, 120px) var(--m); display: flex; flex-direction: column; justify-content: center; gap: 32px; }
+  .onde h2 { font-size: clamp(64px, 8vw, 112px); line-height: .9; color: var(--gema); }
+  .onde__txt p { line-height: 1.5; max-width: 40ch; }
+  .horas { width: 100%; max-width: 460px; border-collapse: collapse; }
+  .horas td { padding: 12px 0; border-top: 1px solid rgba(239,230,210,.2); }
+  .horas td + td { text-align: right; font-variant-numeric: tabular-nums; }
+  .horas tr.hoje td { color: var(--gema); font-weight: 600; }
+  .pedir-bt { align-self: flex-start; display: inline-flex; align-items: center; gap: 12px; background: var(--gema); color: var(--tinta); font-weight: 600; padding: 16px 24px; border-radius: 99px; }
+  @media (max-width: 860px) { .onde { grid-template-columns: 1fr; } .onde__foto { height: 70vw; } }
+
+  .rodape { padding: 26px var(--m); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; font-size: 14px; background: var(--tinta); color: rgba(239,230,210,.7); }
+  .rodape a { text-decoration: underline; }
+</style>
+</head>
+<body>
+  <header class="topo" id="topo">
+    <a class="marca tk" href="#">MIÚDA</a>
+    <nav><a href="#cardapio">Cardápio</a><a href="#onde">Onde fica</a><a class="pedir" href="#onde">Pedir</a></nav>
+  </header>
+
+  <section class="abre">
+    <div class="abre__esq">
+      <h1 class="tk"><span class="mascara"><span>CAFÉ</span></span><span class="mascara b"><span>MIÚDA</span></span></h1>
+      <div class="fatos">
+        <p><b>Aberto</b>Terça a domingo, das 7h às 19h. Segunda a gente torra.</p>
+        <p><b>Grão</b>Da Chapada Diamantina, comprado direto do sítio e torrado aqui toda quinta.</p>
+      </div>
+    </div>
+    <div class="abre__dir">
+      <div class="abre__foto"><img src="f/xicara.jpg" alt="Xícara de café com leite servida no balcão"></div>
+      <div class="coado"><small>No coado hoje</small><p class="tk">PIATÃ, BA</p><span>Natural, torra média. Rapadura e laranja-cravo. R$ 9 a xícara.</span></div>
+    </div>
+  </section>
+
+  <section class="card" id="cardapio">
+    <div class="card__cab">
+      <h2 class="tk"><span class="mascara"><span>CARDÁPIO</span></span></h2>
+      <div class="abas" role="tablist"><button class="aba" role="tab" aria-selected="true" data-aba="cafe">Café</button><button class="aba" role="tab" aria-selected="false" data-aba="comer">Pra comer</button></div>
+    </div>
+    <ul class="lista" id="lista"></ul>
+  </section>
+
+  <section class="onde" id="onde">
+    <div class="onde__foto"><img src="f/balcao.jpg" alt="Balcão do café com a máquina de espresso"></div>
+    <div class="onde__txt">
+      <h2 class="tk"><span class="mascara"><span>ONDE FICA</span></span></h2>
+      <p>Uma esquina no centro de Aracaju, com seis mesas e um balcão de frente pra máquina. Dá pra prender a bicicleta na porta.</p>
+      <table class="horas" id="horas"></table>
+      <a class="pedir-bt" href="#">Pedir pelo WhatsApp</a>
+    </div>
+  </section>
+
+  <footer class="rodape"><span>Café Miúda é uma marca fictícia.</span><span>Modelo de site feito pela <a href="/servicos" target="_top">MARATU</a></span></footer>
+
+<script src="/vendor/gsap.min.js"></script>
+<script src="/vendor/ScrollTrigger.min.js"></script>
+<script src="/vendor/lenis.min.js"></script>
+<script>
+(() => {
+  const CARDAPIO = {
+    cafe: [
+      ['COADO DO DIA', 'R$ 9', 'Piatã, BA. Natural, torra média. Rapadura e laranja-cravo.'],
+      ['ESPRESSO', 'R$ 7', 'Blend da casa, 18 g pra 36 ml. Chocolate amargo e castanha.'],
+      ['CAPPUCCINO', 'R$ 13', 'Espresso duplo com leite vaporizado. Canela só se você pedir.'],
+      ['COADO GELADO', 'R$ 15', 'Extraído frio por 12 horas, servido com gelo de café.'],
+      ['CAFÉ COM RAPADURA', 'R$ 11', 'Coado adoçado na hora com rapadura do interior.'],
+      ['ESPRESSO TÔNICA', 'R$ 16', 'Água tônica, gelo e espresso por cima, com casca de laranja.'],
+    ],
+    comer: [
+      ['BOLO DE MACAXEIRA', 'R$ 10', 'A fatia. Sai do forno às 7h e às 15h.'],
+      ['CUSCUZ COM OVO', 'R$ 14', 'Cuscuz de milho, ovo estrelado e manteiga de garrafa.'],
+      ['TAPIOCA DE COALHO', 'R$ 13', 'Queijo coalho grelhado e um fio de mel de engenho.'],
+      ['PÃO NA CHAPA', 'R$ 6', 'Pão francês da padaria da rua de trás.'],
+    ],
+  };
+  const HORAS = [['Segunda', 'fechado'], ['Terça', '7h às 19h'], ['Quarta', '7h às 19h'], ['Quinta', '7h às 19h'], ['Sexta', '7h às 19h'], ['Sábado', '8h às 19h'], ['Domingo', '8h às 14h']];
+  const hoje = (new Date().getDay() + 6) % 7;
+  document.getElementById('horas').innerHTML = HORAS.map(([d, h], i) => `<tr${i === hoje ? ' class="hoje"' : ''}><td>${d}</td><td>${h}</td></tr>`).join('');
+  const lista = document.getElementById('lista');
+  const desenha = (k) => { lista.innerHTML = CARDAPIO[k].map(([n, p, d]) => `<li class="item"><div class="item__l"><span class="item__n tk">${n}</span><span class="item__p">${p}</span></div><p class="item__d">${d}</p></li>`).join(''); };
+  desenha('cafe');
+
+  const forca = /[?&](motion|demo)\b/.test(location.search);
+  const reduzir = matchMedia('(prefers-reduced-motion: reduce)').matches && !forca;
+  const abas = [...document.querySelectorAll('.aba')];
+  abas.forEach((b) => b.addEventListener('click', () => {
+    abas.forEach((x) => x.setAttribute('aria-selected', String(x === b)));
+    desenha(b.dataset.aba);
+    if (!reduzir) gsap.from('.item > *', { yPercent: 110, duration: 0.9, ease: 'expo.out', stagger: 0.025 });
+  }));
+  const topo = document.getElementById('topo');
+  addEventListener('scroll', () => topo.classList.toggle('cheio', scrollY > innerHeight * 0.8), { passive: true });
+  if (reduzir || !window.gsap) return;
+
+  gsap.registerPlugin(ScrollTrigger);
+  const lenis = window.__lenis = new Lenis({ lerp: 0.11 });
+  lenis.on('scroll', ScrollTrigger.update);
+  gsap.ticker.add((t) => lenis.raf(t * 1000));
+  gsap.ticker.lagSmoothing(0);
+  const ease = 'expo.out';
+
+  // abertura: o letreiro sobe por trás da máscara, a foto abre de baixo e o coado do dia entra por último
+  gsap.timeline({ delay: 0.15 })
+    .from('.abre h1 .mascara > span', { yPercent: 100, duration: 1.4, ease, stagger: 0.12 })
+    .from('.abre__foto', { clipPath: 'inset(100% 0 0 0)', duration: 1.5, ease }, 0.1)
+    .from('.abre__foto img', { scale: 1.2, duration: 2, ease }, 0.1)
+    .from('.fatos p', { clipPath: 'inset(0 0 100% 0)', y: 20, duration: 1.2, ease, stagger: 0.08 }, 0.5)
+    .from('.coado', { clipPath: 'inset(0 100% 0 0)', duration: 1.2, ease }, 0.8);
+  gsap.to('.abre__foto img', { yPercent: -10, ease: 'none', scrollTrigger: { trigger: '.abre', start: 'top top', end: 'bottom top', scrub: true } });
+
+  document.querySelectorAll('.card h2, .onde h2').forEach((h) => gsap.from(h.querySelectorAll('.mascara > span'), { yPercent: 100, duration: 1.3, ease, scrollTrigger: { trigger: h, start: 'top 85%' } }));
+  ScrollTrigger.batch('.item', { start: 'top 90%', onEnter: (els) => gsap.from(els.map((e) => [...e.children]).flat(), { yPercent: 110, duration: 1.1, ease, stagger: 0.03 }) });
+  gsap.fromTo('.onde__foto img', { yPercent: -10 }, { yPercent: 0, ease: 'none', scrollTrigger: { trigger: '.onde', start: 'top bottom', end: 'bottom top', scrub: true } });
+  gsap.from('.horas', { clipPath: 'inset(0 0 100% 0)', duration: 1.3, ease, scrollTrigger: { trigger: '.horas', start: 'top 85%' } });
+})();
+</script>
+<script type="application/json" id="demo-roteiro">
+{"toque": true, "inicio": 2.4, "passos": [["rola", "#cardapio", 2.6], ["espera", 1.4], ["clica", "[data-aba=comer]"], ["espera", 1.6], ["rola", "#onde", 2.4], ["espera", 1.2], ["rola", "fim", 1.6], ["espera", 1.4], ["recomeca"]]}
+</script>
+<script src="/modelos/demo.js"></script>
+</body>
+</html>

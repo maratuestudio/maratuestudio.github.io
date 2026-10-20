@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Modelos · fontes e texto novos</title>
+<link rel="stylesheet" href="/modelos/fontes/fontes.css">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #2a2a28; -webkit-font-smoothing: antialiased; }
+  img { display: block; max-width: 100%; }
+  .rot { font: 500 14px/1.4 'Switzer', sans-serif; color: #cfcac0; padding: 34px 48px 12px; }
+  .rot b { color: #fff; }
+  .tela { width: 1440px; max-width: 100%; height: 820px; margin: 0 auto; position: relative; overflow: hidden; }
+
+  /* ── CAFÉ: letreiro pintado de esquina ── */
+  .cafe { background: #1E3A2C; color: #EFE6D2; font-family: 'Switzer', sans-serif; display: grid; grid-template-columns: 1fr 520px; }
+  .cafe nav { position: absolute; top: 0; left: 0; right: 0; display: flex; justify-content: space-between; align-items: center; padding: 28px 56px; z-index: 2; }
+  .cafe nav .m { font-family: 'Tanker'; font-size: 34px; letter-spacing: .01em; }
+  .cafe nav div { display: flex; gap: 28px; font-weight: 500; font-size: 16px; }
+  .cafe__esq { padding: 120px 56px 56px; display: flex; flex-direction: column; justify-content: space-between; }
+  .cafe h1 { font-family: 'Tanker'; font-weight: 400; font-size: 236px; line-height: .9; letter-spacing: -.005em; color: #EFE6D2; }
+  .cafe h1 span { display: block; color: #E8A93A; }
+  .cafe__fatos { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; max-width: 760px; font-size: 18px; line-height: 1.45; }
+  .cafe__fatos b { display: block; font-weight: 600; color: #E8A93A; margin-bottom: 4px; font-size: 15px; }
+  .cafe__dir { position: relative; }
+  .cafe__dir img { width: 100%; height: 100%; object-fit: cover; }
+  .cafe__coado { position: absolute; left: -64px; bottom: 56px; width: 360px; background: #EFE6D2; color: #1E3A2C; padding: 22px 24px; border-radius: 4px; }
+  .cafe__coado small { font-size: 14px; font-weight: 600; }
+  .cafe__coado p { font-family: 'Tanker'; font-size: 40px; line-height: 1; margin: 6px 0 8px; }
+  .cafe__coado span { font-size: 15px; line-height: 1.4; display: block; }
+
+  /* ── CONSULTÓRIO: calma, texto que informa ── */
+  .fisio { background: #F4F3EE; color: #1B282C; font-family: 'Supreme', sans-serif; display: grid; grid-template-columns: 1.15fr 1fr; gap: 72px; padding: 110px 64px 50px; align-items: center; }
+  .fisio nav { position: absolute; top: 0; left: 0; right: 0; display: flex; justify-content: space-between; align-items: center; padding: 30px 64px; }
+  .fisio nav .m { font-family: 'Sentient'; font-size: 26px; }
+  .fisio nav a { font-weight: 500; font-size: 15px; padding: 11px 20px; border-radius: 99px; background: #1B282C; color: #F4F3EE; text-decoration: none; }
+  .fisio h1 { font-family: 'Sentient'; font-weight: 300; font-size: 62px; line-height: 1.02; letter-spacing: -.02em; max-width: 13ch; }
+  .fisio ul { list-style: none; margin: 40px 0 36px; border-top: 1px solid #d6d4cb; max-width: 560px; }
+  .fisio li { display: flex; justify-content: space-between; gap: 24px; padding: 15px 0; border-bottom: 1px solid #d6d4cb; font-size: 17px; }
+  .fisio li span:last-child { color: #5c6a6d; text-align: right; }
+  .fisio__prox { display: flex; align-items: center; gap: 22px; }
+  .fisio__prox a { font-weight: 500; font-size: 16px; padding: 16px 26px; border-radius: 99px; background: #2C6468; color: #fff; text-decoration: none; }
+  .fisio__prox p { font-size: 15px; line-height: 1.4; color: #5c6a6d; }
+  .fisio__prox p b { color: #1B282C; font-weight: 500; }
+  .fisio__foto { height: 640px; border-radius: 6px; overflow: hidden; }
+  .fisio__foto img { width: 100%; height: 100%; object-fit: cover; }
+
+  /* ── CERÂMICA: fornada com ficha técnica ── */
+  .barro { background: #ECE8E1; color: #151413; font-family: 'Ranade', sans-serif; display: grid; grid-template-columns: 560px 1fr; }
+  .barro nav { position: absolute; top: 0; left: 0; right: 0; display: flex; justify-content: space-between; padding: 28px 52px; font-size: 15px; z-index: 2; }
+  .barro nav .m { font-family: 'Zodiak'; font-weight: 700; font-size: 22px; letter-spacing: -.01em; }
+  .barro__esq { padding: 130px 52px 52px; display: flex; flex-direction: column; justify-content: space-between; }
+  .barro h1 { font-family: 'Zodiak'; font-weight: 300; font-size: 112px; line-height: .95; letter-spacing: -.035em; }
+  .barro__esq p { font-size: 18px; line-height: 1.5; max-width: 34ch; margin-top: 30px; }
+  .barro__venda { border-top: 1px solid #151413; padding-top: 16px; display: flex; justify-content: space-between; align-items: baseline; font-size: 16px; }
+  .barro__venda b { font-family: 'Zodiak'; font-weight: 400; font-size: 26px; }
+  .barro__pecas { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; padding: 130px 52px 52px 0; }
+  .peca img { aspect-ratio: 3/4; object-fit: cover; width: 100%; }
+  .peca h3 { font-family: 'Zodiak'; font-weight: 400; font-size: 21px; margin-top: 12px; }
+  .peca p { font-size: 14px; line-height: 1.45; color: #5d5750; margin-top: 3px; }
+  .peca .pr { display: flex; justify-content: space-between; margin-top: 8px; font-size: 15px; color: #151413; }
+</style>
+</head>
+<body>
+
+<p class="rot"><b>Café.</b> Tanker (letreiro pintado) + Switzer. O texto diz o que tem hoje, de onde vem o grão, quanto custa e quando abre.</p>
+<section class="tela cafe">
+  <nav><span class="m">miúda</span><div><span>Cardápio</span><span>Onde fica</span><span>Pedir</span></div></nav>
+  <div class="cafe__esq">
+    <h1>Café<span>miúda</span></h1>
+    <div class="cafe__fatos">
+      <p><b>Aberto</b>Terça a domingo, das 7h às 19h. Segunda a gente torra.</p>
+      <p><b>Grão</b>Da Chapada Diamantina, comprado direto do sítio e torrado aqui toda quinta.</p>
+    </div>
+  </div>
+  <div class="cafe__dir">
+    <img src="/modelos/cafe-miuda/f/xicara.jpg" alt="">
+    <div class="cafe__coado"><small>No coado hoje</small><p>Piatã, BA</p><span>Natural, torra média. Rapadura e laranja-cravo. R$ 9 a xícara.</span></div>
+  </div>
+</section>
+
+<p class="rot"><b>Consultório.</b> Sentient (serifa sóbria) + Supreme. Sem slogan: o que trata, como é a sessão, quanto tempo e o próximo horário livre.</p>
+<section class="tela fisio">
+  <nav><span class="m">Fisio Prumo</span><a>Agendar avaliação</a></nav>
+  <div>
+    <h1>Fisioterapia ortopédica com a mesma fisioterapeuta do começo ao fim.</h1>
+    <ul>
+      <li><span>Sessão</span><span>50 minutos, uma pessoa por horário</span></li>
+      <li><span>Atende</span><span>coluna, joelho, ombro e pós-cirúrgico</span></li>
+      <li><span>Pagamento</span><span>particular, com recibo pra reembolso do plano</span></li>
+    </ul>
+    <div class="fisio__prox"><a>Agendar avaliação</a><p>Próximo horário livre<br><b>quarta, 22 de outubro, 16h</b></p></div>
+  </div>
+  <div class="fisio__foto"><img src="/modelos/fisio-prumo/f/sala.jpg" alt=""></div>
+</section>
+
+<p class="rot"><b>Loja de cerâmica.</b> Zodiak (serifa de alto contraste) + Ranade. Cada peça com medida, esmalte e preço, e a data em que a fornada abre.</p>
+<section class="tela barro">
+  <nav><span class="m">barro cru</span><span>Sacola (0)</span></nav>
+  <div class="barro__esq">
+    <div><h1>Fornada 14</h1><p>37 peças queimadas a 1240 °C em outubro. Cada uma existe uma vez só, e a cor do esmalte muda com o lugar no forno.</p></div>
+    <div class="barro__venda"><span>Abre a venda</span><b>sábado, 25 de outubro, 10h</b></div>
+  </div>
+  <div class="barro__pecas">
+    <article class="peca"><img src="/modelos/barro-cru/f/tigelas.jpg" alt=""><h3>Tigela pintada</h3><p>14 cm de diâmetro<br>esmalte branco com óxido</p><div class="pr"><span>3 disponíveis</span><span>R$ 120</span></div></article>
+    <article class="peca"><img src="/modelos/barro-cru/f/escuro.jpg" alt=""><h3>Jarra escura</h3><p>1 litro<br>esmalte tenmoku</p><div class="pr"><span>1 disponível</span><span>R$ 210</span></div></article>
+    <article class="peca"><img src="/modelos/barro-cru/f/xicaras.jpg" alt=""><h3>Xícara crua</h3><p>180 ml<br>sem esmalte por fora</p><div class="pr"><span>8 disponíveis</span><span>R$ 85</span></div></article>
+  </div>
+</section>
+</body>
+</html>

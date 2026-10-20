@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Abertura da /servicos · opções</title>
+<link rel="stylesheet" href="/components/radio/radio.css?v=7">
+<style>
+  @font-face { font-family: 'Jack'; src: url('/TRYJackAlpha-Regular.woff2?v=2') format('woff2'); }
+  @font-face { font-family: 'Clother'; src: url('/TRYClother-Regular.woff2') format('woff2'); font-weight: 400; }
+  @font-face { font-family: 'Clother'; src: url('/TRYClother-Bold.woff2') format('woff2'); font-weight: 700; }
+  @font-face { font-family: 'Clother'; src: url('/TRYClother-Black.woff2') format('woff2'); font-weight: 900; }
+  :root { --areia: #F0ECE4; --preto: #0D0D0B; --laranja: #C8501A; --azul: #0E3272; --m: clamp(20px, 4vw, 56px); }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  body { font-family: 'Clother', sans-serif; background: var(--areia); color: var(--preto); -webkit-font-smoothing: antialiased; }
+  a { color: inherit; text-decoration: none; }
+  .troca { position: fixed; z-index: 99; bottom: 18px; left: 50%; translate: -50% 0; display: flex; gap: 6px; background: var(--preto); padding: 6px; border-radius: 99px; }
+  .troca a { color: var(--areia); padding: 8px 16px; border-radius: 99px; font-weight: 700; font-size: 14px; }
+  .troca a.on { background: var(--areia); color: var(--preto); }
+
+  .topo { display: flex; align-items: center; justify-content: space-between; padding: 22px var(--m); }
+  .topo .logo { font-family: 'Jack'; font-size: 26px; text-transform: lowercase; }
+  .topo nav { display: flex; gap: 32px; font-weight: 700; font-size: 15px; }
+  .topo nav a:last-child { color: var(--laranja); }
+
+  .janela { border: 1.5px solid var(--preto); border-radius: 14px; overflow: hidden; background: #fff; box-shadow: 6px 6px 0 var(--preto); }
+  .janela__barra { height: 34px; display: flex; align-items: center; gap: 6px; padding: 0 14px; border-bottom: 1.5px solid var(--preto); background: var(--areia); }
+  .janela__barra i { width: 10px; height: 10px; border-radius: 50%; border: 1.5px solid var(--preto); }
+  .janela__barra span { margin-left: 12px; font-size: 13px; font-weight: 700; opacity: .7; }
+  .janela__tela { aspect-ratio: 16 / 10; background: center top / cover no-repeat; }
+  .btn { display: inline-flex; align-items: center; gap: 10px; background: var(--laranja); color: var(--areia); font-weight: 900; font-size: 15px; padding: 15px 24px; border-radius: 99px; border: 1.5px solid var(--preto); box-shadow: 3px 3px 0 var(--preto); }
+  .lnk { font-weight: 700; font-size: 15px; border-bottom: 1.5px solid currentColor; padding-bottom: 2px; }
+  .seletor { display: flex; gap: 22px; font-size: 15px; }
+  .seletor span { opacity: .45; } .seletor span.on { opacity: 1; font-weight: 700; }
+
+  /* A: o site ao vivo é a abertura */
+  .a { height: calc(100vh - 82px); display: grid; grid-template-rows: auto 1fr; gap: 26px; padding: 8px var(--m) 70px; }
+  .a__cab { display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 40px; }
+  .a h1 { font-weight: 900; font-size: clamp(2.6rem, 4.6vw, 4.6rem); line-height: 0.98; letter-spacing: -0.025em; max-width: 16ch; }
+  .a__lado { display: flex; flex-direction: column; align-items: flex-start; gap: 18px; }
+  .a__lado p { font-size: 18px; line-height: 1.45; max-width: 34ch; }
+  .a .janela { height: 100%; display: flex; flex-direction: column; }
+  .a .janela__tela { aspect-ratio: auto; flex: 1; }
+  .a__pe { display: flex; justify-content: space-between; align-items: center; margin-top: -10px; }
+
+  /* B: título e janela lado a lado, mesma altura */
+  .b { height: calc(100vh - 82px); display: grid; grid-template-columns: 5fr 7fr; gap: clamp(28px, 4vw, 64px); align-items: center; padding: 0 var(--m) 60px; }
+  .b h1 { font-weight: 900; font-size: clamp(3rem, 6.4vw, 6.6rem); line-height: 0.92; letter-spacing: -0.03em; }
+  .b p { font-size: 19px; line-height: 1.5; max-width: 30ch; margin: 28px 0 30px; }
+  .b__acoes { display: flex; align-items: center; gap: 24px; }
+
+  /* C: frase inteira numa linha, janela sobe por cima */
+  .c { position: relative; height: calc(100vh - 82px); overflow: hidden; padding: 4vh var(--m) 0; }
+  .c h1 { font-weight: 900; font-size: 8.6vw; line-height: 0.9; letter-spacing: -0.04em; white-space: nowrap; }
+  .c__meio { display: flex; justify-content: space-between; align-items: center; margin-top: 2vh; }
+  .c__meio p { max-width: 46ch !important; }
+  .c__meio p { font-size: 19px; line-height: 1.5; max-width: 32ch; }
+  .c .janela { position: absolute; left: 50%; bottom: -30vh; width: min(1100px, 68vw); translate: -50% 0; }
+</style>
+</head>
+<body>
+<header class="topo"><span class="logo">maratu</span><nav><a>início</a><a>loja</a><a>estúdio</a><a>serviços</a><a>pedir orçamento</a></nav></header>
+
+<section class="a" data-op="a">
+  <div class="a__cab">
+    <h1>Esse site? A gente fez.</h1>
+    <div class="a__lado"><p>Site e sistema pra pequeno negócio, desenhados e programados aqui no estúdio, em Aracaju.</p><a class="btn">Pedir orçamento</a></div>
+  </div>
+  <div class="janela"><div class="janela__barra"><i></i><i></i><i></i><span>cafesergipano.com.br</span></div><div class="janela__tela" style="background-image:url('/servicos/p/cafe-sergipano.jpg')"></div></div>
+  <div class="a__pe"><div class="seletor"><span class="on">Site comercial</span><span>Portfólio fotográfico</span><span>Portfólio 3D</span><span>Painel de gestão</span></div><span style="font-size:14px;opacity:.6">rodando ao vivo</span></div>
+</section>
+
+<section class="b" data-op="b" hidden>
+  <div>
+    <h1>Esse site?<br>A gente fez.</h1>
+    <p>Site e sistema pra pequeno negócio, desenhados e programados aqui no estúdio, em Aracaju.</p>
+    <div class="b__acoes"><a class="btn">Pedir orçamento</a><a class="lnk">Ver projetos</a></div>
+  </div>
+  <div class="janela"><div class="janela__barra"><i></i><i></i><i></i><span>painel.taipa.arq.br</span></div><div class="janela__tela" style="background-image:url('/servicos/p/painel-taipa.jpg')"></div></div>
+</section>
+
+<section class="c" data-op="c" hidden>
+  <h1>Esse site? A gente fez.</h1>
+  <div class="c__meio"><p>Site e sistema pra pequeno negócio, desenhados e programados aqui no estúdio, em Aracaju.</p><a class="btn">Pedir orçamento</a></div>
+  <div class="janela"><div class="janela__barra"><i></i><i></i><i></i><span>lisandrade.com.br</span></div><div class="janela__tela" style="background-image:url('/servicos/p/lis-andrade.jpg')"></div></div>
+</section>
+
+<nav class="troca"><a href="?a" data-v="a">A: site na tela cheia</a><a href="?b" data-v="b">B: lado a lado</a><a href="?c" data-v="c">C: frase e janela subindo</a></nav>
+<script>
+  const v = (location.search.match(/[abc]/) || ['a'])[0];
+  document.querySelectorAll('[data-op]').forEach((s) => (s.hidden = s.dataset.op !== v));
+  document.querySelectorAll('.troca a').forEach((a) => a.classList.toggle('on', a.dataset.v === v));
+</script>
+</body>
+</html>

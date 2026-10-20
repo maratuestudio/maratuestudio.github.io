@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Fisio Prumo · modelo de site MARATU</title>
+<meta name="robots" content="noindex">
+<meta name="description" content="Modelo de site para consultório, feito pela MARATU.">
+<link rel="stylesheet" href="/modelos/fontes/fontes.css">
+<style>
+  :root { --fundo: #F4F3EE; --tinta: #1B282C; --suave: #5C6A6D; --verde: #2C6468; --linha: #D6D4CB; --m: clamp(20px, 5vw, 64px); }
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html { background: var(--fundo); -webkit-font-smoothing: antialiased; overflow-x: clip; }
+  body { font-family: 'Supreme', sans-serif; color: var(--tinta); background: var(--fundo); font-size: 17px; }
+  img { display: block; max-width: 100%; }
+  a { color: inherit; text-decoration: none; }
+  button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+  .se { font-family: 'Sentient', serif; font-weight: 300; letter-spacing: -0.02em; }
+  .linha { display: block; overflow: hidden; padding-bottom: .08em; margin-bottom: -.08em; }
+  .linha > span { display: block; }
+  .bt { display: inline-flex; align-items: center; font-weight: 500; font-size: 16px; padding: 16px 26px; border-radius: 99px; background: var(--verde); color: #fff; }
+
+  .topo { position: fixed; inset: 0 0 auto; z-index: 20; display: flex; align-items: center; justify-content: space-between; padding: 22px var(--m); background: rgba(244,243,238,.9); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+  .topo .marca { font-family: 'Sentient', serif; font-size: 24px; }
+  .topo a.ag { font-weight: 500; font-size: 15px; padding: 10px 18px; border-radius: 99px; background: var(--tinta); color: var(--fundo); }
+
+  .abre { display: grid; grid-template-columns: 1.15fr 1fr; gap: clamp(32px, 5vw, 72px); align-items: center; padding: clamp(110px, 15vh, 140px) var(--m) clamp(48px, 8vh, 80px); min-height: 100svh; }
+  .abre h1 { font-size: clamp(40px, 4.4vw, 64px); line-height: 1.04; max-width: 14ch; }
+  .ficha { list-style: none; margin: 38px 0 34px; border-top: 1px solid var(--linha); max-width: 560px; }
+  .ficha li { display: flex; justify-content: space-between; gap: 24px; padding: 15px 0; border-bottom: 1px solid var(--linha); }
+  .ficha li span:last-child { color: var(--suave); text-align: right; }
+  .prox { display: flex; align-items: center; gap: 22px; flex-wrap: wrap; }
+  .prox p { font-size: 15px; line-height: 1.4; color: var(--suave); }
+  .prox p b { color: var(--tinta); font-weight: 500; }
+  .abre__foto { aspect-ratio: 4 / 5; border-radius: 6px; overflow: hidden; }
+  .abre__foto img { width: 100%; height: 100%; object-fit: cover; }
+  @media (max-width: 860px) { .abre { grid-template-columns: 1fr; padding-top: 100px; } .abre__foto { aspect-ratio: 4 / 4.2; } .ficha li { flex-direction: column; gap: 2px; } .ficha li span:last-child { text-align: left; } }
+
+  .sec { padding: clamp(72px, 12vh, 140px) var(--m); }
+  .sec h2 { font-size: clamp(36px, 4.4vw, 60px); line-height: 1.05; max-width: 16ch; margin-bottom: 40px; }
+  .trata { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0 64px; border-top: 1px solid var(--linha); }
+  .trata div { padding: 26px 0; border-bottom: 1px solid var(--linha); }
+  .trata h3 { font-family: 'Sentient', serif; font-weight: 400; font-size: 28px; margin-bottom: 8px; }
+  .trata p { color: var(--suave); line-height: 1.55; max-width: 44ch; }
+  @media (max-width: 860px) { .trata { grid-template-columns: 1fr; } }
+
+  .fotos { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; padding: 0 var(--m); }
+  .fotos figure { aspect-ratio: 4 / 3; overflow: hidden; border-radius: 6px; }
+  .fotos img { width: 100%; height: 100%; object-fit: cover; }
+
+  .passos { background: var(--tinta); color: var(--fundo); }
+  .passos h2 { color: var(--fundo); }
+  .trilho { position: relative; padding-left: 48px; max-width: 760px; }
+  .fio { position: absolute; left: 10px; top: 8px; bottom: 8px; width: 2px; background: rgba(244,243,238,.18); }
+  .fio b { position: absolute; inset: 0; background: #A8D0CC; transform-origin: top; transform: scaleY(0); }
+  .passo { position: relative; padding-bottom: 54px; }
+  .passo:last-child { padding-bottom: 0; }
+  .passo::before { content: ''; position: absolute; left: -44px; top: 8px; width: 14px; height: 14px; border-radius: 50%; background: var(--tinta); border: 2px solid #A8D0CC; transition: background .4s; }
+  .passo.on::before { background: #A8D0CC; }
+  .passo small { font-size: 14px; color: #A8D0CC; }
+  .passo h3 { font-family: 'Sentient', serif; font-weight: 400; font-size: 30px; margin: 4px 0 8px; }
+  .passo p { line-height: 1.55; color: rgba(244,243,238,.72); max-width: 50ch; }
+
+  .dias, .horas { display: flex; gap: 10px; overflow-x: auto; padding: 4px 0 8px; scrollbar-width: none; }
+  .dia, .hora { flex-shrink: 0; border: 1.5px solid var(--linha); background: #fff; transition: background .3s, color .3s, border-color .3s; }
+  .dia { width: 76px; padding: 14px 0; border-radius: 14px; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+  .dia small { font-size: 13px; color: var(--suave); }
+  .dia b { font-family: 'Sentient', serif; font-weight: 400; font-size: 26px; }
+  .hora { padding: 12px 18px; border-radius: 99px; font-weight: 500; }
+  .dia.on, .hora.on { background: var(--verde); border-color: var(--verde); color: #fff; }
+  .dia.on small { color: rgba(255,255,255,.75); }
+  .horas { margin-top: 12px; }
+  .confirma { margin-top: 28px; display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+  .confirma p { color: var(--suave); }
+  .confirma p b { color: var(--tinta); font-weight: 500; }
+
+  .rodape { padding: 26px var(--m); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; font-size: 14px; color: var(--suave); border-top: 1px solid var(--linha); }
+  .rodape a { text-decoration: underline; }
+</style>
+</head>
+<body>
+  <header class="topo"><a class="marca" href="#">Fisio Prumo</a><a class="ag" href="#agenda">Agendar avaliação</a></header>
+
+  <section class="abre">
+    <div>
+      <h1 class="se"><span class="linha"><span>Fisioterapia ortopédica</span></span><span class="linha"><span>com a mesma fisioterapeuta</span></span><span class="linha"><span>do começo ao fim.</span></span></h1>
+      <ul class="ficha">
+        <li><span>Sessão</span><span>50 minutos, uma pessoa por horário</span></li>
+        <li><span>Atende</span><span>coluna, joelho, ombro e pós-cirúrgico</span></li>
+        <li><span>Pagamento</span><span>particular, com recibo pra reembolso do plano</span></li>
+      </ul>
+      <div class="prox"><a class="bt" href="#agenda">Agendar avaliação</a><p>Próximo horário livre<br><b>quarta, 22 de outubro, 16h</b></p></div>
+    </div>
+    <div class="abre__foto"><img src="f/sala.jpg" alt="Fisioterapeuta orientando uma paciente na maca"></div>
+  </section>
+
+  <section class="sec">
+    <h2 class="se"><span class="linha"><span>O que a gente trata</span></span></h2>
+    <div class="trata">
+      <div><h3>Coluna</h3><p>Dor lombar e cervical, hérnia de disco e travamento. A primeira meta é dormir sem dor.</p></div>
+      <div><h3>Joelho e quadril</h3><p>Condromalácia, artrose e reabilitação depois de prótese ou ligamento.</p></div>
+      <div><h3>Ombro</h3><p>Tendinite, bursite e ombro congelado. Exercício com carga medida a cada semana.</p></div>
+      <div><h3>Pós-cirúrgico</h3><p>Começa na semana da alta, com o laudo do cirurgião em mãos.</p></div>
+    </div>
+  </section>
+
+  <div class="fotos">
+    <figure><img src="f/elastico.jpg" alt="Exercício de ombro com faixa elástica"></figure>
+    <figure><img src="f/exercicio.jpg" alt="Paciente fazendo exercício de equilíbrio orientado"></figure>
+  </div>
+
+  <section class="sec passos">
+    <h2 class="se"><span class="linha"><span>Como é a primeira consulta</span></span></h2>
+    <div class="trilho">
+      <div class="fio"><b></b></div>
+      <div class="passo"><small>Primeiros 20 minutos</small><h3>Conversa e avaliação</h3><p>Você conta onde dói e desde quando. A gente mede força, amplitude e postura.</p></div>
+      <div class="passo"><small>No fim da consulta</small><h3>Plano escrito</h3><p>Número de sessões, objetivo de cada fase e três exercícios pra fazer em casa.</p></div>
+      <div class="passo"><small>Da segunda sessão em diante</small><h3>Sessões de 50 minutos</h3><p>Sem dividir o horário com outro paciente. O plano é revisto a cada quatro sessões.</p></div>
+    </div>
+  </section>
+
+  <section class="sec" id="agenda">
+    <h2 class="se"><span class="linha"><span>Horários livres</span></span></h2>
+    <div class="dias" id="dias"></div>
+    <div class="horas" id="horas"></div>
+    <div class="confirma"><a class="bt" href="#" id="confirma">Agendar avaliação</a><p>Avaliação, R$ 180<br><b id="escolha"></b></p></div>
+  </section>
+
+  <footer class="rodape"><span>Fisio Prumo é uma marca fictícia.</span><span>Modelo de site feito pela <a href="/servicos" target="_top">MARATU</a></span></footer>
+
+<script src="/vendor/gsap.min.js"></script>
+<script src="/vendor/ScrollTrigger.min.js"></script>
+<script src="/vendor/lenis.min.js"></script>
+<script>
+(() => {
+  const forca = /[?&](motion|demo)\b/.test(location.search);
+  const reduzir = matchMedia('(prefers-reduced-motion: reduce)').matches && !forca;
+  const SEM = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sáb'];
+  const HORAS = ['7h', '8h', '10h', '14h', '16h', '18h'];
+  const dias = [];
+  for (let d = new Date(2026, 9, 20); dias.length < 8; d.setDate(d.getDate() + 1)) if (d.getDay() && d.getDay() < 6) dias.push(new Date(d));
+  const elD = document.getElementById('dias'), elH = document.getElementById('horas'), escolha = document.getElementById('escolha');
+  elD.innerHTML = dias.map((d, i) => `<button class="dia${i === 2 ? ' on' : ''}" data-i="${i}"><small>${SEM[d.getDay()]}</small><b>${d.getDate()}</b></button>`).join('');
+  let dia = 2, hora = 4;
+  const livres = () => HORAS.filter((_, k) => (k + dia) % 3 !== 0);
+  const texto = () => { const d = dias[dia]; escolha.textContent = `${SEM[d.getDay()]} ${d.getDate()} de outubro, ${livres()[hora]}`; };
+  const horas = () => {
+    const l = livres(); if (hora >= l.length) hora = 0;
+    elH.innerHTML = l.map((h, k) => `<button class="hora${k === hora ? ' on' : ''}" data-k="${k}">${h}</button>`).join('');
+    texto();
+    if (window.gsap && !reduzir) gsap.from('.hora', { clipPath: 'inset(0 0 100% 0 round 99px)', duration: 0.8, ease: 'expo.out', stagger: 0.04 });
+  };
+  elD.addEventListener('click', (e) => { const b = e.target.closest('.dia'); if (!b) return; dia = +b.dataset.i; elD.querySelectorAll('.dia').forEach((x) => x.classList.toggle('on', x === b)); horas(); });
+  elH.addEventListener('click', (e) => { const b = e.target.closest('.hora'); if (!b) return; hora = +b.dataset.k; elH.querySelectorAll('.hora').forEach((x) => x.classList.toggle('on', x === b)); texto(); });
+  horas();
+  if (reduzir || !window.gsap) return;
+
+  gsap.registerPlugin(ScrollTrigger);
+  const lenis = window.__lenis = new Lenis({ lerp: 0.09 });
+  lenis.on('scroll', ScrollTrigger.update);
+  gsap.ticker.add((t) => lenis.raf(t * 1000));
+  gsap.ticker.lagSmoothing(0);
+  const ease = 'expo.out';
+
+  // abertura: o título sobe linha por linha, a ficha e a foto abrem em seguida
+  gsap.timeline({ delay: 0.1 })
+    .from('.abre h1 .linha > span', { yPercent: 105, duration: 1.3, ease, stagger: 0.09 })
+    .from('.ficha li', { clipPath: 'inset(0 100% 0 0)', duration: 1.2, ease, stagger: 0.07 }, 0.45)
+    .from('.prox', { clipPath: 'inset(0 0 100% 0)', y: 16, duration: 1.1, ease }, 0.7)
+    .from('.abre__foto', { clipPath: 'inset(100% 0 0 0 round 6px)', duration: 1.6, ease }, 0.2)
+    .fromTo('.abre__foto img', { scale: 1.2 }, { scale: 1, duration: 2.2, ease }, 0.2);
+  gsap.to('.abre__foto img', { yPercent: 8, ease: 'none', scrollTrigger: { trigger: '.abre', start: 'top top', end: 'bottom top', scrub: true } });
+
+  document.querySelectorAll('.sec h2').forEach((h) => gsap.from(h.querySelectorAll('.linha > span'), { yPercent: 105, duration: 1.2, ease, scrollTrigger: { trigger: h, start: 'top 85%' } }));
+  ScrollTrigger.batch('.trata div', { start: 'top 88%', onEnter: (els) => gsap.from(els, { clipPath: 'inset(0 100% 0 0)', duration: 1.3, ease, stagger: 0.08 }) });
+  document.querySelectorAll('.fotos figure').forEach((f, i) => {
+    gsap.from(f, { clipPath: 'inset(0 0 0 100% round 6px)', duration: 1.4, ease, delay: i * 0.1, scrollTrigger: { trigger: f, start: 'top 85%' } });
+    gsap.fromTo(f.querySelector('img'), { scale: 1.15 }, { scale: 1, ease: 'none', scrollTrigger: { trigger: f, start: 'top bottom', end: 'bottom top', scrub: true } });
+  });
+  // a linha dos passos se desenha com a rolagem e acende cada ponto
+  const passos = [...document.querySelectorAll('.passo')];
+  ScrollTrigger.create({ trigger: '.trilho', start: 'top 70%', end: 'bottom 60%', scrub: 0.5,
+    animation: gsap.to('.fio b', { scaleY: 1, ease: 'none' }),
+    onUpdate: (s) => passos.forEach((p, i) => p.classList.toggle('on', s.progress >= i / (passos.length - 1) - 0.02)) });
+  ScrollTrigger.batch('.dia', { start: 'top 92%', onEnter: (els) => gsap.from(els, { yPercent: 40, clipPath: 'inset(100% 0 0 0 round 14px)', duration: 1.1, ease, stagger: 0.05 }) });
+})();
+</script>
+<script type="application/json" id="demo-roteiro">
+{"toque": true, "inicio": 2.4, "passos": [["rola", ".sec", 2], ["espera", 0.8], ["rola", ".passos", 2.2], ["rola", "+700", 2.4], ["rola", "#agenda", 1.6], ["clica", ".dia[data-i=\"4\"]"], ["espera", 0.6], ["clica", ".hora[data-k=\"1\"]"], ["espera", 1.4], ["recomeca"]]}
+</script>
+<script src="/modelos/demo.js"></script>
+</body>
+</html>

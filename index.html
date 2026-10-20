@@ -1540,7 +1540,7 @@
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-    gtag('config', 'G-HCJ291HL72');
+    if (window.top === window.self) gtag('config', 'G-HCJ291HL72');
   </script>
 </head>
 <body>

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Noa Vilar · direção de arte · modelo MARATU</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="/modelos/fontes/fontes.css">
+<style>
+  :root { --escuro: #1B1B19; --claro: #F4F2EE; --caju: #E9633A; --ease: cubic-bezier(.16,1,.3,1); }
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html { background: var(--escuro); }
+  body { font-family: 'Switzer', sans-serif; color: #F1EDE4; background: var(--escuro); -webkit-font-smoothing: antialiased; overflow-x: hidden; transition: background-color .6s var(--ease), color .6s var(--ease); }
+  body.claro { background: #fff; color: #111110; }
+  img { display: block; user-select: none; -webkit-user-drag: none; }
+  .topo { position: fixed; left: 0; right: 0; top: 0; display: flex; justify-content: space-between; padding: 22px 28px; font-size: 14px; font-weight: 500; z-index: 20; mix-blend-mode: difference; color: #fff; }
+  .topo nav { display: flex; gap: 28px; }
+  @keyframes gira { to { transform: rotate(360deg); } }
+
+  /* ═════ 1. abertura: nome gigante e o anel de capas ═════ */
+  .abre { position: relative; height: 100vh; height: 100svh; overflow: hidden; perspective: 1400px; }
+  .nome { position: absolute; left: 0; right: 0; top: 50%; transform: translateY(-50%); text-align: center; font-family: 'Panchang'; font-weight: 700; font-size: 10.6vw; line-height: .8; letter-spacing: -.04em; white-space: nowrap; z-index: 1; }
+  .nome span { display: inline-block; }
+  .roda { position: absolute; left: 50%; top: 50%; width: 0; height: 0; transform-style: preserve-3d; z-index: 2; }
+  .carta { position: absolute; width: 170px; height: 220px; left: -85px; top: -110px; border-radius: 10px; overflow: hidden; backface-visibility: hidden; box-shadow: 0 18px 40px rgba(0,0,0,.35); }
+  .carta img { width: 100%; height: 100%; object-fit: cover; }
+  .flutua { position: absolute; z-index: 4; pointer-events: none; filter: drop-shadow(0 20px 30px rgba(0,0,0,.4)); }
+  .selo { position: absolute; right: 34px; bottom: 40px; width: 132px; height: 132px; z-index: 5; }
+  .selo svg { width: 100%; height: 100%; animation: gira 14s linear infinite; }
+  .selo text { font-family: 'Panchang'; font-weight: 700; font-size: 10.5px; letter-spacing: .16em; text-transform: uppercase; fill: currentColor; }
+  .selo i { position: absolute; inset: 38%; border-radius: 50%; background: var(--caju); }
+  .abre__pe { position: absolute; left: 28px; bottom: 32px; font-size: 14px; z-index: 5; }
+
+  /* ═════ 2. o globo: um projeto por trecho de rolagem ═════ */
+  .globo { position: relative; height: 100vh; height: 100svh; overflow: hidden; }
+  .globo canvas { position: absolute; inset: 0; }
+  .anel { position: absolute; left: 50%; top: 48%; width: min(72vh, 86vw); aspect-ratio: 1; transform: translate(-50%, -50%); pointer-events: none; }
+  .anel svg { width: 100%; height: 100%; animation: gira 28s linear infinite; }
+  .anel text { font-family: 'Panchang'; font-weight: 700; font-size: 15px; letter-spacing: .18em; text-transform: uppercase; fill: currentColor; }
+  .espia { position: absolute; left: 50%; width: 120px; transform: translateX(-50%); z-index: 3; pointer-events: none; }
+  .espia img { width: 100%; }
+  .g__nome { position: absolute; left: 50%; bottom: 28px; transform: translateX(-50%); text-align: center; z-index: 4; }
+  .g__nome b { display: block; font-family: 'Gambarino'; font-weight: 400; font-size: clamp(28px, 3.4vw, 46px); line-height: 1; }
+  .g__nome span { font-size: 13px; letter-spacing: .08em; text-transform: uppercase; opacity: .6; }
+  .g__conta { position: absolute; left: 28px; bottom: 32px; font-size: 13px; border: 1px solid currentColor; border-radius: 99px; padding: 5px 12px; z-index: 4; }
+  .g__agora { position: absolute; right: 28px; bottom: 32px; font-size: 14px; text-align: right; z-index: 4; }
+
+  /* ═════ 3. projetos em destaque: capas inclinadas que giram com a rolagem ═════ */
+  .destaques { padding: 18vh 0 10vh; }
+  .dest { position: relative; height: 92vh; display: grid; place-items: center; }
+  .dest__capa { width: min(64vw, 900px); aspect-ratio: 16/10; border-radius: 6px; overflow: hidden; box-shadow: 0 30px 60px rgba(0,0,0,.18); }
+  .dest__capa img { width: 100%; height: 100%; object-fit: cover; }
+  .dest__meta { position: absolute; left: 28px; right: 28px; bottom: 6vh; display: grid; grid-template-columns: 2fr 2fr 1fr .6fr auto; gap: 16px; font-size: 13px; }
+  .dest__meta b { font-weight: 600; }
+  .dest__meta a { color: inherit; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+
+  /* ═════ 4. sobre e contato ═════ */
+  .sobre { position: relative; min-height: 100vh; padding: 20vh 28px 60px; display: grid; grid-template-columns: 7fr 5fr; gap: 6vw; align-items: end; }
+  .sobre__txt { font-family: 'Gambarino'; font-size: clamp(30px, 3.6vw, 56px); line-height: 1.12; max-width: 20ch; }
+  .sobre__txt em { font-style: normal; color: var(--caju); }
+  .sobre__lado { font-size: 15px; line-height: 1.6; }
+  .sobre__lado a { display: block; font-family: 'Panchang'; font-weight: 700; font-size: clamp(20px, 2vw, 30px); color: inherit; text-decoration: none; margin: 18px 0 6px; }
+  .sobre .selo { position: absolute; right: 28px; top: 14vh; bottom: auto; }
+  @media (max-width: 800px) {
+    .carta { width: 110px; height: 142px; left: -55px; top: -71px; }
+    .dest__meta { grid-template-columns: 1fr 1fr; }
+    .sobre { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<header class="topo"><b>Noa Vilar</b><nav><span>Trabalhos</span><span>Sobre</span><span>Contato</span></nav></header>
+
+<section class="abre" id="abre">
+  <div class="nome" id="nome"><span>N</span><span>O</span><span>A</span> <span>V</span><span>I</span><span>L</span><span>A</span><span>R</span></div>
+  <div class="roda" id="roda"></div>
+  <div class="selo"><svg viewBox="0 0 132 132"><defs><path id="c2" d="M66,66 m-52,0 a52,52 0 1,1 104,0 a52,52 0 1,1 -104,0"/></defs><text><textPath href="#c2" textLength="324" lengthAdjust="spacing">Agenda aberta · 2026 · Agenda aberta · 2026 ·</textPath></text></svg><i></i></div>
+  <p class="abre__pe">Direção de arte e design<br>em Aracaju.</p>
+</section>
+
+<section class="globo" id="globo">
+  <div class="anel"><svg viewBox="0 0 400 400"><defs><path id="c1" d="M200,200 m-185,0 a185,185 0 1,1 370,0 a185,185 0 1,1 -370,0"/></defs><text><textPath href="#c1" textLength="1158" lengthAdjust="spacing">Direção de arte · Identidade visual · Editorial · Embalagem · Aracaju · 2026 ·</textPath></text></svg></div>
+  <div class="espia" id="espia"><img src="rec/35183096.webp" alt=""></div>
+  <span class="g__conta" id="g-conta">1 de 8</span>
+  <div class="g__nome"><b id="g-proj">Festival Maré Alta</b><span id="g-tipo">Identidade visual · 2026</span></div>
+  <p class="g__agora"><b>Fazendo agora:</b><br>capas do selo Chita</p>
+</section>
+
+<section class="destaques" id="destaques"></section>
+
+<section class="sobre" id="sobre">
+  <p class="sobre__txt">Noa desenha marca, revista e embalagem pra quem quer ser <em>lembrado</em> na primeira vez que é visto.</p>
+  <div class="sobre__lado">
+    31 anos, nascida em Itabaiana, morando em Aracaju. Antes do estúdio, cinco anos de agência.
+    <a href="#">noa@noavilar.com.br</a>
+    Instagram · LinkedIn · Behance
+  </div>
+  <div class="selo"><svg viewBox="0 0 132 132"><defs><path id="c3" d="M66,66 m-52,0 a52,52 0 1,1 104,0 a52,52 0 1,1 -104,0"/></defs><text><textPath href="#c3" textLength="324" lengthAdjust="spacing">Vamos conversar · 2026 · Vamos conversar · 2026 ·</textPath></text></svg><i></i></div>
+</section>
+
+<script src="/vendor/gsap.min.js"></script>
+<script src="/vendor/ScrollTrigger.min.js"></script>
+<script>
+  window.P = [
+    ['Festival Maré Alta', 'Identidade visual', '2026', '3760817', 'Identidade e campanha do festival de música da Orla'],
+    ['Revista Coroa', 'Editorial', '2025', '29072916', 'Projeto gráfico da revista de cultura de Sergipe'],
+    ['Selo Chita', 'Capas de disco', '2025', '30273930', 'Capas e identidade do selo de forró eletrônico'],
+    ['Cerveja Siri', 'Embalagem', '2024', '6951697', 'Rótulos da linha de cervejas da praia'],
+    ['Feira Benta', 'Sinalização', '2024', '7827905', 'Sinalização da feira de artesanato do Centro'],
+    ['Atelier Vidro', 'Direção de arte', '2023', '38317226', 'Fotos de catálogo de um ateliê de vidro soprado'],
+    ['Teatro Atalaia', 'Cartazes', '2022', '6343290', 'Temporada de cartazes do teatro'],
+    ['Banda Mangue Seco', 'Identidade visual', '2021', '10341547', 'Marca e capa do primeiro disco'],
+  ];
+  window.ROSTOS = ['35183096', '2859327', '29072916', '6343290', '10341547'];
+  gsap.registerPlugin(ScrollTrigger);
+  history.scrollRestoration = 'manual';
+
+  /* 1. abertura: anel de capas em 3D atravessando o nome */
+  const roda = document.getElementById('roda'), N = P.length, R = Math.min(innerWidth * 0.36, 520);
+  roda.innerHTML = P.map((p, k) => `<div class="carta" style="transform: rotateY(${k * 360 / N}deg) translateZ(${R}px)"><img src="img/${p[3]}.jpg" alt=""></div>`).join('');
+  gsap.set(roda, { rotateX: -12, rotateZ: 6 });
+  const giro = gsap.to(roda, { rotateY: 360, duration: 26, ease: 'none', repeat: -1 });
+  gsap.from('#nome span', { yPercent: 100, opacity: 0, duration: 1.1, ease: 'expo.out', stagger: 0.05 });
+  gsap.to('#nome', { scaleX: 1.08, scaleY: 0.86, duration: 2.6, ease: 'sine.inOut', yoyo: true, repeat: -1, delay: 1.2 });
+  const FL = [['rec/7827905.webp', 8, 8, 230, 1.4], ['rec/38317226.webp', 78, 10, 90, 2.2], ['rec/7828661.webp', 70, 62, 150, 1.0], ['rec/40227388.webp', 16, 60, 80, 1.8]];
+  const abre = document.getElementById('abre'), fls = [];
+  FL.forEach(([src, x, y, w, prof], k) => {
+    const e = document.createElement('img'); e.src = src; e.className = 'flutua'; Object.assign(e.style, { left: x + '%', top: y + '%', width: w + 'px' }); abre.append(e); fls.push([e, prof]);
+    gsap.from(e, { y: 80, opacity: 0, duration: 1.4, ease: 'expo.out', delay: 0.5 + k * 0.1 });
+    gsap.to(e, { y: '+=18', rotation: k % 2 ? 5 : -5, duration: 2.4 + k * 0.4, ease: 'sine.inOut', yoyo: true, repeat: -1 });
+  });
+  addEventListener('pointermove', (ev) => { const mx = ev.clientX / innerWidth - 0.5; fls.forEach(([e, p]) => gsap.to(e, { xPercent: -mx * 18 * p, duration: 1, ease: 'expo.out', overwrite: 'auto' })); });
+  // ao sair da abertura, as capas fecham pro centro, que é onde o globo nasce
+  gsap.timeline({ scrollTrigger: { trigger: abre, start: 'top top', end: 'bottom top', scrub: 0.6 } })
+    .to(roda, { scale: 0.15, opacity: 0, ease: 'power2.in' }, 0)
+    .to('#nome', { yPercent: -60, opacity: 0, ease: 'power2.in' }, 0)
+    .to(fls.map(([e]) => e), { y: -200, opacity: 0, ease: 'power2.in', stagger: 0.04 }, 0);
+
+  /* 3. destaques */
+  const dest = document.getElementById('destaques');
+  dest.innerHTML = P.slice(0, 4).map((p) => `<article class="dest"><div class="dest__capa"><img src="img/${p[3]}.jpg" alt=""></div>
+    <div class="dest__meta"><b>${p[4]}</b><span>${p[1]}, direção de arte</span><span>Aracaju</span><span>${p[2]}</span><a href="#">Ver projeto</a></div></article>`).join('');
+  dest.querySelectorAll('.dest__capa').forEach((c, k) => {
+    gsap.fromTo(c, { rotate: k % 2 ? 7 : -7, scale: 0.86 }, { rotate: k % 2 ? -5 : 5, scale: 1, ease: 'none', scrollTrigger: { trigger: c, start: 'top bottom', end: 'bottom top', scrub: true } });
+  });
+
+</script>
+
+<!-- 2. o globo, em Three.js -->
+<script type="module">
+  const THREE = await import('/vendor/three/three.module.min.js');
+  const sec = document.getElementById('globo');
+  const r = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  r.setPixelRatio(Math.min(2, devicePixelRatio)); sec.prepend(r.domElement);
+  const cena = new THREE.Scene(), cam = new THREE.PerspectiveCamera(30, 1, 0.1, 100); cam.position.z = 6;
+  const load = new THREE.TextureLoader();
+  const tex = P.map((p) => { const t = load.load('img/' + p[3] + '.jpg'); t.colorSpace = THREE.SRGBColorSpace; return t; });
+  const mat = new THREE.MeshBasicMaterial({ map: tex[0] });
+  const bola = new THREE.Mesh(new THREE.SphereGeometry(1, 96, 64), mat); bola.position.y = 0.12; cena.add(bola);
+  const espia = document.getElementById('espia'), img = espia.querySelector('img');
+  const tam = () => {
+    const w = innerWidth, h = innerHeight; r.setSize(w, h); cam.aspect = w / h; cam.updateProjectionMatrix();
+    const px = (h / 2) / Math.tan(THREE.MathUtils.degToRad(cam.fov / 2)) / cam.position.z;
+    espia.style.top = (h * 0.48 - px - 92) + 'px';
+  };
+  addEventListener('resize', tam); tam();
+  let i = 0, vel = 0.004, mx = 0, visivel = false;
+  addEventListener('pointermove', (e) => { mx = e.clientX / innerWidth - 0.5; });
+  const vai = (k) => {
+    if (k === i) return;
+    i = k;
+    gsap.timeline().to(bola.scale, { x: 0.86, y: 0.86, z: 0.86, duration: 0.3, ease: 'power2.in', onComplete: () => { mat.map = tex[i]; mat.needsUpdate = true; } })
+      .to(bola.scale, { x: 1, y: 1, z: 1, duration: 0.9, ease: 'expo.out' });
+    vel = 0.05;
+    document.getElementById('g-proj').textContent = P[i][0];
+    document.getElementById('g-tipo').textContent = P[i][1] + ' · ' + P[i][2];
+    document.getElementById('g-conta').textContent = (i + 1) + ' de ' + P.length;
+    gsap.timeline().to(espia, { y: 60, duration: 0.25, ease: 'power2.in', onComplete: () => { img.src = 'rec/' + ROSTOS[i % ROSTOS.length] + '.webp'; } }).to(espia, { y: 0, duration: 0.7, ease: 'expo.out' });
+  };
+  // a página para no globo; cada trecho de rolagem gira pro próximo projeto
+  ScrollTrigger.create({ trigger: sec, start: 'top top', end: () => '+=' + innerHeight * 0.6 * P.length, pin: true, anticipatePin: 1,
+    onUpdate: (s) => vai(Math.min(P.length - 1, Math.floor(s.progress * P.length))) });
+  // fundo claro do globo até os destaques, escuro de novo no contato
+  const destEl = document.getElementById('destaques');
+  const fundo = () => { const h = innerHeight; document.body.classList.toggle('claro', sec.getBoundingClientRect().top < h * 0.55 && destEl.getBoundingClientRect().bottom > h * 0.45); };
+  addEventListener('scroll', fundo, { passive: true }); fundo();
+  // o globo nasce do centro, onde as capas fecharam
+  gsap.from(bola.scale, { x: 0.05, y: 0.05, z: 0.05, ease: 'expo.out', scrollTrigger: { trigger: sec, start: 'top 80%', end: 'top top', scrub: 0.6 } });
+  new IntersectionObserver(([e]) => { visivel = e.isIntersecting; }).observe(sec);
+  (function f() {
+    if (visivel) {
+      vel += (0.004 - vel) * 0.04;
+      bola.rotation.y += vel; bola.rotation.x += (mx * 0.4 - bola.rotation.x) * 0.05;
+      espia.style.rotate = (mx * 14) + 'deg';
+      r.render(cena, cam);
+    }
+    requestAnimationFrame(f);
+  })();
+  ScrollTrigger.refresh();
+</script>
+<script type="application/json" id="demo-roteiro">
+{"inicio": 2.4, "passos": [["espera", 1.4], ["rola", "#globo", 2.2], ["espera", 1.2], ["rola", "+520", 1.6], ["espera", 1.0], ["rola", "+520", 1.6], ["espera", 1.0], ["rola", "+520", 1.6], ["espera", 1.0], ["rola", "#destaques", 2.2], ["rola", "+900", 2.6], ["espera", 0.6], ["rola", "fim", 2.4], ["espera", 1.6], ["recomeca"]]}
+</script>
+<script src="/modelos/demo.js"></script>
+</body>
+</html>

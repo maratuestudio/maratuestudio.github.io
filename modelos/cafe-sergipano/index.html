@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Café Sergipano · modelo de site MARATU</title>
+  <meta name="description" content="Modelo de site para café com agenda de eventos, feito pela MARATU.">
+  <meta name="theme-color" content="#17382B">
+  <meta name="robots" content="noindex">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/modelos/cafe-sergipano/assets/vila.css">
+</head>
+<body data-pagina="inicio">
+  <main>
+    <section class="abertura azulejo">
+      <div class="miolo">
+        <div class="texto">
+          <h1 class="t1">Café, forró e oficina no meio de Aracaju</h1>
+          <p class="lead">Café coado, cuscuz e programação toda semana.</p>
+          <div class="acoes">
+            <a class="bt" href="#agenda">Ver a agenda</a>
+            <a class="link-sec" href="#cardapio">Cardápio</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="secao" id="agenda">
+      <div class="miolo">
+        <div class="cab-secao">
+          <h2 class="t2">Próximos no café</h2>
+          <div class="trilho-nav">
+            <button class="seta-redonda" type="button" data-trilho="ant" aria-label="Eventos anteriores"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M16 10H5M9.5 5 4.5 10l5 5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <button class="seta-redonda" type="button" data-trilho="prox" aria-label="Próximos eventos"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h11M10.5 5 15.5 10l-5 5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          </div>
+        </div>
+      </div>
+      <div class="trilho-wrap"><ul class="trilho-cartazes" id="proximos"></ul></div>
+      <div class="miolo agenda-completa">
+        <div class="cab-lista">
+          <h3 class="t3">Agenda completa</h3>
+          <div class="filtros" id="filtros" role="group" aria-label="Filtrar agenda"></div>
+        </div>
+        <ul class="lista-agenda" id="lista"></ul>
+        <div class="comunidade" id="comunidade">
+          <div>
+            <span class="t3">Grupo do café no WhatsApp</span>
+          </div>
+          <a class="bt" href="#" target="_blank" rel="noopener">Entrar na comunidade</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="secao faixa-azul" id="cardapio">
+      <div class="miolo">
+        <div class="cab-secao"><h2 class="t2">Cardápio</h2></div>
+        <div id="cardapio-conteudo"></div>
+      </div>
+    </section>
+
+    <section class="secao vila" id="vila">
+      <div class="miolo">
+        <div class="texto">
+          <h2 class="t2">O café</h2>
+          <div id="sobre"></div>
+          <div class="horario" id="horario"></div>
+        </div>
+        <div class="fotos" id="fotos"></div>
+      </div>
+    </section>
+
+    <section class="secao duvidas" id="duvidas">
+      <div class="miolo">
+        <div class="lado">
+          <h2 class="t2">Dúvidas</h2>
+          <a class="bt" href="#" target="_blank" rel="noopener">WhatsApp</a>
+        </div>
+        <div class="faq" id="faq"></div>
+      </div>
+    </section>
+  </main>
+  <script src="/modelos/cafe-sergipano/assets/dados.js"></script>
+  <script src="/modelos/cafe-sergipano/assets/loja.js"></script>
+  <script src="/modelos/cafe-sergipano/assets/vila.js"></script>
+  <script src="/modelos/cafe-sergipano/assets/movimento.js"></script>
+<script type="application/json" id="demo-roteiro">
+{"inicio": 1.8, "passos": [["rola", "#agenda", 1.6], ["cursor", ".lista-agenda li:nth-child(2)", 0.8], ["cursor", ".lista-agenda li:nth-child(4)", 1.0], ["espera", 0.4], ["clica", "#filtros button:nth-child(2)"], ["espera", 1.0], ["rola", "#cardapio", 1.6], ["espera", 0.8], ["rola", "#vila", 1.6], ["espera", 1.4], ["recomeca"]]}
+</script>
+<script src="/modelos/demo.js"></script>
+</body>
+</html>

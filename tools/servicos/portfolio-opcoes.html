@@ -1,0 +1,17 @@
+<!doctype html>
+<!-- Comparador das aberturas do portfólio novo. Só ferramenta; não é página do site. -->
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex"><title>Portfólio, opções</title>
+<style>
+  body { margin: 0; background: #E9E5DC; font: 15px/1.4 -apple-system, system-ui, sans-serif; color: #111; }
+  .grade { display: grid; grid-template-columns: 1fr; gap: 34px; padding: 28px; max-width: 1500px; margin: 0 auto; }
+  figcaption { margin-bottom: 10px; } figcaption b { font-size: 22px; margin-right: 10px; }
+  .tela { position: relative; aspect-ratio: 1440 / 900; overflow: hidden; border-radius: 10px; border: 1.5px solid #111; background: #fff; }
+  .tela iframe { position: absolute; left: 0; top: 0; width: 1440px; height: 900px; border: 0; transform-origin: 0 0; }
+</style></head><body>
+<div class="grade">
+  <figure><figcaption><b>A, Globo</b>esfera 3D com a capa do projeto girando e trocando; um rosto recortado espia por cima; texto circular em volta (Little Troop + Studio Monstro)</figcaption><div class="tela"><iframe src="/modelos/portfolio-noa/opcoes.html?op=a"></iframe></div></figure>
+  <figure><figcaption><b>B, Recortes</b>lista de projetos com "2016 — 2026" enorme; recortes que balançam, dá pra arrastar, e o rosto deforma quando o mouse passa (Gustavo Faria)</figcaption><div class="tela"><iframe src="/modelos/portfolio-noa/opcoes.html?op=b"></iframe></div></figure>
+  <figure><figcaption><b>C, Órbita</b>nome gigante que estica, anel de capas girando em 3D e objetos recortados flutuando na frente, com selo girando (cartas em órbita do deck do André)</figcaption><div class="tela"><iframe src="/modelos/portfolio-noa/opcoes.html?op=c"></iframe></div></figure>
+</div>
+<script>const aj = () => document.querySelectorAll('.tela').forEach((t) => { t.querySelector('iframe').style.transform = `scale(${t.clientWidth / 1440})`; }); addEventListener('resize', aj); aj();</script>
+</body></html>

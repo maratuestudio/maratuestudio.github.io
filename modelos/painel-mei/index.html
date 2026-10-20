@@ -149,6 +149,27 @@
   .tag.atraso { background: #F6EAE8; color: var(--verm); }
   .tag.paga { background: #E6ECEF; color: var(--azul); }
   .lista > div { align-items: center; }
+
+  /* celular: a lateral vira barra no topo e as grades empilham */
+  @media (max-width: 760px) {
+    .app { grid-template-columns: minmax(0, 1fr); }
+    .lado, .tela { min-width: 0; }
+    .lado { position: sticky; top: 0; z-index: 5; height: auto; padding: 12px 14px; flex-direction: column; gap: 10px; }
+    .marca { margin-bottom: 0; }
+    .nav { flex-direction: row; overflow-x: auto; gap: 4px; scrollbar-width: none; }
+    .nav button { flex: 0 0 auto; padding: 8px 12px; font-size: 14px; }
+    .nav button::before { display: none; }
+    .lado__pe { display: none; }
+    .tela { padding: 20px 14px 40px; }
+    .cab { flex-wrap: wrap; }
+    .cab h1 { font-size: 22px; }
+    .kpis { grid-template-columns: 1fr 1fr; }
+    .duas { grid-template-columns: 1fr; }
+    .semana { grid-template-columns: 1fr; }
+    .dia { min-height: 0; }
+    .tabela { overflow-x: auto; }
+    .tabela table { min-width: 560px; }
+  }
 </style>
 
 </head>
@@ -227,7 +248,7 @@
       cobs: [['Loja Siri', 'Instalação', '2/3', 300], ['Hotel Orla', 'Contrato mensal', '1/1', 450], ['Paulo Nunes', 'Limpeza', '1/1', 150], ['Clínica Bem', 'Manutenção', '1/2', 200]] },
   };
   const q = new URLSearchParams(location.search);
-  const R = Object.assign({}, RAMOS[q.get('ramo')] || RAMOS.saude);
+  const R = Object.assign({}, Object.prototype.hasOwnProperty.call(RAMOS, q.get('ramo')) ? RAMOS[q.get('ramo')] : RAMOS.saude);
   ['nome', 'dono', 'oficio', 'cor'].forEach((k) => { if (q.get(k)) R[k] = q.get(k); });
   document.documentElement.style.setProperty('--lado', R.cor);
   document.documentElement.style.setProperty('--cor', R.cor);
@@ -249,11 +270,14 @@
   const VENCE = ['hoje', 'amanhã', 'qui', 'sex'];
   $('#l-cob').insertAdjacentHTML('beforeend', R.cobs.slice(0, 3).map(([c, it, p, v], k) => `<div><div><b>${c}</b><small>${it} · ${p}</small></div><em>${brl(v)} · ${VENCE[k]}</em></div>`).join(''));
   // agenda da semana
+  const H0 = new Date(), seg = new Date(H0); seg.setDate(H0.getDate() - ((H0.getDay() + 6) % 7));
+  const diaN = (k) => { const d = new Date(seg); d.setDate(seg.getDate() + k); return d.getDate(); };
+  const dm = (n) => { const d = new Date(H0); d.setDate(H0.getDate() + n); return String(d.getDate()).padStart(2, '0') + '/' + String(d.getMonth() + 1).padStart(2, '0'); };
   const DIAS = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex'];
-  $('#semana').innerHTML = DIAS.map((d, i) => `<div class="dia"><h4>${d} <span>${19 + i}</span></h4>${R.agenda.filter((_, k) => (k + i) % 2 === 0 || k === i).slice(0, 3).map(([h, t]) => `<div class="ev"><b>${h}</b>${t}</div>`).join('')}${i === 3 ? `<div class="ev pg"><b>Cobrança</b>${R.cobs[0][0]}, ${R.cobs[0][2]}</div>` : ''}</div>`).join('');
+  $('#semana').innerHTML = DIAS.map((d, i) => `<div class="dia"><h4>${d} <span>${diaN(i)}</span></h4>${R.agenda.filter((_, k) => (k + i) % 2 === 0 || k === i).slice(0, 3).map(([h, t]) => `<div class="ev"><b>${h}</b>${t}</div>`).join('')}${i === 3 ? `<div class="ev pg"><b>Cobrança</b>${R.cobs[0][0]}, ${R.cobs[0][2]}</div>` : ''}</div>`).join('');
   // cobranças
   const SIT = [['lembrete enviado', ''], ['atrasada 2 dias', 'atraso'], ['paga', 'paga'], ['vence sexta', '']];
-  $('#cobs').innerHTML = R.cobs.map(([c, it, p, v], k) => `<tr><td><b>${c}</b></td><td>${it}</td><td>${p}</td><td>${brl(v)}</td><td>${['20/10', '18/10', '17/10', '24/10'][k]}</td><td><span class="tag ${SIT[k][1]}">${SIT[k][0]}</span></td></tr>`).join('');
+  $('#cobs').innerHTML = R.cobs.map(([c, it, p, v], k) => `<tr><td><b>${c}</b></td><td>${it}</td><td>${p}</td><td>${brl(v)}</td><td>${[dm(0), dm(-2), dm(-3), dm(4)][k]}</td><td><span class="tag ${SIT[k][1]}">${SIT[k][0]}</span></td></tr>`).join('');
   // clientes
   $('#clis').innerHTML = R.cobs.concat(R.agenda.slice(0, 2).map(([, t]) => [t.split(' · ')[1] || t, '', '', R.preco])).map(([c, , , v], k) => `<tr><td><b>${c}</b></td><td>${['ontem', 'há 3 dias', 'há 1 semana', 'há 2 semanas', 'hoje', 'hoje'][k]}</td><td>${[12, 4, 7, 2, 9, 3][k]}</td><td>${brl(v * [6, 2, 3, 1, 5, 2][k])}</td><td>79 9••••-••${10 + k}</td></tr>`).join('');
   // caixa

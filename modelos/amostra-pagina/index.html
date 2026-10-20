@@ -28,6 +28,7 @@
   .abre::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,.35) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,.65) 100%); }
   .abre__txt { position: absolute; left: clamp(18px, 4vw, 48px); right: clamp(18px, 4vw, 48px); bottom: clamp(28px, 7vh, 64px); z-index: 2; }
   .nota { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; background: rgba(0,0,0,.35); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); padding: 7px 13px; border-radius: 99px; margin-bottom: 18px; }
+  .nota[hidden] { display: none; }
   .nota svg { width: 15px; height: 15px; color: #F5B83D; }
   h1 { font-family: 'Zodiak'; font-weight: 700; font-size: clamp(46px, 9vw, 120px); line-height: .92; letter-spacing: -.03em; max-width: 12ch; }
   .abre__onde { font-size: clamp(17px, 1.6vw, 21px); margin: 14px 0 26px; opacity: .92; }
@@ -113,18 +114,18 @@
       hor: ['9h às 18h', '9h às 18h', '9h às 18h', '9h às 18h', '9h às 18h', '9h às 14h', 'Fechado'] },
   };
   const q = new URLSearchParams(location.search);
-  const R = RAMOS[q.get('ramo')] || RAMOS.cafe;
+  const R = Object.prototype.hasOwnProperty.call(RAMOS, q.get('ramo')) ? RAMOS[q.get('ramo')] : RAMOS.cafe;
   const nome = q.get('nome') || 'Café do Largo', bairro = q.get('bairro') || 'Centro', cidade = q.get('cidade') || 'Aracaju';
-  const nota = q.get('nota') || '4,7', aval = q.get('avaliacoes') || '120', tipo = q.get('tipo') || R.tipo;
+  const nota = q.get('nota'), aval = q.get('avaliacoes'), tipo = q.get('tipo') || R.tipo;
   const whats = (q.get('whats') || '').replace(/\D/g, ''), cor = q.get('cor') || R.cor;
   document.documentElement.style.setProperty('--cor', cor);
   document.title = nome + ' · prévia MARATU';
   $('t-nome').textContent = nome; $('nome').textContent = nome; $('pe-nome').textContent = nome;
   $('onde').textContent = tipo + ' em ' + bairro + ', ' + cidade;
-  $('nota-txt').textContent = nota + ' no Google, ' + aval + ' avaliações';
+  if (nota && aval) $('nota-txt').textContent = nota + ' no Google, ' + aval + ' avaliações'; else $('nota').hidden = true;
   $('cta').textContent = R.cta; $('h-itens').textContent = R.titulo;
   const zap = 'https://wa.me/' + (whats ? '55' + whats.replace(/^55/, '') : '') + '?text=' + encodeURIComponent('Oi! Vi o site do ' + nome + ' e queria fazer um pedido.');
-  ['t-zap', 'zap1', 'zap2'].forEach((i) => { $(i).href = zap; $(i).target = '_blank'; });
+  ['t-zap', 'zap1', 'zap2'].forEach((i) => { $(i).href = zap; $(i).target = '_blank'; $(i).rel = 'noopener'; });
   const busca = encodeURIComponent(nome + ' ' + bairro + ' ' + cidade);
   $('chegar').href = 'https://www.google.com/maps/search/?api=1&query=' + busca;
   $('mapa').src = 'https://www.google.com/maps?q=' + busca + '&output=embed';

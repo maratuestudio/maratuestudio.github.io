@@ -10,7 +10,7 @@
 
   var API = "https://maratu-api.raphaelnascimento.workers.dev";
   var AREIA = "#F0ECE4", PRETO = "#0D0D0B", LARANJA = "#C8501A";
-  var lista = [], buscas = [], temChave = true, loaded = false, abertos = false, uso = null, teto = 900;
+  var lista = [], buscas = [], temChave = true, loaded = false, abertos = false, uso = null, teto = 900, job = null;
 
   function pad2(n) { return String(n).padStart(2, "0"); }
   function hoje() { var d = new Date(); return d.getFullYear() + "-" + pad2(d.getMonth() + 1) + "-" + pad2(d.getDate()); }
@@ -60,7 +60,7 @@
   function carregar() {
     return fetch(API + "/api/prospec", { headers: { Authorization: "Bearer " } })
       .then(function (r) { return r.ok ? r.json() : null; })
-      .then(function (d) { lista = (d && d.prospec) || []; buscas = (d && d.buscas) || []; temChave = !d || d.chave !== false; uso = d && d.uso; teto = (d && d.teto) || 900; loaded = true; render(); })
+      .then(function (d) { lista = (d && d.prospec) || []; buscas = (d && d.buscas) || []; temChave = !d || d.chave !== false; uso = d && d.uso; teto = (d && d.teto) || 900; job = d && d.job; loaded = true; render(); })
       .catch(function () { loaded = true; render(); });
   }
   function acao(id, a) {
@@ -119,7 +119,7 @@
         .then(function (d) {
           $("#pbOk").disabled = false;
           if (d.erro) { $("#pbRes").textContent = "Erro: " + d.erro; return; }
-          $("#pbRes").textContent = d.vistos + " negócios vistos, " + d.novos + " novos na fila" + (d.cidades ? ", em " + d.cidades + " cidades" : "") + "." + (d.parou ? " Parou: " + d.parou + "." : "");
+          $("#pbRes").textContent = d.agendado ? "Buscando em " + d.agendado + " cidades. Os negócios entram aos poucos." : d.vistos + " negócios vistos, " + d.novos + " novos na fila.";
           if ($("#pbS").checked) {
             var ja = buscas.some(function (x) { return x.consulta === b.consulta && x.cidade === b.cidade; });
             if (!ja) { buscas.push(b); fetch(API + "/api/prospec/buscas", { method: "PUT", headers: { "Content-Type": "application/json", Authorization: "Bearer " }, body: JSON.stringify({ buscas: buscas }) }); }
@@ -184,6 +184,7 @@
         '<button type="button" id="pbNova" style="padding:9px 14px;border:1.5px solid ' + PRETO + ';border-radius:10px;background:' + LARANJA + ';color:' + AREIA + ';font-family:inherit;font-weight:800;font-size:13px;cursor:pointer;box-shadow:2px 2px 0 0 ' + PRETO + ';">Buscar negócios</button>' +
       "</div>" +
       '<div style="display:flex;gap:8px;margin-bottom:14px;">' + tile(doDia.length, "pra hoje") + tile(env7, "enviadas em 7 dias") + tile(resp, "responderam") + tile(depois.length, "aguardando") + "</div>" +
+      (job ? '<div style="font-family:inherit;font-size:13px;font-weight:700;color:' + PRETO + ';margin-bottom:10px;">Buscando: ' + job.feito + " de " + job.total + " cidades, " + job.novos + " novos</div>" : "") +
       (!temChave ? '<div style="font-family:inherit;font-size:13px;color:#B23A2E;margin-bottom:10px;">Busca desligada</div>' : "") +
       (!loaded ? '<div style="font-family:inherit;font-size:13px;opacity:.5;">carregando…</div>' :
         doDia.length ? doDia.map(cartao).join("") : '<div style="font-family:inherit;font-size:13px;color:' + PRETO + ';opacity:.55;margin-bottom:6px;">Nada pra hoje.</div>') +

@@ -10,8 +10,8 @@
     document.addEventListener('gesturechange', function(e){ e.preventDefault(); });
     document.addEventListener('gestureend', function(e){ e.preventDefault(); });
   </script>
-  <title>MARATU Estúdio — Impressão 3D · Design · Arte</title>
-  <meta name="description" content="Estúdio criativo de Aracaju especializado em impressão 3D, design e arte. Pôsteres, adesivos e peças exclusivas com identidade sergipana.">
+  <title>MARATU Estúdio · Impressão 3D, Design e Sites · Aracaju</title>
+  <meta name="description" content="Estúdio criativo de Aracaju. Loja de pôsteres, adesivos e peças em impressão 3D com identidade sergipana, e sites para pequenos negócios.">
 
   <link rel="preload" as="image" href="hero-1-2000.webp" media="(max-width: 768.98px)" fetchpriority="high">
   <link rel="preload" as="image" href="hero-1-2880.webp" media="(min-width: 768.99px) and (max-width: 1440.98px)" fetchpriority="high">
@@ -25,8 +25,8 @@
 
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://maratu.com.br/">
-  <meta property="og:title" content="MARATU Estúdio — Impressão 3D · Design · Arte">
-  <meta property="og:description" content="Estúdio criativo de Aracaju especializado em impressão 3D, design e arte. Pôsteres, adesivos e peças exclusivas com identidade sergipana.">
+  <meta property="og:title" content="MARATU Estúdio · Impressão 3D, Design e Sites · Aracaju">
+  <meta property="og:description" content="Estúdio criativo de Aracaju. Loja de pôsteres, adesivos e peças em impressão 3D com identidade sergipana, e sites para pequenos negócios.">
   <meta property="og:image" content="https://maratu.com.br/og-image.png">
   <meta property="og:locale" content="pt_BR">
   <link rel="canonical" href="https://maratu.com.br/">
@@ -42,7 +42,7 @@
         "url": "https://maratu.com.br/",
         "logo": "https://maratu.com.br/apple-touch-icon-v5.png",
         "image": "https://maratu.com.br/og-image.png",
-        "description": "Estúdio criativo de Aracaju especializado em impressão 3D, design e arte.",
+        "description": "Estúdio criativo de Aracaju. Loja de peças em impressão 3D e sites para pequenos negócios.",
         "foundingDate": "2026",
         "email": "estudio@maratu.com.br",
         "address": {
@@ -73,7 +73,7 @@
         "url": "https://maratu.com.br/",
         "image": "https://maratu.com.br/og-image.png",
         "logo": "https://maratu.com.br/apple-touch-icon-v5.png",
-        "description": "Impressão 3D, design e identidade visual para empresas e pessoas em Aracaju e em todo o Brasil.",
+        "description": "Sites para pequenos negócios, impressão 3D, design e identidade visual para empresas e pessoas em Aracaju e em todo o Brasil.",
         "priceRange": "R$",
         "currenciesAccepted": "BRL",
         "telephone": "+5579991957415",
@@ -100,8 +100,8 @@
   }
   </script>
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="MARATU Estúdio — Impressão 3D · Design · Arte">
-  <meta name="twitter:description" content="Estúdio criativo de Aracaju especializado em impressão 3D, design e arte.">
+  <meta name="twitter:title" content="MARATU Estúdio · Impressão 3D, Design e Sites · Aracaju">
+  <meta name="twitter:description" content="Estúdio criativo de Aracaju. Loja de peças em impressão 3D e sites para pequenos negócios.">
   <meta name="twitter:image" content="https://maratu.com.br/og-image.png">
 
 
@@ -224,6 +224,22 @@
     }
     .header__nav a:hover { opacity: 0.5; }
     .header__nav a.active { border-bottom-color: currentColor; }
+    .header__nav { align-items: center; }
+    /* Porta dos sites: pílula laranja (a loja usa dourado). Mesmo gesto das outras pílulas: borda 1.5px + sombra dura */
+    .header .header__nav a.nav-sites {
+      padding: 8px 16px; border: 1.5px solid var(--preto); border-radius: 999px;
+      background: var(--laranja); color: #fff;
+      box-shadow: 3px 3px 0 0 var(--preto);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .header .header__nav a.nav-sites:hover { opacity: 1; box-shadow: 1px 1px 0 0 var(--preto); transform: translate(2px, 2px); }
+    .header .header__nav a.nav-sites:active { box-shadow: 0 0 0 0 var(--preto); transform: translate(3px, 3px); }
+    /* tablet em pé: cabe logo, 4 itens, pílula e rádio sem encostar */
+    @media (min-width: 769px) and (max-width: 1050px) {
+      .header__nav { gap: 14px; }
+      .header__nav a { font-size: 11px; letter-spacing: 0.08em; }
+      .header .header__nav a.nav-sites { padding: 7px 12px; }
+    }
     .btn-loja {
       display: inline-flex; align-items: center; gap: 10px;
       padding: 8px 14px 8px 18px;
@@ -309,6 +325,13 @@
       text-transform: uppercase;
       color: var(--preto);
     }
+    .mobile-menu__nav a.nav-sites {
+      align-self: flex-start; padding: 10px 20px 9px;
+      background: var(--laranja); color: #fff; font-weight: 900;
+      font-size: clamp(1.2rem, 5vw, 1.9rem);
+      border: 1.5px solid var(--preto); border-radius: 999px;
+      box-shadow: 3px 3px 0 0 var(--preto);
+    }
     .mobile-menu__close {
       position: absolute; top: 24px; right: var(--margem);
       font-family: var(--mono); font-size: 0.7rem;
@@ -334,6 +357,7 @@
       position: relative;
       overflow: hidden;
     }
+    @media (min-width: 769px) { .hero { min-height: calc(100vh - 84px); } }
     .hero__bg {
       position: absolute; inset: 0;
       overflow: hidden;
@@ -431,6 +455,40 @@
       .hero__title { grid-column: 1 / -1; }
       .hero__subtitle { grid-column: 1 / -1; }
       .hero__scroll { display: none; }
+    }
+
+    /* ── PORTA PARA OS SITES: faixa fina entre o hero e a loja ── */
+    .porta-sites {
+      display: flex; align-items: center; justify-content: space-between; gap: 16px 32px;
+      padding: clamp(14px, 1.6vw, 20px) var(--margem);
+      background: var(--preto); color: var(--areia); text-decoration: none;
+      border-top: 1px solid rgba(240,236,228,0.14);
+    }
+    .porta-sites__txt { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+    .porta-sites__titulo {
+      font-family: var(--clother); font-weight: 900; text-transform: uppercase;
+      font-size: clamp(1.1rem, 2vw, 1.6rem); line-height: 1; letter-spacing: -0.01em;
+    }
+    .porta-sites__fato {
+      font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.1em;
+      text-transform: uppercase; color: rgba(240,236,228,0.55);
+    }
+    .porta-sites__cta {
+      display: inline-flex; align-items: center; gap: 10px; flex-shrink: 0;
+      font-family: var(--clother); font-weight: 900; font-size: 0.8rem;
+      letter-spacing: 0.05em; text-transform: uppercase; color: #fff;
+      background: var(--laranja); border: 1.5px solid var(--preto); border-radius: 999px;
+      box-shadow: 3px 3px 0 0 var(--areia);
+      padding: 12px 22px; transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .porta-sites:hover .porta-sites__cta { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 0 var(--areia); }
+    .porta-sites:active .porta-sites__cta { transform: translate(2px, 2px); box-shadow: 1px 1px 0 0 var(--areia); }
+    .porta-sites__cta .cta-curto { display: none; }
+    @media (max-width: 600px) {
+      .porta-sites { gap: 12px; }
+      .porta-sites__cta { padding: 11px 18px; }
+      .porta-sites__cta .cta-longo { display: none; }
+      .porta-sites__cta .cta-curto { display: inline; }
     }
 
     /* ── MONO (utilitário) ── */
@@ -719,6 +777,8 @@
     }
     .footer__servicos a { color: inherit; text-decoration: none; transition: color 0.2s ease; }
     .footer__servicos a:hover { color: var(--laranja); }
+    .footer__links { font-size: 0.62rem; }
+    .footer__links a { display: inline-block; padding: 6px 2px; }
     .secao-indica {
       background: var(--areia); color: var(--preto);
       padding: clamp(48px,7vh,96px) var(--margem);
@@ -1556,13 +1616,11 @@
   <header class="header">
     <a href="index.html" class="header__logo">maratu</a>
     <nav class="header__nav">
-      <a href="index.html" class="active">início</a>
       <a href="#loja">loja</a>
       <a href="#sobre">estúdio</a>
       <a href="/mare">diário</a>
       <a href="#contato">contato</a>
-      <a href="/servicos" data-servico="geral" data-origem="menu">serviços</a>
-      <a href="#parceiros">parceiros</a>
+      <a href="/servicos" class="nav-sites" data-servico="geral" data-origem="menu">sites para negócios</a>
     </nav>
     <div class="header__actions">
       <button class="btn-radio" id="mr-btn" aria-label="Radio MARATU 88.5 FM" aria-expanded="false"><div class="mr-btn-speaker"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div><div class="mr-btn-display" id="mr-display">88.5 FM</div><span class="mr-btn-led"></span></button>
@@ -1575,12 +1633,11 @@
   <div class="mobile-menu" aria-hidden="true" id="mobile-menu">
     <button class="mobile-menu__close" aria-label="fechar menu">fechar</button>
     <nav class="mobile-menu__nav">
-      <a href="index.html">início</a>
       <a href="#loja">loja</a>
+      <a href="/servicos" class="nav-sites" data-servico="geral" data-origem="menu">sites para negócios</a>
       <a href="#sobre">estúdio</a>
       <a href="/mare">diário</a>
       <a href="#contato">contato</a>
-      <a href="/servicos" data-servico="geral" data-origem="menu">serviços</a>
       <a href="#parceiros">parceiros</a>
     </nav>
     <div class="mobile-menu__footer">
@@ -1603,7 +1660,7 @@
     </div>
     <div class="hero__label-tl">
       <span class="mono">EST. 2026 — Aracaju, SE</span>
-      <span class="mono">Impressão 3D · Design · Arte</span>
+      <span class="mono">Loja · Sites · Impressão 3D</span>
     </div>
     <div class="hero__label-tr">
       <span class="mono">em atividade</span>
@@ -1616,6 +1673,15 @@
       <div class="hero__scroll-line"></div>
     </div>
   </section>
+
+  <!-- ①b PORTA PARA OS SITES -->
+  <a class="porta-sites" href="/servicos" data-servico="sites_sistemas" data-origem="faixa_topo">
+    <span class="porta-sites__txt">
+      <span class="porta-sites__titulo">Sites para negócios</span>
+      <span class="porta-sites__fato">Esta loja é um exemplo</span>
+    </span>
+    <span class="porta-sites__cta"><span class="cta-longo">Ver os sites</span><span class="cta-curto">Ver</span><span aria-hidden="true">↗</span></span>
+  </a>
 
   <!-- ② LOJA -->
   <section id="loja" class="loja-secao reveal">
@@ -1821,7 +1887,7 @@
         <span class="t1" style="color:var(--preto);display:block;margin-bottom:4px;">O que é a</span>
         <span class="t2" style="color:var(--laranja);display:block;margin-bottom:20px;">MARATU</span>
       </h2>
-      <p class="tdesc" style="color:rgba(13,13,11,0.65);max-width:620px;margin-bottom:0;">Somos um estúdio criativo fundado em 2026 — mas com muitos anos de bairrismo sergipano na bagagem. Fazemos impressão 3D, design e arte, cada peça pensada do início ao fim, assinada pela gente.</p>
+      <p class="tdesc" style="color:rgba(13,13,11,0.65);max-width:620px;margin-bottom:0;">Somos um estúdio criativo fundado em 2026 — mas com muitos anos de bairrismo sergipano na bagagem. Fazemos impressão 3D, design, arte e sites para negócios, cada peça pensada do início ao fim, assinada pela gente.</p>
     </div>
   </div>
 
@@ -1865,7 +1931,7 @@
         </div>
         <div class="clink-pill__body">
           <span class="clink-pill__tag">WhatsApp</span>
-          <span class="clink-pill__nome">Faça seu pedido aqui</span>
+          <span class="clink-pill__nome">Pedido ou orçamento</span>
         </div>
         <span class="clink-pill__arrow">↗</span>
       </a>
@@ -2012,7 +2078,8 @@
     <div class="footer__baseline">
       <p>© 2026 MARATU Estúdio · feito em Aracaju · Projeta o Mangue!</p>
       <p class="footer__servicos"><a href="/servicos?utm_source=site&amp;utm_medium=rodape" data-servico="geral" data-origem="rodape">Site, loja e sistema feitos pela MARATU. Fazemos o seu ↗</a></p>
-      <p>Impressão 3D · Design · Arte</p>
+      <p>Loja · Sites · Impressão 3D · Design</p>
+      <p class="footer__servicos footer__links"><a href="/mare">Diário</a> · <a href="#parceiros">Parceiros</a></p>
     </div>
     <div class="aratu-mascote" aria-hidden="true" style="margin-top:28px;">
       <svg viewBox="0 0 318.24 152.9" xmlns="http://www.w3.org/2000/svg">

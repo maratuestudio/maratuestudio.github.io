@@ -23,10 +23,14 @@
   .bt--vazio { background: transparent; color: #fff; box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.7); }
 
   .abre { position: relative; height: 100vh; height: 100svh; min-height: 560px; color: #fff; overflow: hidden; }
-  .abre img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transform: scale(1.06); animation: assenta 1.6s var(--ease) both; }
+  .abre > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transform: scale(1.06); animation: assenta 1.6s var(--ease) both; }
   @keyframes assenta { to { transform: scale(1); } }
   .abre::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,.35) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,.65) 100%); }
   .abre__txt { position: absolute; left: clamp(18px, 4vw, 48px); right: clamp(18px, 4vw, 48px); bottom: clamp(28px, 7vh, 64px); z-index: 2; }
+  .logo { border-radius: 50%; object-fit: cover; background: #fff; box-shadow: 0 0 0 2px rgba(255,255,255,.85); }
+  .logo--topo { width: 34px; height: 34px; }
+  .logo--hero { width: 76px; height: 76px; margin-bottom: 18px; }
+  .topo__nome { display: flex; align-items: center; gap: 10px; }
   .nota { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; background: rgba(0,0,0,.35); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); padding: 7px 13px; border-radius: 99px; margin-bottom: 18px; }
   .nota[hidden] { display: none; }
   .nota svg { width: 15px; height: 15px; color: #F5B83D; }
@@ -42,6 +46,7 @@
   .fotos { display: grid; grid-template-columns: 1.3fr 1fr 1fr; gap: 10px; padding: 0 clamp(18px, 4vw, 48px); }
   .fotos img { width: 100%; aspect-ratio: 4/5; object-fit: cover; border-radius: 6px; }
   .fotos img:first-child { aspect-ratio: auto; height: 100%; }
+  .info--sem-hor { grid-template-columns: 1fr !important; }
   .info { display: grid; grid-template-columns: 1fr 1.3fr; gap: clamp(24px, 4vw, 56px); align-items: start; }
   .hor { width: 100%; border-collapse: collapse; font-size: 17px; }
   .hor td { padding: 12px 0; border-bottom: 1px solid rgba(21,21,18,.15); }
@@ -68,11 +73,12 @@
 <body>
 <svg width="0" height="0" style="position:absolute"><symbol id="ic-zap" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.1 5.1 0 0 0 1.1 2.7 11.7 11.7 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.2-.2-.5-.3Z"/></symbol><symbol id="ic-estrela" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z"/></symbol></svg>
 
-<header class="topo"><b id="t-nome"></b><a class="bt bt--claro" id="t-zap"><svg><use href="#ic-zap"/></svg>WhatsApp</a></header>
+<header class="topo"><div class="topo__nome"><img class="logo logo--topo" id="logo-t" alt="" hidden onerror="this.hidden=true"><b id="t-nome"></b></div><a class="bt bt--claro" id="t-zap"><svg><use href="#ic-zap"/></svg>WhatsApp</a></header>
 
 <section class="abre">
   <img id="foto-1" alt="">
   <div class="abre__txt">
+    <img class="logo logo--hero" id="logo-h" alt="" hidden onerror="this.hidden=true">
     <span class="nota" id="nota"><svg><use href="#ic-estrela"/></svg><span id="nota-txt"></span></span>
     <h1 id="nome"></h1>
     <p class="abre__onde" id="onde"></p>
@@ -82,7 +88,7 @@
 
 <section class="sec"><h2 id="h-itens"></h2><div class="itens" id="itens"></div></section>
 
-<div class="fotos"><img id="foto-2" alt=""><img id="foto-3" alt=""><img id="foto-1b" alt=""></div>
+<div class="fotos"><img id="foto-2" alt="" loading="lazy"><img id="foto-3" alt="" loading="lazy"><img id="foto-1b" alt="" loading="lazy"></div>
 
 <section class="sec info">
   <div><h2>Horário</h2><table class="hor" id="hor"></table></div>
@@ -115,28 +121,37 @@
   };
   const q = new URLSearchParams(location.search);
   const R = Object.prototype.hasOwnProperty.call(RAMOS, q.get('ramo')) ? RAMOS[q.get('ramo')] : RAMOS.cafe;
-  const nome = q.get('nome') || 'Café do Largo', bairro = q.get('bairro') || 'Centro', cidade = q.get('cidade') || 'Aracaju';
+  const demo = !q.get('nome');
+  const nome = q.get('nome') || 'Café do Largo', bairro = q.get('bairro') || (demo ? 'Centro' : ''), cidade = q.get('cidade') || (demo ? 'Aracaju' : '');
+  const lugar = [bairro, cidade].filter(Boolean).join(', ');
   const nota = q.get('nota'), aval = q.get('avaliacoes'), tipo = q.get('tipo') || R.tipo;
-  const whats = (q.get('whats') || '').replace(/\D/g, ''), cor = q.get('cor') || R.cor;
+  const whats = (q.get('whats') || '').replace(/\D/g, ''), cor = /^#[0-9a-f]{3,8}$/i.test(q.get('cor') || '') ? q.get('cor') : R.cor;
   document.documentElement.style.setProperty('--cor', cor);
   document.title = nome + ' · prévia MARATU';
   $('t-nome').textContent = nome; $('nome').textContent = nome; $('pe-nome').textContent = nome;
-  $('onde').textContent = tipo + ' em ' + bairro + ', ' + cidade;
+  $('onde').textContent = lugar ? tipo + ' em ' + lugar : tipo;
   if (nota && aval) $('nota-txt').textContent = nota + ' no Google, ' + aval + ' avaliações'; else $('nota').hidden = true;
   $('cta').textContent = R.cta; $('h-itens').textContent = R.titulo;
   const zap = 'https://wa.me/' + (whats ? '55' + whats.replace(/^55/, '') : '') + '?text=' + encodeURIComponent('Oi! Vi o site do ' + nome + ' e queria fazer um pedido.');
   ['t-zap', 'zap1', 'zap2'].forEach((i) => { $(i).href = zap; $(i).target = '_blank'; $(i).rel = 'noopener'; });
-  const busca = encodeURIComponent(nome + ' ' + bairro + ' ' + cidade);
+  const busca = encodeURIComponent([nome, bairro, cidade].filter(Boolean).join(' '));
   $('chegar').href = 'https://www.google.com/maps/search/?api=1&query=' + busca;
   $('mapa').src = 'https://www.google.com/maps?q=' + busca + '&output=embed';
-  $('end').textContent = bairro + ', ' + cidade;
+  $('end').textContent = lugar;
   ['foto-1', 'foto-2', 'foto-3'].forEach((i, k) => { $(i).src = 'f/' + R.foto + '-' + (k + 1) + '.jpg'; });
   $('foto-1b').src = 'f/' + R.foto + '-1.jpg';
-  $('itens').innerHTML = R.itens.map((t) => `<div>${t}</div>`).join('');
+  const itensQ = (q.get('itens') || '').split('|').map((t) => t.trim()).filter(Boolean).slice(0, 6);
+  $('itens').innerHTML = (itensQ.length ? itensQ : R.itens).map((t) => `<div>${t.replace(/[<>&]/g, '')}</div>`).join('');
+  // logo (foto do perfil) quando vier no endereço
+  const logo = q.get('logo');
+  if (logo && /^(logos\/[\w][\w.-]*$|https:\/\/)/.test(logo)) { ['logo-t', 'logo-h'].forEach((i) => { $(i).src = logo; $(i).hidden = false; }); }
+  // horário inventado não vai pra um negócio real: só aparece se vier no endereço (hor=7h às 19h)
+  const horTxt = (q.get('hor') || '').replace(/[<>&"]/g, '').slice(0, 40);
+  if (!demo && !horTxt) { document.querySelector('.info').classList.add('info--sem-hor'); $('hor').closest('div').hidden = true; }
   const DIAS = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'], hoje = (new Date().getDay() + 6) % 7;
   // o botão flutuante só aparece depois da abertura, onde os botões já estão na tela
   new IntersectionObserver(([e]) => { $('zap2').classList.toggle('ve', !e.isIntersecting); document.querySelector('.topo').classList.toggle('fundo', !e.isIntersecting); }, { threshold: 0.15 }).observe(document.querySelector('.abre'));
-  $('hor').innerHTML = DIAS.map((d, k) => `<tr class="${k === hoje ? 'hoje' : ''}"><td>${d}</td><td>${R.hor[k]}</td></tr>`).join('');
+  $('hor').innerHTML = DIAS.map((d, k) => `<tr class="${k === hoje ? 'hoje' : ''}"><td>${d}</td><td>${horTxt || R.hor[k]}</td></tr>`).join('');
 })();
 </script>
 </body>

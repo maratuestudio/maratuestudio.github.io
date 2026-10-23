@@ -243,19 +243,28 @@
     encomenda: { nome: 'Doces da Lu', dono: 'Luana', oficio: 'Bolos e doces', cor: '#6B3A1E', novo: '+ Encomenda', item: 'Encomenda', preco: 180,
       agenda: [['08:00', 'Bolo 2 kg · Patrícia', 'retirada às 15h'], ['10:00', '100 docinhos · Buffet Maré', 'entrega'], ['13:00', 'Torta de limão · Sérgio', 'retirada'], ['16:00', 'Bolo de aniversário · Rita', 'tema fundo do mar'], ['18:00', 'Comprar leite condensado', '']],
       cobs: [['Buffet Maré', '300 docinhos', '2/2', 270], ['Rita Alves', 'Bolo de aniversário', '1/2', 120], ['Patrícia Cruz', 'Bolo 2 kg', '1/1', 180], ['Escola Arco-íris', 'Festa junina', '3/3', 350]] },
+    treino: { nome: 'Studio Corpo', dono: 'Rafa', oficio: 'Personal trainer', cor: '#1F3A5F', novo: '+ Treino', item: 'Plano', preco: 90,
+      agenda: [['06:00', 'Treino · Marina', 'pernas'], ['07:00', 'Treino · Roberto', 'funcional'], ['08:30', 'Avaliação · Joana', 'primeira vez'], ['17:00', 'Treino · Paulo', 'corrida'], ['18:30', 'Treino em dupla · Lia e Caio', '']],
+      cobs: [['Marina Lima', 'Plano mensal', '2/3', 360], ['Roberto Dias', 'Plano trimestral', '1/3', 300], ['Joana Prado', 'Avaliação', '1/1', 120], ['Lia e Caio', 'Plano em dupla', '1/1', 480]] },
     tecnico: { nome: 'Frio Certo', dono: 'Diego', oficio: 'Ar-condicionado', cor: '#1F3A5F', novo: '+ Visita', item: 'Serviço', preco: 150,
       agenda: [['08:00', 'Limpeza split · Paulo', 'Atalaia'], ['10:00', 'Instalação 12 mil · Loja Siri', 'Centro'], ['13:30', 'Orçamento · Clínica Bem', 'Jardins'], ['15:00', 'Recarga de gás · Vera', 'Farolândia'], ['17:00', 'Limpeza 2 aparelhos · Hotel Orla', '']],
       cobs: [['Loja Siri', 'Instalação', '2/3', 300], ['Hotel Orla', 'Contrato mensal', '1/1', 450], ['Paulo Nunes', 'Limpeza', '1/1', 150], ['Clínica Bem', 'Manutenção', '1/2', 200]] },
   };
   const q = new URLSearchParams(location.search);
   const R = Object.assign({}, Object.prototype.hasOwnProperty.call(RAMOS, q.get('ramo')) ? RAMOS[q.get('ramo')] : RAMOS.saude);
-  ['nome', 'dono', 'oficio', 'cor'].forEach((k) => { if (q.get(k)) R[k] = q.get(k); });
+  ['nome', 'dono', 'oficio'].forEach((k) => { if (q.get(k)) R[k] = q.get(k); });
+  if (/^#[0-9a-f]{3,8}$/i.test(q.get('cor') || '')) R.cor = q.get('cor');
   document.documentElement.style.setProperty('--lado', R.cor);
   document.documentElement.style.setProperty('--cor', R.cor);
   document.title = R.nome + ' · painel · modelo MARATU';
-  $('#sinal').textContent = R.nome.trim()[0].toLowerCase();
-  $('#nome').textContent = R.nome; $('#oficio').textContent = R.oficio; $('#dono-pe').textContent = R.dono;
-  $('#saud').textContent = 'Bom dia, ' + R.dono;
+  $('#sinal').textContent = (Array.from(R.nome.trim())[0] || '?').toLowerCase();
+  const logo = q.get('logo'), sn = $('#sinal');
+  if (logo && /^(logos\/[\w][\w.-]*$|https:\/\/)/.test(logo)) { const im = document.createElement('img'); im.src = logo.startsWith('logos/') ? '/modelos/amostra-pagina/' + logo : logo; im.alt = ''; im.onerror = () => { sn.textContent = (Array.from(R.nome.trim())[0] || '?').toLowerCase(); }; im.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:inherit'; sn.textContent = ''; sn.appendChild(im); sn.style.overflow = 'hidden'; }
+  $('#nome').textContent = R.nome; $('#oficio').textContent = R.oficio; $('#dono-pe').textContent = (q.get('nome') && !q.get('dono')) ? R.nome : R.dono;
+  const hh = new Date().getHours(), oi = hh < 12 ? 'Bom dia' : hh < 18 ? 'Boa tarde' : 'Boa noite';
+  // com o nome do negócio e sem o dono, a saudação não leva o nome inventado do modelo
+  const semDono = q.get('nome') && !q.get('dono');
+  $('#saud').textContent = semDono ? oi : oi + ', ' + R.dono;
   $('#bt-novo').textContent = R.novo; $('#bt-novo2').textContent = R.novo; $('#th-item').textContent = R.item;
   // números do dia e do ano
   const hoje = R.agenda.length, mes = R.preco * 46, ano = Math.round(mes * 9.2 / 100) * 100;

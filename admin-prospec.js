@@ -28,26 +28,27 @@
   function amostraUrl(p) {
     var mei = p.tipo === "mei";
     var q = new URLSearchParams({ ramo: p.ramo || (mei ? "saude" : "cafe"), nome: p.nome || "" });
-    if (!mei) { if (p.bairro) q.set("bairro", p.bairro); if (p.cidade) q.set("cidade", p.cidade); if (p.nota) q.set("nota", nota(p.nota)); if (p.avaliacoes) q.set("avaliacoes", p.avaliacoes); }
+    if (!mei) { if (p.bairro) q.set("bairro", p.bairro); if (p.cidade) q.set("cidade", p.cidade); }
     return "https://maratu.com.br/modelos/" + (mei ? "painel-mei" : "amostra-pagina") + "/?" + q.toString();
   }
-  function quem() { return "Faço sites pra pequeno negócio, tudo pelo WhatsApp."; }
+  /* Primeiro toque já leva a prévia pronta, com a logo e a cor do negócio. Nada de nota do Google
+     nem de dado que mostre que o contato saiu de uma lista: quem recebe vê o trabalho feito. */
+  function link(p) { return p.previa || amostraUrl(p); }
   function mensagem(p) {
-    var n = p.nome || "", passo = Number(p.passo) || 0, onde = p.cidade ? " em " + p.cidade : "";
-    var google = nota(p.nota) + " de nota e " + (p.avaliacoes || "") + " avaliações";
-    if (p.tipo === "mei") {
+    var n = p.nome || "", passo = Number(p.passo) || 0, mei = p.tipo === "mei";
+    if (mei) {
       return [
-        "Oi! Achei o " + n + " no Google: " + google + ". Uma pergunta: hoje a agenda, quem te deve e quanto já faturou no ano ficam no WhatsApp e no caderno? Eu faço um painel pra isso, pra MEI. Posso montar um com o nome do " + n + " pra você ver como fica?",
-        "Montei o painel do " + n + " pra você ver: " + amostraUrl(p) + " Tem a agenda da semana com lembrete pro cliente, as parcelas a cobrar e quanto falta pro limite do MEI. É o mesmo que eu uso na minha empresa.",
-        "Os apps de agenda cobram de R$40 a R$100 por mês, pra sempre. O painel sai por R$1.200, pago uma vez, e é seu. Os preços estão em maratu.com.br/servicos",
-        "Vou parar por aqui. O painel com o nome do " + n + " fica no link. Se quiser usar de verdade, é só responder."
+        "Oi! Aqui é o Raphael, da MARATU. Montei um painel pro " + n + ": agenda com lembrete pro cliente, cobrança de parcela e quanto falta pro limite do MEI. Dá uma olhada: " + link(p) + " Se gostar, me responde aqui.",
+        "Conseguiu ver o painel? Uso o mesmo na minha empresa. Se quiser ver com os seus clientes de verdade, me manda os nomes que eu coloco.",
+        "Os apps de agenda cobram de R$40 a R$100 por mês, pra sempre. O painel sai por R$1.200, pago uma vez, e fica seu. Os detalhes estão em maratu.com.br/servicos",
+        "Vou parar por aqui pra não encher. O painel continua no link, se um dia quiser: " + link(p)
       ][Math.min(passo, 3)];
     }
     return [
-      "Oi! Procurei " + (p.consulta || { cafe: "café", restaurante: "restaurante", beleza: "salão de beleza", saude: "clínica", loja: "loja" }[p.ramo] || "negócio") + onde + " no Google e achei o " + n + ": " + google + ". Mas não tem site, então quem chega por ali não vê o que vocês oferecem nem como pedir. " + quem(p) + " Posso montar uma prévia da página de vocês, sem custo e sem compromisso?",
-      "Montei a prévia do " + n + " pra você ver em vez de imaginar: " + amostraUrl(p) + " O botão de pedido já abre o WhatsApp de vocês com a mensagem escrita. Se servir, a gente conversa. Se não, fica de presente.",
-      "Uma página dessas sai por R$900, paga uma vez. O site da MARATU, que eu fiz, aparece em primeiro quando alguém procura o estúdio no Google. Os preços estão em maratu.com.br/servicos",
-      "Vou parar por aqui pra não encher. A prévia continua sua. Se um dia quiser colocar no ar, é só responder essa mensagem."
+      "Oi! Aqui é o Raphael, da MARATU, um estúdio que faz sites pra pequeno negócio. Fiz uma página pro " + n + " pra mostrar como o site de vocês poderia ficar: " + link(p) + " Se gostarem, me respondam aqui. Se não, sem problema.",
+      "Conseguiram ver a página? Aqui estão outros sites que fiz: maratu.com.br/servicos",
+      "Pra colocar no ar com o endereço de vocês, sai por R$900, pago uma vez. Dá pra trocar o que quiser: texto, foto, horário. Se fizer sentido, é só responder aqui.",
+      "Vou parar por aqui pra não encher. A página continua no link, se um dia quiserem: " + link(p)
     ][Math.min(passo, 3)];
   }
   var PASSO = ["Primeiro contato", "Amostra", "Preço", "Despedida"];
@@ -171,7 +172,9 @@
     var sec = secao();
     if (!sec) return;
     var d = hoje();
-    var vivos = lista.filter(function (p) { return p.status === "fila" || p.status === "enviando"; });
+    var todos = lista.filter(function (p) { return p.status === "fila" || p.status === "enviando"; });
+    var vivos = todos.filter(function (p) { return !!p.previa; });
+    var reserva = todos.length - vivos.length;
     var doDia = vivos.filter(function (p) { return p.proximo && p.proximo <= d; });
     var depois = vivos.filter(function (p) { return !p.proximo || p.proximo > d; });
     var semana = new Date(Date.now() - 7 * 864e5).toISOString();
@@ -180,14 +183,14 @@
     var tile = function (n, l) { return '<div style="flex:1;min-width:0;border:1.5px solid ' + PRETO + ';border-radius:12px;background:#fff;padding:10px 12px;"><b style="display:block;font-family:inherit;font-size:20px;color:' + PRETO + ';">' + n + '</b><span style="font-family:inherit;font-size:11.5px;color:' + PRETO + ';opacity:.6;">' + l + "</span></div>"; };
     sec.innerHTML =
       '<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px;">' +
-        '<h2 style="font-family:inherit;font-weight:900;font-size:17px;color:' + PRETO + ';margin:0;">Abordagem' + (uso ? ' <span style="opacity:.5;font-weight:700;font-size:12px;">Google ' + (uso.n || 0) + "/" + teto + " no mês</span>" : "") + '</h2>' +
+        '<h2 style="font-family:inherit;font-weight:900;font-size:17px;color:' + PRETO + ';margin:0;">Abordagem' + (uso ? ' <span style="opacity:.5;font-weight:700;font-size:12px;">Google ' + (Number(uso.n) || 0) + "/" + (Number(teto) || 0) + " no mês</span>" : "") + '</h2>' +
         '<button type="button" id="pbNova" style="padding:9px 14px;border:1.5px solid ' + PRETO + ';border-radius:10px;background:' + LARANJA + ';color:' + AREIA + ';font-family:inherit;font-weight:800;font-size:13px;cursor:pointer;box-shadow:2px 2px 0 0 ' + PRETO + ';">Buscar negócios</button>' +
       "</div>" +
-      '<div style="display:flex;gap:8px;margin-bottom:14px;">' + tile(doDia.length, "pra hoje") + tile(env7, "enviadas em 7 dias") + tile(resp, "responderam") + tile(depois.length, "aguardando") + "</div>" +
-      (job ? '<div style="font-family:inherit;font-size:13px;font-weight:700;color:' + PRETO + ';margin-bottom:10px;">Buscando: ' + job.feito + " de " + job.total + " cidades, " + job.novos + " novos</div>" : "") +
+      '<div style="display:flex;gap:8px;margin-bottom:14px;">' + tile(doDia.length, "pra hoje") + tile(env7, "enviadas em 7 dias") + tile(resp, "responderam") + tile(depois.length, "aguardando") + tile(reserva, "na reserva") + "</div>" +
+      (job ? '<div style="font-family:inherit;font-size:13px;font-weight:700;color:' + PRETO + ';margin-bottom:10px;">Buscando: ' + (Number(job.feito) || 0) + " de " + (Number(job.total) || 0) + " cidades, " + (Number(job.novos) || 0) + " novos</div>" : "") +
       (!temChave ? '<div style="font-family:inherit;font-size:13px;color:#B23A2E;margin-bottom:10px;">Busca desligada</div>' : "") +
       (!loaded ? '<div style="font-family:inherit;font-size:13px;opacity:.5;">carregando…</div>' :
-        doDia.length ? doDia.map(cartao).join("") : '<div style="font-family:inherit;font-size:13px;color:' + PRETO + ';opacity:.55;margin-bottom:6px;">Nada pra hoje.</div>') +
+        doDia.length ? doDia.map(cartao).join("") : '<div style="font-family:inherit;font-size:13px;color:' + PRETO + ';opacity:.55;margin-bottom:6px;">Nenhuma prévia pronta pra hoje.</div>') +
       (depois.length ? '<button type="button" id="pbDepois" style="margin-top:4px;border:none;background:none;font-family:inherit;font-weight:800;font-size:13px;color:' + PRETO + ';text-decoration:underline;cursor:pointer;padding:0;">' + (abertos ? "Esconder" : "Ver") + (depois.length === 1 ? " o que está aguardando" : " os " + depois.length + " que estão aguardando") + "</button>" +
         (abertos ? '<div style="margin-top:10px;">' + depois.map(function (p) { return '<div style="display:flex;justify-content:space-between;gap:10px;font-family:inherit;font-size:13px;padding:8px 0;border-bottom:1px solid rgba(13,13,11,.12);color:' + PRETO + ';"><span><b>' + esc(p.nome) + "</b> · " + esc(p.cidade || "") + "</span><span style=\"opacity:.6;\">" + PASSO[Math.min(Number(p.passo) || 0, 3)] + " em " + esc(fmtBR(p.proximo)) + "</span></div>"; }).join("") + "</div>" : "") : "");
     sec.querySelector("#pbNova").addEventListener("click", abrirBusca);

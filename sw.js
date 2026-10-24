@@ -1,5 +1,5 @@
 /* MARATU Admin Service Worker — offline + instant open */
-const VERSION = 'maratu-admin-v37';
+const VERSION = 'maratu-admin-v38';
 const STATIC_CACHE = 'static-' + VERSION;
 const RUNTIME_CACHE = 'runtime-' + VERSION;
 
@@ -100,7 +100,7 @@ self.addEventListener('fetch', (event) => {
   if (url.hostname === API_HOST) return;
   if (url.origin !== self.location.origin) return;
 
-  const isHtml = /\/(admin|login)\.html$/.test(url.pathname) || url.pathname === '/admin.webmanifest';
+  const isHtml = /\/(admin|login|painel)\.html$/.test(url.pathname) || /\.webmanifest$/.test(url.pathname);
   const isScript = /\.js$/.test(url.pathname);
   const isFont = /\.(ttf|woff2?|otf)$/.test(url.pathname);
   const isImg = /\.(png|jpg|jpeg|webp|svg|ico|gif|avif)$/.test(url.pathname);

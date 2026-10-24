@@ -357,7 +357,8 @@
       position: relative;
       overflow: hidden;
     }
-    @media (min-width: 769px) { .hero { min-height: calc(100vh - 84px); } }
+    /* a faixa dos sites tem 84px exatos no desktop e o hero cede esse espaço: ela cabe inteira na primeira tela */
+    @media (min-width: 769px) { .hero { min-height: calc(100vh - 84px); } .porta-sites { height: 84px; padding-top: 0; padding-bottom: 0; box-sizing: border-box; } }
     .hero__bg {
       position: absolute; inset: 0;
       overflow: hidden;

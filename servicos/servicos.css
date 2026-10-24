@@ -442,7 +442,7 @@ button { font: inherit; cursor: pointer; border: none; background: none; color: 
    inclina conforme a velocidade; dentro dela o modelo roda ao vivo. */
 /* o cartão não sai do lugar (sair do lugar faz piscar na borda); só a sombra cresce */
 .plano[data-prev] { transition: box-shadow .25s var(--ease); }
-.plano[data-prev]:hover { box-shadow: 8px 8px 0 0 var(--preto); }
+@media (hover: hover) { .plano[data-prev]:hover { box-shadow: 8px 8px 0 0 var(--preto); } }  /* no toque a sombra não fica grudada */
 /* "reduzir movimento" (ou sem ?motion): cartão e janela sem animação */
 .reduz .plano[data-prev], .reduz .peek, .reduz .peek__janela { transition: none; }
 .peek { position: fixed; left: 0; top: 0; z-index: 80; width: min(400px, 34vw); pointer-events: none; opacity: 0; transition: opacity .22s var(--ease); will-change: transform; }

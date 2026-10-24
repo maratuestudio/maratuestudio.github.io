@@ -267,7 +267,7 @@
     const entra = (card, e) => {
       if (e.pointerType !== 'mouse') return;   // notebook com tela de toque: o dedo não aciona
       if (!peek) monta();
-      clearTimeout(saida); clearTimeout(limpa);
+      clearTimeout(saida); clearTimeout(limpa); naMira = false;
       alvo.x = e.clientX; alvo.y = e.clientY;
       if (atual !== card) {
         atual = card;
@@ -285,18 +285,35 @@
       if (!andando) { andando = true; ultimo = performance.now(); requestAnimationFrame(quadro); }
     };
     const sai = () => {
+      if (!peek) return;
       clearTimeout(saida);
       // um respiro: ao passar de um cartão pro vizinho a janela continua no ar
       saida = setTimeout(() => {
-        atual = null; clearTimeout(espera);
+        atual = null; clearTimeout(espera); naMira = false;
         peek.classList.remove('on');
         limpa = setTimeout(() => { if (!atual) tela.replaceChildren(); }, 500);
       }, 90);
     };
+    // com o mouse em cima do botão do cartão a janela se recolhe, pra não tapar o que a pessoa vai clicar
+    let naMira = false;
+    const mira = (e) => {
+      if (!peek || !atual) return;
+      const agora = !!e.target.closest('a, button');
+      if (agora === naMira) return;
+      naMira = agora;
+      peek.classList.toggle('on', !agora);
+      if (!agora && !andando) { andando = true; ultimo = performance.now(); requestAnimationFrame(quadro); }
+    };
     $$('[data-prev]').forEach((card) => {
       card.addEventListener('pointerenter', (e) => entra(card, e));
-      card.addEventListener('pointermove', (e) => { alvo.x = e.clientX; alvo.y = e.clientY; });
-      card.addEventListener('pointerleave', sai);
+      card.addEventListener('pointermove', (e) => {
+        if (e.pointerType !== 'mouse') return;
+        alvo.x = e.clientX; alvo.y = e.clientY; mira(e);
+      });
+      card.addEventListener('pointerleave', (e) => { if (e.pointerType === 'mouse') sai(); });
     });
+    // clicou num WhatsApp (abre outra aba) ou trocou de janela: o exemplo para de rodar
+    addEventListener('blur', sai);
+    document.addEventListener('visibilitychange', () => { if (document.hidden) sai(); });
   }
 })();

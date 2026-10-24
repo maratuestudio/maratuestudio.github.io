@@ -436,3 +436,19 @@ button { font: inherit; cursor: pointer; border: none; background: none; color: 
 .footer__baseline { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; font-size: .9rem; color: rgba(13,13,11,0.6); }
 .footer__baseline a:hover { color: var(--laranja); }
 @media (max-width: 640px) { .footer__baseline { flex-direction: column; } }
+
+/* ── PRÉVIA AO PASSAR O MOUSE: o modelo roda bem fraco atrás do cartão ── */
+.plano[data-prev], .extra[data-prev] { position: relative; isolation: isolate; }
+.plano[data-prev] > :not(.prev), .extra[data-prev] > :not(.prev) { position: relative; z-index: 1; }
+.plano[data-prev] > .plano__selo { position: absolute; }
+.prev {
+  position: absolute; inset: 0; z-index: 0; overflow: hidden; border-radius: inherit;
+  pointer-events: none; opacity: 0; transition: opacity .5s var(--ease);
+  background: var(--areia-sombra) center top / cover no-repeat;
+}
+.prev.on { opacity: .34; }
+/* véu na cor do cartão: o site aparece, o texto do plano continua calmo */
+.prev::after { content: ''; position: absolute; inset: 0; z-index: 2; background: linear-gradient(180deg, color-mix(in srgb, var(--cartao, var(--areia)) 62%, transparent), color-mix(in srgb, var(--cartao, var(--areia)) 78%, transparent)); }
+.plano--destaque { --cartao: #fff; }
+.prev iframe { position: absolute; left: 50%; top: 50%; border: 0; transform-origin: 0 0; opacity: 0; transition: opacity .6s var(--ease); }
+.prev iframe.pronto { opacity: 1; }

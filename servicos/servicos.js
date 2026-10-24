@@ -218,4 +218,48 @@
 
   /* ---------- modelos: cada celular roda quando aparece ---------- */
   $$('.mod__fone.vivo').forEach((c) => vigia.observe(c));
+
+  /* ---------- planos: ao passar o mouse, o modelo roda bem fraco atrás do cartão ----------
+     Só com mouse de verdade e sem "economizar dados". O iframe nasce na primeira passada
+     e sai quando o mouse sai; antes disso o cartão não carrega nada. */
+  const comMouse = matchMedia('(hover: hover) and (pointer: fine)').matches;
+  const poupa = navigator.connection && navigator.connection.saveData;
+  if (comMouse && !poupa) {
+    const [W, H] = TAM.tela;
+    $$('[data-prev]').forEach((card) => {
+      let camada = null, espera = 0, saida = 0;
+      const entra = () => {
+        clearTimeout(saida);
+        if (camada) { camada.classList.add('on'); return; }
+        espera = setTimeout(() => {
+          camada = document.createElement('div');
+          camada.className = 'prev';
+          camada.setAttribute('aria-hidden', 'true'); camada.inert = true;
+          if (card.dataset.prevCapa) camada.style.backgroundImage = `url('${card.dataset.prevCapa}')`;
+          card.appendChild(camada);
+          if (!reduzir) {
+            const f = document.createElement('iframe');
+            f.src = card.dataset.prev + '?demo';
+            f.title = 'Demonstração ao vivo'; f.tabIndex = -1;
+            Object.assign(f.style, { width: W + 'px', height: H + 'px' });
+            // cobre o cartão inteiro, centralizado, sem esticar
+            const k = Math.max(card.clientWidth / W, card.clientHeight / H);
+            f.style.transform = `scale(${k}) translate(-50%, -50%)`;
+            f.addEventListener('load', () => setTimeout(() => f.classList.add('pronto'), 500));
+            camada.appendChild(f);
+          }
+          requestAnimationFrame(() => camada && camada.classList.add('on'));
+        }, 160);
+      };
+      const sai = () => {
+        clearTimeout(espera);
+        if (!camada) return;
+        camada.classList.remove('on');
+        const c = camada;
+        saida = setTimeout(() => { c.remove(); if (camada === c) camada = null; }, 700);
+      };
+      card.addEventListener('pointerenter', entra);
+      card.addEventListener('pointerleave', sai);
+    });
+  }
 })();

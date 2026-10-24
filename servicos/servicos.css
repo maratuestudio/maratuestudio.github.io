@@ -437,18 +437,23 @@ button { font: inherit; cursor: pointer; border: none; background: none; color: 
 .footer__baseline a:hover { color: var(--laranja); }
 @media (max-width: 640px) { .footer__baseline { flex-direction: column; } }
 
-/* ── PRÉVIA AO PASSAR O MOUSE: o modelo roda bem fraco atrás do cartão ── */
-.plano[data-prev], .extra[data-prev] { position: relative; isolation: isolate; }
-.plano[data-prev] > :not(.prev), .extra[data-prev] > :not(.prev) { position: relative; z-index: 1; }
-.plano[data-prev] > .plano__selo { position: absolute; }
-.prev {
-  position: absolute; inset: 0; z-index: 0; overflow: hidden; border-radius: inherit;
-  pointer-events: none; opacity: 0; transition: opacity .5s var(--ease);
-  background: var(--areia-sombra) center top / cover no-repeat;
-}
-.prev.on { opacity: .34; }
-/* véu na cor do cartão: o site aparece, o texto do plano continua calmo */
-.prev::after { content: ''; position: absolute; inset: 0; z-index: 2; background: linear-gradient(180deg, color-mix(in srgb, var(--cartao, var(--areia)) 62%, transparent), color-mix(in srgb, var(--cartao, var(--areia)) 78%, transparent)); }
-.plano--destaque { --cartao: #fff; }
-.prev iframe { position: absolute; left: 50%; top: 50%; border: 0; transform-origin: 0 0; opacity: 0; transition: opacity .6s var(--ease); }
-.prev iframe.pronto { opacity: 1; }
+/* ── EXEMPLO QUE FLUTUA JUNTO DO MOUSE (planos e extras) ──
+   O cartão não muda. Uma janela de navegador segue o cursor com mola e
+   inclina conforme a velocidade; dentro dela o modelo roda ao vivo. */
+.plano[data-prev] { transition: transform .25s var(--ease), box-shadow .25s var(--ease); }
+.plano[data-prev]:hover { transform: translate(-2px, -2px); box-shadow: 7px 7px 0 0 var(--preto); }
+/* área de segurança: o cartão sobe 2px e o cursor na borda não pode "cair fora" e piscar */
+.plano[data-prev]::after { content: ''; position: absolute; inset: -4px; }
+/* "reduzir movimento" (ou sem ?motion): cartão e janela sem animação */
+.reduz .plano[data-prev], .reduz .peek, .reduz .peek__janela { transition: none; }
+.reduz .plano[data-prev]:hover { transform: none; }
+.peek { position: fixed; left: 0; top: 0; z-index: 80; width: min(400px, 34vw); pointer-events: none; opacity: 0; transition: opacity .22s var(--ease); will-change: transform; }
+.peek.on { opacity: 1; }
+.peek__janela { transform-origin: 0 0; scale: .9; transition: scale .4s var(--ease); background: var(--preto); border: 1.5px solid var(--preto); border-radius: 14px; box-shadow: 6px 6px 0 0 var(--preto); overflow: hidden; }
+.peek.on .peek__janela { scale: 1; }
+.peek__barra { height: 30px; display: flex; align-items: center; gap: 6px; padding: 0 12px; background: var(--areia); border-bottom: 1.5px solid var(--preto); }
+.peek__barra i { width: 9px; height: 9px; border-radius: 50%; border: 1.5px solid var(--preto); flex-shrink: 0; }
+.peek__nome { margin-left: 8px; font-size: 12px; font-weight: 700; opacity: .7; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.peek__tela { position: relative; aspect-ratio: 16 / 10; overflow: hidden; background: var(--areia-sombra) center top / cover no-repeat; }
+.peek__tela iframe { position: absolute; left: 0; top: 0; border: 0; transform-origin: 0 0; opacity: 0; transition: opacity .5s var(--ease); }
+.peek__tela iframe.pronto { opacity: 1; }

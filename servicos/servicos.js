@@ -219,46 +219,83 @@
   /* ---------- modelos: cada celular roda quando aparece ---------- */
   $$('.mod__fone.vivo').forEach((c) => vigia.observe(c));
 
-  /* ---------- planos: ao passar o mouse, o modelo roda bem fraco atrás do cartão ----------
-     Só com mouse de verdade e sem "economizar dados". O iframe nasce na primeira passada
-     e sai quando o mouse sai; antes disso o cartão não carrega nada. */
+  /* ---------- planos: o exemplo flutua junto do mouse ----------
+     Só com mouse de verdade e sem "economizar dados". Nada carrega antes da primeira
+     passada. Uma janela só, que segue o cursor com mola e inclina pela velocidade;
+     a capa aparece na hora e o modelo ao vivo entra por cima quando estiver de pé. */
   const comMouse = matchMedia('(hover: hover) and (pointer: fine)').matches;
   const poupa = navigator.connection && navigator.connection.saveData;
+  document.documentElement.classList.toggle('reduz', reduzir);
   if (comMouse && !poupa) {
     const [W, H] = TAM.tela;
-    $$('[data-prev]').forEach((card) => {
-      let camada = null, espera = 0, saida = 0;
-      const entra = () => {
-        clearTimeout(saida);
-        if (camada) { camada.classList.add('on'); return; }
-        espera = setTimeout(() => {
-          camada = document.createElement('div');
-          camada.className = 'prev';
-          camada.setAttribute('aria-hidden', 'true'); camada.inert = true;
-          if (card.dataset.prevCapa) camada.style.backgroundImage = `url('${card.dataset.prevCapa}')`;
-          card.appendChild(camada);
-          if (!reduzir) {
-            const f = document.createElement('iframe');
-            f.src = card.dataset.prev + '?demo';
-            f.title = 'Demonstração ao vivo'; f.tabIndex = -1;
-            Object.assign(f.style, { width: W + 'px', height: H + 'px' });
-            // cobre o cartão inteiro, centralizado, sem esticar
-            const k = Math.max(card.clientWidth / W, card.clientHeight / H);
-            f.style.transform = `scale(${k}) translate(-50%, -50%)`;
-            f.addEventListener('load', () => setTimeout(() => f.classList.add('pronto'), 500));
-            camada.appendChild(f);
-          }
-          requestAnimationFrame(() => camada && camada.classList.add('on'));
-        }, 160);
-      };
-      const sai = () => {
+    let peek, janela, tela, nome, atual = null, saida = 0, espera = 0, limpa = 0, andando = false, ultimo = 0;
+    const alvo = { x: 0, y: 0 }, pos = { x: 0, y: 0 };
+    const monta = () => {
+      peek = document.createElement('div');
+      peek.className = 'peek'; peek.setAttribute('aria-hidden', 'true'); peek.inert = true;
+      peek.innerHTML = '<div class="peek__janela"><div class="peek__barra"><i></i><i></i><i></i><span class="peek__nome"></span></div><div class="peek__tela"></div></div>';
+      document.body.appendChild(peek);
+      janela = $('.peek__janela', peek); tela = $('.peek__tela', peek); nome = $('.peek__nome', peek);
+    };
+    // onde a janela quer ficar: ao lado do cursor, virando de lado perto da borda
+    const destino = () => {
+      const pw = peek.offsetWidth, ph = peek.offsetHeight;
+      let x = alvo.x + 28, y = alvo.y + 24;
+      if (x + pw > innerWidth - 12) x = alvo.x - pw - 28;
+      if (y + ph > innerHeight - 12) y = alvo.y - ph - 24;
+      return { x: Math.max(12, x), y: Math.max(12, y) };
+    };
+    const quadro = (t) => {
+      if (!peek.classList.contains('on')) { andando = false; return; }
+      const dt = Math.min(0.05, (t - ultimo) / 1000); ultimo = t;
+      const k = reduzir ? 1 : 1 - Math.exp(-dt * 11);
+      const d = destino();
+      pos.x += (d.x - pos.x) * k; pos.y += (d.y - pos.y) * k;
+      const atraso = d.x - pos.x;
+      peek.style.transform = `translate3d(${pos.x.toFixed(1)}px, ${pos.y.toFixed(1)}px, 0)`;
+      janela.style.transform = reduzir ? '' : `rotate(${Math.max(-7, Math.min(7, atraso * 0.05)).toFixed(2)}deg)`;
+      requestAnimationFrame(quadro);
+    };
+    const viva = (card) => {
+      const f = document.createElement('iframe');
+      f.src = card.dataset.prev + '?demo';
+      f.title = 'Demonstração ao vivo'; f.tabIndex = -1;
+      Object.assign(f.style, { width: W + 'px', height: H + 'px', transform: `scale(${tela.clientWidth / W})` });
+      f.addEventListener('load', () => setTimeout(() => f.classList.add('pronto'), 500));
+      tela.appendChild(f);
+    };
+    const entra = (card, e) => {
+      if (e.pointerType !== 'mouse') return;   // notebook com tela de toque: o dedo não aciona
+      if (!peek) monta();
+      clearTimeout(saida); clearTimeout(limpa);
+      alvo.x = e.clientX; alvo.y = e.clientY;
+      if (atual !== card) {
+        atual = card;
         clearTimeout(espera);
-        if (!camada) return;
-        camada.classList.remove('on');
-        const c = camada;
-        saida = setTimeout(() => { c.remove(); if (camada === c) camada = null; }, 700);
-      };
-      card.addEventListener('pointerenter', entra);
+        tela.replaceChildren();
+        tela.style.backgroundImage = card.dataset.prevCapa ? `url('${card.dataset.prevCapa}')` : '';
+        nome.textContent = card.dataset.prevNome || '';
+        if (!reduzir) espera = setTimeout(() => { if (atual === card) viva(card); }, 220);
+      }
+      if (!peek.classList.contains('on')) {
+        const d = destino(); pos.x = d.x; pos.y = d.y;
+        peek.style.transform = `translate3d(${pos.x}px, ${pos.y}px, 0)`;
+        peek.classList.add('on');
+      }
+      if (!andando) { andando = true; ultimo = performance.now(); requestAnimationFrame(quadro); }
+    };
+    const sai = () => {
+      clearTimeout(saida);
+      // um respiro: ao passar de um cartão pro vizinho a janela continua no ar
+      saida = setTimeout(() => {
+        atual = null; clearTimeout(espera);
+        peek.classList.remove('on');
+        limpa = setTimeout(() => { if (!atual) tela.replaceChildren(); }, 500);
+      }, 90);
+    };
+    $$('[data-prev]').forEach((card) => {
+      card.addEventListener('pointerenter', (e) => entra(card, e));
+      card.addEventListener('pointermove', (e) => { alvo.x = e.clientX; alvo.y = e.clientY; });
       card.addEventListener('pointerleave', sai);
     });
   }

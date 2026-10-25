@@ -805,7 +805,7 @@
       (vivo ? '<div class="rot">' + PASSO[passo] + (p.proximo ? ", " + quandoRel(p.proximo) : "") + '</div><div class="msg-grande">' + esc(mensagem(p)) + "</div>" +
         '<button class="bt preto cheio" id="fIg">' + IC.ig + "Copiar e abrir Instagram</button>" : "") +
       '<div class="grade-bts"><button class="bt" id="fVer">' + IC.olho + "Ver o site</button>" + (/^https:\/\//.test(p.maps || "") ? '<button class="bt" id="fMaps">Maps</button>' : '<button class="bt" id="fInsta">Instagram</button>') + "</div>" +
-      (vivo ? '<div class="grade-bts"><button class="bt acento" data-ac="enviei">Enviei</button><button class="bt" data-ac="respondeu" style="background:var(--c-lead);color:#fff;">Respondeu</button><button class="bt" data-ac="pular">Amanhã</button><button class="bt" data-ac="parar">Parar</button></div>' : "") +
+      (vivo ? '<div class="grade-bts"><button class="bt acento" data-ac="enviei">Enviei</button><button class="bt lead-bt" data-ac="respondeu">Respondeu</button><button class="bt" data-ac="pular">Amanhã</button><button class="bt" data-ac="parar">Parar</button></div>' : "") +
       (p.status === "selecionado" ? '<button class="bt cheio" data-ac="devolver">Devolver pra reserva</button>' : "") +
       (p.status === "fila" && !p.previa ? '<button class="bt preto cheio" data-ac="escolher">Escolher pra virar site</button>' : ""),
       function (c) {
@@ -1142,17 +1142,17 @@
 
   /* --- mais --- */
   function folhaMais() {
-    var tema = ""; try { tema = localStorage.getItem("maratu.theme") || ""; } catch (e) {}
+    var tema = ""; try { tema = localStorage.getItem("maratu.painel.tema") || ""; } catch (e) {}
     var LINKS = [["Painel antigo", "/admin.html"], ["Produtos, preços e selos", "/admin.html"], ["Números do site e do Instagram", "/admin.html"], ["Conteúdo e newsletter", "/admin.html"], ["Ajustes e notificações", "/admin.html"]];
     abrirFolha("Mais",
-      '<div class="rot">Cor</div>' + pilulas("tema", [["", "Laranja"], ["dia", "Azul"], ["noite", "Noite"]], tema) +
+      '<div class="rot">Cor</div>' + pilulas("tema", [["", "Areia"], ["laranja", "Laranja"], ["noite", "Noite"]], tema) +
       '<div class="cartao lista" style="box-shadow:none;">' + LINKS.map(function (l) { return '<a class="linha toca" href="' + l[1] + '" style="color:inherit;text-decoration:none;"><div class="o"><b>' + l[0] + "</b></div>" + IC.fora + "</a>"; }).join("") + "</div>" +
       '<button class="bt cheio" id="mAtual">Atualizar os dados</button><button class="bt cheio perigo" id="mSair">Sair</button>',
       function (c) {
         ligaPilulas(c);
         c.querySelector('[data-pil="tema"]').addEventListener("click", function () {
           var t = pil(c, "tema");
-          try { localStorage.setItem("maratu.theme", t); } catch (e) {}
+          try { localStorage.setItem("maratu.painel.tema", t); } catch (e) {}
           if (t) document.documentElement.setAttribute("data-theme", t); else document.documentElement.removeAttribute("data-theme");
           corDaBarra();
         });
@@ -1167,7 +1167,7 @@
   }
   function corDaBarra() {
     var t = document.documentElement.getAttribute("data-theme") || "";
-    document.querySelector('meta[name="theme-color"]').setAttribute("content", t === "dia" ? "#2E6FC4" : t === "noite" ? "#0D0D0B" : "#C8501A");
+    document.querySelector('meta[name="theme-color"]').setAttribute("content", t === "laranja" ? "#C8501A" : t === "noite" ? "#0D0D0B" : "#E8E2D6");
   }
 
   /* ---------- barra ---------- */

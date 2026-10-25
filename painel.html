@@ -5,10 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' https://maratu-api.raphaelnascimento.workers.dev; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests;" />
 <meta name="robots" content="noindex, nofollow" />
-<meta name="theme-color" content="#C8501A" />
+<meta name="theme-color" content="#E8E2D6" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="mobile-web-app-capable" content="yes" />
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
 <meta name="apple-mobile-web-app-title" content="MARATU" />
 <link rel="manifest" href="painel.webmanifest" />
 <link rel="icon" href="favicon-v6.png" />
@@ -34,7 +34,7 @@
   </script>
 <script>
   (function () {
-    var th = ""; try { th = localStorage.getItem("maratu.theme") || ""; } catch (e) {}
+    var th = ""; try { th = localStorage.getItem("maratu.painel.tema") || ""; } catch (e) {}
     if (th) document.documentElement.setAttribute("data-theme", th);
     var tk = null; try { tk = localStorage.getItem("maratu.token"); } catch (e) {}
     if (!tk) { try { localStorage.setItem("maratu.volta", "/painel.html"); } catch (e) {} location.replace("/login.html"); }
@@ -47,18 +47,21 @@
 @font-face { font-family: "Jack"; src: url("TRYJackAlpha-Regular.woff2?v=2") format("woff2"); font-weight: 400; font-display: swap; }
 
 :root {
-  --tela: #C8501A;
-  --cartao: #F0ECE4;
-  --cartao-2: #E5DFD3;
+  --tela: #E8E2D6;
+  --lateral: #DFD8CA;
+  --cartao: #F7F4EE;
+  --cartao-2: #EDE7DC;
   --campo: #FFFFFF;
   --tinta: #0D0D0B;
   --tinta-sobre-tela: #0D0D0B;
-  --suave: rgba(13,13,11,.62);
+  --suave: rgba(13,13,11,.6);
+  --realce: rgba(13,13,11,.06);
   --linha: rgba(13,13,11,.13);
   --borda: #0D0D0B;
   --sombra: #0D0D0B;
   --acento: #C8501A;
-  --acento-tinta: #F0ECE4;
+  --acento-tinta: #FFFFFF;
+  --atraso: #A3400F;
   --feito: #357550;
   --adiar: #0D0D0B;
   --c-site: #C8501A; --c-lead: #2C69BA; --c-carne: #8B6207; --c-agenda: #357550; --c-loja: #0D0D0B; --c-nota: #6B4FA0;
@@ -69,9 +72,9 @@
   --seguro-topo: env(safe-area-inset-top, 0px);
   --mola: cubic-bezier(.2, .9, .25, 1);
 }
-:root[data-theme="dia"] { --tela: #2E6FC4; --acento: #2E6FC4; --c-site: #C8501A; }
+:root[data-theme="laranja"] { --tela: #C8501A; --lateral: #C8501A; --cartao: #F0ECE4; --cartao-2: #E5DFD3; --realce: rgba(240,236,228,.2); }
 :root[data-theme="noite"] {
-  --tela: #0D0D0B; --cartao: #1F1F1B; --cartao-2: #292923; --campo: #14140F; --tinta: #F0ECE4; --tinta-sobre-tela: #F0ECE4;
+  --tela: #0D0D0B; --lateral: #0D0D0B; --realce: rgba(240,236,228,.08); --cartao: #1F1F1B; --cartao-2: #292923; --campo: #14140F; --tinta: #F0ECE4; --tinta-sobre-tela: #F0ECE4;
   --suave: rgba(240,236,228,.6); --linha: rgba(240,236,228,.14); --borda: rgba(240,236,228,.3); --sombra: rgba(240,236,228,.22);
   --acento: #2E6FC4; --acento-tinta: #FFFFFF; --adiar: #3A3A33;
   --c-site: #E25F23; --c-lead: #4F8AD6; --c-carne: #D4960A; --c-agenda: #449869; --c-loja: #5E5A52; --c-nota: #9A7FD0;
@@ -154,7 +157,7 @@ main { padding: calc(var(--seguro-topo) + var(--topo-h) + 8px) 12px calc(var(--s
 .carta.solta { transition: transform .32s var(--mola); }
 .carta .l1 { display: flex; align-items: center; gap: 8px; }
 .carta .l1 .quando { margin-left: auto; font-size: 12px; font-weight: 700; color: var(--suave); white-space: nowrap; }
-.carta .quando.atraso { color: var(--c-site); }
+.carta .quando.atraso { color: var(--atraso); }
 .carta h3 { margin: 8px 0 0; font-size: 17px; font-weight: 900; line-height: 1.22; }
 .carta .sub { margin: 3px 0 0; font-size: 13.5px; color: var(--suave); line-height: 1.4; }
 .carta .msg { margin: 10px 0 0; background: var(--cartao-2); border-radius: 12px; padding: 10px 12px; font-size: 13.5px; line-height: 1.45; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
@@ -352,7 +355,7 @@ main { padding: calc(var(--seguro-topo) + var(--topo-h) + 8px) 12px calc(var(--s
   .topo, .barra { display: none; }
   .lateral {
     display: flex; flex-direction: column; gap: 6px; position: fixed; z-index: 40; top: 0; bottom: 0; left: 0; width: 236px;
-    padding: 26px 16px 20px; background: var(--tela); border-right: 1.5px solid rgba(13,13,11,.18);
+    padding: 26px 16px 20px; background: var(--lateral); border-right: 1.5px solid rgba(13,13,11,.14);
   }
   :root[data-theme="noite"] .lateral { border-right-color: var(--linha); }
   .lateral .marca-l { display: flex; align-items: center; gap: 10px; padding: 0 8px 22px; }
@@ -365,7 +368,7 @@ main { padding: calc(var(--seguro-topo) + var(--topo-h) + 8px) 12px calc(var(--s
     background: none; color: var(--tinta-sobre-tela); font-size: 15.5px; font-weight: 900; text-align: left; width: 100%; text-decoration: none;
   }
   .lateral .item svg { width: 21px; height: 21px; flex: none; }
-  .lateral .item:hover { background: rgba(240,236,228,.18); }
+  .lateral .item:hover { background: var(--realce); }
   .lateral .item[aria-current="page"] { background: var(--cartao); color: var(--tinta); border-color: var(--borda); box-shadow: 2px 2px 0 var(--sombra); }
   .lateral .item .cont { margin-left: auto; min-width: 24px; height: 22px; padding: 0 7px; border-radius: 99px; background: var(--tinta); color: var(--cartao); font-size: 12px; line-height: 22px; text-align: center; }
   .lateral .item[data-n="0"] .cont, .lateral .item:not([data-n]) .cont { display: none; }
@@ -397,6 +400,12 @@ main { padding: calc(var(--seguro-topo) + var(--topo-h) + 8px) 12px calc(var(--s
   .semana { display: none; }
 }
 
+
+.bt.lead-bt { background: var(--c-lead); color: #fff; }
+:root[data-theme="noite"] { --atraso: #F07A43; }
+:root[data-theme="noite"] .tipo:not(.t-loja), :root[data-theme="noite"] .bt.lead-bt { color: #0D0D0B; }
+:root[data-theme="laranja"] .cab p { opacity: 1; }
+:root[data-theme="laranja"] .aviso { box-shadow: 3px 3px 0 var(--cartao); }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
 }
@@ -445,7 +454,7 @@ main { padding: calc(var(--seguro-topo) + var(--topo-h) + 8px) 12px calc(var(--s
 
 <div class="aviso" id="aviso" role="status" aria-live="polite"><span id="avisoTxt"></span><button id="avisoBt" hidden>Desfazer</button></div>
 
-<script src="painel.js?v=20261025a"></script>
+<script src="painel.js?v=20261025c"></script>
 <script>if (navigator.serviceWorker) navigator.serviceWorker.register("/sw.js").catch(function () {});</script>
 </body>
 </html>

@@ -622,17 +622,19 @@
         return '<div class="linha toca" data-carne="' + esc(id) + '"' + (!prox ? ' style="opacity:.6"' : "") + '><div class="o"><b>' + esc(evs[0].cliente || "Cliente") + (p0.prod ? " · " + esc(p0.prod) : "") + "</b><small" + (atras ? ' style="color:var(--c-site);font-weight:900"' : "") + ">" + pagas + " de " + evs.length + " pagas" + (prox ? ", " + (atras ? "atrasada desde " : "próxima ") + dm(prox.data) + " " + brlCurtoV(num(kv(prox.notas).valor)) : ", quitado") + "</small></div>" + IC.seta + "</div>";
       }).join("") + "</div>" : '<p class="vazio">Nenhum carnê.</p>');
   }
-  var LINK_ANTIGO = '<a class="cartao linha toca" href="/admin.html" style="text-decoration:none;margin-top:6px;padding:4px 14px;"><div class="o"><b>Produtos, preços e selos</b><small>No painel antigo</small></div>' + IC.fora + "</a>";
+  var LINK_ANTIGO = '<a class="cartao linha toca" href="/admin.html" style="text-decoration:none;margin-top:6px;padding:4px 14px;"><div class="o"><b>Selos e precificar</b><small>No painel antigo</small></div>' + IC.fora + "</a>";
   function telaLoja() {
     if (pc()) {
-      return colunas('<div class="cab"><h1>Caixa</h1></div>' + lojaCaixa(),
+      var segPc = '<div class="seg seg-loja" role="group"><button data-seg="caixa" aria-pressed="' + (lojaSeg !== "produtos") + '">Caixa e pedidos</button><button data-seg="produtos" aria-pressed="' + (lojaSeg === "produtos") + '">Produtos</button></div>';
+      if (lojaSeg === "produtos") return '<div class="nav-dia"><div class="cab"><h1>Produtos</h1></div>' + segPc + "</div>" + lojaProdutos();
+      return '<div class="nav-dia"><div class="cab"><h1>Caixa</h1></div>' + segPc + "</div>" + colunas(lojaCaixa(),
         '<div class="secao" style="margin-top:6px;">' + cap(MESES[new Date().getMonth()]) + "</div>" + cartaoMes(true) +
         '<div class="secao">Pedidos' + (S.pedidos.length ? " <small>" + S.pedidos.length + "</small>" : "") + "</div>" + lojaPedidos() +
         '<div class="secao">Carnê</div>' + lojaCarne() + LINK_ANTIGO);
     }
     return '<div class="cab"><h1>Loja</h1></div>' + cartaoMes(true) +
-      '<div class="seg" role="group"><button data-seg="caixa" aria-pressed="' + (lojaSeg === "caixa") + '">Caixa</button><button data-seg="pedidos" aria-pressed="' + (lojaSeg === "pedidos") + '">Pedidos' + (S.pedidos.length ? " " + S.pedidos.length : "") + '</button><button data-seg="carne" aria-pressed="' + (lojaSeg === "carne") + '">Carnê</button></div>' +
-      (lojaSeg === "caixa" ? lojaCaixa() : lojaSeg === "pedidos" ? lojaPedidos() : lojaCarne()) + LINK_ANTIGO;
+      '<div class="seg" role="group"><button data-seg="caixa" aria-pressed="' + (lojaSeg === "caixa") + '">Caixa</button><button data-seg="pedidos" aria-pressed="' + (lojaSeg === "pedidos") + '">Pedidos' + (S.pedidos.length ? " " + S.pedidos.length : "") + '</button><button data-seg="carne" aria-pressed="' + (lojaSeg === "carne") + '">Carnê</button><button data-seg="produtos" aria-pressed="' + (lojaSeg === "produtos") + '">Peças</button></div>' +
+      (lojaSeg === "caixa" ? lojaCaixa() : lojaSeg === "pedidos" ? lojaPedidos() : lojaSeg === "produtos" ? lojaProdutos() : lojaCarne()) + (lojaSeg === "produtos" ? "" : LINK_ANTIGO);
   }
   function proxVenc(evs) { var p = evs.filter(function (e) { return !e.feito; }).map(function (e) { return e.data; }).sort()[0]; return p || "9999"; }
 
@@ -858,7 +860,7 @@
     raiz.querySelectorAll("[data-novo]").forEach(function (b) { b.onclick = function () { folhaLancar(b.dataset.novo, b.dataset.novo === "evento" ? diaSel : null); }; });
     raiz.querySelectorAll("[data-seg]").forEach(function (b) {
       b.onclick = function () {
-        lojaSeg = b.dataset.seg; render(true);
+        lojaSeg = b.dataset.seg; PROD.ordenando = false; render(true);
         if (lojaSeg === "pedidos" && verAtendidos && !S.pedidosTodos) carregarPedidosTodos();
       };
     });
@@ -880,6 +882,7 @@
     raiz.querySelectorAll("[data-olho]").forEach(function (b) { b.onclick = function () { try { localStorage.setItem("maratu.fatHidden", oculto() ? "0" : "1"); } catch (e) {} render(true); }; });
     raiz.querySelectorAll("[data-fonte]").forEach(function (b) { b.onclick = function () { lojaFonte = b.dataset.fonte; render(true); }; });
     if (vista === "agenda" && pc() && agendaModo === "semana") ligarSemana(raiz);
+    if (vista === "loja" && lojaSeg === "produtos") ligarProdutos(raiz);
   }
   function carregarPedidosTodos() {
     api("/api/pedidos?limite=60").then(function (d) { S.pedidosTodos = d.pedidos || []; render(true); }).catch(function () { aviso("Não carregou os pedidos."); });
@@ -1449,6 +1452,309 @@
     });
   }
 
+  /* ---------- Produtos do site ---------- */
+  var PROD = { lista: null, layout: null, carregando: false, busca: "", marca: "todas", faixa: "todas", ordenando: false };
+  var FAIXA_NOME = { chaveiros: "Chaveiros", adesivos: "Adesivos", blusas: "Blusas", posteres: "Pôsteres", essenciais: "Essenciais", decor: "Decor" };
+  var COLECOES = [["origens", "Origens"], ["manguehaus", "Manguehaus"], ["kit", "Kit"]];
+  var FLAGS = [["ativo", "Ativo"], ["novo", "Novo"], ["prevenda", "Pré-venda"], ["indisponivel", "Indisponível"], ["oculto", "Sem destaque"]];
+  var TAM_POSTER = ["A4", "A3", "A2", "A1"];
+  function nomeFaixa(f) { return FAIXA_NOME[f] || cap(String(f || "")); }
+  function imgUrl(k, v) { return k ? API + "/img/" + String(k).split("/").map(encodeURIComponent).join("/") + (v ? "?" + v + "=1" : "") : ""; }
+  function carregarProdutos(forcar) {
+    if (PROD.carregando || (PROD.lista && !forcar)) return Promise.resolve();
+    PROD.carregando = true;
+    PROD.erro = false;
+    return api("/api/catalog/all").then(function (d) { PROD.lista = d.produtos || []; PROD.layout = d.layout || null; })
+      .catch(function () { PROD.erro = true; })
+      .then(function () { PROD.carregando = false; if (vista === "loja" && lojaSeg === "produtos") render(true); });
+  }
+  function faixasDe(lista) {
+    var vistas = {}; lista.forEach(function (p) { vistas[p.subcategoria] = 1; });
+    return Object.keys(Object.assign({ chaveiros: 1, adesivos: 1, blusas: 1, posteres: 1, essenciais: 1 }, vistas));
+  }
+  function produtosVisiveis() {
+    var q = norm(PROD.busca).trim();
+    return (PROD.lista || []).filter(function (p) {
+      if (PROD.marca !== "todas" && p.marca !== PROD.marca) return false;
+      if (PROD.faixa !== "todas" && p.subcategoria !== PROD.faixa) return false;
+      return !q || norm([p.nome, p.subtitulo, p.id, p.subcategoria].join(" ")).indexOf(q) >= 0;
+    }).sort(function (a, b) { return (a.marca + a.subcategoria).localeCompare(b.marca + b.subcategoria) || (a.ordem || 0) - (b.ordem || 0) || a.nome.localeCompare(b.nome); });
+  }
+  function lojaProdutos() {
+    if (!PROD.lista) {
+      if (PROD.erro) return '<div class="cartao"><h3 style="margin:0 0 8px;font-weight:900;">Os produtos não carregaram</h3><button class="bt preto" data-prodtenta>Tentar de novo</button></div>';
+      carregarProdutos(); return '<div class="esqueleto"></div><div class="esqueleto"></div>';
+    }
+    var lista = PROD.lista, faixas = faixasDe(lista), vis = produtosVisiveis();
+    var cont = {}; lista.forEach(function (p) { if (PROD.marca === "todas" || p.marca === PROD.marca) cont[p.subcategoria] = (cont[p.subcategoria] || 0) + 1; });
+    var topo = '<div class="prod-topo"><div class="campo prod-busca"><input id="prodBusca" type="search" placeholder="Buscar peça" value="' + esc(PROD.busca) + '" autocomplete="off"></div>' +
+      '<button class="bt acento" data-prodnovo>' + IC.mais + "Peça nova</button></div>" +
+      '<div class="filtros">' + [["todas", "Todas"], ["use", "USE"], ["casa", "CASA"]].map(function (m) { return '<button class="chip-bt" data-pmarca="' + m[0] + '" aria-pressed="' + (PROD.marca === m[0]) + '">' + m[1] + "</button>"; }).join("") +
+      '<span class="sep-filtro"></span><button class="chip-bt" data-pfaixa="todas" aria-pressed="' + (PROD.faixa === "todas") + '">Todas as faixas</button>' +
+      faixas.filter(function (f) { return cont[f]; }).map(function (f) { return '<button class="chip-bt" data-pfaixa="' + esc(f) + '" aria-pressed="' + (PROD.faixa === f) + '">' + esc(nomeFaixa(f)) + ' <span class="n">' + cont[f] + "</span></button>"; }).join("") + "</div>";
+    if (PROD.ordenando) return topo + telaOrdenar(vis);
+    return topo +
+      (PROD.faixa !== "todas" && vis.length > 1 && !PROD.busca ? '<button class="bt-link" data-ordenar style="justify-self:start;color:var(--tinta-sobre-tela);">Mudar a ordem de ' + esc(nomeFaixa(PROD.faixa)) + "</button>" : "") +
+      (vis.length ? '<div class="prod-grade">' + vis.map(function (p) {
+        var selos = [!p.ativo ? "Inativo" : "", p.prevenda ? "Pré-venda" : "", p.indisponivel ? "Indisponível" : "", p.oculto ? "Sem destaque" : "", p.novo ? "Novo" : ""].filter(Boolean);
+        return '<button class="cartao prod' + (!p.ativo ? " inativo" : "") + '" data-prod="' + esc(p.id) + '"><span class="prod-img">' + (p.imagem_principal ? '<img loading="lazy" alt="" src="' + esc(imgUrl(p.imagem_principal, "t")) + '">' : "") + "</span>" +
+          '<span class="prod-txt"><b>' + esc(p.nome) + "</b><small>" + esc(nomeFaixa(p.subcategoria)) + ", " + esc(String(p.marca || "").toUpperCase()) + '</small><span class="valor">' + brl(num(p.preco)) + "</span>" +
+          (selos.length ? '<span class="prod-selos">' + selos.map(function (s) { return "<i>" + s + "</i>"; }).join("") + "</span>" : "") + "</span></button>";
+      }).join("") + "</div>" : '<p class="vazio">Nenhuma peça com esse filtro.</p>');
+  }
+  /* ordem dentro da faixa, arrastando a linha */
+  function telaOrdenar(vis) {
+    return '<div class="cartao lista ordem-lista" id="ordemLista">' + vis.map(function (p) {
+      return '<div class="linha ordem-item" data-oid="' + esc(p.id) + '"><span class="pega" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M8 6h8M8 12h8M8 18h8"/></svg></span>' +
+        (p.imagem_principal ? '<img alt="" loading="lazy" decoding="async" src="' + esc(imgUrl(p.imagem_principal, "t")) + '">' : "") + '<div class="o"><b>' + esc(p.nome) + "</b></div></div>";
+    }).join("") + '</div><div class="grade-bts"><button class="bt" data-ordemsai>Cancelar</button><button class="bt acento" data-ordemsalva>Salvar a ordem</button></div>';
+  }
+  function ligarOrdenar(raiz) {
+    var box = raiz.querySelector("#ordemLista"); if (!box) return;
+    box.querySelectorAll(".ordem-item .pega").forEach(function (alca) {
+      var it = alca.parentNode;
+      alca.addEventListener("pointerdown", function (ev) {
+        if (ev.button !== 0) return;
+        ev.preventDefault(); it.classList.add("pegando");
+        var move = function (e) {
+          var irmaos = Array.prototype.slice.call(box.querySelectorAll(".ordem-item")).filter(function (x) { return x !== it; });
+          var depois = irmaos.filter(function (x) { var r = x.getBoundingClientRect(); return e.clientY < r.top + r.height / 2; })[0];
+          if (depois) { if (it.nextSibling !== depois) box.insertBefore(it, depois); } else if (box.lastElementChild !== it) box.appendChild(it);
+        };
+        var solta = function () { it.classList.remove("pegando"); window.removeEventListener("pointermove", move); window.removeEventListener("pointerup", solta); window.removeEventListener("pointercancel", solta); };
+        window.addEventListener("pointermove", move); window.addEventListener("pointerup", solta); window.addEventListener("pointercancel", solta);
+      });
+    });
+    raiz.querySelector("[data-ordemsai]").onclick = function () { PROD.ordenando = false; render(true); };
+    raiz.querySelector("[data-ordemsalva]").onclick = function () {
+      var ids = Array.prototype.map.call(box.querySelectorAll(".ordem-item"), function (x) { return x.dataset.oid; });
+      api("/api/catalog/reorder", { method: "POST", body: { ids: ids } }).then(function () {
+        ids.forEach(function (id, i) { var p = porId(PROD.lista, id); if (p) p.ordem = (i + 1) * 10; });
+        PROD.ordenando = false; render(true); aviso("Ordem salva");
+      }).catch(function () { aviso("Não salvou a ordem."); });
+    };
+  }
+  function ligarProdutos(raiz) {
+    var b = raiz.querySelector("#prodBusca");
+    if (b) b.addEventListener("input", function () { PROD.busca = b.value; var pos = b.selectionStart; render(true); var n = $("prodBusca"); if (n) { n.focus(); try { n.setSelectionRange(pos, pos); } catch (e) {} } });
+    raiz.querySelectorAll("[data-pmarca]").forEach(function (x) { x.onclick = function () { PROD.marca = x.dataset.pmarca; render(true); }; });
+    raiz.querySelectorAll("[data-pfaixa]").forEach(function (x) { x.onclick = function () { PROD.faixa = x.dataset.pfaixa; PROD.ordenando = false; render(true); }; });
+    raiz.querySelectorAll("[data-prod]").forEach(function (x) { x.onclick = function () { var p = porId(PROD.lista, x.dataset.prod); if (p) folhaProduto(p); }; });
+    raiz.querySelectorAll("[data-prodnovo]").forEach(function (x) { x.onclick = function () { folhaProduto(null); }; });
+    raiz.querySelectorAll("[data-ordenar]").forEach(function (x) { x.onclick = function () { PROD.ordenando = true; render(true); }; });
+    raiz.querySelectorAll("[data-prodtenta]").forEach(function (x) { x.onclick = function () { PROD.erro = false; render(true); }; });
+    ligarOrdenar(raiz);
+  }
+
+  /* --- fotos: o original sobe intacto; o navegador gera a miniatura limpa e a versão com marca d'água --- */
+  var ESPEC_MARCA = { largura: 1400, qualidade: 0.82, texto: "maratu", corpo: 0.075, giro: -30, passoX: 2.30, passoY: 4.20, alfaClaro: 0.11, alfaEscuro: 0.09, desloca: 0.055, cantoTexto: "maratu.com.br", cantoCorpo: 0.021, cantoAlfa: 0.42, cantoMargem: 0.030 };
+  var MINI = { largura: 1000, qualidade: 0.78 }, TETO_KB = { mini: 200, marca: 360 }, ESCADA_Q = [0.78, 0.68, 0.58, 0.48, 0.40];
+  function ladrilhoMarca(ctx, w, h, e) {
+    var corpo = Math.max(12, Math.round(w * e.corpo));
+    ctx.save(); ctx.font = corpo + "px Jack"; ctx.textBaseline = "top";
+    var passoX = Math.max(1, Math.round(ctx.measureText(e.texto).width * e.passoX)), passoY = Math.max(1, Math.round(corpo * e.passoY)), desl = Math.max(1, Math.round(corpo * e.desloca)), lado = Math.round((w + h) * 1.15);
+    ctx.translate(w / 2, h / 2); ctx.rotate(-e.giro * Math.PI / 180); ctx.translate(-lado / 2, -lado / 2);
+    for (var y = -passoY, linha = 0; y < lado + passoY; y += passoY, linha++) {
+      for (var x = -passoX + (linha % 2 ? Math.floor(passoX / 2) : 0); x < lado + passoX; x += passoX) {
+        ctx.fillStyle = "rgba(13,13,11," + e.alfaEscuro + ")"; ctx.fillText(e.texto, x + desl, y + desl);
+        ctx.fillStyle = "rgba(255,255,255," + e.alfaClaro + ")"; ctx.fillText(e.texto, x, y);
+      }
+    }
+    ctx.restore();
+  }
+  function cantoMarca(ctx, w, h, e) {
+    var corpo = Math.max(9, Math.round(w * e.cantoCorpo));
+    ctx.save(); ctx.font = "700 " + corpo + "px Clother"; ctx.textBaseline = "top";
+    var margem = Math.round(w * e.cantoMargem), x = w - ctx.measureText(e.cantoTexto).width - margem, y = h - corpo - margem, desl = Math.max(1, Math.round(corpo * 0.09));
+    ctx.fillStyle = "rgba(13,13,11," + (e.cantoAlfa * 0.7) + ")"; ctx.fillText(e.cantoTexto, x + desl, y + desl);
+    ctx.fillStyle = "rgba(255,255,255," + e.cantoAlfa + ")"; ctx.fillText(e.cantoTexto, x, y);
+    ctx.restore();
+  }
+  var _webpOk = null;
+  function webpOk() { if (_webpOk === null) { try { var c = document.createElement("canvas"); c.width = c.height = 1; _webpOk = c.toDataURL("image/webp").indexOf("data:image/webp") === 0; } catch (e) { _webpOk = false; } } return _webpOk; }
+  function codificar(canvas, tipo, q) { return new Promise(function (ok, falha) { canvas.toBlob(function (b) { b ? ok(b) : falha(new Error("toBlob vazio")); }, tipo, q); }); }
+  function blobLeve(canvas, q, tetoKB) {
+    var tipo = webpOk() ? "image/webp" : "image/jpeg";
+    return codificar(canvas, tipo, q).then(function cabe(b, i) {
+      i = i || 0;
+      while (i < ESCADA_Q.length && ESCADA_Q[i] >= q) i++;
+      if (b.size <= tetoKB * 1024 || i >= ESCADA_Q.length) return { blob: b, tipo: tipo };
+      var qi = ESCADA_Q[i]; q = qi;
+      return codificar(canvas, tipo, qi).then(function (b2) { return cabe(b2, i + 1); });
+    });
+  }
+  function desenhar(bmp, largura) {
+    var escala = Math.min(1, largura / bmp.width), w = Math.max(1, Math.round(bmp.width * escala)), h = Math.max(1, Math.round(bmp.height * escala));
+    var c = document.createElement("canvas"); c.width = w; c.height = h;
+    var ctx = c.getContext("2d"); ctx.imageSmoothingQuality = "high"; ctx.drawImage(bmp, 0, 0, w, h);
+    return { canvas: c, ctx: ctx, w: w, h: h };
+  }
+  function subirArquivo(blob, slug, nome, variante, tipo) {
+    var u = "/api/catalog/upload?slug=" + encodeURIComponent(slug) + "&filename=" + encodeURIComponent(nome) + (variante ? "&variant=" + variante : "");
+    return fetch(API + u, { method: "POST", headers: { Authorization: "Bearer " + token(), "Content-Type": tipo || blob.type || "application/octet-stream" }, credentials: "include", body: blob })
+      .then(function (r) { if (r.status === 401) { paraLogin(); throw new Error("sessão"); } if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); });
+  }
+  function subirFoto(file, slug) {
+    var base = Date.now().toString(36) + "-" + semAcento(file.name || "foto").toLowerCase().replace(/\.[^.]+$/, "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 40);
+    var ext = (/\.([a-z0-9]{3,4})$/i.exec(file.name || "") || [0, file.type === "image/png" ? "png" : "jpg"])[1].toLowerCase();
+    var key;
+    return subirArquivo(file, slug, base + "." + ext).then(function (d) {
+      key = d.key;
+      return createImageBitmap(file).then(function (bmp) {
+        var m = desenhar(bmp, MINI.largura);
+        return blobLeve(m.canvas, MINI.qualidade, TETO_KB.mini).then(function (mini) {
+          return (document.fonts && document.fonts.load ? Promise.all([document.fonts.load("100px Jack"), document.fonts.load("700 20px Clother")]).catch(function () {}) : Promise.resolve()).then(function () {
+            var g = desenhar(bmp, ESPEC_MARCA.largura); ladrilhoMarca(g.ctx, g.w, g.h, ESPEC_MARCA); cantoMarca(g.ctx, g.w, g.h, ESPEC_MARCA);
+            return blobLeve(g.canvas, ESPEC_MARCA.qualidade, TETO_KB.marca).then(function (marca) {
+              if (bmp.close) bmp.close();
+              return Promise.all([subirArquivo(mini.blob, slug, base + ".webp", "thumb", mini.tipo), subirArquivo(marca.blob, slug, base + ".webp", "wm", marca.tipo)]);
+            });
+          });
+        });
+      }).catch(function (e) { console.warn("variantes da foto falharam", e); });
+    }).then(function () { return key; });
+  }
+
+  /* --- folha da peça --- */
+  function slugify(s) { return semAcento(s).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 60); }
+  function folhaProduto(p0) {
+    var novo = !p0, p = p0 ? JSON.parse(JSON.stringify(p0)) : { marca: "use", subcategoria: PROD.faixa !== "todas" ? PROD.faixa : "chaveiros", ativo: true, colecoes: [], tamanhos: [], cores: [], precos_custom: null };
+    var ficha = {}; try { ficha = typeof p.ficha === "string" ? JSON.parse(p.ficha || "{}") || {} : p.ficha || {}; } catch (e) { ficha = {}; }
+    var galeria = []; try { galeria = typeof p.galeria === "string" ? JSON.parse(p.galeria || "[]") || [] : p.galeria || []; } catch (e) { galeria = []; }
+    var rel = []; try { rel = typeof p.relacionados === "string" ? JSON.parse(p.relacionados || "[]") || [] : p.relacionados || []; } catch (e) { rel = []; }
+    var faixas = faixasDe(PROD.lista || []), flags = FLAGS.filter(function (f) { return f[0] === "ativo" ? p.ativo !== false : !!p[f[0]]; }).map(function (f) { return f[0]; });
+    var chavesAntes = [p.imagem_principal, p.imagem_hover].concat(galeria).concat((p.cores || []).map(function (c) { return c && c.img; })).filter(Boolean);
+    var slot = function (k, rot, chave) { return '<div class="foto-slot' + (chave ? " tem" : "") + '" data-slot="' + k + '" data-key="' + esc(chave || "") + '"><label class="foto-img">' + (chave ? '<img alt="" src="' + esc(imgUrl(chave, "t")) + '">' : IC.mais) + '<input type="file" accept="image/*" hidden></label><small>' + rot + '</small><button type="button" class="foto-tira" aria-label="Tirar a foto"' + (chave ? "" : " hidden") + '><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>'; };
+    var corLinha = function (c) { c = c || {}; return '<div class="cor-linha" data-img="' + esc(c.img || "") + '"><input class="cor-hex" type="color" value="' + esc(/^#[0-9a-f]{6}$/i.test(c.hex || "") ? c.hex : "#0d0d0b") + '"' + (c.hex ? "" : ' data-vazio="1"') + '><input class="cor-nome" value="' + esc(c.nome || "") + '" placeholder="Nome da cor" autocomplete="off"><label class="cor-foto' + (c.img ? " tem" : "") + '" title="Foto desta cor">' + (c.img ? '<img alt="" src="' + esc(imgUrl(c.img, "t")) + '">' : IC.entrada) + '<input type="file" accept="image/*" hidden></label><button type="button" class="ico-bt cor-tira" aria-label="Tirar a cor"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>'; };
+    var fichaLinha = function (k, v) { return '<div class="ficha-linha"><input class="f-k" maxlength="40" value="' + esc(k || "") + '" placeholder="Item" autocomplete="off"><input class="f-v" maxlength="80" value="' + esc(v || "") + '" placeholder="Detalhe" autocomplete="off"><button type="button" class="ico-bt f-tira" aria-label="Tirar a linha"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>'; };
+    var tamNome = function (e) { return e && typeof e === "object" ? String(e.t || "") : String(e); };
+    var tamTexto = (p.tamanhos || []).map(tamNome).join(", ");
+    var outros = (PROD.lista || []).filter(function (x) { return !p0 || x.id !== p0.id; }).sort(function (a, b) { return a.nome.localeCompare(b.nome); });
+    var html =
+      '<div class="rot">Fotos</div><div class="fotos">' + slot("principal", "Principal", p.imagem_principal) + slot("hover", "Segunda", p.imagem_hover) +
+        [0, 1, 2, 3, 4, 5].map(function (i) { return slot("g" + i, i ? "" : "Galeria", galeria[i]); }).join("") + "</div>" +
+      campo("Nome", '<input id="pNome" value="' + esc(p.nome || "") + '" autocomplete="off">') +
+      campo("Subtítulo", '<input id="pSub" value="' + esc(p.subtitulo || "") + '" autocomplete="off">') +
+      '<div class="duas">' + campo("Preço", '<input id="pPreco" inputmode="decimal" value="' + (p.preco != null ? esc(String(p.preco).replace(".", ",")) : "") + '" autocomplete="off">') + campo("Preço riscado", '<input id="pCheio" inputmode="decimal" value="' + (p.preco_cheio != null ? esc(String(p.preco_cheio).replace(".", ",")) : "") + '" autocomplete="off">') + "</div>" +
+      '<div class="rot">Marca</div>' + pilulas("marca", [["use", "USE"], ["casa", "CASA"]], p.marca || "use") +
+      '<div class="rot">Faixa da loja</div>' + pilulas("faixa", faixas.map(function (f) { return [f, nomeFaixa(f)]; }), p.subcategoria) +
+      '<div class="poster" ' + (p.subcategoria === "posteres" ? "" : "hidden") + '><div class="rot">Preço por tamanho</div><div class="tam-precos">' + TAM_POSTER.map(function (t) { var v = p.precos_custom && p.precos_custom[t]; return campo(t, '<input data-tam="' + t + '" inputmode="decimal" value="' + (v != null ? esc(String(v).replace(".", ",")) : "") + '" autocomplete="off">'); }).join("") + "</div></div>" +
+      '<div class="rot">Situação</div><div class="pilulas multi" data-multi="flags">' + FLAGS.map(function (f) { return '<button type="button" data-val="' + f[0] + '" aria-pressed="' + (flags.indexOf(f[0]) >= 0) + '">' + f[1] + "</button>"; }).join("") + "</div>" +
+      '<div class="rot">Coleções</div><div class="pilulas multi" data-multi="col">' + COLECOES.concat((p.colecoes || []).filter(function (c) { return !COLECOES.some(function (x) { return x[0] === c; }); }).map(function (c) { return [c, cap(c)]; })).map(function (c) { return '<button type="button" data-val="' + esc(c[0]) + '" aria-pressed="' + ((p.colecoes || []).indexOf(c[0]) >= 0) + '">' + esc(c[1]) + "</button>"; }).join("") + "</div>" +
+      campo("Tamanhos", '<input id="pTam" value="' + esc(tamTexto) + '" autocomplete="off">') +
+      '<div class="rot">Cores</div><div id="pCores" class="cores-lista">' + (p.cores || []).map(corLinha).join("") + '</div><button type="button" class="bt-link" id="pCorMais">Adicionar cor</button>' +
+      '<details class="pagina-peca"' + (p.descricao || Object.keys(ficha).length || rel.length ? " open" : "") + '><summary>Página da peça</summary>' +
+        campo("Descrição", '<textarea id="pDesc" maxlength="2000">' + esc(p.descricao || "") + "</textarea>") +
+        '<div class="rot">Ficha técnica</div><div id="pFicha">' + Object.keys(ficha).map(function (k) { return fichaLinha(k, ficha[k]); }).join("") + '</div><button type="button" class="bt-link" id="pFichaMais">Adicionar linha</button>' +
+        '<div class="rot">MARATU recomenda (até 4)</div><div id="pRel" class="rel-lista">' + rel.map(function (id) { var x = porId(PROD.lista || [], id); return '<span class="rel" data-id="' + esc(id) + '">' + esc(x ? x.nome : id) + '<button type="button" aria-label="Tirar">×</button></span>'; }).join("") + "</div>" +
+        '<div class="campo"><select id="pRelAdd"><option value="">Escolher peça…</option>' + outros.map(function (x) { return '<option value="' + esc(x.id) + '">' + esc(x.nome) + "</option>"; }).join("") + "</select></div>" +
+        '<div class="duas">' + campo("Máximo por pedido", '<input id="pMax" type="number" min="1" max="99" inputmode="numeric" value="' + esc(p.qtd_max || "") + '">') + campo("Código no WhatsApp", '<input id="pSku" value="' + esc(p.sku_whatsapp && p.sku_whatsapp !== p.id ? p.sku_whatsapp : "") + '" inputmode="numeric" autocomplete="off">') + "</div>" +
+      "</details>" +
+      (novo ? "" : '<div class="grade-bts"><a class="bt" href="https://maratu.com.br/produto/' + encodeURIComponent(p.id) + '" target="_blank" rel="noopener">' + IC.fora + 'Ver na loja</a><button class="bt perigo" id="pApaga">Apagar peça</button></div>') +
+      '<div class="fixo"><button class="bt acento cheio" id="pSalva">' + (novo ? "Criar peça" : "Salvar") + "</button></div>";
+    abrirFolha(novo ? "Peça nova" : p.nome, html, function (c) {
+      ligaPilulas(c);
+      c.querySelectorAll("[data-multi] button").forEach(function (b) { b.onclick = function (ev) { ev.stopPropagation(); b.setAttribute("aria-pressed", String(b.getAttribute("aria-pressed") !== "true")); }; });
+      c.querySelector('[data-pil="faixa"]').addEventListener("click", function () { c.querySelector(".poster").hidden = pil(c, "faixa") !== "posteres"; });
+      var subindo = 0, slugFotos = p.id || slugify(c.querySelector("#pNome").value) || "peca";
+      var subir = function (file, aplica) {
+        subindo++; $("pSalva").disabled = true; $("pSalva").textContent = "Subindo foto…";
+        return subirFoto(file, p.id || slugify(c.querySelector("#pNome").value) || slugFotos).then(aplica).catch(function () { aplica(null); aviso("A foto não subiu. Tente de novo."); })
+          .then(function () { subindo--; if (!subindo) { $("pSalva").disabled = false; $("pSalva").textContent = novo ? "Criar peça" : "Salvar"; } });
+      };
+      c.querySelectorAll(".foto-slot").forEach(function (s) {
+        var inp = s.querySelector("input[type=file]");
+        inp.addEventListener("change", function () {
+          var f = inp.files && inp.files[0]; if (!f) return;
+          var url = URL.createObjectURL(f), vez = (s._vez = (s._vez || 0) + 1);
+          s.querySelector(".foto-img").innerHTML = '<img alt="" src="' + url + '"><span class="subindo"></span>'; s.querySelector(".foto-img").appendChild(inp);
+          subir(f, function (key) {
+            if (s._vez !== vez) return;
+            var sp = s.querySelector(".subindo"); if (sp) sp.remove();
+            if (key) { s.dataset.key = key; s.classList.add("tem"); s.querySelector(".foto-tira").hidden = false; }
+            else { s.dataset.key = ""; s.classList.remove("tem"); s.querySelector(".foto-img").innerHTML = IC.mais; s.querySelector(".foto-img").appendChild(inp); inp.value = ""; }
+          });
+        });
+        s.querySelector(".foto-tira").onclick = function () { s._vez = (s._vez || 0) + 1; s.dataset.key = ""; s.classList.remove("tem"); this.hidden = true; s.querySelector(".foto-img").innerHTML = IC.mais; s.querySelector(".foto-img").appendChild(inp); inp.value = ""; };
+      });
+      var ligaCor = function (row) {
+        row.querySelector(".cor-tira").onclick = function () { row.remove(); };
+        row.querySelector(".cor-hex").addEventListener("input", function () { delete this.dataset.vazio; });
+        var inp = row.querySelector("input[type=file]");
+        inp.addEventListener("change", function () {
+          var f = inp.files && inp.files[0]; if (!f) return;
+          var lab = row.querySelector(".cor-foto"); lab.innerHTML = '<img alt="" src="' + URL.createObjectURL(f) + '">'; lab.appendChild(inp); lab.classList.add("tem");
+          subir(f, function (key) { if (key) row.dataset.img = key; });
+        });
+      };
+      c.querySelectorAll(".cor-linha").forEach(ligaCor);
+      c.querySelector("#pCorMais").onclick = function () { var d = document.createElement("div"); d.innerHTML = corLinha(null); var row = d.firstChild; c.querySelector("#pCores").appendChild(row); ligaCor(row); row.querySelector(".cor-nome").focus(); };
+      var ligaFicha = function (row) { row.querySelector(".f-tira").onclick = function () { row.remove(); }; };
+      c.querySelectorAll(".ficha-linha").forEach(ligaFicha);
+      c.querySelector("#pFichaMais").onclick = function () { if (c.querySelectorAll(".ficha-linha").length >= 8) return; var d = document.createElement("div"); d.innerHTML = fichaLinha("", ""); var row = d.firstChild; c.querySelector("#pFicha").appendChild(row); ligaFicha(row); row.querySelector(".f-k").focus(); };
+      var ligaRel = function (el) { el.querySelector("button").onclick = function () { el.remove(); }; };
+      c.querySelectorAll(".rel").forEach(ligaRel);
+      c.querySelector("#pRelAdd").addEventListener("change", function () {
+        var id = this.value; this.value = ""; if (!id) return;
+        var box = c.querySelector("#pRel"); if (box.children.length >= 4 || box.querySelector('[data-id="' + id + '"]')) return;
+        var x = porId(PROD.lista || [], id), sp = document.createElement("span"); sp.className = "rel"; sp.dataset.id = id; sp.innerHTML = esc(x ? x.nome : id) + '<button type="button" aria-label="Tirar">×</button>'; box.appendChild(sp); ligaRel(sp);
+      });
+      var ap = c.querySelector("#pApaga");
+      if (ap) confirmaDuplo(ap, "Toque de novo pra apagar", function () {
+        api("/api/catalog/" + encodeURIComponent(p.id), { method: "DELETE" }).then(function () {
+          PROD.lista = PROD.lista.filter(function (x) { return x.id !== p.id; }); fecharFolha(); render(true); aviso("Peça apagada");
+        }).catch(function () { aviso("Não apagou. Confira a internet."); });
+      });
+      c.querySelector("#pSalva").onclick = function () {
+        if (subindo) return;
+        var q = function (s) { return c.querySelector(s); };
+        var nome = q("#pNome").value.trim(); if (!nome) { q("#pNome").focus(); return; }
+        var preco = num(q("#pPreco").value); if (!(preco > 0)) { q("#pPreco").focus(); aviso("Preço inválido"); return; }
+        var principal = q('[data-slot="principal"]').dataset.key; if (!principal) { aviso("Falta a foto principal"); return; }
+        var multi = function (k) { return Array.prototype.map.call(c.querySelectorAll('[data-multi="' + k + '"] [aria-pressed="true"]'), function (b) { return b.dataset.val; }); };
+        var fl = multi("flags"), faixa = pil(c, "faixa") || p.subcategoria, pc = {};
+        if (faixa === "posteres") c.querySelectorAll("[data-tam]").forEach(function (i) { if (i.value.trim() && num(i.value) > 0) pc[i.dataset.tam] = num(i.value); });
+        var fic = {}; c.querySelectorAll(".ficha-linha").forEach(function (r) { var k = r.querySelector(".f-k").value.trim(), v = r.querySelector(".f-v").value.trim(); if (k && v) fic[k] = v; });
+        var id = p.id || slugify(nome);
+        if (novo && (PROD.lista || []).some(function (x) { return x.id === id; })) id = id + "-" + Date.now().toString(36).slice(-4);
+        var corpo = {
+          id: id, nome: nome, subtitulo: q("#pSub").value.trim() || null, marca: pil(c, "marca") || "use", subcategoria: faixa,
+          preco: preco, preco_cheio: q("#pCheio").value.trim() ? num(q("#pCheio").value) : null,
+          sku_whatsapp: q("#pSku").value.trim() || (novo ? id : (p.sku_whatsapp || id)),
+          imagem_principal: principal, imagem_hover: q('[data-slot="hover"]').dataset.key || null,
+          colecoes: multi("col"), tamanhos: (function () {
+            var txt = q("#pTam").value;
+            if (txt.trim() === tamTexto.trim()) return p.tamanhos || [];
+            var orig = p.tamanhos || [], objetos = orig.some(function (e) { return e && typeof e === "object"; });
+            return txt.split(",").map(function (s) { return s.trim(); }).filter(Boolean).map(function (n) {
+              var velho = orig.filter(function (e) { return tamNome(e) === n; })[0];
+              return velho !== undefined ? velho : objetos ? { t: n } : n;
+            });
+          })(),
+          cores: Array.prototype.map.call(c.querySelectorAll(".cor-linha"), function (r) { var n = r.querySelector(".cor-nome").value.trim(), hx = r.querySelector(".cor-hex"); return { nome: n, hex: hx.dataset.vazio ? "" : hx.value, img: r.dataset.img || "" }; }).filter(function (x) { return x.nome || x.img; }).map(function (x) { var o = { nome: x.nome }; if (x.hex) o.hex = x.hex; if (x.img) o.img = x.img; return o; }),
+          precos_custom: Object.keys(pc).length ? pc : null, ordem: p.ordem || 0,
+          ativo: fl.indexOf("ativo") >= 0, novo: fl.indexOf("novo") >= 0, prevenda: fl.indexOf("prevenda") >= 0, indisponivel: fl.indexOf("indisponivel") >= 0, oculto: fl.indexOf("oculto") >= 0,
+          descricao: q("#pDesc").value.trim() || null, ficha: Object.keys(fic).length ? fic : null,
+          galeria: [0, 1, 2, 3, 4, 5].map(function (i) { return q('[data-slot="g' + i + '"]').dataset.key; }).filter(Boolean),
+          relacionados: Array.prototype.map.call(c.querySelectorAll("#pRel .rel"), function (x) { return x.dataset.id; }),
+          qtd_max: q("#pMax").value ? Number(q("#pMax").value) : null
+        };
+        var bt = this; bt.disabled = true; bt.textContent = "Salvando…";
+        (novo ? api("/api/catalog", { method: "POST", body: corpo }) : api("/api/catalog/" + encodeURIComponent(p.id), { method: "PUT", body: corpo })).then(function () {
+          var agora = [corpo.imagem_principal, corpo.imagem_hover].concat(corpo.galeria).concat(corpo.cores.map(function (x) { return x.img; })).filter(Boolean);
+          var soltas = chavesAntes.filter(function (k) { return agora.indexOf(k) < 0; });
+          if (soltas.length) api("/api/img/apagar", { method: "POST", body: { chaves: soltas } }).catch(function () {});
+          var salvo = Object.assign({}, p0 || {}, corpo, { ficha: corpo.ficha ? JSON.stringify(corpo.ficha) : null, galeria: corpo.galeria.length ? JSON.stringify(corpo.galeria) : null, relacionados: corpo.relacionados.length ? JSON.stringify(corpo.relacionados) : null });
+          if (novo) PROD.lista.push(salvo); else PROD.lista = PROD.lista.map(function (x) { return x.id === p.id ? salvo : x; });
+          fecharFolha(); render(true); aviso(novo ? "Peça criada" : "Peça salva");
+        }).catch(function (e) {
+          bt.disabled = false; bt.textContent = novo ? "Criar peça" : "Salvar";
+          aviso("Não salvou: " + (/HTTP 400/.test(String(e && e.message)) ? "falta campo obrigatório" : "confira a internet"));
+        });
+      };
+    });
+  }
+
   /* --- busca: caixa no topo da tela, acha registro e roda comando --- */
   var buscaAberta = false, buscaSel = 0, buscaLista = [];
   function norm(s) { return semAcento(s).toLowerCase(); }
@@ -1458,6 +1764,8 @@
     ["Lançar", "Entrada", function () { folhaLancar("entrada"); }, IC.entrada], ["Lançar", "Evento", function () { folhaLancar("evento", vista === "agenda" ? diaSel : null); }, IC.evento],
     ["Lançar", "Lead", function () { folhaLancar("lead"); }, IC.lead], ["Lançar", "Carnê", function () { folhaLancar("carne"); }, IC.carne],
     ["Lançar", "Lembrete", function () { folhaLancar("nota"); }, IC.nota],
+    ["Loja", "Peça nova", function () { lojaSeg = "produtos"; irPara("loja"); carregarProdutos().then(function () { folhaProduto(null); }); }, IC.mais],
+    ["Ir", "Produtos", function () { lojaSeg = "produtos"; if (vista === "loja") render(true); else irPara("loja"); }, IC.entrada],
     ["Sites", "Buscar negócios", function () { folhaBuscarNegocios(); }, IC.site], ["Sites", "Escolher na reserva", function () { folhaReserva(); }, IC.site],
     ["Ir", "Estúdio", function () { irPara("estudio"); }, IC.dir], ["Estúdio", "Ligar notificações", function () { irPara("estudio"); }, IC.dir]
   ];
@@ -1466,6 +1774,7 @@
     buscaAberta = true;
     $("busca").classList.add("on"); $("veu").classList.add("on"); document.body.style.overflow = "hidden";
     var inp = $("qB"); inp.value = ""; inp.focus();
+    if (!PROD.erro) carregarProdutos();
     pintaBusca();
   }
   function fecharBusca() {
@@ -1491,6 +1800,7 @@
       S.prospec.forEach(function (p) { if (tem(p.nome, p.cidade, p.ramo)) achados.push({ tipo: "site", rot: "Site", tit: p.nome, sub: [p.cidade, p.status].filter(Boolean).join(", "), fn: function () { folhaSite(p); } }); });
       eventosVivos().forEach(function (e) { if (tem(e.titulo, e.cliente)) achados.push({ tipo: e.tipo === "cobranca" ? "carne" : "agenda", rot: e.tipo === "cobranca" ? "Carnê" : "Agenda", tit: e.titulo, sub: dm(e.data) + (e.feito ? ", feito" : ""), fn: function () { if (e.tipo === "cobranca") folhaParcela(e); else folhaEvento(e); } }); });
       (S.pedidosTodos || S.pedidos).forEach(function (p) { var nomes = (p.itens || []).map(function (i) { return i.nome; }).join(", "); if (tem(p.codigo, nomes)) achados.push({ tipo: "loja", rot: "Pedido", tit: p.codigo, sub: nomes, fn: function () { folhaPedido(p); } }); });
+      (PROD.lista || []).forEach(function (pr) { if (tem(pr.nome, pr.subtitulo, pr.id)) achados.push({ tipo: "loja", rot: "Peça", tit: pr.nome, sub: nomeFaixa(pr.subcategoria) + ", " + brl(num(pr.preco)), fn: function () { folhaProduto(pr); } }); });
       S.lancamentos.forEach(function (l) { if (tem(l.label)) achados.push({ tipo: "feito", rot: "Entrada", tit: tituloEntrada(l), sub: dm(l.data) + ", " + brl(num(l.valor)), fn: function () { folhaEntrada(l); } }); });
       S.notas.forEach(function (n) { if (tem(n.titulo, n.detalhe)) achados.push({ tipo: "nota", rot: "Lembrete", tit: n.titulo, sub: n.data ? dm(n.data) : "", fn: function () { folhaNota(n); } }); });
       var porTipo = {};
@@ -1577,7 +1887,7 @@
     ["Números", "Site, Instagram e relatório", "/admin.html", '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>'],
     ["Divulgação", "Conteúdo e newsletter", "/admin.html", '<path d="M3 11l18-7v16L3 13z"/><path d="M7 13v5a2 2 0 0 0 4 0v-4"/>'],
     ["Empresa", "MEI, DAS e limite do ano", "/admin.html", '<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>'],
-    ["Produtos e selos", "Catálogo, fotos e selos", "/admin.html", '<path d="M5 8h14l-1.5 12h-11z"/><path d="M9 8a3 3 0 0 1 6 0"/>']
+    ["Selos", "Gerar, ler e vincular", "/admin.html", '<path d="M5 8h14l-1.5 12h-11z"/><path d="M9 8a3 3 0 0 1 6 0"/>']
   ];
   function telaEstudio() {
     if (!ajustes.carregado) carregarAjustes();

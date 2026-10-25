@@ -65,6 +65,8 @@
   --feito: #357550;
   --adiar: #0D0D0B;
   --c-aviso: #B23A2E;
+  --dc-azul: #2E6FC4; --dc-verde: #357550; --dc-amarelo: #D4960A; --dc-laranja: #C8501A;
+  --listra: repeating-linear-gradient(135deg, rgba(127,127,127,.22) 0 6px, transparent 6px 12px);
   --c-site: #C8501A; --c-lead: #2C69BA; --c-carne: #8B6207; --c-agenda: #6B4FA0; --c-loja: #0D0D0B; --c-nota: #7A6A55;
   --raio: 16px;
   --font: "Clother", "Helvetica Neue", Arial, sans-serif;
@@ -411,6 +413,69 @@ main { padding: calc(var(--seguro-topo) + var(--topo-h) + 8px) 12px calc(var(--s
 .pulso.parado { background: var(--c-carne); animation: none; }
 @keyframes pulso { 50% { opacity: .35; transform: scale(.8); } }
 
+/* olho e resumo por origem */
+.topo-mes .olho { width: 38px; height: 38px; margin-left: 8px; box-shadow: none; border-color: var(--linha); flex: none; }
+.topo-mes .olho svg { width: 18px; height: 18px; }
+.topo-mes .comp { margin-left: auto; }
+.origem { display: grid; gap: 10px; padding: 12px 14px; }
+.origem-barra { display: flex; height: 12px; border-radius: 99px; overflow: hidden; background: var(--cartao-2); gap: 2px; }
+.origem-barra i { display: block; height: 100%; min-width: 4px; }
+.origem-leg { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 13px; color: var(--suave); font-weight: 700; }
+.origem-leg span { display: inline-flex; align-items: center; gap: 6px; }
+.origem-leg i { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+.origem-leg b, .taxa b { color: var(--tinta); font-variant-numeric: tabular-nums; }
+.taxa { margin: 0; font-size: 13px; font-weight: 700; color: var(--suave); }
+
+/* dia indisponível e cor do dia */
+.mes-grade button.dia-off, .semana button.dia-off { background-image: var(--listra); }
+.mes-grade button.dia-azul, .semana button.dia-azul, .wk-dia.dia-azul { box-shadow: inset 0 -4px 0 var(--dc-azul); }
+.mes-grade button.dia-verde, .semana button.dia-verde, .wk-dia.dia-verde { box-shadow: inset 0 -4px 0 var(--dc-verde); }
+.mes-grade button.dia-amarelo, .semana button.dia-amarelo, .wk-dia.dia-amarelo { box-shadow: inset 0 -4px 0 var(--dc-amarelo); }
+.mes-grade button.dia-laranja, .semana button.dia-laranja, .wk-dia.dia-laranja { box-shadow: inset 0 -4px 0 var(--dc-laranja); }
+.semana button[class*="dia-"] { box-shadow: 2px 2px 0 var(--sombra), inset 0 -4px 0 var(--sem-cor, transparent); }
+.semana button.dia-azul { --sem-cor: var(--dc-azul); } .semana button.dia-verde { --sem-cor: var(--dc-verde); } .semana button.dia-amarelo { --sem-cor: var(--dc-amarelo); } .semana button.dia-laranja { --sem-cor: var(--dc-laranja); }
+.ponto-cor { display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-right: 8px; vertical-align: middle; }
+.ponto-cor.dia-azul { background: var(--dc-azul); } .ponto-cor.dia-verde { background: var(--dc-verde); } .ponto-cor.dia-amarelo { background: var(--dc-amarelo); } .ponto-cor.dia-laranja { background: var(--dc-laranja); }
+.dia-indisp { background-image: var(--listra); text-align: left; font-size: 15px; font-weight: 900; padding: 12px 14px; cursor: pointer; }
+.interruptor { justify-content: space-between; flex-direction: row-reverse; padding: 4px 0; font-weight: 900; }
+.cores-dia { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+.cores-dia button { display: grid; justify-items: center; gap: 6px; padding: 10px 4px; border: 1.5px solid var(--linha); border-radius: 12px; background: var(--campo); font-size: 12px; font-weight: 900; color: var(--tinta); }
+.cores-dia button i { width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid var(--borda); }
+.cores-dia .cd-nada i { background: var(--listra), var(--cartao); } .cores-dia .cd-azul i { background: var(--dc-azul); } .cores-dia .cd-verde i { background: var(--dc-verde); } .cores-dia .cd-amarelo i { background: var(--dc-amarelo); } .cores-dia .cd-laranja i { background: var(--dc-laranja); }
+.cores-dia button[aria-pressed="true"] { border-color: var(--borda); background: var(--cartao-2); box-shadow: 2px 2px 0 var(--sombra); }
+.pilulas.mover button[hidden] { display: none; }
+.seg-mini { display: inline-grid; grid-auto-flow: column; padding: 3px; gap: 3px; box-shadow: none; }
+.seg-mini button { min-height: 36px; padding: 0 12px; font-size: 13px; }
+
+/* semana com horários (computador) */
+.semana-pc { padding: 0; overflow: hidden; }
+.wk-cab, .wk-todo, .wk-corpo { display: grid; grid-template-columns: 56px repeat(7, minmax(0, 1fr)); }
+.wk-cab { border-bottom: 1px solid var(--linha); }
+.wk-dia { border: 0; border-left: 1px solid var(--linha); background: none; color: var(--tinta); padding: 10px 0 8px; display: grid; justify-items: center; gap: 1px; cursor: pointer; }
+.wk-dia small { font-size: 11px; font-weight: 900; text-transform: uppercase; color: var(--suave); }
+.wk-dia b { font-size: 20px; font-weight: 900; line-height: 1.1; }
+.wk-dia.hoje b { background: var(--tinta); color: var(--cartao); border-radius: 999px; padding: 0 9px; }
+.wk-dia.dia-off, .wk-todo-col.dia-off { background-image: var(--listra); }
+.wk-col.dia-off { background-image: var(--listra), repeating-linear-gradient(to bottom, transparent 0 51px, var(--linha) 51px 52px); }
+:root[data-theme="noite"] .wk-ev:not(.t-loja):not(.t-feito), :root[data-theme="noite"] .wk-chip:not(.t-loja):not(.t-feito) { color: #0D0D0B; }
+.wk-dia:hover { background-color: var(--cartao-2); }
+.wk-todo { border-bottom: 1px solid var(--linha); min-height: 34px; }
+.wk-rot { font-size: 11px; font-weight: 900; color: var(--suave); display: grid; place-items: center; }
+.wk-todo-col { border-left: 1px solid var(--linha); padding: 4px; display: grid; gap: 3px; align-content: start; }
+.wk-chip { border: 0; border-radius: 7px; color: #fff; font-size: 11.5px; font-weight: 900; padding: 4px 6px; text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; }
+.wk-corpo { max-height: calc(100dvh - 250px); overflow-y: auto; }
+.wk-horas span { display: block; font-size: 11px; font-weight: 900; color: var(--suave); text-align: right; padding: 0 8px; transform: translateY(-7px); font-variant-numeric: tabular-nums; }
+.wk-horas span:first-child { transform: none; }
+.wk-col { position: relative; border-left: 1px solid var(--linha); background-image: repeating-linear-gradient(to bottom, transparent 0 51px, var(--linha) 51px 52px); cursor: copy; }
+.wk-col.hoje { background-color: rgba(200,80,26,.05); }
+.wk-ev { position: absolute; border-radius: 9px; padding: 4px 7px; color: #fff; overflow: hidden; cursor: grab; display: grid; align-content: start; gap: 1px; border: 1.5px solid rgba(13,13,11,.35); touch-action: none; user-select: none; }
+.wk-ev b { font-size: 12.5px; font-weight: 900; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.wk-ev small { font-size: 11px; font-weight: 700; opacity: .9; font-variant-numeric: tabular-nums; }
+.wk-ev.arrastando { cursor: grabbing; z-index: 5; box-shadow: 3px 3px 0 var(--sombra); opacity: .92; }
+.wk-ev.feito, .wk-chip.feito { opacity: .5; }
+.wk-agora { position: absolute; left: 0; right: 0; height: 2px; background: var(--c-site); z-index: 3; pointer-events: none; }
+.wk-agora::before { content: ""; position: absolute; left: -5px; top: -4px; width: 10px; height: 10px; border-radius: 50%; background: var(--c-site); }
+
 /* ===== computador ===== */
 .lateral { display: none; }
 .acoes-pc { display: none; }
@@ -553,7 +618,7 @@ main { padding: calc(var(--seguro-topo) + var(--topo-h) + 8px) 12px calc(var(--s
 
 <div class="aviso" id="aviso" role="status" aria-live="polite"><span id="avisoTxt"></span><button id="avisoBt" hidden>Desfazer</button></div>
 
-<script src="painel.js?v=20261026a"></script>
+<script src="painel.js?v=20261026b"></script>
 <script>if (navigator.serviceWorker) navigator.serviceWorker.register("/sw.js").catch(function () {});</script>
 </body>
 </html>

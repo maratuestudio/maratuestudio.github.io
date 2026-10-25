@@ -32,6 +32,9 @@
     return dm(iso);
   }
   function brl(v) { return "R$ " + Number(v || 0).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+  function oculto() { try { return localStorage.getItem("maratu.fatHidden") === "1"; } catch (e) { return false; } }
+  function brlV(v) { return oculto() ? "R$ •••" : brl(v); }
+  function brlCurtoV(v) { return oculto() ? "R$ •••" : brlCurto(v); }
   function brlCurto(v) { var n = Number(v || 0); return "R$ " + n.toLocaleString("pt-BR", { minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: 2 }); }
   function num(v) { var t = String(v == null ? "" : v).replace(/[^\d,.-]/g, ""); if (t.indexOf(",") > -1) t = t.replace(/\./g, "").replace(",", "."); var n = parseFloat(t); return isFinite(n) ? n : 0; }
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
@@ -53,6 +56,7 @@
     ig: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".6" fill="currentColor"/></svg>',
     wa: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l1.3-3.9A8 8 0 1 1 8 19z"/></svg>',
     olho: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>',
+    olhoFechado: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18M10.6 5.1A10 10 0 0 1 12 5c6.5 0 10 7 10 7a17 17 0 0 1-3.2 4.1M6.6 6.6A17 17 0 0 0 2 12s3.5 7 10 7a9.7 9.7 0 0 0 5.4-1.6"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>',
     mais: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>',
     entrada: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="13" rx="2"/><circle cx="12" cy="12.5" r="2.5"/></svg>',
     evento: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>',
@@ -294,7 +298,7 @@
         var p = kv(e.notas);
         out.push({
           k: "ev:" + e.id, tipo: "carne", rot: "Carnê", ordem: 1, data: e.data,
-          titulo: "Cobrar " + (e.cliente || "") + " " + (p.parc || ""), sub: [p.prod, brl(num(p.valor))].filter(Boolean).join(", "),
+          titulo: "Cobrar " + (e.cliente || "") + " " + (p.parc || ""), sub: [p.prod, brlV(num(p.valor))].filter(Boolean).join(", "),
           quando: quandoRel(e.data),
           acoes: '<a class="bt preto" href="' + esc(waLink(p.tel, msgCobranca(e))) + '" target="_blank" rel="noopener">' + IC.wa + "Cobrar</a>",
           dir: { rot: "Recebi", fn: function () { parcelaPaga(e, true); } },
@@ -331,7 +335,7 @@
       var itens = (p.itens || []).map(function (i) { return (i.qtd > 1 ? i.qtd + "x " : "") + i.nome; }).join(", ");
       out.push({
         k: "ped:" + p.codigo, tipo: "loja", rot: "Pedido", ordem: 2.5, data: diaLocal(p.criado_em) || h,
-        titulo: itens || "Pedido " + p.codigo, sub: "Código " + p.codigo + ", " + brl(Number(p.total || 0) / 100),
+        titulo: itens || "Pedido " + p.codigo, sub: "Código " + p.codigo + ", " + brlV(Number(p.total || 0) / 100),
         quando: quandoRel(diaLocal(p.criado_em || Date.now())),
         dir: { rot: "Atendido", fn: function () { pedidoStatus(p, "atendido"); } },
         esq: { rot: "Amanhã", fn: function () { adiarCartao("ped:" + p.codigo); } },
@@ -424,11 +428,14 @@
 
   function render(semAnim, direcao) {
     if (!S.pronto) return;
+    var wk = document.querySelector(".wk-corpo"), wkTop = wk ? wk.scrollTop : null;
     var html = vista === "sites" ? telaSites() : vista === "loja" ? telaLoja() : vista === "agenda" ? telaAgenda() : vista === "estudio" ? telaEstudio() : telaHoje();
     var main = $("tela");
     main.innerHTML = '<div class="vista' + (semAnim ? "" : direcao === "esq" ? " entra-esq" : " entra-dir") + '">' + html + "</div>";
     ligar(main);
     if (vista === "estudio") ligarEstudio(main);
+    var wk2 = main.querySelector(".wk-corpo");
+    if (wk2) wk2.scrollTop = wkTop != null ? wkTop : Math.max(0, (new Date().getHours() - HORA_INI - 1) * SLOT);
     dicaArrastar(main);
     var n = itensHoje().length;
     document.querySelectorAll('[data-v="hoje"]').forEach(function (b) { b.setAttribute("data-n", String(n)); });
@@ -476,10 +483,11 @@
   function cartaoMes(grande) {
     var r = resumoMes(), pct = r.meta ? Math.min(100, r.total / r.meta * 100) : 0;
     if (!grande) return '<button class="cartao mes mini" data-ir="loja">' +
-      '<div class="mini-mes"><b style="font-size:15px;">' + cap(r.mes) + '</b><div class="barra-meta"><i style="width:' + pct.toFixed(1) + '%"></i></div><span class="valor" style="font-size:14px;">' + brlCurto(r.total) + "</span></div>" +
-      '<div class="rodape"><span>' + (r.meta ? "Meta " + brlCurto(r.meta) : "Sem meta") + "</span><span>" + compTxt(r) + "</span></div></button>";
-    return '<div class="cartao mes"><div class="topo-mes"><span class="grande">' + brlCurto(r.total) + '</span><span class="comp ' + (!r.ant ? "" : r.total >= r.ant ? "sobe" : "desce") + '">' + compTxt(r) + '</span></div>' +
-      '<div class="barra-meta"><i style="width:' + pct.toFixed(1) + '%"></i></div><div class="rodape"><span>' + cap(r.mes) + "</span><span>" + (r.meta ? Math.round(pct) + "% de " + brlCurto(r.meta) : "Sem meta") + "</span></div></div>";
+      '<div class="mini-mes"><b style="font-size:15px;">' + cap(r.mes) + '</b><div class="barra-meta"><i style="width:' + pct.toFixed(1) + '%"></i></div><span class="valor" style="font-size:14px;">' + brlCurtoV(r.total) + "</span></div>" +
+      '<div class="rodape"><span>' + (r.meta ? "Meta " + brlCurtoV(r.meta) : "Sem meta") + "</span><span>" + (oculto() ? "" : compTxt(r)) + "</span></div></button>";
+    var olho = '<button class="ico-bt olho" data-olho aria-label="' + (oculto() ? "Mostrar valores" : "Esconder valores") + '" aria-pressed="' + oculto() + '">' + (oculto() ? IC.olhoFechado : IC.olho) + "</button>";
+    return '<div class="cartao mes"><div class="topo-mes"><span class="grande">' + brlCurtoV(r.total) + '</span><span class="comp ' + (!r.ant || oculto() ? "" : r.total >= r.ant ? "sobe" : "desce") + '">' + (oculto() ? "" : compTxt(r)) + "</span>" + olho + "</div>" +
+      '<div class="barra-meta"><i style="width:' + pct.toFixed(1) + '%"></i></div><div class="rodape"><span>' + cap(r.mes) + "</span><span>" + (r.meta ? (oculto() ? "Meta " + brlCurtoV(r.meta) : Math.round(pct) + "% de " + brlCurto(r.meta)) : "Sem meta") + "</span></div></div>";
   }
 
   function telaHoje() {
@@ -517,7 +525,7 @@
     S.prospec.forEach(function (p) { try { JSON.parse(p.historico || "[]").forEach(function (x) { if (x.acao === "enviei" && diaLocal(x.ts) === h) envios++; }); } catch (e) {} });
     var entrou = S.lancamentos.filter(function (l) { return l.data === h; }).reduce(function (a, l) { return a + num(l.valor); }, 0);
     return '<div class="cartao fechado"><div class="fechado-cab">' + IC.check + '<h3>Dia fechado</h3></div>' +
-      '<div class="nums"><div class="num"><b>' + envios + '</b><span>' + (envios === 1 ? "prévia enviada" : "prévias enviadas") + '</span></div><div class="num"><b>' + brlCurto(entrou) + '</b><span>entrou hoje</span></div><div class="num"><b>' + f.n + "</b><span>" + (f.n === 1 ? "resolvido" : "resolvidos") + "</span></div></div></div>";
+      '<div class="nums"><div class="num"><b>' + envios + '</b><span>' + (envios === 1 ? "prévia enviada" : "prévias enviadas") + '</span></div><div class="num"><b>' + brlCurtoV(entrou) + '</b><span>entrou hoje</span></div><div class="num"><b>' + f.n + "</b><span>" + (f.n === 1 ? "resolvido" : "resolvidos") + "</span></div></div></div>";
   }
   function compTxt(r) {
     if (!r.ant) return r.mesAnt + " até dia " + r.dia + ": nada";
@@ -564,17 +572,31 @@
     var meta = function (n, alvo, txt) { return '<div class="cartao meta"><div class="meta-num"><b>' + n + "</b><span>de " + alvo + " " + txt + '</span></div><div class="barra-meta"><i style="width:' + Math.min(100, n / alvo * 100).toFixed(1) + '%"></i></div></div>'; };
     return '<div class="metas">' + meta(env, META_CONTATOS, "contatos na semana") + meta(fechados, META_SITES, "sites fechados no mês") + "</div>";
   }
+  var lojaFonte = "todas";
+  var FONTE_COR = { pix: "var(--feito)", mp: "var(--c-lead)", manual: "var(--c-loja)", carne: "var(--c-carne)" };
+  function taxaCartao(l) { var m = String(l.label || "").match(/bruto R\$\s*([\d.]+)/); var b = m ? parseFloat(m[1]) : null; return b != null && b - num(l.valor) > 0.005 ? b - num(l.valor) : 0; }
   function lojaCaixa() {
     var d = new Date(); d = new Date(d.getFullYear(), d.getMonth() + lojaMesDesloc, 1);
     var pre = d.getFullYear() + "-" + pad2(d.getMonth() + 1) + "-";
     var doMes = S.lancamentos.filter(function (l) { return String(l.data || "").indexOf(pre) === 0; }).sort(function (a, b) { return a.data < b.data ? 1 : -1; });
-    var porDia = {}; doMes.forEach(function (l) { (porDia[l.data] = porDia[l.data] || []).push(l); });
     var totalMes = doMes.reduce(function (a, l) { return a + num(l.valor); }, 0);
-    return '<div class="nav-dia"><button class="ico-bt" data-mesnav="-1" aria-label="Mês anterior">' + IC.esq + '</button><div class="cab" style="text-align:center;"><h1 style="font-size:20px;">' + cap(MESES[d.getMonth()]) + (d.getFullYear() !== new Date().getFullYear() ? " " + d.getFullYear() : "") + "</h1><p>" + brl(totalMes) + ", " + doMes.length + (doMes.length === 1 ? " entrada" : " entradas") + '</p></div><button class="ico-bt" data-mesnav="1" aria-label="Mês seguinte"' + (lojaMesDesloc >= 0 ? ' disabled style="visibility:hidden"' : "") + ">" + IC.dir + "</button></div>" +
-      (doMes.length ? Object.keys(porDia).sort().reverse().map(function (dia) {
+    var porFonte = { pix: 0, mp: 0, manual: 0, carne: 0 }, nFonte = { pix: 0, mp: 0, manual: 0, carne: 0 }, taxa = 0;
+    doMes.forEach(function (l) { var f = fonteDe(l); porFonte[f] += num(l.valor); nFonte[f]++; if (f === "mp") taxa += taxaCartao(l); });
+    if (lojaFonte !== "todas" && !nFonte[lojaFonte]) lojaFonte = "todas";
+    var vis = lojaFonte === "todas" ? doMes : doMes.filter(function (l) { return fonteDe(l) === lojaFonte; });
+    var porDia = {}; vis.forEach(function (l) { (porDia[l.data] = porDia[l.data] || []).push(l); });
+    var ordem = ["pix", "mp", "manual", "carne"].filter(function (f) { return nFonte[f]; });
+    var resumo = totalMes > 0 ? '<div class="cartao origem"><div class="origem-barra">' + ordem.map(function (f) { return '<i style="width:' + (porFonte[f] / totalMes * 100).toFixed(2) + "%;background:" + FONTE_COR[f] + '"></i>'; }).join("") + "</div>" +
+      '<div class="origem-leg">' + ordem.map(function (f) { return '<span><i style="background:' + FONTE_COR[f] + '"></i>' + FONTE[f] + " <b>" + brlCurtoV(porFonte[f]) + "</b></span>"; }).join("") + "</div>" +
+      (taxa > 0 ? '<p class="taxa">Taxa do cartão no mês: <b>' + brlV(taxa) + "</b></p>" : "") + "</div>" : "";
+    var filtros = ordem.length > 1 ? '<div class="filtros">' + '<button class="chip-bt" data-fonte="todas" aria-pressed="' + (lojaFonte === "todas") + '">Todas</button>' +
+      ordem.map(function (f) { return '<button class="chip-bt" data-fonte="' + f + '" aria-pressed="' + (lojaFonte === f) + '">' + FONTE[f] + ' <span class="n">' + nFonte[f] + "</span></button>"; }).join("") + "</div>" : "";
+    return '<div class="nav-dia"><button class="ico-bt" data-mesnav="-1" aria-label="Mês anterior">' + IC.esq + '</button><div class="cab" style="text-align:center;"><h1 style="font-size:20px;">' + cap(MESES[d.getMonth()]) + (d.getFullYear() !== new Date().getFullYear() ? " " + d.getFullYear() : "") + "</h1><p>" + brlV(totalMes) + ", " + doMes.length + (doMes.length === 1 ? " entrada" : " entradas") + '</p></div><button class="ico-bt" data-mesnav="1" aria-label="Mês seguinte"' + (lojaMesDesloc >= 0 ? ' disabled style="visibility:hidden"' : "") + ">" + IC.dir + "</button></div>" +
+      resumo + filtros +
+      (vis.length ? Object.keys(porDia).sort().reverse().map(function (dia) {
         var soma = porDia[dia].reduce(function (a, l) { return a + num(l.valor); }, 0);
-        return '<div class="dia-rot"><span>' + (dia === hoje() ? "Hoje" : dia === somaDias(hoje(), -1) ? "Ontem" : SEM3[dataDe(dia).getDay()] + " " + dm(dia)) + '</span><span class="valor">+' + brlCurto(soma) + '</span></div><div class="cartao lista">' +
-          porDia[dia].map(function (l) { var f = fonteDe(l); return '<div class="linha toca" data-lanc="' + esc(l.id) + '"><span class="tipo ' + (f === "pix" ? "t-feito" : f === "mp" ? "t-lead" : f === "carne" ? "t-carne" : "t-loja") + '">' + FONTE[f] + '</span><div class="o"><b>' + esc(tituloEntrada(l)) + '</b></div><span class="valor">' + brl(num(l.valor)) + "</span></div>"; }).join("") + "</div>";
+        return '<div class="dia-rot"><span>' + (dia === hoje() ? "Hoje" : dia === somaDias(hoje(), -1) ? "Ontem" : SEM3[dataDe(dia).getDay()] + " " + dm(dia)) + '</span><span class="valor">+' + brlCurtoV(soma) + '</span></div><div class="cartao lista">' +
+          porDia[dia].map(function (l) { var f = fonteDe(l); return '<div class="linha toca" data-lanc="' + esc(l.id) + '"><span class="tipo ' + (f === "pix" ? "t-feito" : f === "mp" ? "t-lead" : f === "carne" ? "t-carne" : "t-loja") + '">' + FONTE[f] + '</span><div class="o"><b>' + esc(tituloEntrada(l)) + '</b></div><span class="valor">' + brlV(num(l.valor)) + "</span></div>"; }).join("") + "</div>";
       }).join("") : '<p class="vazio">Nenhuma entrada nesse mês.</p>');
   }
   function lojaPedidos() {
@@ -592,12 +614,12 @@
     var aberto = function (id) { return carnes[id].some(function (e) { return !e.feito; }); };
     ids.sort(function (a, b) { var x = aberto(a), y = aberto(b); if (x !== y) return x ? -1 : 1; return proxVenc(carnes[a]) < proxVenc(carnes[b]) ? -1 : 1; });
     var falta = 0; ids.forEach(function (id) { carnes[id].forEach(function (e) { if (!e.feito) falta += num(kv(e.notas).valor); }); });
-    return '<div class="nums" style="grid-template-columns:1fr 1fr;"><div class="num"><b>' + brlCurto(falta) + '</b><span>a receber</span></div><div class="num"><b>' + ids.filter(aberto).length + "</b><span>carnês abertos</span></div></div>" +
+    return '<div class="nums" style="grid-template-columns:1fr 1fr;"><div class="num"><b>' + brlCurtoV(falta) + '</b><span>a receber</span></div><div class="num"><b>' + ids.filter(aberto).length + "</b><span>carnês abertos</span></div></div>" +
       (ids.length ? '<div class="cartao lista">' + ids.map(function (id) {
         var evs = carnes[id].slice().sort(function (a, b) { return a.data < b.data ? -1 : 1; }), pagas = evs.filter(function (e) { return e.feito; }).length;
         var prox = evs.filter(function (e) { return !e.feito; })[0], p0 = kv(evs[0].notas);
         var atras = prox && prox.data < hoje();
-        return '<div class="linha toca" data-carne="' + esc(id) + '"' + (!prox ? ' style="opacity:.6"' : "") + '><div class="o"><b>' + esc(evs[0].cliente || "Cliente") + (p0.prod ? " · " + esc(p0.prod) : "") + "</b><small" + (atras ? ' style="color:var(--c-site);font-weight:900"' : "") + ">" + pagas + " de " + evs.length + " pagas" + (prox ? ", " + (atras ? "atrasada desde " : "próxima ") + dm(prox.data) + " " + brlCurto(num(kv(prox.notas).valor)) : ", quitado") + "</small></div>" + IC.seta + "</div>";
+        return '<div class="linha toca" data-carne="' + esc(id) + '"' + (!prox ? ' style="opacity:.6"' : "") + '><div class="o"><b>' + esc(evs[0].cliente || "Cliente") + (p0.prod ? " · " + esc(p0.prod) : "") + "</b><small" + (atras ? ' style="color:var(--c-site);font-weight:900"' : "") + ">" + pagas + " de " + evs.length + " pagas" + (prox ? ", " + (atras ? "atrasada desde " : "próxima ") + dm(prox.data) + " " + brlCurtoV(num(kv(prox.notas).valor)) : ", quitado") + "</small></div>" + IC.seta + "</div>";
       }).join("") + "</div>" : '<p class="vazio">Nenhum carnê.</p>');
   }
   var LINK_ANTIGO = '<a class="cartao linha toca" href="/admin.html" style="text-decoration:none;margin-top:6px;padding:4px 14px;"><div class="o"><b>Produtos, preços e selos</b><small>No painel antigo</small></div>' + IC.fora + "</a>";
@@ -626,13 +648,157 @@
     out.sort(function (a, b) { return (a.hora || "") < (b.hora || "") ? -1 : (a.hora || "") > (b.hora || "") ? 1 : 0; });
     return out;
   }
+  /* ---------- marcas de dia: indisponível e cor (mesmo formato do painel antigo) ----------
+     ficam na tabela de eventos como tipo "__mark", com "dc:<cor>;off:<0|1>" nas notas */
+  var CORES_DIA = [["", "Nenhuma"], ["azul", "Azul"], ["verde", "Verde"], ["amarelo", "Amarelo"], ["laranja", "Laranja"]];
+  function lerMarca(ev) { var n = ev.notas || "", c = /dc:([a-z]*)/.exec(n); return { id: ev.id, data: ev.data, cor: c ? c[1] : "", off: /off:1/.test(n) }; }
+  function marcas() { var m = {}; S.eventos.forEach(function (e) { if (e.tipo === "__mark" && !m[e.data]) m[e.data] = lerMarca(e); }); return m; }
+  function aplicaMarca(arr, iso, patch) {
+    var m = arr.filter(function (e) { return e.tipo === "__mark" && e.data === iso; })[0];
+    var cur = m ? lerMarca(m) : { cor: "", off: false };
+    Object.keys(patch).forEach(function (k) { cur[k] = patch[k]; });
+    var notas = "dc:" + (cur.cor || "") + ";off:" + (cur.off ? 1 : 0);
+    if (!m) arr = arr.concat([{ id: uid("mk"), tipo: "__mark", titulo: "", data: iso, hora: null, diaInteiro: true, cliente: null, notas: notas, feito: false, publico: false, data_fim: null, hora_fim: null }]);
+    else arr = arr.map(function (e) { return e === m ? Object.assign({}, e, { notas: notas, titulo: "" }) : e; });
+    return arr.filter(function (e) { if (e.tipo !== "__mark") return true; var d = lerMarca(e); return d.cor || d.off; });
+  }
+  function marcarDia(iso, patch) {
+    descarregar();
+    S.eventos = aplicaMarca(S.eventos, iso, patch);
+    render(true);
+    gravarTabela("eventos", function (a) { return aplicaMarca(a, iso, patch); });
+  }
+  function classeMarca(m) { return m ? (m.off ? " dia-off" : "") + (m.cor ? " dia-" + m.cor : "") : ""; }
+  function folhaDia(iso) {
+    var m = marcas()[iso] || { cor: "", off: false };
+    abrirFolha(dataLonga(iso),
+      '<label class="marcar interruptor"><input type="checkbox" id="dOff"' + (m.off ? " checked" : "") + "> Dia indisponível</label>" +
+      '<div class="rot">Cor do dia</div>' +
+      '<div class="cores-dia" data-pil="cor">' + CORES_DIA.map(function (c) { return '<button type="button" data-val="' + c[0] + '" aria-pressed="' + (c[0] === (m.cor || "")) + '" class="cd-' + (c[0] || "nada") + '"><i></i>' + c[1] + "</button>"; }).join("") + "</div>" +
+      '<button class="bt cheio" id="dEv">' + IC.mais + "Evento neste dia</button>",
+      function (c) {
+        c.querySelector("#dOff").addEventListener("change", function () { marcarDia(iso, { off: this.checked }); aviso(this.checked ? "Dia indisponível" : "Dia liberado"); });
+        c.querySelectorAll(".cores-dia button").forEach(function (b) {
+          b.onclick = function () {
+            c.querySelectorAll(".cores-dia button").forEach(function (x) { x.setAttribute("aria-pressed", String(x === b)); });
+            marcarDia(iso, { cor: b.dataset.val });
+          };
+        });
+        c.querySelector("#dEv").onclick = function () { folhaLancar("evento", iso); };
+      });
+  }
+
+  /* ---------- mover evento (botões rápidos e arrastar na semana) ---------- */
+  function minutos(hm) { var p = String(hm || "").split(":"); return p.length === 2 ? +p[0] * 60 + +p[1] : null; }
+  function hm(min) { min = Math.max(0, Math.min(23 * 60 + 59, Math.round(min))); return pad2(Math.floor(min / 60)) + ":" + pad2(min % 60); }
+  function moverEvento(e, novaData, novaHora) {
+    var antes = { data: e.data, hora: e.hora, hora_fim: e.hora_fim, data_fim: e.data_fim, diaInteiro: e.diaInteiro };
+    var dif = diasEntre(e.data, novaData), depois = { data: novaData };
+    if (novaHora !== undefined) {
+      depois.hora = novaHora; depois.diaInteiro = !novaHora;
+      var ini = minutos(e.hora), fim = minutos(e.hora_fim), nova = minutos(novaHora);
+      if (ini != null && fim != null && nova != null) depois.hora_fim = hm(fim + (nova - ini));
+    }
+    if (e.data_fim) depois.data_fim = somaDias(e.data_fim, dif);
+    executar("Movido pra " + dm(novaData) + (depois.hora ? " às " + depois.hora : ""), function () { Object.assign(e, depois); }, function () { Object.assign(e, antes); },
+      function () { gravarTabela("eventos", function (a) { return trocaItem(a, e.id, depois); }); });
+  }
+
+  /* ---------- semana com horários (computador) ---------- */
+  var HORA_INI = 7, HORA_FIM = 22, SLOT = 52;
+  var agendaModo = lerLS("maratu.painel.agmodo", "dia");
+  function semanaPC() {
+    var h = hoje(), dow = (dataDe(diaSel).getDay() + 6) % 7, seg = somaDias(diaSel, -dow), mk = marcas();
+    var agora = new Date(), agoraMin = agora.getHours() * 60 + agora.getMinutes();
+    var cab = '<div class="wk-cab"><span></span>', topo = '<div class="wk-todo"><span class="wk-rot">dia</span>', corpo = '<div class="wk-corpo"><div class="wk-horas">';
+    for (var hr = HORA_INI; hr < HORA_FIM; hr++) corpo += '<span style="height:' + SLOT + 'px">' + pad2(hr) + ":00</span>";
+    corpo += "</div>";
+    semanaEvs = {};
+    for (var i = 0; i < 7; i++) {
+      var d = somaDias(seg, i), dd = dataDe(d), m = mk[d];
+      cab += '<button class="wk-dia' + (d === h ? " hoje" : "") + (d === diaSel ? " sel" : "") + classeMarca(m) + '" data-wkdia="' + d + '"><small>' + SEM3[dd.getDay()] + "</small><b>" + dd.getDate() + "</b></button>";
+      var itens = itensDoDia(d), todo = itens.filter(function (x) { return !x.hora; }), comHora = itens.filter(function (x) { return x.hora; });
+      topo += '<div class="wk-todo-col' + classeMarca(m) + '">' + todo.map(function (x) { var k = "t" + i + "_" + Math.random().toString(36).slice(2, 7); semanaEvs[k] = x; return '<button class="wk-chip t-' + x.tipo + (x.feito ? " feito" : "") + '" data-wk="' + k + '">' + esc(x.tit) + "</button>"; }).join("") + "</div>";
+      // faixas pra eventos que se sobrepõem
+      var blocos = comHora.map(function (x) {
+        var ini = minutos(x.hora), fim = minutos(x.e && x.e.hora_fim);
+        if (x.e && x.e.data_fim && x.e.data_fim > x.e.data) fim = HORA_FIM * 60;
+        if (fim == null || fim <= ini) fim = ini + 60;
+        return { x: x, ini: ini, fim: fim };
+      }).sort(function (a, b) { return a.ini - b.ini; });
+      var faixas = [];
+      blocos.forEach(function (b) { var f = 0; while (faixas[f] != null && faixas[f] > b.ini) f++; faixas[f] = Math.max(b.fim, b.ini + 30); b.f = f; });
+      var nf = Math.max(1, faixas.length);
+      corpo += '<div class="wk-col' + (d === h ? " hoje" : "") + classeMarca(m) + '" data-wkcol="' + d + '" style="height:' + (HORA_FIM - HORA_INI) * SLOT + 'px">';
+      blocos.forEach(function (b) {
+        var k = "e" + i + "_" + Math.random().toString(36).slice(2, 7); semanaEvs[k] = b.x;
+        var top = (b.ini - HORA_INI * 60) / 60 * SLOT, alt = Math.max(24, (b.fim - b.ini) / 60 * SLOT - 3);
+        top = Math.max(0, Math.min(top, (HORA_FIM - HORA_INI) * SLOT - 24));
+        corpo += '<div class="wk-ev t-' + b.x.tipo + (b.x.feito ? " feito" : "") + '" data-wk="' + k + '" style="top:' + top + "px;height:" + alt + "px;left:calc(" + (b.f * 100 / nf) + "% + 2px);width:calc(" + (100 / nf) + '% - 4px)"><b>' + esc(b.x.tit) + "</b><small>" + esc(b.x.hora + (b.x.e && b.x.e.hora_fim ? " às " + b.x.e.hora_fim : "")) + "</small></div>";
+      });
+      if (d === h && agoraMin >= HORA_INI * 60 && agoraMin < HORA_FIM * 60) corpo += '<div class="wk-agora" style="top:' + ((agoraMin - HORA_INI * 60) / 60 * SLOT) + 'px"></div>';
+      corpo += "</div>";
+    }
+    var ini = dataDe(seg), fimS = dataDe(somaDias(seg, 6));
+    var titulo = '<div class="nav-dia"><div class="cab"><h1 style="font-size:26px;">' + ini.getDate() + (ini.getMonth() !== fimS.getMonth() ? " de " + MESES[ini.getMonth()] : "") + " a " + fimS.getDate() + " de " + MESES[fimS.getMonth()] + "</h1></div>" +
+      (seg !== somaDias(h, -((dataDe(h).getDay() + 6) % 7)) ? '<button class="chip-bt" data-dia="' + h + '">Hoje</button>' : "") +
+      '<button class="ico-bt" data-dia="' + somaDias(diaSel, -7) + '" aria-label="Semana anterior">' + IC.esq + '</button><button class="ico-bt" data-dia="' + somaDias(diaSel, 7) + '" aria-label="Semana seguinte">' + IC.dir + "</button>" + modoAgendaBts() + "</div>";
+    return titulo + '<div class="cartao semana-pc">' + cab + "</div>" + topo + "</div>" + corpo + "</div></div>";
+  }
+  var semanaEvs = {};
+  function modoAgendaBts() { return pc() ? '<div class="seg seg-mini"><button data-agmodo="dia" aria-pressed="' + (agendaModo !== "semana") + '">Dia</button><button data-agmodo="semana" aria-pressed="' + (agendaModo === "semana") + '">Semana</button></div>' : ""; }
+  function abreItem(x) { if (!x) return; if (x.e) { if (x.e.tipo === "cobranca") folhaParcela(x.e); else folhaEvento(x.e); } else if (x.n) folhaNota(x.n); }
+  function ligarSemana(raiz) {
+    raiz.querySelectorAll("[data-wkdia]").forEach(function (b) { b.onclick = function () { folhaDia(b.dataset.wkdia); }; });
+    raiz.querySelectorAll(".wk-chip[data-wk]").forEach(function (b) { b.onclick = function () { abreItem(semanaEvs[b.dataset.wk]); }; });
+    raiz.querySelectorAll(".wk-col").forEach(function (col) {
+      col.addEventListener("click", function (ev) {
+        if (ev.target !== col) return;
+        var y = ev.clientY - col.getBoundingClientRect().top, min = HORA_INI * 60 + Math.floor(y / SLOT * 2) * 30;
+        folhaLancar("evento", col.dataset.wkcol, hm(min));
+      });
+    });
+    raiz.querySelectorAll(".wk-ev[data-wk]").forEach(function (el) {
+      var x = semanaEvs[el.dataset.wk], x0, y0, dy0, arrastando = false, id = null;
+      el.addEventListener("pointerdown", function (ev) {
+        if (ev.button !== 0) return;
+        id = ev.pointerId; x0 = ev.clientX; y0 = ev.clientY; dy0 = ev.clientY - el.getBoundingClientRect().top; arrastando = false;
+        try { el.setPointerCapture(id); } catch (e) {}
+      });
+      el.addEventListener("pointermove", function (ev) {
+        if (ev.pointerId !== id) return;
+        if (!arrastando && Math.abs(ev.clientX - x0) + Math.abs(ev.clientY - y0) < 5) return;
+        if (!x.e || x.e.tipo === "__mark" || x.e.tipo === "cobranca" || (x.e.data !== el.parentNode.dataset.wkcol && !arrastando)) return;
+        arrastando = true; el.classList.add("arrastando");
+        var cols = raiz.querySelectorAll(".wk-col"), alvo = null;
+        cols.forEach(function (c) { var r = c.getBoundingClientRect(); if (ev.clientX >= r.left && ev.clientX < r.right) alvo = c; });
+        if (!alvo) return;
+        if (el.parentNode !== alvo) { alvo.appendChild(el); try { el.setPointerCapture(id); } catch (e) {} }
+        var r = alvo.getBoundingClientRect(), min = HORA_INI * 60 + Math.round(((ev.clientY - r.top - dy0) / SLOT * 60) / 15) * 15;
+        min = Math.max(HORA_INI * 60, Math.min(HORA_FIM * 60 - 15, min));
+        el.style.top = ((min - HORA_INI * 60) / 60 * SLOT) + "px"; el.style.left = "2px"; el.style.width = "calc(100% - 4px)";
+        el.dataset.novo = alvo.dataset.wkcol + "|" + hm(min);
+        el.querySelector("small").textContent = hm(min);
+      });
+      el.addEventListener("pointerup", function (ev) {
+        if (ev.pointerId !== id) return; id = null;
+        if (!arrastando) { abreItem(x); return; }
+        el.classList.remove("arrastando");
+        var nv = (el.dataset.novo || "").split("|");
+        if (nv.length === 2 && (nv[0] !== x.e.data || nv[1] !== x.e.hora)) moverEvento(x.e, nv[0], nv[1]); else render(true);
+      });
+      el.addEventListener("pointercancel", function () { id = null; render(true); });
+    });
+  }
+
+  /* ---------- telas da agenda ---------- */
   function gradeMes(ym) {
-    var p = ym.split("-").map(Number), ano = p[0], mes = p[1] - 1;
+    var p = ym.split("-").map(Number), ano = p[0], mes = p[1] - 1, mk = marcas();
     var prim = new Date(ano, mes, 1), ini = somaDias(isoDe(prim), -((prim.getDay() + 6) % 7));
     var g = '<div class="mes-grade">' + ["seg", "ter", "qua", "qui", "sex", "sáb", "dom"].map(function (d) { return '<span class="dsem">' + d + "</span>"; }).join("");
     for (var i = 0; i < 42; i++) {
       var d = somaDias(ini, i), dd = dataDe(d), n = itensDoDia(d).filter(function (x) { return !x.feito; }).length;
-      g += '<button data-pdia="' + d + '" class="' + (dd.getMonth() !== mes ? "fora " : "") + (d === hoje() ? "hoje " : "") + (d === diaSel ? "sel" : "") + '">' + dd.getDate() + "<i>" + (n ? "<em></em>" : "") + (n > 1 ? "<em></em>" : "") + (n > 2 ? "<em></em>" : "") + "</i></button>";
+      g += '<button data-pdia="' + d + '" class="' + (dd.getMonth() !== mes ? "fora " : "") + (d === hoje() ? "hoje " : "") + (d === diaSel ? "sel" : "") + classeMarca(mk[d]) + '">' + dd.getDate() + "<i>" + (n ? "<em></em>" : "") + (n > 1 ? "<em></em>" : "") + (n > 2 ? "<em></em>" : "") + "</i></button>";
     }
     return g + "</div>";
   }
@@ -642,7 +808,8 @@
   }
   var agendaMes = null;
   function telaAgenda() {
-    var h = hoje(), sel = dataDe(diaSel), dow = (sel.getDay() + 6) % 7, seg = somaDias(diaSel, -dow);
+    if (pc() && agendaModo === "semana") return semanaPC();
+    var h = hoje(), sel = dataDe(diaSel), dow = (sel.getDay() + 6) % 7, seg = somaDias(diaSel, -dow), mk = marcas(), mDia = mk[diaSel];
     var itens = itensDoDia(diaSel), ehHoje = diaSel === h, agora = new Date(), agoraHM = pad2(agora.getHours()) + ":" + pad2(agora.getMinutes());
     var entrou = S.lancamentos.filter(function (l) { return l.data === diaSel; }), somaEntrou = entrou.reduce(function (a, l) { return a + num(l.valor); }, 0);
     var linhas = "", pos = false;
@@ -652,9 +819,12 @@
     });
     if (ehHoje && !pos) linhas += '<div class="agora"><span>agora ' + agoraHM + "</span></div>";
     agendaItens = itens;
-    var titulo = '<div class="nav-dia"><div class="cab"><h1 style="font-size:26px;">' + (ehHoje ? "Hoje" : diaSel === somaDias(h, 1) ? "Amanhã" : diaSel === somaDias(h, -1) ? "Ontem" : cap(SEM[sel.getDay()])) + "</h1><p>" + sel.getDate() + " de " + MESES[sel.getMonth()] + (sel.getFullYear() !== new Date().getFullYear() ? " de " + sel.getFullYear() : "") + "</p></div>" +
-      (!ehHoje ? '<button class="chip-bt" data-dia="' + h + '">Hoje</button>' : "") + (pc() ? '<button class="ico-bt" data-dia="' + somaDias(diaSel, -1) + '" aria-label="Dia anterior">' + IC.esq + '</button><button class="ico-bt" data-dia="' + somaDias(diaSel, 1) + '" aria-label="Dia seguinte">' + IC.dir + "</button>" : '<button class="chip-bt" data-mesfolha>Mês</button>') + "</div>";
-    var dia = (somaEntrou ? '<div class="cartao entrou"><span class="tipo">Entrou</span><span class="valor">' + brl(somaEntrou) + '</span><span style="color:var(--suave);font-weight:700;">' + entrou.length + (entrou.length === 1 ? " entrada" : " entradas") + "</span></div>" : "") +
+    var titulo = '<div class="nav-dia"><div class="cab"><h1 style="font-size:26px;">' + (mDia && mDia.cor ? '<i class="ponto-cor dia-' + mDia.cor + '"></i>' : "") + (ehHoje ? "Hoje" : diaSel === somaDias(h, 1) ? "Amanhã" : diaSel === somaDias(h, -1) ? "Ontem" : cap(SEM[sel.getDay()])) + "</h1><p>" + sel.getDate() + " de " + MESES[sel.getMonth()] + (sel.getFullYear() !== new Date().getFullYear() ? " de " + sel.getFullYear() : "") + "</p></div>" +
+      (!ehHoje ? '<button class="chip-bt" data-dia="' + h + '">Hoje</button>' : "") +
+      '<button class="ico-bt" data-diamenu aria-label="Opções do dia"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="5" cy="12" r="1.3" fill="currentColor"/><circle cx="12" cy="12" r="1.3" fill="currentColor"/><circle cx="19" cy="12" r="1.3" fill="currentColor"/></svg></button>' +
+      (pc() ? '<button class="ico-bt" data-dia="' + somaDias(diaSel, -1) + '" aria-label="Dia anterior">' + IC.esq + '</button><button class="ico-bt" data-dia="' + somaDias(diaSel, 1) + '" aria-label="Dia seguinte">' + IC.dir + "</button>" + modoAgendaBts() : '<button class="chip-bt" data-mesfolha>Mês</button>') + "</div>";
+    var dia = (mDia && mDia.off ? '<button class="cartao dia-indisp" data-diamenu>Dia indisponível</button>' : "") +
+      (somaEntrou ? '<div class="cartao entrou"><span class="tipo">Entrou</span><span class="valor">' + brlV(somaEntrou) + '</span><span style="color:var(--suave);font-weight:700;">' + entrou.length + (entrou.length === 1 ? " entrada" : " entradas") + "</span></div>" : "") +
       '<div class="linha-dia" id="linhaDia">' + (itens.length || ehHoje ? linhas : "") + (!itens.length ? '<p class="vazio" style="margin:6px 0 0;">Nada marcado.</p>' : "") + "</div>" +
       '<button class="bt cheio" data-novo="evento">' + IC.mais + "Evento em " + dm(diaSel) + "</button>";
     if (pc()) {
@@ -664,7 +834,7 @@
     var semana = "";
     for (var i = 0; i < 7; i++) {
       var d = somaDias(seg, i), tem = itensDoDia(d).some(function (x) { return !x.feito; });
-      semana += '<button data-dia="' + d + '" aria-pressed="' + (d === diaSel) + '" class="' + (tem ? "tem " : "") + (d === h ? "hoje" : "") + '"><small>' + SEM3[dataDe(d).getDay()] + "</small><b>" + dataDe(d).getDate() + "</b><i></i></button>";
+      semana += '<button data-dia="' + d + '" aria-pressed="' + (d === diaSel) + '" class="' + (tem ? "tem " : "") + (d === h ? "hoje" : "") + classeMarca(mk[d]) + '"><small>' + SEM3[dataDe(d).getDay()] + "</small><b>" + dataDe(d).getDate() + "</b><i></i></button>";
     }
     return titulo + '<div class="semana" id="semana">' + semana + "</div>" + dia;
   }
@@ -705,6 +875,11 @@
       b.onclick = function () { var x = agendaItens[Number(b.dataset.item)]; if (!x) return; if (x.e) { if (x.e.tipo === "cobranca") folhaParcela(x.e); else folhaEvento(x.e); } else if (x.n) folhaNota(x.n); };
     });
     var ld = raiz.querySelector("#linhaDia"); if (ld) arrastaDia(ld);
+    raiz.querySelectorAll("[data-diamenu]").forEach(function (b) { b.onclick = function () { folhaDia(diaSel); }; });
+    raiz.querySelectorAll("[data-agmodo]").forEach(function (b) { b.onclick = function () { agendaModo = b.dataset.agmodo; gravarLS("maratu.painel.agmodo", agendaModo); render(false); }; });
+    raiz.querySelectorAll("[data-olho]").forEach(function (b) { b.onclick = function () { try { localStorage.setItem("maratu.fatHidden", oculto() ? "0" : "1"); } catch (e) {} render(true); }; });
+    raiz.querySelectorAll("[data-fonte]").forEach(function (b) { b.onclick = function () { lojaFonte = b.dataset.fonte; render(true); }; });
+    if (vista === "agenda" && pc() && agendaModo === "semana") ligarSemana(raiz);
   }
   function carregarPedidosTodos() {
     api("/api/pedidos?limite=60").then(function (d) { S.pedidosTodos = d.pedidos || []; render(true); }).catch(function () { aviso("Não carregou os pedidos."); });
@@ -982,12 +1157,12 @@
 
   /* --- evento --- */
   var TIPOS_EV = [["evento", "Evento"], ["projeto", "Projeto"], ["entrega", "Entrega"], ["post", "Post"], ["marketing", "Marketing"]];
-  function formEvento(e, dia) {
+  function formEvento(e, dia, hora) {
     e = e || {};
     var tipos = TIPOS_EV.slice(); if (e.tipo && !tipos.some(function (t) { return t[0] === e.tipo; })) tipos.push([e.tipo, cap(e.tipo)]);
     return campo("O quê", '<input id="eTit" value="' + esc(e.titulo || "") + '" autocomplete="off">') +
       pilulas("tp", tipos, e.tipo || "evento") +
-      '<div class="duas">' + campo("Dia", '<input id="eData" type="date" value="' + esc(e.data || dia || hoje()) + '">') + campo("Hora", '<input id="eHora" type="time" value="' + esc(e.hora || "") + '">') + "</div>" +
+      '<div class="duas">' + campo("Dia", '<input id="eData" type="date" value="' + esc(e.data || dia || hoje()) + '">') + campo("Hora", '<input id="eHora" type="time" value="' + esc(e.hora || hora || "") + '">') + "</div>" +
       '<div class="duas">' + campo("Termina dia", '<input id="eDFim" type="date" value="' + esc(e.data_fim || "") + '">') + campo("Hora fim", '<input id="eHFim" type="time" value="' + esc(e.hora_fim || "") + '">') + "</div>" +
       campo("Cliente", '<input id="eCli" value="' + esc(e.cliente || "") + '" autocomplete="off">') +
       (e.tipo === "cobranca" ? "" : campo("Notas", '<textarea id="eNot">' + esc(e.notas || "") + "</textarea>")) +
@@ -1002,16 +1177,25 @@
   }
   function folhaEvento(e) {
     abrirFolha(e.titulo || "Evento", formEvento(e) +
+      '<div class="rot">Mover</div><div class="pilulas mover"><button type="button" data-mv="1h"' + (e.hora ? "" : " hidden") + '>+1 hora</button><button type="button" data-mv="amanha">Pro dia seguinte</button><button type="button" data-mv="semana">Pra semana que vem</button></div>' +
       '<button class="bt cheio perigo" id="eApaga">Apagar</button>' +
       '<div class="fixo grade-bts"><button class="bt acento" id="eSalva">Salvar</button><button class="bt' + (e.feito ? "" : " verde") + '" id="eFeito">' + (e.feito ? "Reabrir" : IC.check + "Feito") + "</button></div>",
       function (c) {
         ligaPilulas(c);
         c.querySelector("#eSalva").onclick = function () {
           var m = lerEvento(c, e); if (!m.titulo) return c.querySelector("#eTit").focus();
+          descarregar();
           Object.assign(e, m); fecharFolha(); render(true); aviso("Salvo");
           gravarTabela("eventos", function (a) { return trocaItem(a, e.id, m); });
         };
         c.querySelector("#eFeito").onclick = function () { fecharFolha(); eventoFeito(e, !e.feito); };
+        c.querySelectorAll("[data-mv]").forEach(function (b) {
+          b.onclick = function () {
+            var k = b.dataset.mv; fecharFolha();
+            if (k === "1h") moverEvento(e, e.data, hm(minutos(e.hora) + 60));
+            else moverEvento(e, somaDias(e.data, k === "semana" ? 7 : 1), e.hora || null);
+          };
+        });
         confirmaDuplo(c.querySelector("#eApaga"), "Toque de novo pra apagar", function () {
           fecharFolha(); var antes = S.eventos.slice();
           executar("Apagado", function () { S.eventos = S.eventos.filter(function (x) { return x.id !== e.id; }); }, function () { S.eventos = antes; },
@@ -1074,17 +1258,23 @@
 
   /* --- caixa e pedidos --- */
   function folhaEntrada(l) {
-    var f = fonteDe(l), manual = f === "manual";
+    var f = fonteDe(l), auto = f === "pix" || f === "mp", evCarne = f === "carne" && String(l.id).indexOf("lanc-") === 0 ? porId(S.eventos, String(l.id).slice(5)) : null;
+    var taxa = f === "mp" ? taxaCartao(l) : 0;
     abrirFolha(tituloEntrada(l),
-      '<div class="nums" style="grid-template-columns:1fr 1fr;"><div class="num"><b>' + brlCurto(num(l.valor)) + '</b><span>' + FONTE[f] + '</span></div><div class="num"><b>' + dm(l.data) + "</b><span>" + quandoRel(l.data) + "</span></div></div>" +
+      '<div class="nums" style="grid-template-columns:1fr 1fr;"><div class="num"><b>' + brlCurto(num(l.valor)) + '</b><span>' + FONTE[f] + (taxa ? ", taxa " + brl(taxa) : "") + '</span></div><div class="num"><b>' + dm(l.data) + "</b><span>" + quandoRel(l.data) + "</span></div></div>" +
       '<p class="sub" style="margin:0;font-size:14px;color:var(--suave);">' + esc(l.label || "") + "</p>" +
-      (manual ? '<button class="bt cheio perigo" id="eApaga">Apagar entrada</button>' : '<p class="sub" style="margin:0;font-size:13px;color:var(--suave);">Entrada automática do ' + (f === "pix" ? "BTG" : f === "mp" ? "Mercado Pago" : "carnê") + ".</p>"),
+      (evCarne ? '<button class="bt cheio" id="eCarne">Desfazer o recebimento da parcela</button>' :
+        '<button class="bt cheio perigo" id="eApaga">' + (auto ? "Não é venda, apagar de vez" : "Apagar entrada") + "</button>"),
       function (c) {
+        var bc = c.querySelector("#eCarne"); if (bc) { bc.onclick = function () { fecharFolha(); parcelaPaga(evCarne, false); }; return; }
         var b = c.querySelector("#eApaga"); if (!b) return;
         confirmaDuplo(b, "Toque de novo pra apagar", function () {
           fecharFolha(); var antes = S.lancamentos.slice();
           executar("Entrada apagada", function () { S.lancamentos = S.lancamentos.filter(function (x) { return x.id !== l.id; }); }, function () { S.lancamentos = antes; },
-            function () { gravarTabela("lancamentos", function (a) { return a.filter(function (x) { return x.id !== l.id; }); }); });
+            function () {
+              if (auto) api("/api/entradas/ignorar", { method: "POST", body: { id: l.id, motivo: "apagado no painel" } }).then(guardaCache).catch(function () { aviso("Não salvou. Confira a internet."); carregar().then(function () { render(true); }).catch(function () {}); });
+              else gravarTabela("lancamentos", function (a) { return a.filter(function (x) { return x.id !== l.id; }); });
+            });
         });
       });
   }
@@ -1116,7 +1306,7 @@
 
   /* --- lançar --- */
   var TIPOS_LANCAR = [["entrada", "Entrada", IC.entrada], ["evento", "Evento", IC.evento], ["lead", "Lead", IC.lead], ["carne", "Carnê", IC.carne], ["nota", "Lembrete", IC.nota]];
-  function folhaLancar(tipo, dia) {
+  function folhaLancar(tipo, dia, hora) {
     tipo = tipo || lerLS("maratu.painel.lancar", "entrada");
     $("btLancar").setAttribute("aria-expanded", "true");
     abrirFolha("Lançar",
@@ -1128,7 +1318,7 @@
           c.querySelectorAll("[data-tl]").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.tl === t)); });
           var f = c.querySelector("#lForm");
           if (t === "entrada") f.innerHTML = campo("Valor", '<input id="xVal" class="valor-grande" inputmode="decimal" placeholder="0,00" autocomplete="off">') + campo("O que foi", '<input id="xLab" autocomplete="off">') + campo("Dia", '<input id="xData" type="date" value="' + hoje() + '">') + '<div class="fixo"><button class="bt acento cheio" id="xOk">Lançar entrada</button></div>';
-          else if (t === "evento") f.innerHTML = formEvento(null, dia) + '<div class="fixo"><button class="bt acento cheio" id="xOk">Criar evento</button></div>';
+          else if (t === "evento") f.innerHTML = formEvento(null, dia, hora) + '<div class="fixo"><button class="bt acento cheio" id="xOk">Criar evento</button></div>';
           else if (t === "lead") f.innerHTML = formLead(null) + '<div class="fixo"><button class="bt acento cheio" id="xOk">Criar lead</button></div>';
           else if (t === "carne") f.innerHTML = campo("Cliente", '<input id="cCli" autocomplete="off">') + campo("WhatsApp", '<input id="cTel" inputmode="tel" autocomplete="off">') + campo("Produto", '<input id="cProd" autocomplete="off">') +
             '<div class="duas">' + campo("Total", '<input id="cTot" inputmode="decimal" placeholder="0,00" autocomplete="off">') + campo("Parcelas", '<input id="cN" type="number" inputmode="numeric" min="1" max="24" value="3">') + "</div>" +
@@ -1247,11 +1437,11 @@
     var lido = document.createElement("p"); lido.className = "quando-lido"; lido.hidden = true;
     tit.parentNode.appendChild(lido);
     [dt, hr].forEach(function (x) { x.addEventListener("input", function () { x.dataset.mexeu = "1"; }); });
-    var dataPadrao = dt.value;
+    var dataPadrao = dt.value, horaPadrao = hr.value;
     tit.addEventListener("input", function () {
       var o = lerQuando(tit.value);
       if (!dt.dataset.mexeu) dt.value = o.data || dataPadrao;
-      if (!hr.dataset.mexeu) hr.value = o.hora || "";
+      if (!hr.dataset.mexeu) hr.value = o.hora || horaPadrao;
       if (!o.achou) { lido.hidden = true; return; }
       var d = dt.value || o.data, dd = dataDe(d);
       lido.hidden = false;

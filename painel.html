@@ -498,6 +498,7 @@ main { padding: calc(var(--seguro-topo) + var(--topo-h) + 8px) 12px calc(var(--s
 .prod-selos i { font-style: normal; font-size: 9.5px; font-weight: 900; letter-spacing: .04em; text-transform: uppercase; padding: 3px 6px; border-radius: 99px; background: var(--tinta); color: var(--cartao); }
 @media (hover: hover) { .prod:hover { box-shadow: 5px 5px 0 var(--sombra); transform: translate(-1px, -1px); } }
 .seg-loja { flex: none; }
+.prod-acoes { display: flex; gap: 18px; flex-wrap: wrap; }
 .ordem-item { touch-action: pan-y; user-select: none; -webkit-user-select: none; background: var(--cartao); }
 .ordem-item .pega { touch-action: none; cursor: grab; width: 44px; height: 44px; display: grid; place-items: center; margin-left: -10px; flex: none; }
 .ordem-item img { width: 40px; height: 40px; border-radius: 8px; object-fit: cover; flex: none; }
@@ -772,7 +773,7 @@ button.atalho { font: inherit; text-align: left; cursor: pointer; }
 
 <div class="aviso" id="aviso" role="status" aria-live="polite"><span id="avisoTxt"></span><button id="avisoBt" hidden>Desfazer</button></div>
 
-<script src="painel.js?v=20261030a"></script>
+<script src="painel.js?v=20261031a"></script>
 <script>if (navigator.serviceWorker) navigator.serviceWorker.register("/sw.js").catch(function () {});</script>
 </body>
 </html>

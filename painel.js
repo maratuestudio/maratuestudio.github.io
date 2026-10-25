@@ -63,6 +63,9 @@
     lead: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>',
     carne: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h3"/></svg>',
     nota: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5"/></svg>',
+    calc: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 12h2M12 12h2M16 12h0M8 16h2M12 16h2M16 16h0"/></svg>',
+    selo: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3M21 14v.01M14 21h3M21 18v3"/></svg>',
+    imp: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21h16M6 21V9h12v12M9 9V4h6v5M10 14h4"/></svg>',
     site: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 8h18"/></svg>',
     fora: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6M20 4l-9 9M18 14v6H4V6h6"/></svg>'
   };
@@ -81,6 +84,22 @@
       });
   }
 
+  /* módulos herdados do painel antigo chamam fetch sem token; aqui ele entra, como no admin.js */
+  (function () {
+    var orig = window.fetch;
+    window.fetch = function (entrada, init) {
+      try {
+        var url = typeof entrada === "string" ? entrada : (entrada && entrada.url) || "";
+        if (typeof entrada === "string" && url.indexOf(API) === 0) {
+          init = init || {};
+          var h = new Headers(init.headers || {}), cur = h.get("Authorization") || "";
+          if (!cur || /^Bearer\s*$/.test(cur)) h.set("Authorization", "Bearer " + token());
+          init.headers = h; if (!init.credentials) init.credentials = "include";
+        }
+      } catch (e) {}
+      return orig.call(this, entrada, init);
+    };
+  })();
   var S = { eventos: [], lancamentos: [], notas: [], params: {}, prospec: [], leads: [], pedidos: [], pedidosTodos: null, uso: null, teto: 900, buscas: [], pronto: false, carregadoEm: 0 };
 
   function carregar() {
@@ -95,7 +114,7 @@
     ]).then(function (r) {
       S.extras = { mei: r[4] && r[4].das_meses ? r[4] : null, imp: r[5] && r[5].conectada != null ? r[5] : null, selos: r[6] && r[6].por_status ? r[6] : null };
       var st = r[0] || {};
-      S.eventos = st.eventos || []; S.lancamentos = st.lancamentos || []; S.notas = st.notas || []; S.params = st.params || {};
+      S.eventos = st.eventos || []; S.lancamentos = st.lancamentos || []; S.notas = st.notas || []; S.params = st.params || {}; S.orcamentos = st.orcamentos || [];
       if (r[1]) { S.prospec = r[1].prospec || []; S.uso = r[1].uso; S.teto = r[1].teto || 900; S.buscas = r[1].buscas || []; }
       if (r[2]) S.leads = r[2].leads || [];
       if (r[3]) S.pedidos = r[3].pedidos || [];
@@ -622,7 +641,7 @@
         return '<div class="linha toca" data-carne="' + esc(id) + '"' + (!prox ? ' style="opacity:.6"' : "") + '><div class="o"><b>' + esc(evs[0].cliente || "Cliente") + (p0.prod ? " · " + esc(p0.prod) : "") + "</b><small" + (atras ? ' style="color:var(--c-site);font-weight:900"' : "") + ">" + pagas + " de " + evs.length + " pagas" + (prox ? ", " + (atras ? "atrasada desde " : "próxima ") + dm(prox.data) + " " + brlCurtoV(num(kv(prox.notas).valor)) : ", quitado") + "</small></div>" + IC.seta + "</div>";
       }).join("") + "</div>" : '<p class="vazio">Nenhum carnê.</p>');
   }
-  var LINK_ANTIGO = '<a class="cartao linha toca" href="/admin.html" style="text-decoration:none;margin-top:6px;padding:4px 14px;"><div class="o"><b>Selos e precificar</b><small>No painel antigo</small></div>' + IC.fora + "</a>";
+  var LINK_ANTIGO = '<button class="cartao linha toca imp-link" data-impfolha>' + IC.imp + '<div class="o"><b>Impressora</b><small>Estado e últimas impressões</small></div>' + IC.seta + "</button>";
   function telaLoja() {
     if (pc()) {
       var segPc = '<div class="seg seg-loja" role="group"><button data-seg="caixa" aria-pressed="' + (lojaSeg !== "produtos") + '">Caixa e pedidos</button><button data-seg="produtos" aria-pressed="' + (lojaSeg === "produtos") + '">Produtos</button></div>';
@@ -883,6 +902,7 @@
     raiz.querySelectorAll("[data-fonte]").forEach(function (b) { b.onclick = function () { lojaFonte = b.dataset.fonte; render(true); }; });
     if (vista === "agenda" && pc() && agendaModo === "semana") ligarSemana(raiz);
     if (vista === "loja" && lojaSeg === "produtos") ligarProdutos(raiz);
+    raiz.querySelectorAll("[data-impfolha]").forEach(function (x) { x.onclick = function (ev) { ev.preventDefault(); folhaImpressora(); }; });
   }
   function carregarPedidosTodos() {
     api("/api/pedidos?limite=60").then(function (d) { S.pedidosTodos = d.pedidos || []; render(true); }).catch(function () { aviso("Não carregou os pedidos."); });
@@ -1308,15 +1328,18 @@
   }
 
   /* --- lançar --- */
-  var TIPOS_LANCAR = [["entrada", "Entrada", IC.entrada], ["evento", "Evento", IC.evento], ["lead", "Lead", IC.lead], ["carne", "Carnê", IC.carne], ["nota", "Lembrete", IC.nota]];
+  var TIPOS_LANCAR = [["entrada", "Entrada", IC.entrada], ["evento", "Evento", IC.evento], ["lead", "Lead", IC.lead], ["carne", "Carnê", IC.carne], ["nota", "Lembrete", IC.nota], ["orcamento", "Orçamento", IC.calc], ["selos", "Selos", IC.selo]];
   function folhaLancar(tipo, dia, hora) {
     tipo = tipo || lerLS("maratu.painel.lancar", "entrada");
+    if (tipo === "selos") tipo = "entrada";
     $("btLancar").setAttribute("aria-expanded", "true");
     abrirFolha("Lançar",
       '<div class="tipos">' + TIPOS_LANCAR.map(function (t) { return '<button type="button" data-tl="' + t[0] + '" aria-pressed="' + (t[0] === tipo) + '">' + t[2] + t[1] + "</button>"; }).join("") + "</div>" +
       '<div id="lForm" style="display:grid;gap:12px;"></div>',
       function (c) {
+        var orc = null;
         function monta(t) {
+          if (t === "selos") { fecharFolha(); abrirSelos(); return; }
           tipo = t; gravarLS("maratu.painel.lancar", t);
           c.querySelectorAll("[data-tl]").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.tl === t)); });
           var f = c.querySelector("#lForm");
@@ -1327,14 +1350,16 @@
             '<div class="duas">' + campo("Total", '<input id="cTot" inputmode="decimal" placeholder="0,00" autocomplete="off">') + campo("Parcelas", '<input id="cN" type="number" inputmode="numeric" min="1" max="24" value="3">') + "</div>" +
             '<div class="duas">' + campo("1ª parcela", '<input id="cD1" type="date" value="' + somaDias(hoje(), 30) + '">') + campo("A cada (dias)", '<input id="cInt" type="number" inputmode="numeric" min="1" value="30">') + "</div>" +
             '<p class="sub" id="cPrev" style="margin:0;font-size:14px;font-weight:700;"></p><div class="fixo"><button class="bt acento cheio" id="xOk">Criar carnê</button></div>';
+          else if (t === "orcamento") f.innerHTML = formOrcamento();
           else f.innerHTML = campo("O quê", '<input id="nTit" autocomplete="off">') + campo("Detalhe", '<textarea id="nDet"></textarea>') + '<div class="duas">' + campo("Dia", '<input id="nData" type="date" value="' + hoje() + '">') + campo("Hora", '<input id="nHora" type="time">') + "</div>" + '<div class="fixo"><button class="bt acento cheio" id="xOk">Criar lembrete</button></div>';
           ligaPilulas(f);
           if (t === "evento") ligaQuando(f);
+          if (t === "orcamento") orc = ligaOrcamento(f);
           if (t === "carne") {
             var prev = function () { var tot = num(f.querySelector("#cTot").value), n = Math.max(1, parseInt(f.querySelector("#cN").value, 10) || 1); f.querySelector("#cPrev").textContent = tot ? n + "x de " + brl(Math.floor(tot / n * 100) / 100) : ""; };
             f.querySelector("#cTot").addEventListener("input", prev); f.querySelector("#cN").addEventListener("input", prev);
           }
-          f.querySelector("#xOk").onclick = function () { salvarLancamento(t, f); };
+          f.querySelector("#xOk").onclick = function () { if (t === "orcamento") orc.lancar(); else salvarLancamento(t, f); };
           var primeiro = f.querySelector("input"); if (primeiro && matchMedia("(hover: hover)").matches) primeiro.focus();
         }
         c.querySelectorAll("[data-tl]").forEach(function (b) { b.onclick = function () { monta(b.dataset.tl); }; });
@@ -1755,6 +1780,120 @@
     });
   }
 
+  /* ---------- Oficina: orçamento, custos, selos e impressora ---------- */
+  function paramsOrc() { var p = S.params || {}; return { filamento: num(p.filamento), maquina: num(p.maquina), maodeobra: num(p.maodeobra), margem: num(p.margem) || 1 }; }
+  function contaOrc(g, h, pos) {
+    var p = paramsOrc(), mat = g / 1000 * p.filamento, maq = h * p.maquina, mao = pos / 60 * p.maodeobra, piso = mat + maq + mao;
+    return { mat: mat, maq: maq, mao: mao, piso: piso, preco: piso * p.margem, margem: p.margem };
+  }
+  function formOrcamento() {
+    var p = paramsOrc();
+    return '<div class="duas">' + campo("Gramas", '<input id="oG" inputmode="decimal" autocomplete="off">') + campo("Horas de impressão", '<input id="oH" inputmode="decimal" autocomplete="off">') + "</div>" +
+      campo("Acabamento (minutos)", '<input id="oP" inputmode="decimal" autocomplete="off">') +
+      '<div class="cartao orc-conta" id="oConta">' +
+        '<div class="orc-l"><span>Material</span><b id="oMat">R$ 0,00</b></div><div class="orc-l"><span>Máquina</span><b id="oMaq">R$ 0,00</b></div><div class="orc-l"><span>Mão de obra</span><b id="oMao">R$ 0,00</b></div>' +
+        '<div class="orc-l piso"><span>Custo</span><b id="oPiso">R$ 0,00</b></div>' +
+        '<div class="orc-preco"><span>Preço sugerido</span><b id="oPreco">R$ 0,00</b><small>margem ' + String(p.margem).replace(".", ",") + "x sobre o custo</small></div>" +
+      "</div>" +
+      campo("Cliente", '<input id="oCli" autocomplete="off">') +
+      '<button type="button" class="bt-link" id="oCustos" style="justify-self:start;">Custos e tabela do pôster</button>' +
+      '<div id="oHist"></div>' +
+      '<div class="fixo grade-bts"><button class="bt" id="oSalva">Salvar orçamento</button><button class="bt acento" id="xOk">Lançar como entrada</button></div>';
+  }
+  function ligaOrcamento(f) {
+    var q = function (s) { return f.querySelector(s); };
+    var calc = function () { var c = contaOrc(num(q("#oG").value), num(q("#oH").value), num(q("#oP").value)); q("#oMat").textContent = brl(c.mat); q("#oMaq").textContent = brl(c.maq); q("#oMao").textContent = brl(c.mao); q("#oPiso").textContent = brl(c.piso); q("#oPreco").textContent = brl(c.preco); return c; };
+    ["#oG", "#oH", "#oP"].forEach(function (s) { q(s).addEventListener("input", calc); });
+    q("#oCustos").onclick = function () { folhaCustos(); };
+    var hist = (S.orcamentos || []).slice().sort(function (a, b) { return String(b.data) < String(a.data) ? -1 : 1; }).slice(0, 5);
+    q("#oHist").innerHTML = hist.length ? '<div class="rot">Últimos orçamentos</div><div class="cartao lista" style="box-shadow:none;">' + hist.map(function (o) { return '<div class="linha"><div class="o"><b>' + esc(o.cliente || "Sem nome") + "</b><small>" + dm(o.data) + ", " + esc(String(o.gramas || 0).replace(".", ",")) + " g, " + esc(String(o.horas || 0).replace(".", ",")) + ' h</small></div><span class="valor">' + brl(num(o.total)) + "</span></div>"; }).join("") + "</div>" : "";
+    var novoOrc = function () {
+      var c = calc(); if (!(c.preco > 0)) { q("#oG").focus(); aviso("Preencha gramas e horas"); return null; }
+      return { id: uid("o"), data: hoje(), cliente: q("#oCli").value.trim() || "Sem nome", tipo: "medida", gramas: num(q("#oG").value), horas: num(q("#oH").value), pos: num(q("#oP").value), total: Math.round(c.preco * 100) / 100 };
+    };
+    q("#oSalva").onclick = function () {
+      var o = novoOrc(); if (!o) return;
+      S.orcamentos = (S.orcamentos || []).concat([o]); fecharFolha(); aviso("Orçamento salvo: " + brl(o.total));
+      gravarTabela("orcamentos", function (a) { return a.concat([o]); });
+    };
+    return { lancar: function () {
+      var o = novoOrc(); if (!o) return;
+      var l = { id: uid("m"), data: hoje(), label: o.cliente === "Sem nome" ? "Orçamento" : "Orçamento " + o.cliente, valor: o.total };
+      S.orcamentos = (S.orcamentos || []).concat([o]); S.lancamentos.push(l); fecharFolha(); render(true); aviso("Entrou " + brl(o.total));
+      gravarTabela("orcamentos", function (a) { return a.concat([o]); });
+      gravarTabela("lancamentos", function (a) { return a.concat([l]); });
+    } };
+  }
+  function folhaCustos() {
+    var p = S.params || {};
+    var v = function (x) { return x != null && x !== "" ? esc(String(x).replace(".", ",")) : ""; };
+    abrirFolha("Custos",
+      '<div class="rot">Peça</div>' +
+      '<div class="duas">' + campo("Filamento (R$/kg)", '<input id="cFil" inputmode="decimal" value="' + v(p.filamento) + '">') + campo("Margem (vezes o custo)", '<input id="cMar" inputmode="decimal" value="' + v(p.margem) + '">') + "</div>" +
+      '<div class="duas">' + campo("Máquina (R$/h)", '<input id="cMaq" inputmode="decimal" value="' + v(p.maquina) + '">') + campo("Mão de obra (R$/h)", '<input id="cMao" inputmode="decimal" value="' + v(p.maodeobra) + '">') + "</div>" +
+      '<div class="rot">Mês</div>' +
+      '<div class="duas">' + campo("Custo fixo (R$)", '<input id="cFix" inputmode="decimal" value="' + v(p.fixo) + '">') + campo("Retirada (R$)", '<input id="cRet" inputmode="decimal" value="' + v(p.retirada) + '">') + "</div>" +
+      '<div class="rot">Tabela do pôster</div><div class="tam-precos" id="cPb">' + TAM_POSTER.map(function (t) { return campo(t, '<input data-pb="' + t + '" inputmode="decimal">'); }).join("") + "</div>" +
+      '<div class="fixo"><button class="bt acento cheio" id="cSalva">Salvar custos</button></div>',
+      function (c) {
+        var base = null;
+        api("/api/settings/precos_base").then(function (d) {
+          base = d && d.precos_base || {};
+          c.querySelectorAll("[data-pb]").forEach(function (i) { var cents = base[i.dataset.pb]; if (cents != null) i.value = String(Math.round(cents) / 100).replace(".", ","); });
+        }).catch(function () {});
+        c.querySelector("#cSalva").onclick = function () {
+          var q = function (s) { return c.querySelector(s); };
+          var mudou = { filamento: num(q("#cFil").value), margem: num(q("#cMar").value) || 1, maquina: num(q("#cMaq").value), maodeobra: num(q("#cMao").value), fixo: num(q("#cFix").value), retirada: num(q("#cRet").value) };
+          var pb = {}; c.querySelectorAll("[data-pb]").forEach(function (i) { if (num(i.value) > 0) pb[i.dataset.pb] = Math.round(num(i.value) * 100); });
+          if (base && Object.keys(pb).length && Object.keys(pb).length < 4) { aviso("Preencha os quatro tamanhos do pôster"); return; }
+          var bt = this; bt.disabled = true;
+          api("/api/state").then(function (st) {
+            var novo = Object.assign({}, st && st.params || S.params || {}, mudou);
+            return api("/api/settings/params", { method: "PUT", body: novo }).then(function () { S.params = novo; guardaCache(); });
+          }).then(function () {
+            return base && Object.keys(pb).length === 4 ? api("/api/settings/precos_base", { method: "PUT", body: pb }) : null;
+          }).then(function () { fecharFolha(); render(true); aviso("Custos salvos"); })
+            .catch(function () { bt.disabled = false; aviso("Não salvou. Confira a internet."); });
+        };
+      });
+  }
+
+  /* selos: o mesmo módulo do painel antigo, aberto aqui dentro */
+  var selosCarregando = null;
+  function abrirSelos(aba) {
+    if (window.maratuSelos) { window.maratuSelos.abrir(aba); return; }
+    if (selosCarregando) return;
+    selosCarregando = new Promise(function (ok, falha) {
+      var s = document.createElement("script"); s.src = "/admin-selos.js?v=20261028a"; s.onload = ok; s.onerror = falha; document.body.appendChild(s);
+    }).then(function () { if (window.maratuSelos) window.maratuSelos.abrir(aba); else aviso("Os selos não abriram"); })
+      .catch(function () { aviso("Os selos não abriram. Confira a internet."); })
+      .then(function () { selosCarregando = null; });
+  }
+
+  /* impressora */
+  var ESTADO_IMP = { printing: "Imprimindo", paused: "Pausada", complete: "Terminou", standby: "Parada", error: "Com erro", cancelled: "Cancelada" };
+  function duracaoTxt(seg) { seg = Math.round(Number(seg) || 0); var h = Math.floor(seg / 3600), m = Math.round(seg % 3600 / 60); return h ? h + " h " + pad2(m) : m + " min"; }
+  function folhaImpressora() {
+    abrirFolha("Impressora K1C", '<div class="esqueleto"></div>', function (c) {
+      api("/api/impressora").then(function (imp) {
+        S.extras = S.extras || {}; S.extras.imp = imp;
+        if (!folhaAberta || !c.querySelector(".esqueleto")) return;
+        if (!imp || !imp.conectada) { c.innerHTML = '<p class="vazio" style="color:var(--suave);">A impressora ainda não mandou notícia.</p>'; return; }
+        var d = imp.estado || {}, an = imp.analise || {}, idade = idadeImp(imp), ativo = ["printing", "paused"].indexOf(d.estado) >= 0;
+        var pct = Math.round((Number(an.progresso != null ? an.progresso : d.progresso) || 0) * 100), termina = an.termina ? new Date(an.termina) : null;
+        c.innerHTML =
+          '<div class="cartao imp-estado"><div class="imp-l1"><span class="pulso' + (ativo && idade < 180 ? "" : " parado") + '"></span><b>' + esc(ESTADO_IMP[d.estado] || d.estado || "Sem estado") + '</b><small>sinal há ' + (idade < 90 ? Math.round(idade) + " s" : Math.round(idade / 60) + " min") + "</small></div>" +
+            (ativo ? '<p class="imp-peca">' + esc(nomeArquivo(d.arquivo)) + '</p><div class="barra-meta"><i style="width:' + pct + '%"></i></div><div class="rodape-imp"><span>' + pct + "%" + (d.camada ? ", camada " + esc(d.camada) + (d.camadas ? " de " + esc(d.camadas) : "") : "") + "</span><span>" + (termina && !isNaN(termina) ? "termina " + pad2(termina.getHours()) + ":" + pad2(termina.getMinutes()) : an.restante ? "faltam " + duracaoTxt(an.restante) : "") + "</span></div>" : "") +
+          "</div>" +
+          ((imp.saude || []).filter(function (s) { return s.k !== "sinal"; }).length ? '<div class="imp-saude">' + imp.saude.filter(function (s) { return s.k !== "sinal"; }).map(function (s) { return '<div class="num' + (s.ok ? "" : " ruim") + '"><b>' + esc(s.txt) + "</b><span>" + esc(s.rot) + "</span></div>"; }).join("") + "</div>" : "") +
+          ((imp.historico || []).length ? '<div class="rot">Últimas impressões</div><div class="cartao lista" style="box-shadow:none;">' + imp.historico.map(function (h) {
+            var ok = h.status === "completed" || h.status === "complete";
+            return '<div class="linha"><div class="o"><b>' + esc(h.nome || nomeArquivo(h.arquivo)) + "</b><small>" + (h.inicio ? esc(dm(diaLocal(h.inicio))) + ", " : "") + (h.duracao ? duracaoTxt(h.duracao) : "") + '</small></div><span class="tipo ' + (ok ? "t-feito" : h.status === "printing" ? "t-lead" : "t-aviso") + '">' + esc(ok ? "pronta" : h.status === "printing" ? "agora" : h.status || "?") + "</span></div>";
+          }).join("") + "</div>" : "");
+      }).catch(function () { if (folhaAberta && c.querySelector(".esqueleto")) c.innerHTML = '<p class="vazio" style="color:var(--suave);">Não carregou. Confira a internet.</p>'; });
+    });
+  }
+
   /* --- busca: caixa no topo da tela, acha registro e roda comando --- */
   var buscaAberta = false, buscaSel = 0, buscaLista = [];
   function norm(s) { return semAcento(s).toLowerCase(); }
@@ -1764,6 +1903,11 @@
     ["Lançar", "Entrada", function () { folhaLancar("entrada"); }, IC.entrada], ["Lançar", "Evento", function () { folhaLancar("evento", vista === "agenda" ? diaSel : null); }, IC.evento],
     ["Lançar", "Lead", function () { folhaLancar("lead"); }, IC.lead], ["Lançar", "Carnê", function () { folhaLancar("carne"); }, IC.carne],
     ["Lançar", "Lembrete", function () { folhaLancar("nota"); }, IC.nota],
+    ["Lançar", "Orçamento", function () { folhaLancar("orcamento"); }, IC.calc],
+    ["Oficina", "Selos", function () { abrirSelos(); }, IC.selo],
+    ["Oficina", "Ler selo", function () { abrirSelos("vincular"); }, IC.selo],
+    ["Oficina", "Impressora", function () { folhaImpressora(); }, IC.imp],
+    ["Oficina", "Custos", function () { folhaCustos(); }, IC.calc],
     ["Loja", "Peça nova", function () { lojaSeg = "produtos"; irPara("loja"); carregarProdutos().then(function () { folhaProduto(null); }); }, IC.mais],
     ["Ir", "Produtos", function () { lojaSeg = "produtos"; if (vista === "loja") render(true); else irPara("loja"); }, IC.entrada],
     ["Sites", "Buscar negócios", function () { folhaBuscarNegocios(); }, IC.site], ["Sites", "Escolher na reserva", function () { folhaReserva(); }, IC.site],
@@ -1887,7 +2031,9 @@
     ["Números", "Site, Instagram e relatório", "/admin.html", '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>'],
     ["Divulgação", "Conteúdo e newsletter", "/admin.html", '<path d="M3 11l18-7v16L3 13z"/><path d="M7 13v5a2 2 0 0 0 4 0v-4"/>'],
     ["Empresa", "MEI, DAS e limite do ano", "/admin.html", '<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>'],
-    ["Selos", "Gerar, ler e vincular", "/admin.html", '<path d="M5 8h14l-1.5 12h-11z"/><path d="M9 8a3 3 0 0 1 6 0"/>']
+    ["Selos", "Gerar, ler e vincular", "selos", ""],
+    ["Impressora", "Estado e últimas impressões", "impressora", ""],
+    ["Custos", "Preço da peça e do pôster", "custos", ""]
   ];
   function telaEstudio() {
     if (!ajustes.carregado) carregarAjustes();
@@ -1898,6 +2044,7 @@
     };
     var a = '<div class="cab"><h1>Estúdio</h1></div>' +
       '<div class="atalhos">' + ATALHOS.map(function (t) {
+        if (t[2].charAt(0) !== "/") return '<button class="cartao atalho" data-atalho="' + t[2] + '">' + (t[2] === "selos" ? IC.selo : t[2] === "impressora" ? IC.imp : IC.calc) + "<b>" + t[0] + "</b><small>" + t[1] + "</small></button>";
         return '<a class="cartao atalho" href="' + t[2] + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + t[3] + "</svg><b>" + t[0] + "</b><small>" + t[1] + '</small><span class="no-antigo">painel antigo</span></a>';
       }).join("") + "</div>";
     var b = '<div class="secao">Ajustes</div>' +
@@ -1927,6 +2074,7 @@
         corDaBarra();
       });
     }
+    raiz.querySelectorAll("[data-atalho]").forEach(function (el) { el.onclick = function () { var k = el.dataset.atalho; if (k === "selos") abrirSelos(); else if (k === "impressora") folhaImpressora(); else folhaCustos(); }; });
     raiz.querySelectorAll("[data-aj]").forEach(function (el) {
       var k = el.dataset.aj;
       if (k === "sair") { confirmaDuplo(el, "Toque de novo pra sair", sair); return; }
@@ -1987,7 +2135,7 @@
           quando: "agora",
           dir: { rot: "Visto", fn: function () { adiarCartao("imp:" + (imp.estado.job || "x") + ":" + (imp.estado.estado || ""), somaDias(h, 30)); } },
           esq: { rot: "Amanhã", fn: function () { adiarCartao("imp:" + (imp.estado.job || "x") + ":" + (imp.estado.estado || "")); } },
-          abre: function () { location.href = "/admin.html"; }
+          abre: function () { folhaImpressora(); }
         });
       }
     }
@@ -2000,7 +2148,7 @@
         quando: "",
         dir: { rot: "Visto", fn: function () { adiarCartao("selos:" + nSel, somaDias(h, 7)); } },
         esq: { rot: "Amanhã", fn: function () { adiarCartao("selos:" + nSel); } },
-        abre: function () { location.href = "/admin.html"; }
+        abre: function () { abrirSelos(); }
       });
     }
     return out;
@@ -2029,7 +2177,7 @@
     var an = imp.analise || {}, pct = Math.max(0, Math.min(100, Math.round((Number(an.progresso != null ? an.progresso : imp.estado.progresso) || 0) * 100)));
     var termina = an.termina ? new Date(an.termina) : null, semSinal = idade > 180;
     var txt = semSinal ? "sem sinal há " + Math.round(idade / 60) + " min" : imp.estado.estado === "paused" ? "pausada" : termina && !isNaN(termina) ? "termina " + pad2(termina.getHours()) + ":" + pad2(termina.getMinutes()) : "";
-    return '<a class="cartao faixa-imp" href="/admin.html"><span class="pulso' + (imp.estado.estado === "paused" || semSinal ? " parado" : "") + '"></span><div class="o"><b>' + esc(nomeArquivo(imp.estado.arquivo)) + "</b><small>" + pct + "%" + (txt ? ", " + txt : "") + '</small></div><div class="barra-meta"><i style="width:' + pct + '%"></i></div></a>';
+    return '<a class="cartao faixa-imp" href="#" data-impfolha><span class="pulso' + (imp.estado.estado === "paused" || semSinal ? " parado" : "") + '"></span><div class="o"><b>' + esc(nomeArquivo(imp.estado.arquivo)) + "</b><small>" + pct + "%" + (txt ? ", " + txt : "") + '</small></div><div class="barra-meta"><i style="width:' + pct + '%"></i></div></a>';
   }
 
   function corDaBarra() {

@@ -544,6 +544,57 @@ main { padding: calc(var(--seguro-topo) + var(--topo-h) + 8px) 12px calc(var(--s
 .mes .grande { white-space: nowrap; }
 .mes .comp { text-align: right; line-height: 1.3; }
 
+/* oficina */
+button.atalho { font: inherit; text-align: left; cursor: pointer; }
+.imp-link { width: 100%; font: inherit; text-align: left; cursor: pointer; margin-top: 6px; padding: 4px 14px; color: var(--tinta); }
+.imp-link > svg:first-child { width: 22px; height: 22px; flex: none; }
+.orc-conta { display: grid; gap: 6px; padding: 14px; box-shadow: none; }
+.orc-l { display: flex; justify-content: space-between; font-size: 14px; color: var(--suave); font-weight: 700; }
+.orc-l b { color: var(--tinta); font-variant-numeric: tabular-nums; }
+.orc-l.piso { border-top: 1px solid var(--linha); padding-top: 6px; color: var(--tinta); }
+.orc-preco { display: grid; margin-top: 6px; padding-top: 10px; border-top: 1.5px solid var(--borda); }
+.orc-preco span { font-size: 12.5px; font-weight: 900; color: var(--suave); }
+.orc-preco b { font-size: 30px; font-weight: 900; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.orc-preco small { font-size: 12.5px; color: var(--suave); }
+.imp-estado { display: grid; gap: 8px; }
+.imp-l1 { display: flex; align-items: center; gap: 10px; }
+.imp-l1 b { font-size: 18px; font-weight: 900; }
+.imp-l1 small { margin-left: auto; font-size: 12.5px; color: var(--suave); font-weight: 700; }
+.imp-peca { margin: 0; font-size: 15px; font-weight: 900; }
+.rodape-imp { display: flex; justify-content: space-between; font-size: 12.5px; font-weight: 700; color: var(--suave); }
+.imp-saude { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 8px; }
+.imp-saude .num { box-shadow: none; }
+.imp-saude .num b { font-size: 17px; }
+.imp-saude .num.ruim { border-color: var(--c-aviso); background: color-mix(in srgb, var(--c-aviso) 10%, var(--cartao)); }
+
+/* janelas herdadas do painel antigo (selos): mesmas regras do admin.html, presas a elas */
+.modal-back {
+  --areia: var(--cartao); --preto: var(--tinta); --sombra-hard: var(--sombra); --clother: var(--font); --muted: var(--suave);
+  --dourado: #D4960A; --laranja: var(--acento); --azul: #2E6FC4; --acento-rgb: 200, 80, 26; --fs-1: 11px; --fs-2: 13px; --fs-3: 15px; --fs-4: 17px;
+  position: fixed; inset: 0; background: rgba(13,13,11,.55); z-index: 9998; display: none; align-items: flex-start; justify-content: center; overflow-y: auto;
+  padding: max(env(safe-area-inset-top), 40px) 16px 40px; font-family: var(--font); color: var(--tinta);
+}
+@media (max-width: 560px) { .modal-back { padding: calc(env(safe-area-inset-top) + 16px) 10px 16px; } .modal-back .modal-card { padding: 16px; } }
+.modal-back.on { display: flex; }
+.modal-back .modal-card { background: var(--cartao); border: 1.5px solid var(--borda); border-radius: 14px; box-shadow: 6px 6px 0 var(--sombra); width: 100%; max-width: 720px; padding: 24px; position: relative; margin: auto 0; }
+.modal-back .modal-head { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-bottom: 18px; padding-bottom: 14px; border-bottom: 1px solid var(--linha); }
+.modal-back .modal-head h3 { font-weight: 900; font-size: 18px; margin: 0; }
+.modal-back .modal-close { background: transparent; border: 1.5px solid var(--borda); border-radius: 999px; width: 40px; height: 40px; cursor: pointer; font-size: 20px; font-weight: 700; color: var(--tinta); display: flex; align-items: center; justify-content: center; box-shadow: 2px 2px 0 var(--sombra); }
+.modal-back .btn { background: #D4960A; color: #0D0D0B; border: 1.5px solid var(--borda); border-radius: 999px; box-shadow: 2px 2px 0 var(--sombra); padding: 11px 20px; min-height: 44px; font-size: 12px; font-weight: 900; cursor: pointer; font-family: var(--font); letter-spacing: .12em; text-transform: uppercase; }
+.modal-back .btn.ghost { background: var(--cartao); color: var(--tinta); }
+.modal-back .btn:active { transform: translate(2px, 2px); box-shadow: none; }
+.modal-back .btn:disabled { opacity: .4; cursor: not-allowed; box-shadow: none; }
+.modal-back label.f { display: block; margin-bottom: 14px; }
+.modal-back label.f > span { display: block; font-weight: 900; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; margin-bottom: 8px; }
+.modal-back input, .modal-back select, .modal-back textarea { background: var(--campo); border: 1.5px solid var(--borda); color: var(--tinta); border-radius: 10px; padding: 11px 13px; font-size: 16px; width: 100%; max-width: 100%; font-family: var(--font); }
+.modal-back input[type="checkbox"] { width: auto; }
+.modal-back .chip { background: var(--cartao); border: 1.5px solid var(--borda); border-radius: 999px; padding: 8px 14px; font-size: 11px; font-weight: 900; letter-spacing: .12em; text-transform: uppercase; color: var(--tinta); cursor: pointer; box-shadow: 2px 2px 0 var(--sombra); min-height: 40px; }
+.modal-back .chip[aria-pressed="true"] { background: var(--acento); color: #fff; }
+.modal-back .form-section-title { font-weight: 900; font-size: 11px; letter-spacing: .16em; text-transform: uppercase; margin: 18px 0 10px; opacity: .7; }
+
+:root[data-theme="noite"] .modal-back #slAbas .chip:not([aria-pressed="true"]) { color: var(--tinta) !important; background: var(--cartao) !important; }
+:root[data-theme="noite"] .modal-back [style*="background:#F0ECE4"], :root[data-theme="noite"] .modal-back [style*="background: #F0ECE4"] { color: #0D0D0B !important; }
+
 /* ===== computador ===== */
 .lateral { display: none; }
 .acoes-pc { display: none; }
@@ -686,7 +737,7 @@ main { padding: calc(var(--seguro-topo) + var(--topo-h) + 8px) 12px calc(var(--s
 
 <div class="aviso" id="aviso" role="status" aria-live="polite"><span id="avisoTxt"></span><button id="avisoBt" hidden>Desfazer</button></div>
 
-<script src="painel.js?v=20261027b"></script>
+<script src="painel.js?v=20261028a"></script>
 <script>if (navigator.serviceWorker) navigator.serviceWorker.register("/sw.js").catch(function () {});</script>
 </body>
 </html>

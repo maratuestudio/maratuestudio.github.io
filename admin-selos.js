@@ -228,12 +228,14 @@
     else if (k === "alertas") telaAlertas();
     else telaProdutos();
   }
-  function abrir() {
+  function abrir(aba) {
     montaModal();
     back.classList.add("on");
     produtos = [];            // pega o catalogo de novo: pode ter produto cadastrado agora
-    vaiPara("lote");
+    vaiPara(typeof aba === "string" ? aba : "lote");
   }
+  /* o painel novo (/painel.html) carrega este mesmo arquivo e abre por aqui */
+  window.maratuSelos = { abrir: abrir };
   function fechar() {
     paraCamera();
     if (back) back.classList.remove("on");

@@ -50,7 +50,7 @@ function freshFirst(req) {
     return resp;
   }).catch(() => caches.match(req).then((cached) => {
     if (cached) return cached;
-    if (/\/(admin|login)\.html$/.test(new URL(req.url).pathname)) {
+    if (/\/(admin|login|painel)\.html$/.test(new URL(req.url).pathname)) {
       return caches.match('/login.html');
     }
     return Response.error();
@@ -81,7 +81,7 @@ self.addEventListener('notificationclick', (event) => {
   event.waitUntil(
     self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((abas) => {
       for (const aba of abas) {
-        if (aba.url.includes('/admin.html')) {
+        if (aba.url.includes('/admin.html') || aba.url.includes('/painel.html')) {
           aba.focus();
           try { aba.navigate(new URL(destino, self.location.origin).href); } catch (e) {}
           return;

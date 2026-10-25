@@ -475,6 +475,8 @@
     }, 1200);
   }
   function irPara(v) {
+    if (v === "estudio" && vista === "estudio" && estudioSub) { estudioSub = ""; window.scrollTo(0, 0); render(false, "esq"); return; }
+    if (v !== "estudio") estudioSub = "";
     if (v === vista) { window.scrollTo({ top: 0, behavior: "smooth" }); return; }
     var dir = ORDEM_VISTAS.indexOf(v) < ORDEM_VISTAS.indexOf(vista) ? "esq" : "dir";
     vista = v; gravarLS("maratu.painel.vista", v);
@@ -1894,6 +1896,213 @@
     });
   }
 
+  /* ---------- Estúdio por dentro: Empresa (MEI) e Números ---------- */
+  var estudioSub = "", NUM = { range: "7d", ga4: {}, ig: {}, carregando: {} }, MEI = { dash: null, carregando: false, erro: false };
+  function voltaEstudio() { return '<button class="chip-bt volta" data-estsub="">' + IC.esq + "Estúdio</button>"; }
+  function centavos(c) { return brl(Number(c || 0) / 100); }
+  function centavosCurto(c) { return brlCurto(Number(c || 0) / 100); }
+
+  /* gráficos: barras e linha, desenhados em SVG com a mesma escala dos rótulos */
+  function graficoBarras(vals, rots, destaque) {
+    var max = Math.max.apply(null, vals.concat([1])), n = vals.length, w = 320, h = 120, gap = 6, bw = (w - gap * (n - 1)) / n;
+    var barras = vals.map(function (v, i) { var bh = v > 0 ? Math.max(3, v / max * (h - 18)) : 0, x = i * (bw + gap); return '<rect x="' + x.toFixed(1) + '" y="' + (h - bh).toFixed(1) + '" width="' + bw.toFixed(1) + '" height="' + bh.toFixed(1) + '" rx="4" class="' + (i === destaque ? "b-hoje" : "b") + '"/>'; }).join("");
+    return '<div class="grafico"><svg viewBox="0 0 ' + w + " " + h + '" preserveAspectRatio="none" aria-hidden="true">' + barras + '</svg><div class="grafico-rot" style="grid-template-columns:repeat(' + n + ',1fr)">' + rots.map(function (r) { return "<span>" + esc(r) + "</span>"; }).join("") + "</div></div>";
+  }
+  function graficoLinha(vals) {
+    if (vals.length < 2) return "";
+    var max = Math.max.apply(null, vals.concat([1])), w = 320, h = 70, pts = vals.map(function (v, i) { return (i / (vals.length - 1) * w).toFixed(1) + "," + (h - 4 - v / max * (h - 10)).toFixed(1); });
+    return '<svg class="linha-g" viewBox="0 0 ' + w + " " + h + '" preserveAspectRatio="none" aria-hidden="true"><polygon points="0,' + h + " " + pts.join(" ") + " " + w + "," + h + '" class="area"/><polyline points="' + pts.join(" ") + '" class="traco"/></svg>';
+  }
+
+  /* --- Empresa: MEI --- */
+  function carregarMei() {
+    if (MEI.carregando) return; MEI.carregando = true; MEI.erro = false;
+    api("/api/mei/dashboard").then(function (d) { MEI.dash = d; S.extras = S.extras || {}; S.extras.mei = d; guardaCache(); })
+      .catch(function () { MEI.erro = true; })
+      .then(function () { MEI.carregando = false; if (vista === "estudio" && estudioSub === "empresa") render(true); });
+  }
+  function telaEmpresa() {
+    var d = MEI.dash;
+    if (!d) { if (!MEI.erro) carregarMei(); return '<div class="nav-dia">' + voltaEstudio() + '</div><div class="cab"><h1>Empresa</h1></div>' + (MEI.erro ? '<div class="cartao"><h3 style="margin:0 0 8px;font-weight:900;">O MEI não carregou</h3><button class="bt preto" data-meitenta>Tentar de novo</button></div>' : '<div class="esqueleto"></div>'); }
+    var f = d.faturamento || {}, pct = f.pct_usado || 0, cfg = d.config || {};
+    var limite = '<div class="cartao mes"><div class="topo-mes"><span class="grande">' + (oculto() ? "R$ •••" : centavosCurto(f.total_ano_centavos)) + '</span><span class="comp' + (f.alerta ? " desce" : "") + '">projeção ' + (oculto() ? "•••" : centavosCurto(f.projecao_anual_centavos)) + "</span></div>" +
+      '<div class="barra-meta"><i style="width:' + Math.min(100, pct) + "%" + (f.alerta ? ";background:var(--c-aviso)" : "") + '"></i></div><div class="rodape"><span>Faturado em ' + esc(f.ano || d.ano_atual) + "</span><span>" + pct + "% do limite de " + centavosCurto(f.limite_anual_centavos) + "</span></div></div>";
+    var das = '<div class="secao">DAS</div><div class="cartao lista">' + (d.das_meses || []).slice().reverse().map(function (m) {
+      var est = m.paid ? "pago" : m.atrasado ? "atrasado" : "a pagar";
+      return '<div class="linha"><div class="o"><b>' + cap(MESES[m.month - 1]) + " " + m.year + "</b><small>" + (m.paid ? "Pago" + (m.paid_at ? " em " + dm(m.paid_at) : "") + (m.valor_centavos && !oculto() ? ", " + centavos(m.valor_centavos) : "") : (m.atrasado ? "Venceu " : "Vence ") + dm(m.vencimento)) + '</small></div><span class="tipo ' + (m.paid ? "t-feito" : m.atrasado ? "t-aviso" : "t-loja") + '">' + est + '</span><button class="bt" data-das="' + m.year + "-" + m.month + '">' + (m.paid ? "Desfazer" : "Paguei") + "</button></div>";
+    }).join("") + "</div>";
+    var dn = d.dasn || {};
+    var dasn = '<div class="secao">Declaração anual</div><div class="cartao lista"><div class="linha"><div class="o"><b>Declaração de ' + esc(dn.year || d.ano_atual) + "</b><small>" + (dn.done ? "Entregue" + (dn.done_at ? " em " + dm(dn.done_at) : "") : (dn.atrasado ? "Venceu em " : "Prazo ") + dm(dn.deadline)) + '</small></div><button class="bt" data-dasn>' + (dn.done ? "Desfazer" : "Feita") + "</button></div></div>";
+    var meses = f.meses || [], mesAtual = d.mes_atual || new Date().getMonth() + 1;
+    var fat = '<div class="secao">Faturamento por mês</div><div class="cartao' + (oculto() ? " g-oculto" : "") + '">' + graficoBarras(meses.map(function (m) { return m.month <= mesAtual ? Number(m.total_centavos) || 0 : 0; }), meses.map(function (m) { return MESES[m.month - 1].slice(0, 1).toUpperCase(); }), mesAtual - 1) + "</div>" +
+      '<div class="cartao lista">' + meses.filter(function (m) { return m.month <= mesAtual; }).reverse().map(function (m) {
+        return '<div class="linha toca" data-fatmes="' + m.month + '"><div class="o"><b>' + cap(MESES[m.month - 1]) + "</b><small>" + (m.lancamentos || 0) + (m.lancamentos === 1 ? " entrada" : " entradas") + (m.ajuste_centavos && !oculto() ? ", ajuste " + centavos(m.ajuste_centavos) : "") + (m.nota ? ", " + esc(m.nota) : "") + '</small></div><span class="valor">' + (oculto() ? "R$ •••" : centavos(m.total_centavos)) + "</span>" + IC.seta + "</div>";
+      }).join("") + "</div>";
+    var conf = '<div class="cartao lista"><div class="linha toca" data-meiconf><div class="o"><b>Configuração do MEI</b><small>DAS de ' + (oculto() ? "R$ •••" : centavos(cfg.das_valor_centavos)) + ", vence dia " + esc(cfg.das_vencimento_dia || 20) + '</small></div>' + IC.seta + '</div><div class="linha toca" data-atalho="custos"><div class="o"><b>Custos do estúdio</b><small>Preço da peça e meta do mês</small></div>' + IC.seta + "</div></div>";
+    return '<div class="nav-dia">' + voltaEstudio() + '</div><div class="cab"><h1>Empresa</h1></div>' + colunas(limite + das + dasn, fat + conf);
+  }
+  function ligarEmpresa(raiz) {
+    raiz.querySelectorAll("[data-meitenta]").forEach(function (b) { b.onclick = function () { MEI.erro = false; render(true); }; });
+    raiz.querySelectorAll("[data-das]").forEach(function (b) {
+      b.onclick = function () {
+        var p = b.dataset.das.split("-").map(Number), m = (MEI.dash.das_meses || []).filter(function (x) { return x.year === p[0] && x.month === p[1]; })[0]; if (!m) return;
+        var corpo = { year: m.year, month: m.month }, cfg = MEI.dash.config || {};
+        if (!m.paid && Number(cfg.das_valor_centavos) > 0) corpo.valor_centavos = Number(cfg.das_valor_centavos);
+        b.disabled = true;
+        api(m.paid ? "/api/mei/das/unpay" : "/api/mei/das/pay", { method: "POST", body: corpo }).then(function () { aviso(m.paid ? "DAS reaberto" : "DAS pago"); carregarMei(); })
+          .catch(function (e) { b.disabled = false; aviso(/HTTP 400/.test(String(e && e.message)) ? "Falta o valor do DAS na configuração" : "Não salvou. Confira a internet."); });
+      };
+    });
+    raiz.querySelectorAll("[data-dasn]").forEach(function (b) {
+      b.onclick = function () {
+        var dn = MEI.dash.dasn || {}; b.disabled = true;
+        api(dn.done ? "/api/mei/dasn/undo" : "/api/mei/dasn/done", { method: "POST", body: { year: dn.year } }).then(function () { aviso(dn.done ? "Declaração reaberta" : "Declaração entregue"); carregarMei(); })
+          .catch(function () { b.disabled = false; aviso("Não salvou. Confira a internet."); });
+      };
+    });
+    raiz.querySelectorAll("[data-fatmes]").forEach(function (b) { b.onclick = function () { folhaAjusteMes(Number(b.dataset.fatmes)); }; });
+    raiz.querySelectorAll("[data-meiconf]").forEach(function (b) { b.onclick = folhaConfigMei; });
+  }
+  function folhaAjusteMes(mes) {
+    var f = MEI.dash.faturamento || {}, m = (f.meses || []).filter(function (x) { return x.month === mes; })[0] || {};
+    abrirFolha(cap(MESES[mes - 1]) + " " + (f.ano || MEI.dash.ano_atual),
+      '<div class="nums" style="grid-template-columns:1fr 1fr;"><div class="num"><b>' + (oculto() ? "R$ •••" : centavosCurto(m.auto_centavos)) + '</b><span>das entradas</span></div><div class="num"><b>' + (oculto() ? "R$ •••" : centavosCurto(m.total_centavos)) + "</b><span>total do mês</span></div></div>" +
+      campo("Ajuste (R$)", '<input id="ajV" inputmode="decimal" value="' + (m.ajuste_centavos ? esc(String(m.ajuste_centavos / 100).replace(".", ",")) : "") + '" autocomplete="off">') +
+      campo("Nota", '<input id="ajN" maxlength="120" value="' + esc(m.nota || "") + '" autocomplete="off">') +
+      '<div class="fixo"><button class="bt acento cheio" id="ajOk">Salvar ajuste</button></div>',
+      function (c) {
+        c.querySelector("#ajOk").onclick = function () {
+          var t = c.querySelector("#ajV").value.trim(), neg = /^-/.test(t), v = Math.round(num(t.replace(/^-/, "")) * 100) * (neg ? -1 : 1);
+          this.disabled = true;
+          api("/api/mei/faturamento/ajuste", { method: "POST", body: { year: f.ano || MEI.dash.ano_atual, month: mes, ajuste_centavos: v, nota: c.querySelector("#ajN").value.trim() || null } })
+            .then(function () { fecharFolha(); aviso("Ajuste salvo"); carregarMei(); })
+            .catch(function () { aviso("Não salvou. Confira a internet."); });
+        };
+      });
+  }
+  function folhaConfigMei() {
+    var c0 = MEI.dash.config || {}, r = function (x) { return x ? esc(String(x / 100).replace(".", ",")) : ""; };
+    abrirFolha("Configuração do MEI",
+      '<div class="duas">' + campo("Valor do DAS (R$)", '<input id="mDas" inputmode="decimal" value="' + r(c0.das_valor_centavos) + '">') + campo("Vence todo dia", '<input id="mVenc" type="number" min="1" max="28" inputmode="numeric" value="' + esc(c0.das_vencimento_dia || 20) + '">') + "</div>" +
+      campo("Limite do ano (R$)", '<input id="mLim" inputmode="decimal" value="' + r(c0.limite_anual_centavos) + '">') +
+      '<div class="duas">' + campo("Prazo da declaração (dia)", '<input id="mDd" type="number" min="1" max="31" inputmode="numeric" value="' + esc(c0.dasn_deadline_day || "") + '">') + campo("Mês", '<input id="mDm" type="number" min="1" max="12" inputmode="numeric" value="' + esc(c0.dasn_deadline_month || "") + '">') + "</div>" +
+      '<div class="fixo"><button class="bt acento cheio" id="mOk">Salvar</button></div>',
+      function (c) {
+        c.querySelector("#mOk").onclick = function () {
+          var q = function (s) { return c.querySelector(s).value; };
+          var faixa = function (v, a, b, pad) { v = Math.round(Number(v)); return v >= a && v <= b ? v : pad; };
+          var corpo = { das_valor_centavos: Math.round(num(q("#mDas")) * 100), limite_anual_centavos: Math.round(num(q("#mLim")) * 100), das_vencimento_dia: faixa(q("#mVenc"), 1, 28, 20) };
+          var dmes = q("#mDm") ? faixa(q("#mDm"), 1, 12, null) : null, ddia = q("#mDd") ? faixa(q("#mDd"), 1, [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][(dmes || 5) - 1], null) : null;
+          if (q("#mDm") && dmes == null) { aviso("Mês da declaração vai de 1 a 12"); return; }
+          if (q("#mDd") && ddia == null) { aviso("Dia da declaração inválido pra esse mês"); return; }
+          if (ddia) corpo.dasn_deadline_day = ddia; if (dmes) corpo.dasn_deadline_month = dmes;
+          this.disabled = true;
+          api("/api/mei/config", { method: "PUT", body: corpo }).then(function () { fecharFolha(); aviso("Configuração salva"); carregarMei(); })
+            .catch(function () { aviso("Não salvou. Confira os valores."); });
+        };
+      });
+  }
+
+  /* --- Números: entradas, site e Instagram --- */
+  function carregarNumeros() {
+    var r = NUM.range;
+    ["ga4", "ig"].forEach(function (k) {
+      if ((NUM[k][r] && !(NUM[k][r].falhaEm && Date.now() - NUM[k][r].falhaEm > 30000)) || NUM.carregando[k + r]) return;
+      NUM.carregando[k + r] = true;
+      api(k === "ga4" ? "/api/analytics/ga4?range=" + r : "/api/analytics/instagram?range=" + r)
+        .then(function (d) { NUM[k][r] = d; }).catch(function () { NUM[k][r] = { error: "falhou", falhaEm: Date.now() }; })
+        .then(function () { NUM.carregando[k + r] = false; if (vista === "estudio" && estudioSub === "numeros") render(true); });
+    });
+  }
+  function ga4Linhas(rep) { return rep && rep.rows ? rep.rows : []; }
+  function ga4Total(d, qual) {
+    var row = ga4Linhas(d.totals).filter(function (r) { return (r.dimensionValues || []).some(function (v) { return v.value === qual; }); })[0];
+    return row ? row.metricValues.map(function (m) { return Number(m.value) || 0; }) : null;
+  }
+  function variacao(a, b) { if (!b) return ""; var d = Math.round((a - b) / b * 100); return '<em class="' + (d >= 0 ? "sobe" : "desce") + '">' + (d >= 0 ? "+" : "") + d + "%</em>"; }
+  function telaNumeros() {
+    carregarNumeros();
+    var h = hoje(), dias = [], vals7 = [];
+    for (var i = 6; i >= 0; i--) { var d = somaDias(h, -i); dias.push(SEM3[dataDe(d).getDay()].slice(0, 3)); vals7.push(S.lancamentos.filter(function (l) { return l.data === d; }).reduce(function (a, l) { return a + num(l.valor); }, 0)); }
+    var hoj = new Date(), meses = [], vals6 = [];
+    for (var k = 5; k >= 0; k--) { var dt = new Date(hoj.getFullYear(), hoj.getMonth() - k, 1); meses.push(MESES[dt.getMonth()].slice(0, 3)); vals6.push(somaMes(dt.getFullYear(), dt.getMonth())); }
+    var soma7 = vals7.reduce(function (a, b) { return a + b; }, 0), soma6 = vals6.reduce(function (a, b) { return a + b; }, 0);
+    var entradas = '<div class="secao">Entradas</div><div class="cartao g-cartao' + (oculto() ? " g-oculto" : "") + '"><div class="g-cab"><b>Últimos 7 dias</b><span class="valor">' + brlCurtoV(soma7) + "</span></div>" + graficoBarras(vals7, dias, 6) + "</div>" +
+      '<div class="cartao g-cartao' + (oculto() ? " g-oculto" : "") + '"><div class="g-cab"><b>Últimos 6 meses</b><span class="valor">' + brlCurtoV(soma6) + "</span></div>" + graficoBarras(vals6, meses, 5) + "</div>";
+    var r = NUM.range, ga = NUM.ga4[r], ig = NUM.ig[r];
+    var chips = '<div class="filtros">' + [["7d", "7 dias"], ["28d", "28 dias"], ["90d", "90 dias"]].map(function (x) { return '<button class="chip-bt" data-nrange="' + x[0] + '" aria-pressed="' + (r === x[0]) + '">' + x[1] + "</button>"; }).join("") + "</div>";
+    var site;
+    if (!ga) site = '<div class="esqueleto"></div>';
+    else if (ga.error && !ga.totals) site = '<p class="vazio">O Google não respondeu agora.</p>';
+    else {
+      var cur = ga4Total(ga, "current") || ga4Linhas(ga.totals)[0] && ga4Linhas(ga.totals)[0].metricValues.map(function (m) { return Number(m.value) || 0; }) || [0, 0, 0, 0, 0], prev = ga4Total(ga, "previous") || [];
+      var serie = ga4Linhas(ga.main).map(function (row) { return Number(row.metricValues[0].value) || 0; });
+      var tempo = Math.round(cur[4] || 0), wa = ga4Linhas(ga.top), src = ga4Linhas(ga.src);
+      site = '<div class="cartao g-cartao"><div class="nums">' +
+        '<div class="num"><b>' + cur[0] + variacao(cur[0], prev[0]) + '</b><span>visitas</span></div><div class="num"><b>' + cur[1] + variacao(cur[1], prev[1]) + '</b><span>pessoas</span></div><div class="num"><b>' + Math.round((cur[3] || 0) * 100) + '%</b><span>engajamento</span></div></div>' +
+        graficoLinha(serie) + '<p class="g-nota">' + cur[2] + " páginas vistas, " + Math.floor(tempo / 60) + " min " + pad2(tempo % 60) + " por visita</p></div>" +
+        (wa.length ? '<div class="cartao lista g-lista"><div class="g-tit">Cliques no WhatsApp</div>' + wa.map(function (row) { return '<div class="linha"><div class="o"><b>' + esc(String(row.dimensionValues[0].value).replace(/^wa_/, "").replace(/_/g, " ")) + '</b></div><span class="valor">' + esc(row.metricValues[0].value) + "</span></div>"; }).join("") + "</div>" : "") +
+        (src.length ? '<div class="cartao lista g-lista"><div class="g-tit">De onde vieram</div>' + src.map(function (row) { return '<div class="linha"><div class="o"><b>' + esc(row.dimensionValues[0].value === "(direct)" ? "direto" : row.dimensionValues[0].value) + '</b></div><span class="valor">' + esc(row.metricValues[0].value) + "</span></div>"; }).join("") + "</div>" : "");
+    }
+    var insta;
+    if (!ig) insta = '<div class="esqueleto"></div>';
+    else if (ig.error && !ig.account) insta = '<p class="vazio">O Instagram não respondeu agora.</p>';
+    else {
+      var vals = (ig.reach && ig.reach.data && ig.reach.data[0] && ig.reach.data[0].values || []).map(function (v) { return Number(v.value) || 0; }), alc = vals.reduce(function (a, b) { return a + b; }, 0), ac = ig.account || {};
+      insta = '<div class="cartao g-cartao"><div class="nums"><div class="num"><b>' + alc.toLocaleString("pt-BR") + '</b><span>alcance somado</span></div><div class="num"><b>' + Number(ac.followers_count || 0).toLocaleString("pt-BR") + '</b><span>seguidores</span></div><div class="num"><b>' + esc(ac.media_count || 0) + "</b><span>posts</span></div></div>" + graficoLinha(vals) + "</div>" +
+        ((ig.media && ig.media.data || []).length ? '<div class="ig-grade">' + ig.media.data.slice(0, 6).map(function (m) {
+          var img = m.media_type === "VIDEO" ? m.thumbnail_url : m.media_url;
+          var link = /^https:\/\//.test(m.permalink || ""), tag = link ? 'a class="ig-post" href="' + esc(m.permalink) + '" target="_blank" rel="noopener"' : 'div class="ig-post"';
+          return "<" + tag + ">" + (img && /^https:\/\//.test(img) ? '<img loading="lazy" alt="" src="' + esc(img) + '">' : "") + "<span>" + esc(m.like_count || 0) + " curtidas, " + esc(m.comments_count || 0) + " comentários</span></" + (link ? "a" : "div") + ">";
+        }).join("") + "</div>" : "");
+    }
+    var a = '<div class="nav-dia">' + voltaEstudio() + '</div><div class="cab"><h1>Números</h1></div>' + entradas +
+      '<div class="cartao lista"><div class="linha toca" data-relatorio><div class="o"><b>Relatório da semana</b><small>Pronto pra copiar</small></div>' + IC.seta + "</div></div>";
+    var b = chips + '<div class="secao">Site</div>' + site + '<div class="secao">Instagram' + (ig && ig.account && ig.account.username ? " <small>@" + esc(ig.account.username) + "</small>" : "") + "</div>" + insta;
+    return pc() ? colunas(a, b) : a + b;
+  }
+  function relatorioSemana() {
+    var h = hoje(), ini = somaDias(h, -6), linhas = [];
+    var ent = S.lancamentos.filter(function (l) { return l.data >= ini && l.data <= h; }), soma = ent.reduce(function (a, l) { return a + num(l.valor); }, 0);
+    linhas.push("MARATU, semana de " + dm(ini) + " a " + dm(h), "");
+    linhas.push("ENTRADAS: " + brl(soma) + " em " + ent.length + (ent.length === 1 ? " entrada" : " entradas"));
+    ent.slice().sort(function (a, b) { return a.data < b.data ? -1 : 1; }).forEach(function (l) { linhas.push("  " + dm(l.data) + "  " + brl(num(l.valor)) + "  " + tituloEntrada(l)); });
+    var r = resumoMes(); linhas.push("", "MÊS: " + brl(r.total) + (r.meta ? " de " + brl(r.meta) + " (" + Math.round(r.total / r.meta * 100) + "%)" : ""));
+    var env = 0, resp = 0, lim = new Date(Date.now() - 7 * 864e5).toISOString();
+    S.prospec.forEach(function (p) { try { JSON.parse(p.historico || "[]").forEach(function (x) { if (x.ts >= lim) { if (x.acao === "enviei") env++; if (x.acao === "respondeu") resp++; } }); } catch (e) {} });
+    linhas.push("", "PROSPECÇÃO: " + env + " contatos enviados, " + resp + " responderam, " + prospecGrupos().noAr.length + " no ar");
+    var novos = S.leads.filter(function (l) { return String(l.criado || "").slice(0, 10) >= ini; }), fechados = S.leads.filter(function (l) { return l.status === "fechado" && String(l.followup || "") >= ini; });
+    linhas.push("LEADS: " + novos.length + " novos, " + fechados.length + " fechados");
+    var prox = eventosVivos().filter(function (e) { return !e.feito && e.data > h && e.data <= somaDias(h, 7); }).sort(function (a, b) { return a.data + (a.hora || "") < b.data + (b.hora || "") ? -1 : 1; });
+    linhas.push("", "PRÓXIMOS 7 DIAS: " + (prox.length ? "" : "nada marcado"));
+    prox.forEach(function (e) { linhas.push("  " + dm(e.data) + (e.hora ? " " + e.hora : "") + "  " + e.titulo); });
+    var ga = NUM.ga4["7d"], cur = ga && !ga.error ? ga4Total(ga, "current") : null;
+    if (cur) linhas.push("", "SITE: " + cur[0] + " visitas, " + cur[1] + " pessoas");
+    var ig = NUM.ig["7d"]; if (ig && ig.account) { var alc = (ig.reach && ig.reach.data && ig.reach.data[0] && ig.reach.data[0].values || []).reduce(function (a, v) { return a + (Number(v.value) || 0); }, 0); linhas.push("INSTAGRAM: " + alc + " de alcance, " + ig.account.followers_count + " seguidores"); }
+    return linhas.join("\n");
+  }
+  function carregarSemana() {
+    var ps = ["ga4", "ig"].map(function (k) {
+      if (NUM[k]["7d"] && !NUM[k]["7d"].error) return null;
+      return api(k === "ga4" ? "/api/analytics/ga4?range=7d" : "/api/analytics/instagram?range=7d").then(function (d) { NUM[k]["7d"] = d; }).catch(function () {});
+    });
+    return Promise.all(ps);
+  }
+  function folhaRelatorio() {
+    abrirFolha("Relatório da semana", '<div class="esqueleto"></div>');
+    carregarSemana().then(function () { if (folhaAberta && $("folhaTit").textContent === "Relatório da semana") folhaRelatorioPronto(); });
+  }
+  function folhaRelatorioPronto() {
+    var txt = relatorioSemana();
+    abrirFolha("Relatório da semana", '<pre class="relatorio" id="relTxt">' + esc(txt) + '</pre><div class="fixo"><button class="bt acento cheio" id="relCopia">Copiar</button></div>', function (c) {
+      c.querySelector("#relCopia").onclick = function () { copiar(txt).then(function () { aviso("Relatório copiado"); }).catch(function () { var r = document.createRange(); r.selectNodeContents(c.querySelector("#relTxt")); var s = getSelection(); s.removeAllRanges(); s.addRange(r); aviso("Texto selecionado"); }); };
+    });
+  }
+  function ligarNumeros(raiz) {
+    raiz.querySelectorAll("[data-nrange]").forEach(function (b) { b.onclick = function () { NUM.range = b.dataset.nrange; render(true); }; });
+    raiz.querySelectorAll("[data-relatorio]").forEach(function (b) { b.onclick = folhaRelatorio; });
+  }
+
   /* --- busca: caixa no topo da tela, acha registro e roda comando --- */
   var buscaAberta = false, buscaSel = 0, buscaLista = [];
   function norm(s) { return semAcento(s).toLowerCase(); }
@@ -1908,6 +2117,9 @@
     ["Oficina", "Ler selo", function () { abrirSelos("vincular"); }, IC.selo],
     ["Oficina", "Impressora", function () { folhaImpressora(); }, IC.imp],
     ["Oficina", "Custos", function () { folhaCustos(); }, IC.calc],
+    ["Estúdio", "Números", function () { estudioSub = "numeros"; if (vista === "estudio") render(true); else irPara("estudio"); }, IC.dir],
+    ["Estúdio", "Empresa e MEI", function () { estudioSub = "empresa"; if (vista === "estudio") render(true); else irPara("estudio"); }, IC.dir],
+    ["Estúdio", "Relatório da semana", function () { folhaRelatorio(); }, IC.nota],
     ["Loja", "Peça nova", function () { lojaSeg = "produtos"; irPara("loja"); carregarProdutos().then(function () { folhaProduto(null); }); }, IC.mais],
     ["Ir", "Produtos", function () { lojaSeg = "produtos"; if (vista === "loja") render(true); else irPara("loja"); }, IC.entrada],
     ["Sites", "Buscar negócios", function () { folhaBuscarNegocios(); }, IC.site], ["Sites", "Escolher na reserva", function () { folhaReserva(); }, IC.site],
@@ -2028,14 +2240,16 @@
       .catch(function () { aviso("Não desligou. Tente de novo."); });
   }
   var ATALHOS = [
-    ["Números", "Site, Instagram e relatório", "/admin.html", '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>'],
+    ["Números", "Site, Instagram e relatório", "numeros", '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>'],
     ["Divulgação", "Conteúdo e newsletter", "/admin.html", '<path d="M3 11l18-7v16L3 13z"/><path d="M7 13v5a2 2 0 0 0 4 0v-4"/>'],
-    ["Empresa", "MEI, DAS e limite do ano", "/admin.html", '<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>'],
+    ["Empresa", "MEI, DAS e limite do ano", "empresa", '<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>'],
     ["Selos", "Gerar, ler e vincular", "selos", ""],
     ["Impressora", "Estado e últimas impressões", "impressora", ""],
     ["Custos", "Preço da peça e do pôster", "custos", ""]
   ];
   function telaEstudio() {
+    if (estudioSub === "empresa") return telaEmpresa();
+    if (estudioSub === "numeros") return telaNumeros();
     if (!ajustes.carregado) carregarAjustes();
     var tema = ""; try { tema = localStorage.getItem("maratu.painel.tema") || ""; } catch (e) {}
     var est = estadoPush(), podeLigar = est === "ligadas" || est === "desligadas";
@@ -2044,7 +2258,7 @@
     };
     var a = '<div class="cab"><h1>Estúdio</h1></div>' +
       '<div class="atalhos">' + ATALHOS.map(function (t) {
-        if (t[2].charAt(0) !== "/") return '<button class="cartao atalho" data-atalho="' + t[2] + '">' + (t[2] === "selos" ? IC.selo : t[2] === "impressora" ? IC.imp : IC.calc) + "<b>" + t[0] + "</b><small>" + t[1] + "</small></button>";
+        if (t[2].charAt(0) !== "/") return '<button class="cartao atalho" data-atalho="' + t[2] + '">' + (t[3] ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + t[3] + "</svg>" : t[2] === "selos" ? IC.selo : t[2] === "impressora" ? IC.imp : IC.calc) + "<b>" + t[0] + "</b><small>" + t[1] + "</small></button>";
         return '<a class="cartao atalho" href="' + t[2] + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + t[3] + "</svg><b>" + t[0] + "</b><small>" + t[1] + '</small><span class="no-antigo">painel antigo</span></a>';
       }).join("") + "</div>";
     var b = '<div class="secao">Ajustes</div>' +
@@ -2074,7 +2288,10 @@
         corDaBarra();
       });
     }
-    raiz.querySelectorAll("[data-atalho]").forEach(function (el) { el.onclick = function () { var k = el.dataset.atalho; if (k === "selos") abrirSelos(); else if (k === "impressora") folhaImpressora(); else folhaCustos(); }; });
+    raiz.querySelectorAll("[data-atalho]").forEach(function (el) { el.onclick = function () { var k = el.dataset.atalho; if (k === "selos") abrirSelos(); else if (k === "impressora") folhaImpressora(); else if (k === "numeros" || k === "empresa") { estudioSub = k; window.scrollTo(0, 0); render(false, "dir"); } else folhaCustos(); }; });
+    raiz.querySelectorAll("[data-estsub]").forEach(function (el) { el.onclick = function () { estudioSub = el.dataset.estsub; window.scrollTo(0, 0); render(false, "esq"); }; });
+    if (estudioSub === "empresa") ligarEmpresa(raiz);
+    if (estudioSub === "numeros") ligarNumeros(raiz);
     raiz.querySelectorAll("[data-aj]").forEach(function (el) {
       var k = el.dataset.aj;
       if (k === "sair") { confirmaDuplo(el, "Toque de novo pra sair", sair); return; }
@@ -2084,7 +2301,7 @@
         else if (k === "feed" && ajustes.feed) { var w = ajustes.feed.replace(/^https?:/, "webcal:"); copiar(ajustes.feed).catch(function () {}); location.href = w; }
         else if (k === "passkey") location.href = "/passkey.html";
         else if (k === "2fa") location.href = "/2fa.html";
-        else if (k === "atualizar") carregar().then(function () { render(true); aviso("Atualizado"); }).catch(function () { aviso("Sem conexão"); });
+        else if (k === "atualizar") (NUM.ga4 = {}, NUM.ig = {}, MEI.dash = null, PROD.lista = null, carregar()).then(function () { render(true); aviso("Atualizado"); }).catch(function () { aviso("Sem conexão"); });
         else if (k === "antigo") location.href = "/admin.html";
       };
     });
@@ -2212,7 +2429,7 @@
     var h = (location.hash || "").replace("#", ""), mapa = { caixa: "loja", loja: "loja", agenda: "agenda", marketing: "sites", sites: "sites", mei: "hoje", estudio: "estudio", hoje: "hoje" };
     if (!h) return false;
     if (!mapa[h]) { try { history.replaceState(null, "", location.pathname); } catch (e) {} return false; }
-    vista = mapa[h]; if (h === "caixa") lojaSeg = "caixa";
+    vista = mapa[h]; if (h === "caixa") lojaSeg = "caixa"; if (vista !== "estudio") estudioSub = "";
     try { history.replaceState(null, "", location.pathname); } catch (e) {}
     return true;
   }

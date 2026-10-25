@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://maratu-api.raphaelnascimento.workers.dev https://pub-33d995a6b2b8438fac0996c2196c8416.r2.dev; font-src 'self'; connect-src 'self' https://maratu-api.raphaelnascimento.workers.dev; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests;" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://maratu-api.raphaelnascimento.workers.dev https://pub-33d995a6b2b8438fac0996c2196c8416.r2.dev https://*.cdninstagram.com https://*.fbcdn.net; font-src 'self'; connect-src 'self' https://maratu-api.raphaelnascimento.workers.dev; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests;" />
 <meta name="robots" content="noindex, nofollow" />
 <meta name="theme-color" content="#E8E2D6" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -595,6 +595,32 @@ button.atalho { font: inherit; text-align: left; cursor: pointer; }
 :root[data-theme="noite"] .modal-back #slAbas .chip:not([aria-pressed="true"]) { color: var(--tinta) !important; background: var(--cartao) !important; }
 :root[data-theme="noite"] .modal-back [style*="background:#F0ECE4"], :root[data-theme="noite"] .modal-back [style*="background: #F0ECE4"] { color: #0D0D0B !important; }
 
+/* Estúdio por dentro: Empresa e Números */
+.chip-bt.volta { padding-left: 8px; }
+.chip-bt.volta svg { width: 18px; height: 18px; }
+.grafico { display: grid; gap: 6px; }
+.grafico svg { width: 100%; height: 120px; display: block; }
+.grafico .b { fill: var(--cartao-2); stroke: var(--borda); stroke-width: 1; vector-effect: non-scaling-stroke; }
+.grafico .b-hoje { fill: var(--acento); stroke: var(--borda); stroke-width: 1; vector-effect: non-scaling-stroke; }
+.grafico-rot { display: grid; gap: 6px; font-size: 11px; font-weight: 900; color: var(--suave); text-align: center; text-transform: uppercase; }
+.g-cartao { display: grid; gap: 12px; }
+.g-cab { display: flex; justify-content: space-between; align-items: baseline; font-size: 15px; }
+.g-cab b { font-weight: 900; }
+.linha-g { width: 100%; height: 70px; display: block; }
+.linha-g .area { fill: color-mix(in srgb, var(--acento) 14%, transparent); }
+.linha-g .traco { fill: none; stroke: var(--acento); stroke-width: 2.5; vector-effect: non-scaling-stroke; stroke-linejoin: round; }
+.g-nota { margin: 0; font-size: 13px; color: var(--suave); font-weight: 700; }
+.num em { font-style: normal; font-size: 12px; font-weight: 900; margin-left: 6px; vertical-align: middle; }
+.num em.sobe { color: var(--feito); } .num em.desce { color: var(--c-aviso); }
+.g-tit { font-size: 12px; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; color: var(--suave); padding: 12px 0 4px; }
+.ig-grade { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+.ig-post { position: relative; aspect-ratio: 1; border-radius: 12px; overflow: hidden; border: 1.5px solid var(--borda); background: var(--cartao-2); display: block; }
+.ig-post img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.ig-post span { position: absolute; left: 0; right: 0; bottom: 0; padding: 14px 6px 5px; font-size: 10.5px; font-weight: 900; color: #fff; background: linear-gradient(transparent, rgba(13,13,11,.75)); }
+.g-oculto .grafico svg { visibility: hidden; }
+.g-oculto .g-cab .valor { visibility: hidden; }
+.relatorio { margin: 0; white-space: pre-wrap; font-family: ui-monospace, Menlo, monospace; font-size: 13px; line-height: 1.55; background: var(--campo); border: 1.5px solid var(--linha); border-radius: 12px; padding: 14px; }
+
 /* ===== computador ===== */
 .lateral { display: none; }
 .acoes-pc { display: none; }
@@ -737,7 +763,7 @@ button.atalho { font: inherit; text-align: left; cursor: pointer; }
 
 <div class="aviso" id="aviso" role="status" aria-live="polite"><span id="avisoTxt"></span><button id="avisoBt" hidden>Desfazer</button></div>
 
-<script src="painel.js?v=20261028a"></script>
+<script src="painel.js?v=20261029a"></script>
 <script>if (navigator.serviceWorker) navigator.serviceWorker.register("/sw.js").catch(function () {});</script>
 </body>
 </html>

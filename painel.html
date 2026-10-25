@@ -64,7 +64,7 @@
   --atraso: #A3400F;
   --feito: #357550;
   --adiar: #0D0D0B;
-  --c-site: #C8501A; --c-lead: #2C69BA; --c-carne: #8B6207; --c-agenda: #357550; --c-loja: #0D0D0B; --c-nota: #6B4FA0;
+  --c-site: #C8501A; --c-lead: #2C69BA; --c-carne: #8B6207; --c-agenda: #6B4FA0; --c-loja: #0D0D0B; --c-nota: #7A6A55;
   --raio: 16px;
   --font: "Clother", "Helvetica Neue", Arial, sans-serif;
   --topo-h: 58px;
@@ -77,7 +77,7 @@
   --tela: #0D0D0B; --lateral: #0D0D0B; --realce: rgba(240,236,228,.08); --cartao: #1F1F1B; --cartao-2: #292923; --campo: #14140F; --tinta: #F0ECE4; --tinta-sobre-tela: #F0ECE4;
   --suave: rgba(240,236,228,.6); --linha: rgba(240,236,228,.14); --borda: rgba(240,236,228,.3); --sombra: rgba(240,236,228,.22);
   --acento: #2E6FC4; --acento-tinta: #FFFFFF; --adiar: #3A3A33;
-  --c-site: #E25F23; --c-lead: #4F8AD6; --c-carne: #D4960A; --c-agenda: #449869; --c-loja: #5E5A52; --c-nota: #9A7FD0;
+  --c-site: #E25F23; --c-lead: #4F8AD6; --c-carne: #D4960A; --c-agenda: #9A7FD0; --c-loja: #5E5A52; --c-nota: #B3A38C;
   color-scheme: dark;
 }
 
@@ -140,7 +140,7 @@ main { padding: calc(var(--seguro-topo) + var(--topo-h) + 8px) 12px calc(var(--s
 /* selo de tipo */
 .tipo { flex: none; font-size: 10px; font-weight: 900; letter-spacing: .06em; text-transform: uppercase; color: #fff; padding: 4px 8px; border-radius: 999px; line-height: 1; }
 .t-site { background: var(--c-site); } .t-lead { background: var(--c-lead); } .t-carne { background: var(--c-carne); }
-.t-agenda { background: var(--c-agenda); } .t-loja { background: var(--c-loja); } .t-nota { background: var(--c-nota); }
+.t-agenda { background: var(--c-agenda); } .t-loja { background: var(--c-loja); } .t-nota { background: var(--c-nota); } .t-feito { background: var(--feito); }
 
 /* cartas da fila */
 .fila { display: grid; gap: 10px; }
@@ -324,9 +324,68 @@ main { padding: calc(var(--seguro-topo) + var(--topo-h) + 8px) 12px calc(var(--s
 @keyframes pulsa { 50% { opacity: .3; } }
 
 /* busca */
-.busca-res .linha { cursor: pointer; }
-.busca-res mark { background: none; color: inherit; text-decoration: underline; }
 
+
+/* progresso do dia, dia fechado, metas */
+.progresso-dia { display: flex; align-items: center; gap: 12px; padding: 0 4px; color: var(--tinta-sobre-tela); font-size: 13px; font-weight: 900; }
+.progresso-dia .barra-meta { flex: 1; } .progresso-dia .barra-meta i, .meta .barra-meta i { background: var(--feito); }
+.progresso-dia span { white-space: nowrap; font-variant-numeric: tabular-nums; }
+.fechado { display: grid; gap: 12px; }
+.fechado-cab { display: flex; align-items: center; gap: 10px; }
+.fechado-cab svg { width: 30px; height: 30px; padding: 6px; border-radius: 50%; background: var(--feito); color: #fff; }
+.fechado-cab h3 { margin: 0; font-size: 20px; font-weight: 900; }
+.fechado .num { box-shadow: none; background: var(--cartao-2); border-color: transparent; }
+.metas { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.meta { display: grid; gap: 10px; padding: 12px 14px; }
+.meta-num b { display: block; font-size: 26px; font-weight: 900; line-height: 1.05; font-variant-numeric: tabular-nums; }
+.meta-num span { font-size: 12.5px; font-weight: 700; color: var(--suave); }
+.quando-lido { margin: 2px 0 0; display: flex; align-items: center; gap: 7px; font-size: 13.5px; font-weight: 900; color: var(--c-agenda); }
+.quando-lido svg { width: 16px; height: 16px; }
+
+/* botões discretos dos cartões no computador */
+.acoes-pc .ico-bt { width: 40px; height: 40px; box-shadow: none; border-color: var(--linha); background: transparent; color: var(--suave); }
+.acoes-pc .ico-bt svg { width: 19px; height: 19px; }
+.acoes-pc .pc-dir:hover { background: var(--feito); border-color: var(--borda); color: #fff; box-shadow: 2px 2px 0 var(--sombra); }
+.acoes-pc .pc-esq:hover { background: var(--tinta); border-color: var(--borda); color: var(--cartao); box-shadow: 2px 2px 0 var(--sombra); }
+
+/* botão principal sempre à vista no fim da folha */
+.fixo { position: sticky; bottom: calc(-22px - var(--seguro-baixo)); z-index: 3; display: grid; gap: 8px;
+  margin: 4px -18px calc(-22px - var(--seguro-baixo)); padding: 12px 18px calc(18px + var(--seguro-baixo));
+  background: var(--cartao); border-top: 1px solid var(--linha); }
+.fixo.grade-bts { grid-template-columns: 1fr 1fr; }
+
+/* dica de arrastar, sem texto */
+.slot.dica .carta { animation: dicaCarta 1.4s var(--mola); }
+.slot.dica .fundo.dir { animation: dicaFundo 1.4s ease; }
+@keyframes dicaCarta { 0% { transform: none; } 35% { transform: translateX(72px) rotate(1.2deg); } 70%, 100% { transform: none; } }
+@keyframes dicaFundo { 0%, 100% { opacity: 0; } 30%, 50% { opacity: 1; } }
+
+/* busca: caixa no topo, estilo Spotlight */
+.busca {
+  position: fixed; z-index: 70; left: 50%; top: calc(var(--seguro-topo) + 10px); width: min(640px, calc(100% - 20px));
+  max-height: calc(100dvh - var(--seguro-topo) - 20px); display: flex; flex-direction: column;
+  background: var(--cartao); color: var(--tinta); border: 1.5px solid var(--borda); border-radius: 18px; box-shadow: 4px 4px 0 var(--sombra);
+  opacity: 0; visibility: hidden; transform: translate(-50%, -10px) scale(.98);
+  transition: opacity .18s, transform .25s var(--mola), visibility 0s linear .25s;
+}
+.busca.on { opacity: 1; visibility: visible; transform: translate(-50%, 0); transition: opacity .18s, transform .25s var(--mola); }
+.busca-caixa { display: flex; align-items: center; gap: 10px; padding: 6px 8px 6px 16px; border-bottom: 1px solid var(--linha); flex: none; }
+.busca-caixa > svg { width: 20px; height: 20px; color: var(--suave); flex: none; }
+.busca-caixa input { flex: 1; min-width: 0; min-height: 52px; border: 0; background: none; font-size: 18px; font-weight: 700; color: var(--tinta); outline: none; -webkit-appearance: none; appearance: none; }
+.busca-caixa input::-webkit-search-cancel-button { display: none; }
+.busca-x { flex: none; width: 40px; height: 40px; display: grid; place-items: center; padding: 0; border: 1.5px solid var(--linha); border-radius: 11px; background: none; color: var(--suave); }
+.busca-x svg { width: 18px; height: 18px; }
+.busca-res { overflow-y: auto; overscroll-behavior: contain; padding: 6px 6px 10px; }
+.grupo-rot { font-size: 11.5px; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; color: var(--suave); padding: 10px 10px 4px; }
+.opcao { display: flex; align-items: center; gap: 12px; padding: 9px 10px; min-height: 50px; border-radius: 12px; cursor: pointer; }
+.opcao > svg { width: 19px; height: 19px; flex: none; color: var(--suave); }
+.opcao .o { flex: 1; min-width: 0; }
+.opcao .o b { display: block; font-size: 15px; font-weight: 900; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.opcao .o small { display: block; font-size: 12.5px; color: var(--suave); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.opcao[aria-selected="true"] { background: var(--cartao-2); }
+.busca-vazia { margin: 0; padding: 18px 12px; color: var(--suave); font-weight: 700; }
+.topo-pc { display: none; }
+@media (max-width: 1023px) { .busca { max-height: 52dvh; } }
 
 /* ===== computador ===== */
 .lateral { display: none; }
@@ -389,6 +448,18 @@ main { padding: calc(var(--seguro-topo) + var(--topo-h) + 8px) 12px calc(var(--s
   }
   .folha.on { transform: none; }
   .folha .alca { display: none; }
+  .busca { top: 12vh; max-height: 70vh; }
+  .topo-pc { display: block; margin-left: 236px; padding: 24px 40px 0; }
+  .topo-pc .por-dentro { max-width: 1180px; margin: 0 auto; }
+  .campo-busca {
+    display: flex; align-items: center; gap: 10px; width: min(560px, 100%); min-height: 46px; padding: 0 12px 0 14px;
+    border: 1.5px solid var(--borda); border-radius: 14px; background: var(--cartao); color: var(--suave);
+    font-size: 15px; font-weight: 700; box-shadow: 2px 2px 0 var(--sombra); cursor: text; text-align: left;
+  }
+  .campo-busca svg { width: 18px; height: 18px; flex: none; }
+  .campo-busca kbd { margin-left: auto; font: inherit; font-size: 12px; font-weight: 900; border: 1.5px solid var(--linha); border-radius: 7px; padding: 1px 7px; }
+  main { padding-top: 22px; }
+  .fixo { bottom: -28px; margin: 4px -22px -28px; padding: 12px 22px 22px; }
   .folha .cab-folha { padding: 22px 22px 10px; }
   .folha .corpo { padding: 4px 22px 28px; }
   .aviso { left: calc(50% + 118px); bottom: 28px; }
@@ -400,7 +471,8 @@ main { padding: calc(var(--seguro-topo) + var(--topo-h) + 8px) 12px calc(var(--s
 
 .bt.lead-bt { background: var(--c-lead); color: #fff; }
 :root[data-theme="noite"] { --atraso: #F07A43; }
-:root[data-theme="noite"] .tipo:not(.t-loja), :root[data-theme="noite"] .bt.lead-bt { color: #0D0D0B; }
+:root[data-theme="noite"] .tipo:not(.t-loja):not(.t-feito), :root[data-theme="noite"] .bt.lead-bt { color: #0D0D0B; }
+:root[data-theme="noite"] .entrou .tipo { color: #fff; }
 :root[data-theme="laranja"] .cab p { opacity: 1; }
 :root[data-theme="laranja"] .aviso { box-shadow: 3px 3px 0 var(--cartao); }
 @media (prefers-reduced-motion: reduce) {
@@ -427,10 +499,11 @@ main { padding: calc(var(--seguro-topo) + var(--topo-h) + 8px) 12px calc(var(--s
     <button class="item" data-v="agenda"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Agenda</button>
   </nav>
   <div class="pe">
-    <button class="item" id="ltBusca"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>Buscar<kbd>/</kbd></button>
     <button class="item" id="ltMais"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>Mais</button>
   </div>
 </aside>
+
+<div class="topo-pc"><div class="por-dentro"><button class="campo-busca" id="btBuscaPc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>Buscar ou ir para<kbd>/</kbd></button></div></div>
 
 <main id="tela"><div class="vista"><div class="esqueleto"></div><div class="esqueleto"></div><div class="esqueleto"></div></div></main>
 
@@ -449,9 +522,14 @@ main { padding: calc(var(--seguro-topo) + var(--topo-h) + 8px) 12px calc(var(--s
   <div class="corpo" id="folhaCorpo"></div>
 </section>
 
+<div class="busca" id="busca" role="dialog" aria-modal="true" aria-label="Buscar">
+  <div class="busca-caixa"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><input id="qB" type="search" placeholder="Buscar ou ir para" autocomplete="off" enterkeyhint="go" aria-controls="qRes"><button class="busca-x" id="buscaFecha" aria-label="Fechar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="busca-res" id="qRes" role="listbox"></div>
+</div>
+
 <div class="aviso" id="aviso" role="status" aria-live="polite"><span id="avisoTxt"></span><button id="avisoBt" hidden>Desfazer</button></div>
 
-<script src="painel.js?v=20261025c"></script>
+<script src="painel.js?v=20261025e"></script>
 <script>if (navigator.serviceWorker) navigator.serviceWorker.register("/sw.js").catch(function () {});</script>
 </body>
 </html>

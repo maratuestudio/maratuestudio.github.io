@@ -84,8 +84,12 @@
       api("/api/state"),
       api("/api/prospec").catch(function () { return null; }),
       api("/api/leads").catch(function () { return null; }),
-      api("/api/pedidos?status=aberto").catch(function () { return null; })
+      api("/api/pedidos?status=aberto").catch(function () { return null; }),
+      api("/api/mei/dashboard").catch(function () { return null; }),
+      api("/api/impressora").catch(function () { return null; }),
+      api("/api/selos/resumo").catch(function () { return null; })
     ]).then(function (r) {
+      S.extras = { mei: r[4] && r[4].das_meses ? r[4] : null, imp: r[5] && r[5].conectada != null ? r[5] : null, selos: r[6] && r[6].por_status ? r[6] : null };
       var st = r[0] || {};
       S.eventos = st.eventos || []; S.lancamentos = st.lancamentos || []; S.notas = st.notas || []; S.params = st.params || {};
       if (r[1]) { S.prospec = r[1].prospec || []; S.uso = r[1].uso; S.teto = r[1].teto || 900; S.buscas = r[1].buscas || []; }
@@ -98,12 +102,12 @@
   /* cópia do último estado no aparelho: o painel abre na hora e atualiza por baixo */
   var CACHE = "maratu.painel.cache";
   function guardaCache() {
-    try { localStorage.setItem(CACHE, JSON.stringify({ v: 1, em: Date.now(), eventos: S.eventos, lancamentos: S.lancamentos, notas: S.notas, params: S.params, prospec: S.prospec, leads: S.leads, pedidos: S.pedidos, uso: S.uso, teto: S.teto, buscas: S.buscas })); } catch (e) {}
+    try { localStorage.setItem(CACHE, JSON.stringify({ v: 1, em: Date.now(), eventos: S.eventos, lancamentos: S.lancamentos, notas: S.notas, params: S.params, prospec: S.prospec, leads: S.leads, pedidos: S.pedidos, uso: S.uso, teto: S.teto, buscas: S.buscas, extras: S.extras ? { mei: S.extras.mei, selos: S.extras.selos } : null })); } catch (e) {}
   }
   function lerCache() {
     var c = lerLS(CACHE, null);
     if (!c || c.v !== 1 || Date.now() - (c.em || 0) > 7 * 864e5) return false;
-    ["eventos", "lancamentos", "notas", "params", "prospec", "leads", "pedidos", "uso", "teto", "buscas"].forEach(function (k) { if (c[k] != null) S[k] = c[k]; });
+    ["eventos", "lancamentos", "notas", "params", "prospec", "leads", "pedidos", "uso", "teto", "buscas", "extras"].forEach(function (k) { if (c[k] != null) S[k] = c[k]; });
     S.pronto = true;
     return true;
   }
@@ -334,7 +338,7 @@
         abre: function () { folhaPedido(p); }
       });
     });
-    out = out.filter(function (i) { return !adiado(i.k); });
+    out = out.concat(avisosDoSistema()).filter(function (i) { return !adiado(i.k); });
     out.forEach(function (i) { i.atraso = i.data < h; });
     out.sort(function (a, b) {
       if (a.atraso !== b.atraso) return a.atraso ? -1 : 1;
@@ -346,8 +350,8 @@
   }
 
   /* ---------- ações ---------- */
-  function adiarCartao(k) {
-    executar("Fica pra amanhã", function () { adiar(k); }, function () { desadiar(k); }, function () {});
+  function adiarCartao(k, ate) {
+    executar(ate ? "Visto" : "Fica pra amanhã", function () { adiar(k, ate); }, function () { desadiar(k); }, function () {});
   }
   function conta(tipo) { if (!contaPendente) contaPendente = tipo; }
   function acaoProspec(p, acao, txt) {
@@ -415,19 +419,22 @@
   function pc() { return pcMQ.matches; }
   (pcMQ.addEventListener ? pcMQ.addEventListener.bind(pcMQ, "change") : pcMQ.addListener.bind(pcMQ))(function () { fecharFolha(); render(true); });
   var vista = lerLS("maratu.painel.vista", "hoje"), filtro = "tudo", lojaSeg = "caixa", lojaMesDesloc = 0, diaSel = hoje(), verAtendidos = false;
-  var ORDEM_VISTAS = ["hoje", "sites", "loja", "agenda"];
+  var ORDEM_VISTAS = ["hoje", "sites", "loja", "agenda", "estudio"];
+  if (ORDEM_VISTAS.indexOf(vista) < 0) vista = "hoje";
 
   function render(semAnim, direcao) {
     if (!S.pronto) return;
-    var html = vista === "sites" ? telaSites() : vista === "loja" ? telaLoja() : vista === "agenda" ? telaAgenda() : telaHoje();
+    var html = vista === "sites" ? telaSites() : vista === "loja" ? telaLoja() : vista === "agenda" ? telaAgenda() : vista === "estudio" ? telaEstudio() : telaHoje();
     var main = $("tela");
     main.innerHTML = '<div class="vista' + (semAnim ? "" : direcao === "esq" ? " entra-esq" : " entra-dir") + '">' + html + "</div>";
     ligar(main);
+    if (vista === "estudio") ligarEstudio(main);
     dicaArrastar(main);
     var n = itensHoje().length;
     document.querySelectorAll('[data-v="hoje"]').forEach(function (b) { b.setAttribute("data-n", String(n)); });
     var cont = document.querySelector('.lateral [data-v="hoje"] .cont'); if (cont) cont.textContent = n;
     document.querySelectorAll(".barra [data-v], .lateral [data-v]").forEach(function (b) { if (b.dataset.v === vista) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current"); });
+    $("btMais").setAttribute("aria-pressed", String(vista === "estudio"));
   }
   /* mostra que o cartão anda pro lado, sem texto: só até a pessoa arrastar uma vez */
   var dicaNestaSessao = false;
@@ -485,7 +492,7 @@
     var hora = new Date().getHours(), oi = hora < 12 ? "Bom dia" : hora < 18 ? "Boa tarde" : "Boa noite";
     var f = feitosHoje(), total = f.n + itens.length;
     var prog = total && f.n ? '<div class="progresso-dia"><div class="barra-meta"><i style="width:' + (f.n / total * 100).toFixed(1) + '%"></i></div><span>' + f.n + " de " + total + (total === 1 ? " feito" : " feitos") + "</span></div>" : "";
-    var a = '<div class="cab"><h1>' + (itens.length ? itens.length + " pra hoje" : oi) + "</h1><p>" + dataLonga(h) + "</p></div>" + prog +
+    var a = '<div class="cab"><h1>' + (itens.length ? itens.length + " pra hoje" : oi) + "</h1><p>" + dataLonga(h) + "</p></div>" + prog + faixaImpressora() +
       (itens.length > 1 ? '<div class="filtros">' + '<button class="chip-bt" data-filtro="tudo" aria-pressed="' + (filtro === "tudo") + '">Tudo</button>' +
         NOMES.filter(function (n) { return cont[n[0]]; }).map(function (n) { return '<button class="chip-bt" data-filtro="' + n[0] + '" aria-pressed="' + (filtro === n[0]) + '">' + n[1] + ' <span class="n">' + cont[n[0]] + "</span></button>"; }).join("") + "</div>" : "") +
       (vis.length ? '<div class="fila">' + vis.map(cartaHTML).join("") + "</div>" :
@@ -1262,7 +1269,7 @@
     ["Lançar", "Lead", function () { folhaLancar("lead"); }, IC.lead], ["Lançar", "Carnê", function () { folhaLancar("carne"); }, IC.carne],
     ["Lançar", "Lembrete", function () { folhaLancar("nota"); }, IC.nota],
     ["Sites", "Buscar negócios", function () { folhaBuscarNegocios(); }, IC.site], ["Sites", "Escolher na reserva", function () { folhaReserva(); }, IC.site],
-    ["Painel", "Mais", function () { folhaMais(); }, IC.dir]
+    ["Ir", "Estúdio", function () { irPara("estudio"); }, IC.dir], ["Estúdio", "Ligar notificações", function () { irPara("estudio"); }, IC.dir]
   ];
   function abrirBusca() {
     if (folhaAberta) fecharFolha();
@@ -1324,31 +1331,207 @@
   });
   $("buscaFecha").addEventListener("click", fecharBusca);
 
-  /* --- mais --- */
-  function folhaMais() {
+  /* ---------- Estúdio: o que se usa de vez em quando, e os ajustes ---------- */
+  var CHAVE_PUSH = "BMjhxXrHo64T09xYPoBZcPq92bv7_FBFTtWCKae0pPZf2clPvPFW6ZA6gNrtfl37-4KFG1TdNZTlPJcGhzKPTzQ";
+  var ajustes = { push: null, pushMsg: "", feed: null, totp: null, passkeys: null, carregado: false, carregando: false };
+  function b64urlParaBytes(s) { s = String(s || "").replace(/-/g, "+").replace(/_/g, "/"); while (s.length % 4) s += "="; var bin = atob(s), out = new Uint8Array(bin.length); for (var i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i); return out; }
+  function bytesParaB64url(buf) { var a = new Uint8Array(buf), bin = ""; for (var i = 0; i < a.length; i++) bin += String.fromCharCode(a[i]); return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, ""); }
+  function pushSuportado() { return "serviceWorker" in navigator && !!navigator.serviceWorker && "PushManager" in window && "Notification" in window; }
+  function noApp() { try { return navigator.standalone === true || matchMedia("(display-mode: standalone)").matches; } catch (e) { return false; } }
+  var ehIOS = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  function inscricaoPush() {
+    if (!pushSuportado()) return Promise.resolve(null);
+    return navigator.serviceWorker.ready.then(function (r) { return r.pushManager.getSubscription(); }).catch(function () { return null; });
+  }
+  function estadoPush() {
+    if (!pushSuportado()) return "indisponível";
+    if (ehIOS && !noApp()) return "só no app";
+    if (Notification.permission === "denied") return "bloqueadas";
+    return ajustes.push ? "ligadas" : "desligadas";
+  }
+  function carregarAjustes() {
+    if (ajustes.carregando) return; ajustes.carregando = true;
+    return Promise.all([
+      inscricaoPush(),
+      api("/api/config").catch(function () { return null; }),
+      api("/api/totp/status").catch(function () { return null; }),
+      api("/api/webauthn/list").catch(function () { return null; })
+    ]).then(function (r) {
+      ajustes.push = r[0]; ajustes.feed = r[1] && r[1].feedUrl || null;
+      ajustes.totp = r[2] ? !!r[2].enabled : null; ajustes.passkeys = r[3] && r[3].passkeys ? r[3].passkeys.length : null;
+      ajustes.carregado = true;
+      if (vista === "estudio") render(true);
+    });
+  }
+  function ligarPush() {
+    ajustes.pushMsg = "Pedindo permissão…"; render(true);
+    return Notification.requestPermission().then(function (p) {
+      if (p !== "granted") throw new Error("permissão negada");
+      return Promise.all([navigator.serviceWorker.ready, api("/api/push/chave").then(function (d) { return d && d.publica || CHAVE_PUSH; }).catch(function () { return CHAVE_PUSH; })]);
+    }).then(function (r) {
+      return r[0].pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64urlParaBytes(r[1]) });
+    }).then(function (sub) {
+      return api("/api/push/sub", { method: "POST", body: { endpoint: sub.endpoint, p256dh: bytesParaB64url(sub.getKey("p256dh")), auth: bytesParaB64url(sub.getKey("auth")) } }).then(function (d) { if (d && d.error) throw new Error(d.error); return sub; });
+    }).then(function (sub) {
+      ajustes.push = sub; ajustes.pushMsg = ""; render(true); aviso("Notificações ligadas");
+    }).catch(function (e) { ajustes.pushMsg = "Não ligou: " + (e && e.message || e); render(true); });
+  }
+  function desligarPush() {
+    var sub = ajustes.push; if (!sub) return;
+    var ep = sub.endpoint;
+    sub.unsubscribe().then(function () { return api("/api/push/unsub", { method: "POST", body: { endpoint: ep } }); })
+      .then(function () { ajustes.push = null; ajustes.pushMsg = ""; render(true); aviso("Notificações desligadas"); })
+      .catch(function () { aviso("Não desligou. Tente de novo."); });
+  }
+  var ATALHOS = [
+    ["Números", "Site, Instagram e relatório", "/admin.html", '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>'],
+    ["Divulgação", "Conteúdo e newsletter", "/admin.html", '<path d="M3 11l18-7v16L3 13z"/><path d="M7 13v5a2 2 0 0 0 4 0v-4"/>'],
+    ["Empresa", "MEI, DAS e limite do ano", "/admin.html", '<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>'],
+    ["Produtos e selos", "Catálogo, fotos e selos", "/admin.html", '<path d="M5 8h14l-1.5 12h-11z"/><path d="M9 8a3 3 0 0 1 6 0"/>']
+  ];
+  function telaEstudio() {
+    if (!ajustes.carregado) carregarAjustes();
     var tema = ""; try { tema = localStorage.getItem("maratu.painel.tema") || ""; } catch (e) {}
-    var LINKS = [["Painel antigo", "/admin.html"], ["Produtos, preços e selos", "/admin.html"], ["Números do site e do Instagram", "/admin.html"], ["Conteúdo e newsletter", "/admin.html"], ["Ajustes e notificações", "/admin.html"]];
-    abrirFolha("Mais",
-      '<div class="rot">Cor</div>' + pilulas("tema", [["", "Areia"], ["laranja", "Laranja"], ["noite", "Noite"]], tema) +
-      '<div class="cartao lista" style="box-shadow:none;">' + LINKS.map(function (l) { return '<a class="linha toca" href="' + l[1] + '" style="color:inherit;text-decoration:none;"><div class="o"><b>' + l[0] + "</b></div>" + IC.fora + "</a>"; }).join("") + "</div>" +
-      '<button class="bt cheio" id="mAtual">Atualizar os dados</button><button class="bt cheio perigo" id="mSair">Sair</button>',
-      function (c) {
-        ligaPilulas(c);
-        c.querySelector('[data-pil="tema"]').addEventListener("click", function () {
-          var t = pil(c, "tema");
-          try { localStorage.setItem("maratu.painel.tema", t); } catch (e) {}
-          if (t) document.documentElement.setAttribute("data-theme", t); else document.documentElement.removeAttribute("data-theme");
-          corDaBarra();
+    var est = estadoPush(), podeLigar = est === "ligadas" || est === "desligadas";
+    var linhaAj = function (attr, tit, estado, sub, seta) {
+      return '<div class="linha' + (attr ? ' toca" ' + attr : '"') + '><div class="o"><b>' + tit + "</b>" + (sub ? "<small>" + esc(sub) + "</small>" : "") + '</div><span class="estado-aj">' + esc(estado || "") + "</span>" + (seta === false ? "" : IC.seta) + "</div>";
+    };
+    var a = '<div class="cab"><h1>Estúdio</h1></div>' +
+      '<div class="atalhos">' + ATALHOS.map(function (t) {
+        return '<a class="cartao atalho" href="' + t[2] + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + t[3] + "</svg><b>" + t[0] + "</b><small>" + t[1] + '</small><span class="no-antigo">painel antigo</span></a>';
+      }).join("") + "</div>";
+    var b = '<div class="secao">Ajustes</div>' +
+      '<div class="cartao lista">' +
+        '<div class="linha"><div class="o"><b>Cor</b></div>' + pilulas("tema", [["", "Areia"], ["laranja", "Laranja"], ["noite", "Noite"]], tema) + "</div>" +
+        linhaAj(podeLigar ? 'data-aj="push"' : "", "Notificações", est, ajustes.pushMsg, podeLigar) +
+        (ajustes.push ? linhaAj('data-aj="teste"', "Mandar notificação de teste", "", "", false) : "") +
+        linhaAj(ajustes.feed ? 'data-aj="feed"' : "", "Agenda no Apple Calendar", ajustes.feed ? "assinar" : "", "") +
+        linhaAj('data-aj="passkey"', "Entrar com Face ID", ajustes.passkeys == null ? "" : ajustes.passkeys ? ajustes.passkeys + (ajustes.passkeys === 1 ? " aparelho" : " aparelhos") : "nenhum", "") +
+        linhaAj('data-aj="2fa"', "Verificação em duas etapas", ajustes.totp == null ? "" : ajustes.totp ? "ligada" : "desligada", "") +
+      "</div>" +
+      '<div class="cartao lista">' +
+        linhaAj('data-aj="atualizar"', "Atualizar os dados", "", "", false) +
+        linhaAj('data-aj="antigo"', "Abrir o painel antigo", "", "", true) +
+        '<div class="linha toca" data-aj="sair"><div class="o"><b class="perigo">Sair</b></div></div>' +
+      "</div>";
+    return colunas(a, b);
+  }
+  function ligarEstudio(raiz) {
+    var tp = raiz.querySelector('[data-pil="tema"]');
+    if (tp) {
+      ligaPilulas(raiz);
+      tp.addEventListener("click", function () {
+        var t = pil(raiz, "tema");
+        try { localStorage.setItem("maratu.painel.tema", t); } catch (e) {}
+        if (t) document.documentElement.setAttribute("data-theme", t); else document.documentElement.removeAttribute("data-theme");
+        corDaBarra();
+      });
+    }
+    raiz.querySelectorAll("[data-aj]").forEach(function (el) {
+      var k = el.dataset.aj;
+      if (k === "sair") { confirmaDuplo(el, "Toque de novo pra sair", sair); return; }
+      el.onclick = function () {
+        if (k === "push") { if (ajustes.push) desligarPush(); else ligarPush(); }
+        else if (k === "teste") api("/api/push/teste", { method: "POST", body: {} }).then(function () { aviso("Teste enviado"); }).catch(function () { aviso("Não enviou"); });
+        else if (k === "feed" && ajustes.feed) { var w = ajustes.feed.replace(/^https?:/, "webcal:"); copiar(ajustes.feed).catch(function () {}); location.href = w; }
+        else if (k === "passkey") location.href = "/passkey.html";
+        else if (k === "2fa") location.href = "/2fa.html";
+        else if (k === "atualizar") carregar().then(function () { render(true); aviso("Atualizado"); }).catch(function () { aviso("Sem conexão"); });
+        else if (k === "antigo") location.href = "/admin.html";
+      };
+    });
+  }
+  function sair() {
+    descarregar();
+    try { fetch(API + "/api/logout", { method: "POST", keepalive: true, credentials: "include" }); } catch (e) {}
+    try { localStorage.removeItem("maratu.token"); localStorage.removeItem(CACHE); } catch (e) {}
+    location.replace("/login.html?logout=1");
+  }
+
+  /* ---------- avisos do sistema: MEI, impressora, selos ---------- */
+  function avisosDoSistema() {
+    var out = [], h = hoje(), x = S.extras || {};
+    var mei = x.mei;
+    var dasAbertos = mei && mei.das_meses ? mei.das_meses.filter(function (m) { return !m.paid && m.dias_ate_vencimento <= 5; }).sort(function (a, b) { return a.vencimento < b.vencimento ? 1 : -1; }) : [];
+    var dasMostrar = dasAbertos.filter(function (m) { return !m.atrasado; }).concat(dasAbertos.filter(function (m) { return m.atrasado; }).slice(0, 1));
+    dasMostrar.forEach(function (m) {
+      var nome = MESES[m.month - 1];
+      out.push({
+        k: "das:" + m.year + "-" + m.month, tipo: "aviso", rot: "MEI", ordem: 1.5, data: m.vencimento < h ? m.vencimento : h,
+        titulo: "Pagar o DAS de " + nome, sub: m.atrasado ? "Venceu em " + dm(m.vencimento) : "Vence " + quandoRel(m.vencimento),
+        quando: m.atrasado ? quandoRel(m.vencimento) : "",
+        dir: { rot: "Paguei", fn: function () { dasPago(m); } },
+        esq: { rot: "Amanhã", fn: function () { adiarCartao("das:" + m.year + "-" + m.month); } },
+        abre: function () { location.href = "/admin.html"; }
+      });
+    });
+    if (mei && mei.dasn && !mei.dasn.done && mei.dasn.dias_ate_deadline <= 30) {
+      var dn = mei.dasn;
+      out.push({
+        k: "dasn:" + dn.year, tipo: "aviso", rot: "MEI", ordem: 1.5, data: dn.deadline < h ? dn.deadline : h,
+        titulo: "Declaração anual do MEI", sub: dn.atrasado ? "Venceu em " + dm(dn.deadline) : "Prazo " + dm(dn.deadline),
+        quando: dn.atrasado ? quandoRel(dn.deadline) : "",
+        dir: { rot: "Feita", fn: function () { dasnFeita(dn.year); } },
+        esq: { rot: "Amanhã", fn: function () { adiarCartao("dasn:" + dn.year); } },
+        abre: function () { location.href = "/admin.html"; }
+      });
+    }
+    var imp = x.imp;
+    if (imp && imp.conectada && imp.estado && idadeImp(imp) < 1800) {
+      var ruins = (imp.saude || []).filter(function (s) { return !s.ok; });
+      if (imp.estado.estado === "error" || (ruins.length && ["printing", "paused"].indexOf(imp.estado.estado) >= 0)) {
+        out.push({
+          k: "imp:" + (imp.estado.job || "x") + ":" + (imp.estado.estado || ""), tipo: "aviso", rot: "Impressora", ordem: 0.5, data: h,
+          titulo: imp.estado.estado === "error" ? "A impressora parou com erro" : "Impressão com problema",
+          sub: [nomeArquivo(imp.estado.arquivo)].concat(ruins.map(function (s) { return s.rot + " " + s.txt; })).join(", "),
+          quando: "agora",
+          dir: { rot: "Visto", fn: function () { adiarCartao("imp:" + (imp.estado.job || "x") + ":" + (imp.estado.estado || ""), somaDias(h, 30)); } },
+          esq: { rot: "Amanhã", fn: function () { adiarCartao("imp:" + (imp.estado.job || "x") + ":" + (imp.estado.estado || "")); } },
+          abre: function () { location.href = "/admin.html"; }
         });
-        c.querySelector("#mAtual").onclick = function () { fecharFolha(); carregar().then(function () { render(true); aviso("Atualizado"); }); };
-        confirmaDuplo(c.querySelector("#mSair"), "Toque de novo pra sair", function () {
-          descarregar();
-          try { fetch(API + "/api/logout", { method: "POST", keepalive: true, credentials: "include" }); } catch (e) {}
-          try { localStorage.removeItem("maratu.token"); localStorage.removeItem(CACHE); } catch (e) {}
-          location.replace("/login.html?logout=1");
-        });
+      }
+    }
+    var sel = x.selos;
+    var nSel = sel ? Number(sel.alertas) || 0 : 0;
+    if (nSel > 0) {
+      out.push({
+        k: "selos:" + nSel, tipo: "aviso", rot: "Selos", ordem: 3.5, data: h,
+        titulo: nSel + (nSel === 1 ? " selo com alerta" : " selos com alerta"), sub: "",
+        quando: "",
+        dir: { rot: "Visto", fn: function () { adiarCartao("selos:" + nSel, somaDias(h, 7)); } },
+        esq: { rot: "Amanhã", fn: function () { adiarCartao("selos:" + nSel); } },
+        abre: function () { location.href = "/admin.html"; }
+      });
+    }
+    return out;
+  }
+  function idadeImp(imp) { var t = Date.parse(imp.recebido); return isNaN(t) ? 1e9 : (Date.now() - t) / 1e3; }
+  function nomeArquivo(a) { return String(a || "").split("/").pop().replace(/\.gcode$/i, "").replace(/[_-]+/g, " ").trim() || "peça"; }
+  function dasPago(m) {
+    var antes = m.paid; conta("aviso");
+    executar("DAS de " + MESES[m.month - 1] + " pago", function () { m.paid = true; }, function () { m.paid = antes; },
+      function () {
+        var cfg = S.extras && S.extras.mei && S.extras.mei.config || {}, corpo = { year: m.year, month: m.month };
+        if (Number(cfg.das_valor_centavos) > 0) corpo.valor_centavos = Number(cfg.das_valor_centavos);
+        api("/api/mei/das/pay", { method: "POST", body: corpo }).then(guardaCache).catch(function (e) { m.paid = false; aviso(/HTTP 400/.test(String(e && e.message)) ? "Falta o valor do DAS no painel antigo" : "Não salvou. Confira a internet."); render(true); });
       });
   }
+  function dasnFeita(ano) {
+    var dn = S.extras.mei.dasn, antes = dn.done; conta("aviso");
+    executar("Declaração marcada como feita", function () { dn.done = true; }, function () { dn.done = antes; },
+      function () { api("/api/mei/dasn/done", { method: "POST", body: { year: ano } }).then(guardaCache).catch(function () { dn.done = antes; render(true); aviso("Não salvou. Confira a internet."); }); });
+  }
+  /* faixa da impressora no topo do Hoje, só enquanto imprime */
+  function faixaImpressora() {
+    var imp = S.extras && S.extras.imp;
+    if (!imp || !imp.conectada || !imp.estado || ["printing", "paused"].indexOf(imp.estado.estado) < 0) return "";
+    var idade = idadeImp(imp); if (idade > 1800) return "";
+    var an = imp.analise || {}, pct = Math.max(0, Math.min(100, Math.round((Number(an.progresso != null ? an.progresso : imp.estado.progresso) || 0) * 100)));
+    var termina = an.termina ? new Date(an.termina) : null, semSinal = idade > 180;
+    var txt = semSinal ? "sem sinal há " + Math.round(idade / 60) + " min" : imp.estado.estado === "paused" ? "pausada" : termina && !isNaN(termina) ? "termina " + pad2(termina.getHours()) + ":" + pad2(termina.getMinutes()) : "";
+    return '<a class="cartao faixa-imp" href="/admin.html"><span class="pulso' + (imp.estado.estado === "paused" || semSinal ? " parado" : "") + '"></span><div class="o"><b>' + esc(nomeArquivo(imp.estado.arquivo)) + "</b><small>" + pct + "%" + (txt ? ", " + txt : "") + '</small></div><div class="barra-meta"><i style="width:' + pct + '%"></i></div></a>';
+  }
+
   function corDaBarra() {
     var t = document.documentElement.getAttribute("data-theme") || "";
     document.querySelector('meta[name="theme-color"]').setAttribute("content", t === "laranja" ? "#C8501A" : t === "noite" ? "#0D0D0B" : "#E8E2D6");
@@ -1358,7 +1541,6 @@
   document.querySelectorAll(".barra [data-v], .lateral [data-v]").forEach(function (b) { b.addEventListener("click", function () { fecharFolha(); irPara(b.dataset.v); }); });
   $("ltLancar").addEventListener("click", function () { folhaLancar(null, vista === "agenda" ? diaSel : null); });
   $("btBuscaPc").addEventListener("click", abrirBusca);
-  $("ltMais").addEventListener("click", folhaMais);
   document.addEventListener("keydown", function (e) {
     if (e.key === "Escape" && buscaAberta) { e.preventDefault(); fecharBusca(); return; }
     if ((e.metaKey || e.ctrlKey) && (e.key || "").toLowerCase() === "k") { e.preventDefault(); if (buscaAberta) fecharBusca(); else if (!folhaAberta) abrirBusca(); return; }
@@ -1368,16 +1550,26 @@
     var k = (e.key || "").toLowerCase(); if (e.isComposing) return;
     if (k === "n") { e.preventDefault(); folhaLancar(null, vista === "agenda" ? diaSel : null); }
     else if (e.key === "/") { e.preventDefault(); abrirBusca(); }
-    else if (/^[1-4]$/.test(e.key)) irPara(ORDEM_VISTAS[Number(e.key) - 1]);
+    else if (/^[1-5]$/.test(e.key)) irPara(ORDEM_VISTAS[Number(e.key) - 1]);
     else if (vista === "agenda" && (e.key === "ArrowLeft" || e.key === "ArrowRight")) { diaSel = somaDias(diaSel, e.key === "ArrowLeft" ? -1 : 1); agendaMes = null; render(false, e.key === "ArrowLeft" ? "esq" : "dir"); }
   });
   $("btLancar").addEventListener("click", function () { if (folhaAberta && $("btLancar").getAttribute("aria-expanded") === "true") fecharFolha(); else folhaLancar(null, vista === "agenda" ? diaSel : null); });
   $("btBusca").addEventListener("click", abrirBusca);
-  $("btMais").addEventListener("click", folhaMais);
+  $("btMais").addEventListener("click", function () { fecharFolha(); irPara(vista === "estudio" ? "hoje" : "estudio"); });
 
   /* ---------- início ---------- */
   corDaBarra();
   if (!token()) { try { localStorage.removeItem(CACHE); } catch (e) {} return; }
+  function lerEndereco() {
+    var h = (location.hash || "").replace("#", ""), mapa = { caixa: "loja", loja: "loja", agenda: "agenda", marketing: "sites", sites: "sites", mei: "hoje", estudio: "estudio", hoje: "hoje" };
+    if (!h) return false;
+    if (!mapa[h]) { try { history.replaceState(null, "", location.pathname); } catch (e) {} return false; }
+    vista = mapa[h]; if (h === "caixa") lojaSeg = "caixa";
+    try { history.replaceState(null, "", location.pathname); } catch (e) {}
+    return true;
+  }
+  lerEndereco();
+  window.addEventListener("hashchange", function () { if (lerEndereco()) { fecharFolha(); render(false); } });
   var doCache = lerCache();
   if (doCache) render(true);
   carregar().then(function () { render(true); }).catch(function (e) {

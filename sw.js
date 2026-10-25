@@ -1,5 +1,5 @@
 /* MARATU Admin Service Worker — offline + instant open */
-const VERSION = 'maratu-admin-v38';
+const VERSION = 'maratu-admin-v39';
 const STATIC_CACHE = 'static-' + VERSION;
 const RUNTIME_CACHE = 'runtime-' + VERSION;
 
@@ -77,15 +77,17 @@ self.addEventListener('push', (event) => {
 
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
-  const destino = (event.notification.data && event.notification.data.path) || '/admin.html';
+  // o painel novo assume as notificações: /admin.html#caixa vira /painel.html#caixa
+  const destino = ((event.notification.data && event.notification.data.path) || '/painel.html').replace('/admin.html', '/painel.html');
   event.waitUntil(
     self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((abas) => {
-      for (const aba of abas) {
-        if (aba.url.includes('/admin.html') || aba.url.includes('/painel.html')) {
-          aba.focus();
-          try { aba.navigate(new URL(destino, self.location.origin).href); } catch (e) {}
-          return;
-        }
+      // usa uma aba do painel novo se houver; nunca sequestra uma aba do painel antigo no meio de uma edição
+      const alvo = new URL(destino, self.location.origin).href;
+      const aba = abas.find((a) => a.url.includes('/painel.html'));
+      if (aba) {
+        aba.focus();
+        if (aba.url !== alvo) { try { aba.navigate(alvo); } catch (e) {} }
+        return;
       }
       return self.clients.openWindow(destino);
     })

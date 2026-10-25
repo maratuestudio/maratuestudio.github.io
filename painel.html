@@ -64,6 +64,7 @@
   --atraso: #A3400F;
   --feito: #357550;
   --adiar: #0D0D0B;
+  --c-aviso: #B23A2E;
   --c-site: #C8501A; --c-lead: #2C69BA; --c-carne: #8B6207; --c-agenda: #6B4FA0; --c-loja: #0D0D0B; --c-nota: #7A6A55;
   --raio: 16px;
   --font: "Clother", "Helvetica Neue", Arial, sans-serif;
@@ -387,6 +388,29 @@ main { padding: calc(var(--seguro-topo) + var(--topo-h) + 8px) 12px calc(var(--s
 .topo-pc { display: none; }
 @media (max-width: 1023px) { .busca { max-height: 52dvh; } }
 
+/* Estúdio */
+#btMais[aria-pressed="true"] { background: var(--tinta); color: var(--cartao); }
+.atalhos { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.atalho { display: grid; gap: 3px; padding: 14px; text-decoration: none; color: var(--tinta); align-content: start; }
+.atalho svg { width: 24px; height: 24px; margin-bottom: 6px; }
+.atalho b { font-size: 16px; font-weight: 900; }
+.atalho small { font-size: 12.5px; color: var(--suave); line-height: 1.35; }
+.atalho .no-antigo { margin-top: 6px; justify-self: start; font-size: 10.5px; font-weight: 900; letter-spacing: .05em; text-transform: uppercase; color: var(--c-agenda); }
+@media (hover: hover) { .atalho:hover { box-shadow: 5px 5px 0 var(--sombra); transform: translate(-1px, -1px); } }
+.estado-aj { flex: none; font-size: 13.5px; font-weight: 900; color: var(--suave); }
+.linha .pilulas { flex: none; }
+.linha .pilulas button { min-height: 36px; padding: 0 12px; font-size: 13px; }
+.perigo { color: #B23A2E; }
+/* avisos do sistema e impressora */
+.t-aviso { background: var(--c-aviso); }
+.faixa-imp { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 12px; align-items: center; padding: 12px 14px; text-decoration: none; color: var(--tinta); }
+.faixa-imp .o b { display: block; font-size: 15px; font-weight: 900; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.faixa-imp .o small { font-size: 12.5px; color: var(--suave); font-variant-numeric: tabular-nums; }
+.faixa-imp .barra-meta { grid-column: 1 / -1; }
+.pulso { width: 12px; height: 12px; border-radius: 50%; background: var(--feito); animation: pulso 1.6s ease-in-out infinite; }
+.pulso.parado { background: var(--c-carne); animation: none; }
+@keyframes pulso { 50% { opacity: .35; transform: scale(.8); } }
+
 /* ===== computador ===== */
 .lateral { display: none; }
 .acoes-pc { display: none; }
@@ -486,7 +510,7 @@ main { padding: calc(var(--seguro-topo) + var(--topo-h) + 8px) 12px calc(var(--s
   
   <span class="sp"></span>
   <button class="ico-bt" id="btBusca" aria-label="Buscar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg></button>
-  <button class="ico-bt" id="btMais" aria-label="Mais"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  <button class="ico-bt" id="btMais" aria-label="Estúdio" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></button>
 </header>
 
 <aside class="lateral" aria-label="Menu">
@@ -499,7 +523,7 @@ main { padding: calc(var(--seguro-topo) + var(--topo-h) + 8px) 12px calc(var(--s
     <button class="item" data-v="agenda"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Agenda</button>
   </nav>
   <div class="pe">
-    <button class="item" id="ltMais"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>Mais</button>
+    <button class="item" data-v="estudio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Estúdio</button>
   </div>
 </aside>
 
@@ -529,7 +553,7 @@ main { padding: calc(var(--seguro-topo) + var(--topo-h) + 8px) 12px calc(var(--s
 
 <div class="aviso" id="aviso" role="status" aria-live="polite"><span id="avisoTxt"></span><button id="avisoBt" hidden>Desfazer</button></div>
 
-<script src="painel.js?v=20261025e"></script>
+<script src="painel.js?v=20261026a"></script>
 <script>if (navigator.serviceWorker) navigator.serviceWorker.register("/sw.js").catch(function () {});</script>
 </body>
 </html>

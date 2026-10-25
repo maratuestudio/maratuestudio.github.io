@@ -63,6 +63,9 @@
     lead: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>',
     carne: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h3"/></svg>',
     nota: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5"/></svg>',
+    envelope: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>',
+    copia: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>',
+    post: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M3 15l5-5 4 4 3-3 6 6"/></svg>',
     calc: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 12h2M12 12h2M16 12h0M8 16h2M12 16h2M16 16h0"/></svg>',
     selo: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3M21 14v.01M14 21h3M21 18v3"/></svg>',
     imp: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21h16M6 21V9h12v12M9 9V4h6v5M10 14h4"/></svg>',
@@ -114,7 +117,7 @@
     ]).then(function (r) {
       S.extras = { mei: r[4] && r[4].das_meses ? r[4] : null, imp: r[5] && r[5].conectada != null ? r[5] : null, selos: r[6] && r[6].por_status ? r[6] : null };
       var st = r[0] || {};
-      S.eventos = st.eventos || []; S.lancamentos = st.lancamentos || []; S.notas = st.notas || []; S.params = st.params || {}; S.orcamentos = st.orcamentos || [];
+      S.eventos = st.eventos || []; S.lancamentos = st.lancamentos || []; S.notas = st.notas || []; S.params = st.params || {}; S.orcamentos = st.orcamentos || []; S.marketing = st.marketing || [];
       if (r[1]) { S.prospec = r[1].prospec || []; S.uso = r[1].uso; S.teto = r[1].teto || 900; S.buscas = r[1].buscas || []; }
       if (r[2]) S.leads = r[2].leads || [];
       if (r[3]) S.pedidos = r[3].pedidos || [];
@@ -125,12 +128,12 @@
   /* cópia do último estado no aparelho: o painel abre na hora e atualiza por baixo */
   var CACHE = "maratu.painel.cache";
   function guardaCache() {
-    try { localStorage.setItem(CACHE, JSON.stringify({ v: 1, em: Date.now(), eventos: S.eventos, lancamentos: S.lancamentos, notas: S.notas, params: S.params, prospec: S.prospec, leads: S.leads, pedidos: S.pedidos, uso: S.uso, teto: S.teto, buscas: S.buscas, extras: S.extras ? { mei: S.extras.mei, selos: S.extras.selos } : null })); } catch (e) {}
+    try { localStorage.setItem(CACHE, JSON.stringify({ v: 1, em: Date.now(), eventos: S.eventos, lancamentos: S.lancamentos, notas: S.notas, params: S.params, prospec: S.prospec, leads: S.leads, pedidos: S.pedidos, marketing: S.marketing, uso: S.uso, teto: S.teto, buscas: S.buscas, extras: S.extras ? { mei: S.extras.mei, selos: S.extras.selos } : null })); } catch (e) {}
   }
   function lerCache() {
     var c = lerLS(CACHE, null);
     if (!c || c.v !== 1 || Date.now() - (c.em || 0) > 7 * 864e5) return false;
-    ["eventos", "lancamentos", "notas", "params", "prospec", "leads", "pedidos", "uso", "teto", "buscas", "extras"].forEach(function (k) { if (c[k] != null) S[k] = c[k]; });
+    ["eventos", "lancamentos", "notas", "params", "prospec", "leads", "pedidos", "uso", "teto", "buscas", "extras", "marketing"].forEach(function (k) { if (c[k] != null) S[k] = c[k]; });
     S.pronto = true;
     return true;
   }
@@ -361,6 +364,16 @@
         abre: function () { folhaPedido(p); }
       });
     });
+    (S.marketing || []).forEach(function (p) {
+      if (p.status !== "aprovado" || !p.data || p.data > h) return;
+      out.push({
+        k: "post:" + p.id, tipo: "post", rot: "Post", ordem: 2.8, data: p.data, hora: p.hora || "",
+        titulo: "Publicar: " + (p.titulo || "post"), sub: [p.formato, p.rede, p.hora].filter(Boolean).join(", "), quando: p.data < h ? quandoRel(p.data) : (p.hora || "hoje"),
+        dir: { rot: "Publiquei", fn: function () { postPublicado(p, true); } },
+        esq: { rot: "Amanhã", fn: function () { adiarCartao("post:" + p.id); } },
+        abre: function () { folhaPost(p); }
+      });
+    });
     out = out.concat(avisosDoSistema()).filter(function (i) { return !adiado(i.k); });
     out.forEach(function (i) { i.atraso = i.data < h; });
     out.sort(function (a, b) {
@@ -513,11 +526,11 @@
 
   function telaHoje() {
     var itens = itensHoje(), h = hoje();
-    var cont = { site: 0, lead: 0, carne: 0, agenda: 0, loja: 0, nota: 0 };
+    var cont = { site: 0, lead: 0, carne: 0, agenda: 0, loja: 0, nota: 0, post: 0, aviso: 0 };
     itens.forEach(function (i) { cont[i.tipo]++; });
     if (filtro !== "tudo" && !cont[filtro]) filtro = "tudo";
     var vis = filtro === "tudo" ? itens : itens.filter(function (i) { return i.tipo === filtro; });
-    var NOMES = [["site", "Sites"], ["lead", "Leads"], ["carne", "Carnê"], ["agenda", "Agenda"], ["loja", "Pedidos"], ["nota", "Lembretes"]];
+    var NOMES = [["site", "Sites"], ["lead", "Leads"], ["carne", "Carnê"], ["agenda", "Agenda"], ["loja", "Pedidos"], ["post", "Posts"], ["nota", "Lembretes"], ["aviso", "Avisos"]];
     var hora = new Date().getHours(), oi = hora < 12 ? "Bom dia" : hora < 18 ? "Boa tarde" : "Boa noite";
     var f = feitosHoje(), total = f.n + itens.length;
     var prog = total && f.n ? '<div class="progresso-dia"><div class="barra-meta"><i style="width:' + (f.n / total * 100).toFixed(1) + '%"></i></div><span>' + f.n + " de " + total + (total === 1 ? " feito" : " feitos") + "</span></div>" : "";
@@ -1330,7 +1343,7 @@
   }
 
   /* --- lançar --- */
-  var TIPOS_LANCAR = [["entrada", "Entrada", IC.entrada], ["evento", "Evento", IC.evento], ["lead", "Lead", IC.lead], ["carne", "Carnê", IC.carne], ["nota", "Lembrete", IC.nota], ["orcamento", "Orçamento", IC.calc], ["selos", "Selos", IC.selo]];
+  var TIPOS_LANCAR = [["entrada", "Entrada", IC.entrada], ["evento", "Evento", IC.evento], ["lead", "Lead", IC.lead], ["carne", "Carnê", IC.carne], ["nota", "Lembrete", IC.nota], ["orcamento", "Orçamento", IC.calc], ["post", "Post", IC.post], ["selos", "Selos", IC.selo]];
   function folhaLancar(tipo, dia, hora) {
     tipo = tipo || lerLS("maratu.painel.lancar", "entrada");
     if (tipo === "selos") tipo = "entrada";
@@ -1353,6 +1366,7 @@
             '<div class="duas">' + campo("1ª parcela", '<input id="cD1" type="date" value="' + somaDias(hoje(), 30) + '">') + campo("A cada (dias)", '<input id="cInt" type="number" inputmode="numeric" min="1" value="30">') + "</div>" +
             '<p class="sub" id="cPrev" style="margin:0;font-size:14px;font-weight:700;"></p><div class="fixo"><button class="bt acento cheio" id="xOk">Criar carnê</button></div>';
           else if (t === "orcamento") f.innerHTML = formOrcamento();
+          else if (t === "post") f.innerHTML = formPost(null) + '<div class="fixo"><button class="bt acento cheio" id="xOk">Criar post</button></div>';
           else f.innerHTML = campo("O quê", '<input id="nTit" autocomplete="off">') + campo("Detalhe", '<textarea id="nDet"></textarea>') + '<div class="duas">' + campo("Dia", '<input id="nData" type="date" value="' + hoje() + '">') + campo("Hora", '<input id="nHora" type="time">') + "</div>" + '<div class="fixo"><button class="bt acento cheio" id="xOk">Criar lembrete</button></div>';
           ligaPilulas(f);
           if (t === "evento") ligaQuando(f);
@@ -1383,6 +1397,11 @@
       var e = Object.assign({ id: uid("e"), feito: false }, m);
       S.eventos.push(e); fecharFolha(); diaSel = e.data; render(true); aviso("Evento criado em " + dm(e.data));
       gravarTabela("eventos", function (a) { return a.concat([e]); });
+    } else if (t === "post") {
+      var mp = lerPost(f, null); if (!mp.titulo) return q("#poTit").focus();
+      var po = Object.assign({ id: uid("p"), criado: new Date().toISOString() }, mp);
+      S.marketing = [po].concat(S.marketing || []); fecharFolha(); render(true); aviso(po.data ? "Post programado pra " + dm(po.data) : "Ideia guardada");
+      gravarTabela("marketing", function (a) { return [po].concat(a); });
     } else if (t === "lead") {
       var ml = lerLead(f); if (!ml.nome) return q("#lNome").focus();
       if (ml.status === "fechado") ml.followup = hoje();
@@ -2103,6 +2122,97 @@
     raiz.querySelectorAll("[data-relatorio]").forEach(function (b) { b.onclick = folhaRelatorio; });
   }
 
+  /* ---------- Divulgação: conteúdo, newsletter e links da bio ---------- */
+  var ETAPAS_POST = [["ideia", "Ideias"], ["aprovado", "Programados"], ["publicado", "Publicados"]];
+  var FORMATOS_POST = ["Reels", "Carrossel", "Story", "Post", "Vídeo"], REDES_POST = ["Instagram", "TikTok", "YouTube", "Todas"];
+  /* os destinos moram no Worker (GO_DEST); aqui só o nome de cada um */
+  var LINKS_BIO = [["loja", "Loja"], ["servicos", "Serviços"], ["wpp", "WhatsApp, encomenda"], ["contato", "WhatsApp, contato"], ["news", "Newsletter"], ["agenda", "Agenda"], ["parceiros", "Parceiros"], ["ig", "Instagram"], ["tiktok", "TikTok"]];
+  var DIV = { etapa: "ideia", links: null, news: null };
+  function posts() { return S.marketing || []; }
+  function telaDivulgacao() {
+    var lista = posts(), h = hoje(), cont = {};
+    lista.forEach(function (p) { cont[p.status || "ideia"] = (cont[p.status || "ideia"] || 0) + 1; });
+    var prox = lista.filter(function (p) { return p.status === "aprovado" && p.data; }).sort(function (a, b) { return (a.data + (a.hora || "")) < (b.data + (b.hora || "")) ? -1 : 1; });
+    var vis = lista.filter(function (p) { return (p.status || "ideia") === DIV.etapa; }).sort(function (a, b) { return DIV.etapa === "ideia" ? (String(b.criado) < String(a.criado) ? -1 : 1) : (String(a.data || "9") < String(b.data || "9") ? (DIV.etapa === "publicado" ? 1 : -1) : (DIV.etapa === "publicado" ? -1 : 1)); });
+    var linhaPost = function (p) {
+      var atras = p.status === "aprovado" && p.data && p.data < h;
+      return '<div class="linha toca" data-post="' + esc(p.id) + '"><div class="o"><b>' + esc(p.titulo || "Sem título") + "</b><small" + (atras ? ' style="color:var(--atraso);font-weight:900"' : "") + ">" + esc([p.formato, p.rede, p.data ? (atras ? "era pra " : "") + quandoRel(p.data) + (p.hora ? " " + p.hora : "") : ""].filter(Boolean).join(", ")) + "</small></div>" + IC.seta + "</div>";
+    };
+    var a = '<div class="nav-dia">' + voltaEstudio() + '</div><div class="cab"><h1>Divulgação</h1></div>' +
+      '<div class="nums">' + ETAPAS_POST.map(function (e) { return '<div class="num"><b>' + (cont[e[0]] || 0) + "</b><span>" + e[1].toLowerCase() + "</span></div>"; }).join("") + "</div>" +
+      '<button class="bt acento cheio" data-novopost>' + IC.mais + "Nova ideia de post</button>" +
+      (prox.length ? '<div class="secao">Próximos a publicar</div><div class="cartao lista">' + prox.slice(0, 5).map(linhaPost).join("") + "</div>" : "") +
+      '<div class="seg" role="group">' + ETAPAS_POST.map(function (e) { return '<button data-etapa="' + e[0] + '" aria-pressed="' + (DIV.etapa === e[0]) + '">' + e[1] + "</button>"; }).join("") + "</div>" +
+      (vis.length ? '<div class="cartao lista">' + vis.map(linhaPost).join("") + "</div>" : '<p class="vazio">Nada aqui.</p>');
+    if (!DIV.links) { DIV.links = "carregando"; api("/api/links/stats").then(function (d) { DIV.links = d.stats || []; }).catch(function () { DIV.links = []; }).then(function () { if (estudioSub === "divulgacao") render(true); }); }
+    if (!DIV.news) { DIV.news = "carregando"; api("/api/newsletter/lista").then(function (d) { DIV.news = d; }).catch(function () { DIV.news = {}; }).then(function () { if (estudioSub === "divulgacao") render(true); }); }
+    var porSlug = {};
+    if (Array.isArray(DIV.links)) DIV.links.forEach(function (s) { var k = String(s.slug || ""); (porSlug[k] = porSlug[k] || { n: 0, origens: [] }); porSlug[k].n += Number(s.n) || 0; porSlug[k].origens.push([s.origem || "sem origem", Number(s.n) || 0]); });
+    var ativos = DIV.news && typeof DIV.news === "object" && DIV.news.ativos != null ? DIV.news.ativos : null;
+    var b = '<div class="secao">Newsletter</div><div class="cartao lista"><div class="linha toca" data-news><div class="o"><b>Escrever e enviar</b><small>' + (ativos == null ? "" : ativos + (ativos === 1 ? " contato ativo" : " contatos ativos")) + "</small></div>" + IC.seta + "</div></div>" +
+      '<div class="secao">Links da bio</div>' +
+      (DIV.links === "carregando" ? '<div class="esqueleto"></div>' : '<div class="cartao lista">' + LINKS_BIO.map(function (l) {
+        var s = porSlug[l[0]] || { n: 0, origens: [] };
+        var ori = s.origens.sort(function (x, y) { return y[1] - x[1]; }).slice(0, 3).map(function (o) { return o[0] + " " + o[1]; }).join(", ");
+        return '<div class="linha"><div class="o"><b>' + esc(l[1]) + "</b><small>maratu.com.br/go/" + esc(l[0]) + (ori ? ", " + esc(ori) : "") + '</small></div><span class="valor">' + s.n + '</span><button class="ico-bt copia-link" data-golink="' + esc(l[0]) + '" aria-label="Copiar o link">' + IC.copia + "</button></div>";
+      }).join("") + "</div>");
+    return colunas(a, b);
+  }
+  function ligarDivulgacao(raiz) {
+    raiz.querySelectorAll("[data-etapa]").forEach(function (b) { b.onclick = function () { DIV.etapa = b.dataset.etapa; render(true); }; });
+    raiz.querySelectorAll("[data-post]").forEach(function (b) { b.onclick = function () { var p = porId(posts(), b.dataset.post); if (p) folhaPost(p); }; });
+    raiz.querySelectorAll("[data-novopost]").forEach(function (b) { b.onclick = function () { folhaLancar("post"); }; });
+    raiz.querySelectorAll("[data-news]").forEach(function (b) { b.onclick = abrirNews; });
+    raiz.querySelectorAll("[data-golink]").forEach(function (b) { b.onclick = function () { var u = "https://maratu.com.br/go/" + b.dataset.golink + "?s=bio"; copiar(u).then(function () { aviso("Link copiado"); }).catch(function () { aviso(u); }); }; });
+  }
+  function formPost(p) {
+    p = p || {};
+    return campo("Título", '<input id="poTit" value="' + esc(p.titulo || "") + '" autocomplete="off">') +
+      campo("Ideia", '<textarea id="poIdeia">' + esc(p.ideia || "") + "</textarea>") +
+      '<div class="rot">Formato</div>' + pilulas("pform", FORMATOS_POST.map(function (f) { return [f, f]; }), p.formato || "Reels") +
+      '<div class="rot">Rede</div>' + pilulas("prede", REDES_POST.map(function (f) { return [f, f]; }), p.rede || "Instagram") +
+      '<div class="duas">' + campo("Dia de publicar", '<input id="poData" type="date" value="' + esc(p.data || "") + '">') + campo("Hora", '<input id="poHora" type="time" value="' + esc(p.hora || "") + '">') + "</div>" +
+      (p.id ? '<div class="rot">Etapa</div>' + pilulas("petapa", ETAPAS_POST.map(function (e) { return [e[0], e[1].replace(/s$/, "")]; }), p.status || "ideia") : "");
+  }
+  function lerPost(c, p) {
+    var data = c.querySelector("#poData").value || null, st = c.querySelector('[data-pil="petapa"]') ? pil(c, "petapa") : null;
+    if (!st) st = data ? "aprovado" : "ideia";
+    if (st === "ideia" && data && p && p.status === "ideia") st = "aprovado";
+    return { titulo: c.querySelector("#poTit").value.trim(), ideia: c.querySelector("#poIdeia").value.trim() || null, formato: pil(c, "pform"), rede: pil(c, "prede"), data: data, hora: c.querySelector("#poHora").value || null, status: st };
+  }
+  function folhaPost(p) {
+    abrirFolha(p.titulo || "Post", formPost(p) + '<button class="bt cheio perigo" id="poApaga">Apagar</button><div class="fixo grade-bts"><button class="bt acento" id="poSalva">Salvar</button><button class="bt' + (p.status === "publicado" ? "" : " verde") + '" id="poPub">' + (p.status === "publicado" ? "Voltar pra programado" : IC.check + "Publiquei") + "</button></div>",
+      function (c) {
+        ligaPilulas(c);
+        c.querySelector("#poSalva").onclick = function () {
+          var m = lerPost(c, p); if (!m.titulo) return c.querySelector("#poTit").focus();
+          descarregar(); Object.assign(p, m); fecharFolha(); render(true); aviso("Salvo");
+          gravarTabela("marketing", function (a) { return trocaItem(a, p.id, m); });
+        };
+        c.querySelector("#poPub").onclick = function () { fecharFolha(); postPublicado(p, p.status !== "publicado"); };
+        confirmaDuplo(c.querySelector("#poApaga"), "Toque de novo pra apagar", function () {
+          fecharFolha(); var antes = (S.marketing || []).slice();
+          executar("Apagado", function () { S.marketing = S.marketing.filter(function (x) { return x.id !== p.id; }); }, function () { S.marketing = antes; },
+            function () { gravarTabela("marketing", function (a) { return a.filter(function (x) { return x.id !== p.id; }); }); });
+        });
+      });
+  }
+  function postPublicado(p, sim) {
+    var antes = p.status, depois = sim ? "publicado" : "aprovado";
+    if (sim) conta("post");
+    executar(sim ? "Publicado" : "Voltou pra programado", function () { p.status = depois; }, function () { p.status = antes; },
+      function () { gravarTabela("marketing", function (a) { return trocaItem(a, p.id, { status: depois }); }); });
+  }
+  var newsCarregando = null;
+  function abrirNews() {
+    if (window.maratuNews) { window.maratuNews.abrir(); return; }
+    if (newsCarregando) return;
+    newsCarregando = new Promise(function (ok, falha) { var s = document.createElement("script"); s.src = "/admin-news.js?v=20261030a"; s.onload = ok; s.onerror = falha; document.body.appendChild(s); })
+      .then(function () { if (window.maratuNews) window.maratuNews.abrir(); else aviso("A newsletter não abriu"); })
+      .catch(function () { aviso("A newsletter não abriu. Confira a internet."); })
+      .then(function () { newsCarregando = null; });
+  }
+
   /* --- busca: caixa no topo da tela, acha registro e roda comando --- */
   var buscaAberta = false, buscaSel = 0, buscaLista = [];
   function norm(s) { return semAcento(s).toLowerCase(); }
@@ -2117,6 +2227,9 @@
     ["Oficina", "Ler selo", function () { abrirSelos("vincular"); }, IC.selo],
     ["Oficina", "Impressora", function () { folhaImpressora(); }, IC.imp],
     ["Oficina", "Custos", function () { folhaCustos(); }, IC.calc],
+    ["Estúdio", "Divulgação", function () { DIV.links = null; DIV.news = null; estudioSub = "divulgacao"; if (vista === "estudio") render(true); else irPara("estudio"); }, IC.post],
+    ["Estúdio", "Newsletter", function () { abrirNews(); }, IC.envelope],
+    ["Lançar", "Post", function () { folhaLancar("post"); }, IC.post],
     ["Estúdio", "Números", function () { estudioSub = "numeros"; if (vista === "estudio") render(true); else irPara("estudio"); }, IC.dir],
     ["Estúdio", "Empresa e MEI", function () { estudioSub = "empresa"; if (vista === "estudio") render(true); else irPara("estudio"); }, IC.dir],
     ["Estúdio", "Relatório da semana", function () { folhaRelatorio(); }, IC.nota],
@@ -2158,6 +2271,7 @@
       (S.pedidosTodos || S.pedidos).forEach(function (p) { var nomes = (p.itens || []).map(function (i) { return i.nome; }).join(", "); if (tem(p.codigo, nomes)) achados.push({ tipo: "loja", rot: "Pedido", tit: p.codigo, sub: nomes, fn: function () { folhaPedido(p); } }); });
       (PROD.lista || []).forEach(function (pr) { if (tem(pr.nome, pr.subtitulo, pr.id)) achados.push({ tipo: "loja", rot: "Peça", tit: pr.nome, sub: nomeFaixa(pr.subcategoria) + ", " + brl(num(pr.preco)), fn: function () { folhaProduto(pr); } }); });
       S.lancamentos.forEach(function (l) { if (tem(l.label)) achados.push({ tipo: "feito", rot: "Entrada", tit: tituloEntrada(l), sub: dm(l.data) + ", " + brl(num(l.valor)), fn: function () { folhaEntrada(l); } }); });
+      (S.marketing || []).forEach(function (p) { if (tem(p.titulo, p.ideia)) achados.push({ tipo: "post", rot: "Post", tit: p.titulo, sub: [p.formato, p.data ? dm(p.data) : ""].filter(Boolean).join(", "), fn: function () { folhaPost(p); } }); });
       S.notas.forEach(function (n) { if (tem(n.titulo, n.detalhe)) achados.push({ tipo: "nota", rot: "Lembrete", tit: n.titulo, sub: n.data ? dm(n.data) : "", fn: function () { folhaNota(n); } }); });
       var porTipo = {};
       grupo("Resultados", achados.filter(function (a) { porTipo[a.rot] = (porTipo[a.rot] || 0) + 1; return porTipo[a.rot] <= 6; }).slice(0, 30));
@@ -2241,7 +2355,7 @@
   }
   var ATALHOS = [
     ["Números", "Site, Instagram e relatório", "numeros", '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>'],
-    ["Divulgação", "Conteúdo e newsletter", "/admin.html", '<path d="M3 11l18-7v16L3 13z"/><path d="M7 13v5a2 2 0 0 0 4 0v-4"/>'],
+    ["Divulgação", "Conteúdo, newsletter e links", "divulgacao", '<path d="M3 11l18-7v16L3 13z"/><path d="M7 13v5a2 2 0 0 0 4 0v-4"/>'],
     ["Empresa", "MEI, DAS e limite do ano", "empresa", '<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>'],
     ["Selos", "Gerar, ler e vincular", "selos", ""],
     ["Impressora", "Estado e últimas impressões", "impressora", ""],
@@ -2250,6 +2364,7 @@
   function telaEstudio() {
     if (estudioSub === "empresa") return telaEmpresa();
     if (estudioSub === "numeros") return telaNumeros();
+    if (estudioSub === "divulgacao") return telaDivulgacao();
     if (!ajustes.carregado) carregarAjustes();
     var tema = ""; try { tema = localStorage.getItem("maratu.painel.tema") || ""; } catch (e) {}
     var est = estadoPush(), podeLigar = est === "ligadas" || est === "desligadas";
@@ -2288,10 +2403,11 @@
         corDaBarra();
       });
     }
-    raiz.querySelectorAll("[data-atalho]").forEach(function (el) { el.onclick = function () { var k = el.dataset.atalho; if (k === "selos") abrirSelos(); else if (k === "impressora") folhaImpressora(); else if (k === "numeros" || k === "empresa") { estudioSub = k; window.scrollTo(0, 0); render(false, "dir"); } else folhaCustos(); }; });
+    raiz.querySelectorAll("[data-atalho]").forEach(function (el) { el.onclick = function () { var k = el.dataset.atalho; if (k === "selos") abrirSelos(); else if (k === "impressora") folhaImpressora(); else if (k === "numeros" || k === "empresa" || k === "divulgacao") { if (k === "divulgacao") { DIV.links = null; DIV.news = null; } estudioSub = k; window.scrollTo(0, 0); render(false, "dir"); } else folhaCustos(); }; });
     raiz.querySelectorAll("[data-estsub]").forEach(function (el) { el.onclick = function () { estudioSub = el.dataset.estsub; window.scrollTo(0, 0); render(false, "esq"); }; });
     if (estudioSub === "empresa") ligarEmpresa(raiz);
     if (estudioSub === "numeros") ligarNumeros(raiz);
+    if (estudioSub === "divulgacao") ligarDivulgacao(raiz);
     raiz.querySelectorAll("[data-aj]").forEach(function (el) {
       var k = el.dataset.aj;
       if (k === "sair") { confirmaDuplo(el, "Toque de novo pra sair", sair); return; }

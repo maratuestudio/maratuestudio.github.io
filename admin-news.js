@@ -137,6 +137,8 @@
     back.classList.add("on");
     carregar();
   }
+  /* o painel novo (/painel.html) carrega este mesmo arquivo e abre por aqui */
+  window.maratuNews = { abrir: openNews };
 
   /* ---- dados ---- */
   function carregar() {
@@ -299,6 +301,7 @@
   /* boot */
   /* o #mkConteudo so nasce quando o admin-mkt monta o layout; tenta ate achar */
   function boot() {
+    if (!document.getElementById("panel-marketing")) return; // no painel novo não há aba Marketing
     addMarketingBtn();
     if (vigiarConteudo()) return;
     var t = 0, iv = setInterval(function () {

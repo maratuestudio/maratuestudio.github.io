@@ -98,8 +98,6 @@ button { cursor: pointer; }
 }
 .topo.escondido { transform: translateY(-110%); }
 .marca { font-family: "Jack", var(--font); font-size: 26px; line-height: 1; color: var(--tinta-sobre-tela); letter-spacing: .01em; }
-.topo .aratu { width: 34px; height: 17px; flex: none; }
-.topo .aratu path { fill: var(--tinta-sobre-tela); }
 .topo .sp { flex: 1; }
 .ico-bt {
   width: 44px; height: 44px; display: grid; place-items: center; flex: none;
@@ -359,7 +357,6 @@ main { padding: calc(var(--seguro-topo) + var(--topo-h) + 8px) 12px calc(var(--s
   }
   :root[data-theme="noite"] .lateral { border-right-color: var(--linha); }
   .lateral .marca-l { display: flex; align-items: center; gap: 10px; padding: 0 8px 22px; }
-  .lateral .marca-l .aratu { width: 32px; height: 16px; } .lateral .marca-l .aratu path { fill: var(--tinta-sobre-tela); }
   .lateral .lancar-l { min-height: 52px; font-size: 16px; margin-bottom: 14px; justify-content: flex-start; padding: 0 18px; }
   .lateral .lancar-l svg { width: 20px; height: 20px; }
   .lateral nav { display: grid; gap: 4px; }
@@ -414,14 +411,14 @@ main { padding: calc(var(--seguro-topo) + var(--topo-h) + 8px) 12px calc(var(--s
 <body>
 <header class="topo" id="topo">
   <span class="marca">maratu</span>
-  <svg class="aratu" viewBox="0 0 318.24 152.9" aria-hidden="true"><path d="M0,104.77c0,26.58,21.55,48.13,48.13,48.13V56.65C21.55,56.65,0,78.19,0,104.77Z"/><path d="M270.11,56.65v96.26c26.58,0,48.13-21.550,48.13-48.13s-21.55-48.13-48.13-48.13Z"/><path d="M159.12,152.9c53.16,0,96.26-43.1,96.26-96.26H62.86c0,53.16,43.1,96.26,96.26,96.26Z"/></svg>
+  
   <span class="sp"></span>
   <button class="ico-bt" id="btBusca" aria-label="Buscar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg></button>
   <button class="ico-bt" id="btMais" aria-label="Mais"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
 </header>
 
 <aside class="lateral" aria-label="Menu">
-  <div class="marca-l"><span class="marca">maratu</span><svg class="aratu" viewBox="0 0 318.24 152.9" aria-hidden="true"><path d="M0,104.77c0,26.58,21.55,48.13,48.13,48.13V56.65C21.55,56.65,0,78.19,0,104.77Z"/><path d="M270.11,56.65v96.26c26.58,0,48.13-21.55,48.13-48.13s-21.55-48.13-48.13-48.13Z"/><path d="M159.12,152.9c53.16,0,96.26-43.1,96.26-96.26H62.86c0,53.16,43.1,96.26,96.26,96.26Z"/></svg></div>
+  <div class="marca-l"><span class="marca">maratu</span></div>
   <button class="bt acento lancar-l" id="ltLancar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Lançar<kbd>N</kbd></button>
   <nav>
     <button class="item" data-v="hoje"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Hoje<span class="cont"></span></button>

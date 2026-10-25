@@ -70,6 +70,8 @@
     selo: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3M21 14v.01M14 21h3M21 18v3"/></svg>',
     imp: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21h16M6 21V9h12v12M9 9V4h6v5M10 14h4"/></svg>',
     site: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 8h18"/></svg>',
+    x: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+    engrenagem: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M2 12h3M19 12h3M4.9 19.1L7 17M17 7l2.1-2.1"/></svg>',
     fora: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6M20 4l-9 9M18 14v6H4V6h6"/></svg>'
   };
 
@@ -103,7 +105,7 @@
       return orig.call(this, entrada, init);
     };
   })();
-  var S = { eventos: [], lancamentos: [], notas: [], params: {}, prospec: [], leads: [], pedidos: [], pedidosTodos: null, uso: null, teto: 900, buscas: [], pronto: false, carregadoEm: 0 };
+  var S = { eventos: [], lancamentos: [], notas: [], params: {}, prospec: [], leads: [], clientes: [], pedidos: [], pedidosTodos: null, uso: null, teto: 900, buscas: [], pronto: false, carregadoEm: 0 };
 
   function carregar() {
     return Promise.all([
@@ -114,8 +116,10 @@
       api("/api/mei/dashboard").catch(function () { return null; }),
       api("/api/impressora").catch(function () { return null; }),
       api("/api/selos/resumo").catch(function () { return null; }),
-      api("/api/eventos/publicos").catch(function () { return null; })
+      api("/api/eventos/publicos").catch(function () { return null; }),
+      api("/api/clientes").catch(function () { return null; })
     ]).then(function (r) {
+      if (r[8] && Array.isArray(r[8].clientes)) S.clientes = r[8].clientes;
       if (r[7] && Array.isArray(r[7].ids)) S.publicos = r[7].ids;
       S.extras = { mei: r[4] && r[4].das_meses ? r[4] : null, imp: r[5] && r[5].conectada != null ? r[5] : null, selos: r[6] && r[6].por_status ? r[6] : null };
       var st = r[0] || {};
@@ -130,12 +134,12 @@
   /* cópia do último estado no aparelho: o painel abre na hora e atualiza por baixo */
   var CACHE = "maratu.painel.cache";
   function guardaCache() {
-    try { localStorage.setItem(CACHE, JSON.stringify({ v: 1, em: Date.now(), eventos: S.eventos, lancamentos: S.lancamentos, notas: S.notas, params: S.params, prospec: S.prospec, leads: S.leads, pedidos: S.pedidos, marketing: S.marketing, publicos: S.publicos, uso: S.uso, teto: S.teto, buscas: S.buscas, extras: S.extras ? { mei: S.extras.mei, selos: S.extras.selos } : null })); } catch (e) {}
+    try { localStorage.setItem(CACHE, JSON.stringify({ v: 1, em: Date.now(), eventos: S.eventos, lancamentos: S.lancamentos, notas: S.notas, params: S.params, prospec: S.prospec, leads: S.leads, clientes: S.clientes, pedidos: S.pedidos, marketing: S.marketing, publicos: S.publicos, uso: S.uso, teto: S.teto, buscas: S.buscas, extras: S.extras ? { mei: S.extras.mei, selos: S.extras.selos } : null })); } catch (e) {}
   }
   function lerCache() {
     var c = lerLS(CACHE, null);
     if (!c || c.v !== 1 || Date.now() - (c.em || 0) > 7 * 864e5) return false;
-    ["eventos", "lancamentos", "notas", "params", "prospec", "leads", "pedidos", "uso", "teto", "buscas", "extras", "marketing", "publicos"].forEach(function (k) { if (c[k] != null) S[k] = c[k]; });
+    ["eventos", "lancamentos", "notas", "params", "prospec", "leads", "clientes", "pedidos", "uso", "teto", "buscas", "extras", "marketing", "publicos"].forEach(function (k) { if (c[k] != null) S[k] = c[k]; });
     S.pronto = true;
     return true;
   }
@@ -145,6 +149,7 @@
   function gravarTabela(nome, transforma) {
     gravando = gravando.then(function () {
       var ler = nome === "leads" ? api("/api/leads").then(function (d) { return d.leads || []; })
+        : nome === "clientes" ? api("/api/clientes").then(function (d) { return d.clientes || []; })
         : api("/api/state").then(function (d) { return d[nome] || []; });
       return ler.then(function (atual) {
         var novo = transforma(atual.slice());
@@ -376,7 +381,7 @@
         abre: function () { folhaPost(p); }
       });
     });
-    out = out.concat(avisosDoSistema()).filter(function (i) { return !adiado(i.k); });
+    out = out.concat(avisosDoSistema(), itensClientes()).filter(function (i) { return !adiado(i.k); });
     out.forEach(function (i) { i.atraso = i.data < h; });
     out.sort(function (a, b) {
       if (a.atraso !== b.atraso) return a.atraso ? -1 : 1;
@@ -456,18 +461,18 @@
   var pcMQ = window.matchMedia("(min-width: 1024px)");
   function pc() { return pcMQ.matches; }
   (pcMQ.addEventListener ? pcMQ.addEventListener.bind(pcMQ, "change") : pcMQ.addListener.bind(pcMQ))(function () { fecharFolha(); render(true); });
-  var vista = lerLS("maratu.painel.vista", "hoje"), filtro = "tudo", lojaSeg = "caixa", lojaMesDesloc = 0, diaSel = hoje(), verAtendidos = false;
-  var ORDEM_VISTAS = ["hoje", "sites", "loja", "agenda", "estudio"];
+  var vista = lerLS("maratu.painel.vista", "hoje"), filtro = "tudo", lojaMesDesloc = 0, diaSel = hoje(), verAtendidos = false;
+  var ORDEM_VISTAS = ["hoje", "sites", "financas", "agenda", "oficina", "divulgacao", "ajustes"], NA_BARRA = ["hoje", "sites", "financas", "agenda"];
+  if (vista === "loja") vista = "financas";
   if (ORDEM_VISTAS.indexOf(vista) < 0) vista = "hoje";
 
   function render(semAnim, direcao) {
     if (!S.pronto) return;
     var wk = document.querySelector(".wk-corpo"), wkTop = wk ? wk.scrollTop : null;
-    var html = vista === "sites" ? telaSites() : vista === "loja" ? telaLoja() : vista === "agenda" ? telaAgenda() : vista === "estudio" ? telaEstudio() : telaHoje();
+    var html = vista === "sites" ? telaSites() : vista === "financas" ? telaFinancas() : vista === "agenda" ? telaAgenda() : vista === "oficina" ? telaOficina() : vista === "divulgacao" ? telaDivulgacaoArea() : vista === "ajustes" ? telaAjustes() : telaHoje();
     var main = $("tela");
     main.innerHTML = '<div class="vista' + (semAnim ? "" : direcao === "esq" ? " entra-esq" : " entra-dir") + '">' + html + "</div>";
-    ligar(main);
-    if (vista === "estudio") ligarEstudio(main);
+    ligar(main); ligarArea(main);
     var wk2 = main.querySelector(".wk-corpo");
     if (wk2) wk2.scrollTop = wkTop != null ? wkTop : Math.max(0, (new Date().getHours() - HORA_INI - 1) * SLOT);
     dicaArrastar(main);
@@ -475,7 +480,7 @@
     document.querySelectorAll('[data-v="hoje"]').forEach(function (b) { b.setAttribute("data-n", String(n)); });
     var cont = document.querySelector('.lateral [data-v="hoje"] .cont'); if (cont) cont.textContent = n;
     document.querySelectorAll(".barra [data-v], .lateral [data-v]").forEach(function (b) { if (b.dataset.v === vista) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current"); });
-    $("btMais").setAttribute("aria-pressed", String(vista === "estudio"));
+    $("btMais").setAttribute("aria-pressed", String(NA_BARRA.indexOf(vista) < 0));
   }
   /* mostra que o cartão anda pro lado, sem texto: só até a pessoa arrastar uma vez */
   var dicaNestaSessao = false;
@@ -490,8 +495,6 @@
     }, 1200);
   }
   function irPara(v) {
-    if (v === "estudio" && vista === "estudio" && estudioSub) { estudioSub = ""; window.scrollTo(0, 0); render(false, "esq"); return; }
-    if (v !== "estudio") estudioSub = "";
     if (v === vista) { window.scrollTo({ top: 0, behavior: "smooth" }); return; }
     var dir = ORDEM_VISTAS.indexOf(v) < ORDEM_VISTAS.indexOf(vista) ? "esq" : "dir";
     vista = v; gravarLS("maratu.painel.vista", v);
@@ -518,7 +521,7 @@
 
   function cartaoMes(grande) {
     var r = resumoMes(), pct = r.meta ? Math.min(100, r.total / r.meta * 100) : 0;
-    if (!grande) return '<button class="cartao mes mini" data-ir="loja">' +
+    if (!grande) return '<button class="cartao mes mini" data-ir="financas">' +
       '<div class="mini-mes"><b style="font-size:15px;">' + cap(r.mes) + '</b><div class="barra-meta"><i style="width:' + pct.toFixed(1) + '%"></i></div><span class="valor" style="font-size:14px;">' + brlCurtoV(r.total) + "</span></div>" +
       '<div class="rodape"><span>' + (r.meta ? "Meta " + brlCurtoV(r.meta) : "Sem meta") + "</span><span>" + (oculto() ? "" : compTxt(r)) + "</span></div></button>";
     var olho = '<button class="ico-bt olho" data-olho aria-label="' + (oculto() ? "Mostrar valores" : "Esconder valores") + '" aria-pressed="' + oculto() + '">' + (oculto() ? IC.olhoFechado : IC.olho) + "</button>";
@@ -532,7 +535,7 @@
     itens.forEach(function (i) { cont[i.tipo]++; });
     if (filtro !== "tudo" && !cont[filtro]) filtro = "tudo";
     var vis = filtro === "tudo" ? itens : itens.filter(function (i) { return i.tipo === filtro; });
-    var NOMES = [["site", "Sites"], ["lead", "Leads"], ["carne", "Carnê"], ["agenda", "Agenda"], ["loja", "Pedidos"], ["post", "Posts"], ["nota", "Lembretes"], ["aviso", "Avisos"]];
+    var NOMES = [["site", "Sites"], ["lead", "Leads"], ["carne", "Cobranças"], ["agenda", "Agenda"], ["loja", "Pedidos"], ["post", "Posts"], ["nota", "Lembretes"], ["aviso", "Avisos"]];
     var hora = new Date().getHours(), oi = hora < 12 ? "Bom dia" : hora < 18 ? "Boa tarde" : "Boa noite";
     var f = feitosHoje(), total = f.n + itens.length;
     var prog = total && f.n ? '<div class="progresso-dia"><div class="barra-meta"><i style="width:' + (f.n / total * 100).toFixed(1) + '%"></i></div><span>' + f.n + " de " + total + (total === 1 ? " feito" : " feitos") + "</span></div>" : "";
@@ -540,21 +543,44 @@
       (itens.length > 1 ? '<div class="filtros">' + '<button class="chip-bt" data-filtro="tudo" aria-pressed="' + (filtro === "tudo") + '">Tudo</button>' +
         NOMES.filter(function (n) { return cont[n[0]]; }).map(function (n) { return '<button class="chip-bt" data-filtro="' + n[0] + '" aria-pressed="' + (filtro === n[0]) + '">' + n[1] + ' <span class="n">' + cont[n[0]] + "</span></button>"; }).join("") + "</div>" : "") +
       (vis.length ? '<div class="fila">' + vis.map(cartaHTML).join("") + "</div>" :
-        (f.n ? diaFechado(f) : '<div class="cartao"><h3 style="margin:0;font-size:18px;font-weight:900;">Nada pendente</h3></div>'));
-    if (!pc()) return a + cartaoMes(false);
+        (f.n ? diaFechado(f) : ""));
     var doDia = itensDoDia(h);
     agendaItens = doDia;
-    var g = prospecGrupos();
-    var b = '<div class="secao" style="margin-top:6px;">' + cap(MESES[new Date().getMonth()]) + '<button class="bt-link" data-ir="loja">Loja</button></div>' + cartaoMes(true) +
-      '<div class="secao">Agenda de hoje<button class="bt-link" data-ir="agenda">Agenda</button></div>' +
+    var amanha = !vis.length ? hojeAmanha() : "";
+    if (!pc()) return a + amanha + cartaoMes(false) + hojeAgenda(doDia, true) + hojeSinais();
+    var b = '<div class="secao" style="margin-top:6px;">' + cap(MESES[new Date().getMonth()]) + '<button class="bt-link" data-ir="financas">Finanças</button></div>' + cartaoMes(true) +
+      hojeAgenda(doDia, false) + hojeSinais();
+    return colunas(a + amanha, b);
+  }
+  /* agenda do dia: no celular só aparece quando tem algo marcado */
+  function hojeAgenda(doDia, soSeTem) {
+    if (soSeTem && !doDia.length) return "";
+    return '<div class="secao">Agenda de hoje<button class="bt-link" data-ir="agenda">Agenda</button></div>' +
       (doDia.length ? '<div class="cartao lista">' + doDia.map(function (x, idx) {
         return '<div class="linha toca" data-item="' + idx + '"' + (x.feito ? ' style="opacity:.55"' : "") + '><span class="hora-pc">' + esc(x.hora || "dia") + '</span><div class="o"><b>' + esc(x.tit) + "</b>" + (x.sub ? "<small>" + esc(x.sub) + "</small>" : "") + '</div><span class="tipo t-' + x.tipo + '">' + esc(x.rot) + "</span></div>";
-      }).join("") + "</div>" : '<p class="vazio">Nada marcado.</p>') +
-      (g.noAr.length ? '<div class="secao">Sites no ar<button class="bt-link" data-ir="sites">Sites</button></div><div class="cartao lista">' + g.noAr.slice(0, 5).map(function (p) {
-        var n = Number(p.ex_vistas) || 0;
-        return '<div class="linha toca" data-site="' + esc(p.id) + '"><div class="o"><b>' + esc(p.nome) + "</b><small>" + (n ? "abriu " + n + "x" : "não abriu ainda") + "</small></div>" + IC.seta + "</div>";
-      }).join("") + "</div>" : "");
-    return colunas(a, b);
+      }).join("") + "</div>" : '<p class="vazio">Nada marcado.</p>');
+  }
+  /* quem abriu o site de amostra nos últimos dois dias: hora boa pra puxar conversa */
+  function hojeSinais() {
+    var lim = Date.now() - 2 * 864e5;
+    var quentes = S.prospec.filter(function (p) { var t = Date.parse(p.ex_ultima || ""); return !isNaN(t) && t >= lim; }).sort(function (a, b) { return String(b.ex_ultima) < String(a.ex_ultima) ? -1 : 1; });
+    var novos = S.leads.filter(function (l) { return l.status === "novo"; });
+    if (!quentes.length && !novos.length) return "";
+    return '<div class="secao">Sinais</div><div class="cartao lista">' +
+      quentes.slice(0, 5).map(function (p) { var t = new Date(p.ex_ultima); return '<div class="linha toca" data-site="' + esc(p.id) + '"><span class="tipo t-site">Abriu</span><div class="o"><b>' + esc(p.nome) + "</b><small>" + (Number(p.ex_vistas) || 0) + "x, a última " + quandoRel(isoDe(t)) + " " + pad2(t.getHours()) + ":" + pad2(t.getMinutes()) + "</small></div>" + IC.seta + "</div>"; }).join("") +
+      (novos.length ? '<div class="linha toca" data-aba="sites:conversas"><span class="tipo t-lead">Leads</span><div class="o"><b>' + novos.length + (novos.length === 1 ? " lead novo" : " leads novos") + "</b><small>" + esc(novos.slice(0, 3).map(function (l) { return l.nome; }).join(", ")) + "</small></div>" + IC.seta + "</div>" : "") + "</div>";
+  }
+  /* fila vazia: mostra o que vem amanhã */
+  function hojeAmanha() {
+    var am = somaDias(hoje(), 1), ag = itensDoDia(am).filter(function (x) { return !x.feito; });
+    var sites = prospecGrupos().depois.filter(function (p) { return p.proximo === am; }).length;
+    var leads = S.leads.filter(function (l) { return l.followup === am && l.status !== "fechado" && l.status !== "perdido"; }).length;
+    var partes = [];
+    if (ag.length) partes.push(ag.length + (ag.length === 1 ? " na agenda" : " na agenda"));
+    if (sites) partes.push(sites + (sites === 1 ? " site pra mandar" : " sites pra mandar"));
+    if (leads) partes.push(leads + (leads === 1 ? " lead pra responder" : " leads pra responder"));
+    return '<button class="cartao amanha toca" data-dia-ag="' + am + '"><span class="tipo t-agenda">Amanhã</span><div class="o"><b>' + (partes.length ? cap(partes.join(", ")) : "Nada marcado") + "</b>" +
+      (ag.length ? "<small>" + esc(ag.slice(0, 3).map(function (x) { return (x.hora ? x.hora + " " : "") + x.tit; }).join(", ")) + "</small>" : "") + "</div>" + IC.seta + "</button>";
   }
   function diaFechado(f) {
     var h = hoje(), envios = 0;
@@ -569,44 +595,16 @@
     return (d >= 0 ? "+" : "") + Math.round(d) + "% vs. " + r.mesAnt.slice(0, 3) + " até dia " + r.dia;
   }
 
-  function telaSites() {
-    var g = prospecGrupos(), s = semanaAbordagem();
-    var leadsAtivos = S.leads.filter(function (l) { return l.status !== "fechado" && l.status !== "perdido"; });
-    var leadsFim = S.leads.filter(function (l) { return l.status === "fechado" || l.status === "perdido"; });
-    var itens = itensHoje().filter(function (i) { return i.tipo === "site"; });
-    var STL = { novo: ["Novo", "t-site"], conversando: ["Conversando", "t-lead"], fechado: ["Fechado", "t-feito"], perdido: ["Perdido", "t-loja"] };
-    var a = '<div class="cab"><h1>Sites</h1><p>' + (S.uso ? "Google " + (Number(S.uso.n) || 0) + " de " + (Number(S.teto) || 0) + " no mês" : "Abordagem") + "</p></div>" +
-      metasSites() +
-      '<div class="nums"><div class="num"><b>' + g.doDia.length + '</b><span>pra hoje</span></div><div class="num"><b>' + s.resp + '</b><span>respostas na semana</span></div><div class="num"><b>' + g.noAr.length + "</b><span>no ar</span></div></div>" +
-      (itens.length ? '<div class="secao">Pra hoje</div><div class="fila">' + itens.map(cartaHTML).join("") + "</div>" : (pc() ? '<p class="vazio">Nenhum envio pra hoje.</p>' : "")) +
-      '<div class="grade-bts" style="margin-top:4px;"><button class="bt" data-reserva>Escolher na reserva</button><button class="bt acento" data-buscar>Buscar negócios</button></div>';
-    var b = (g.noAr.length ? '<div class="secao">No ar <small>' + g.noAr.length + '</small></div><div class="cartao lista">' + g.noAr.map(function (p) {
-        var n = Number(p.ex_vistas) || 0;
-        return '<div class="linha toca" data-site="' + esc(p.id) + '"><div class="o"><b>' + esc(p.nome) + "</b><small>" + (n ? "abriu " + n + "x" : "não abriu ainda") + (p.ex_expira ? ", sai do ar em " + dm(String(p.ex_expira).slice(0, 10)) : "") + "</small></div>" + IC.seta + "</div>";
-      }).join("") + "</div>" : "") +
-      (g.depois.length ? '<div class="secao">Aguardando <small>' + g.depois.length + '</small></div><div class="cartao lista">' + g.depois.slice().sort(function (x, y) { return (x.proximo || "9") < (y.proximo || "9") ? -1 : 1; }).map(function (p) {
-        return '<div class="linha toca" data-site="' + esc(p.id) + '"><div class="o"><b>' + esc(p.nome) + "</b><small>" + PASSO[Math.min(Number(p.passo) || 0, 3)] + (p.proximo ? " em " + dm(p.proximo) : "") + "</small></div>" + IC.seta + "</div>";
-      }).join("") + "</div>" : "") +
-      (g.escolhidos.length ? '<div class="secao">Escolhidos pra virar site <small>' + g.escolhidos.length + '</small></div><div class="cartao lista">' + g.escolhidos.map(function (p) {
-        return '<div class="linha"><div class="o"><b>' + esc(p.nome) + "</b><small>" + esc([p.consulta || p.ramo, p.cidade].filter(Boolean).join(", ")) + '</small></div><button class="bt" data-devolver="' + esc(p.id) + '">Devolver</button></div>';
-      }).join("") + "</div>" : "") +
-      '<div class="secao">Leads <small>' + leadsAtivos.length + '</small><button class="bt-link" data-novo="lead">Novo lead</button></div>' +
-      (S.leads.length ? '<div class="cartao lista">' + leadsAtivos.concat(leadsFim).map(function (l) {
-        var st = STL[l.status] || [l.status || "", "t-loja"];
-        var atras = l.followup && l.followup < hoje() && l.status !== "fechado" && l.status !== "perdido";
-        return '<div class="linha toca" data-lead="' + esc(l.id) + '"' + (l.status === "fechado" || l.status === "perdido" ? ' style="opacity:.6"' : "") + '><div class="o"><b>' + esc(l.nome || "Sem nome") + "</b><small>" + esc([l.interesse, l.followup ? (l.status === "fechado" ? "fechado em " : l.status === "perdido" ? "" : atras ? "atrasado desde " : "falar em ") + (l.status === "perdido" ? "" : dm(l.followup)) : ""].filter(Boolean).join(", ")) + '</small></div><span class="tipo ' + st[1] + '">' + esc(st[0]) + "</span></div>";
-      }).join("") + "</div>" : '<p class="vazio">Nenhum lead.</p>');
-    return colunas(a, b);
-  }
-
   /* metas do plano de venda: 30 contatos por semana, 4 sites fechados por mês */
   var META_CONTATOS = 30, META_SITES = 4;
   function metasSites() {
     var h = hoje(), seg = somaDias(h, -((dataDe(h).getDay() + 6) % 7)), env = 0, mes = h.slice(0, 7);
     S.prospec.forEach(function (p) { try { JSON.parse(p.historico || "[]").forEach(function (x) { if (x.acao === "enviei" && diaLocal(x.ts) >= seg) env++; }); } catch (e) {} });
-    var fechados = S.leads.filter(function (l) { return l.status === "fechado" && /site|p[aá]gina|painel|portf/i.test(l.interesse || "") && String(l.followup || "").slice(0, 7) === mes; }).length;
+    var comCli = {}, fechados = 0, mp = metasParam();
+    clientes().forEach(function (c) { if (c.lead_id) comCli[c.lead_id] = 1; if (String(c.fechado_em || "").slice(0, 7) === mes) fechados++; });
+    fechados += S.leads.filter(function (l) { return !comCli[l.id] && l.status === "fechado" && /site|p[aá]gina|painel|portf/i.test(l.interesse || "") && String(l.followup || "").slice(0, 7) === mes; }).length;
     var meta = function (n, alvo, txt) { return '<div class="cartao meta"><div class="meta-num"><b>' + n + "</b><span>de " + alvo + " " + txt + '</span></div><div class="barra-meta"><i style="width:' + Math.min(100, n / alvo * 100).toFixed(1) + '%"></i></div></div>'; };
-    return '<div class="metas">' + meta(env, META_CONTATOS, "contatos na semana") + meta(fechados, META_SITES, "sites fechados no mês") + "</div>";
+    return '<div class="metas">' + meta(env, mp.contatos, "contatos na semana") + meta(fechados, mp.sites, "sites fechados no mês") + "</div>";
   }
   var lojaFonte = "todas";
   var FONTE_COR = { pix: "var(--feito)", mp: "var(--c-lead)", manual: "var(--c-loja)", carne: "var(--c-carne)" };
@@ -628,7 +626,7 @@
     var filtros = ordem.length > 1 ? '<div class="filtros">' + '<button class="chip-bt" data-fonte="todas" aria-pressed="' + (lojaFonte === "todas") + '">Todas</button>' +
       ordem.map(function (f) { return '<button class="chip-bt" data-fonte="' + f + '" aria-pressed="' + (lojaFonte === f) + '">' + FONTE[f] + ' <span class="n">' + nFonte[f] + "</span></button>"; }).join("") + "</div>" : "";
     return '<div class="nav-dia"><button class="ico-bt" data-mesnav="-1" aria-label="Mês anterior">' + IC.esq + '</button><div class="cab" style="text-align:center;"><h1 style="font-size:20px;">' + cap(MESES[d.getMonth()]) + (d.getFullYear() !== new Date().getFullYear() ? " " + d.getFullYear() : "") + "</h1><p>" + brlV(totalMes) + ", " + doMes.length + (doMes.length === 1 ? " entrada" : " entradas") + '</p></div><button class="ico-bt" data-mesnav="1" aria-label="Mês seguinte"' + (lojaMesDesloc >= 0 ? ' disabled style="visibility:hidden"' : "") + ">" + IC.dir + "</button></div>" +
-      resumo + '<button class="bt-link" data-buscaent style="justify-self:start;color:var(--tinta-sobre-tela);">Buscar entradas no banco agora</button>' + filtros +
+      resumo + filtros + '<button class="bt-link" data-buscaent style="justify-self:start;color:var(--tinta-sobre-tela);">Buscar entradas no banco agora</button>' +
       (vis.length ? Object.keys(porDia).sort().reverse().map(function (dia) {
         var soma = porDia[dia].reduce(function (a, l) { return a + num(l.valor); }, 0);
         return '<div class="dia-rot"><span>' + (dia === hoje() ? "Hoje" : dia === somaDias(hoje(), -1) ? "Ontem" : SEM3[dataDe(dia).getDay()] + " " + dm(dia)) + '</span><span class="valor">+' + brlCurtoV(soma) + '</span></div><div class="cartao lista">' +
@@ -643,34 +641,20 @@
     }).join("") + "</div>" : '<p class="vazio">' + (verAtendidos ? "Nenhum pedido." : "Nenhum pedido em aberto.") + "</p>") +
       '<button class="bt-link" data-atendidos style="color:var(--tinta-sobre-tela);justify-self:start;">' + (verAtendidos ? "Só os em aberto" : "Ver todos os pedidos") + "</button>";
   }
-  function lojaCarne() {
+  function lojaCarne(semNums) {
     var carnes = {};
     eventosVivos().forEach(function (e) { if (e.tipo !== "cobranca") return; var p = kv(e.notas); var id = p.carne || e.cliente || e.id; (carnes[id] = carnes[id] || []).push(e); });
     var ids = Object.keys(carnes);
     var aberto = function (id) { return carnes[id].some(function (e) { return !e.feito; }); };
     ids.sort(function (a, b) { var x = aberto(a), y = aberto(b); if (x !== y) return x ? -1 : 1; return proxVenc(carnes[a]) < proxVenc(carnes[b]) ? -1 : 1; });
     var falta = 0; ids.forEach(function (id) { carnes[id].forEach(function (e) { if (!e.feito) falta += num(kv(e.notas).valor); }); });
-    return '<div class="nums" style="grid-template-columns:1fr 1fr;"><div class="num"><b>' + brlCurtoV(falta) + '</b><span>a receber</span></div><div class="num"><b>' + ids.filter(aberto).length + "</b><span>carnês abertos</span></div></div>" +
+    return (semNums ? "" : '<div class="nums" style="grid-template-columns:1fr 1fr;"><div class="num"><b>' + brlCurtoV(falta) + '</b><span>a receber</span></div><div class="num"><b>' + ids.filter(aberto).length + "</b><span>carnês abertos</span></div></div>") +
       (ids.length ? '<div class="cartao lista">' + ids.map(function (id) {
         var evs = carnes[id].slice().sort(function (a, b) { return a.data < b.data ? -1 : 1; }), pagas = evs.filter(function (e) { return e.feito; }).length;
         var prox = evs.filter(function (e) { return !e.feito; })[0], p0 = kv(evs[0].notas);
         var atras = prox && prox.data < hoje();
         return '<div class="linha toca" data-carne="' + esc(id) + '"' + (!prox ? ' style="opacity:.6"' : "") + '><div class="o"><b>' + esc(evs[0].cliente || "Cliente") + (p0.prod ? " · " + esc(p0.prod) : "") + "</b><small" + (atras ? ' style="color:var(--c-site);font-weight:900"' : "") + ">" + pagas + " de " + evs.length + " pagas" + (prox ? ", " + (atras ? "atrasada desde " : "próxima ") + dm(prox.data) + " " + brlCurtoV(num(kv(prox.notas).valor)) : ", quitado") + "</small></div>" + IC.seta + "</div>";
       }).join("") + "</div>" : '<p class="vazio">Nenhum carnê.</p>');
-  }
-  var LINK_ANTIGO = '<button class="cartao linha toca imp-link" data-impfolha>' + IC.imp + '<div class="o"><b>Impressora</b><small>Estado e últimas impressões</small></div>' + IC.seta + "</button>";
-  function telaLoja() {
-    if (pc()) {
-      var segPc = '<div class="seg seg-loja" role="group"><button data-seg="caixa" aria-pressed="' + (lojaSeg !== "produtos") + '">Caixa e pedidos</button><button data-seg="produtos" aria-pressed="' + (lojaSeg === "produtos") + '">Produtos</button></div>';
-      if (lojaSeg === "produtos") return '<div class="nav-dia"><div class="cab"><h1>Produtos</h1></div>' + segPc + "</div>" + lojaProdutos();
-      return '<div class="nav-dia"><div class="cab"><h1>Caixa</h1></div>' + segPc + "</div>" + colunas(lojaCaixa(),
-        '<div class="secao" style="margin-top:6px;">' + cap(MESES[new Date().getMonth()]) + "</div>" + cartaoMes(true) +
-        '<div class="secao">Pedidos' + (S.pedidos.length ? " <small>" + S.pedidos.length + "</small>" : "") + "</div>" + lojaPedidos() +
-        '<div class="secao">Carnê</div>' + lojaCarne() + LINK_ANTIGO);
-    }
-    return '<div class="cab"><h1>Loja</h1></div>' + cartaoMes(true) +
-      '<div class="seg" role="group"><button data-seg="caixa" aria-pressed="' + (lojaSeg === "caixa") + '">Caixa</button><button data-seg="pedidos" aria-pressed="' + (lojaSeg === "pedidos") + '">Pedidos' + (S.pedidos.length ? " " + S.pedidos.length : "") + '</button><button data-seg="carne" aria-pressed="' + (lojaSeg === "carne") + '">Carnê</button><button data-seg="produtos" aria-pressed="' + (lojaSeg === "produtos") + '">Peças</button></div>' +
-      (lojaSeg === "caixa" ? lojaCaixa() : lojaSeg === "pedidos" ? lojaPedidos() : lojaSeg === "produtos" ? lojaProdutos() : lojaCarne()) + (lojaSeg === "produtos" ? "" : LINK_ANTIGO);
   }
   function proxVenc(evs) { var p = evs.filter(function (e) { return !e.feito; }).map(function (e) { return e.data; }).sort()[0]; return p || "9999"; }
 
@@ -884,6 +868,9 @@
     raiz.querySelectorAll(".slot").forEach(function (s) { arrastavel(s, itensAtuais[s.dataset.k]); });
     raiz.querySelectorAll("[data-filtro]").forEach(function (b) { b.onclick = function () { filtro = b.dataset.filtro; render(true); }; });
     raiz.querySelectorAll("[data-ir]").forEach(function (b) { b.onclick = function () { irPara(b.dataset.ir); }; });
+    raiz.querySelectorAll("[data-rola]").forEach(function (b) { b.onclick = function () { var alvo = $(b.dataset.rola); if (alvo) alvo.scrollIntoView({ behavior: "smooth", block: "start" }); }; });
+    raiz.querySelectorAll("[data-dia-ag]").forEach(function (b) { b.onclick = function () { diaSel = b.dataset.diaAg; agendaMes = null; irPara("agenda"); }; });
+    raiz.querySelectorAll("[data-relatorio]").forEach(function (b) { b.onclick = folhaRelatorio; });
     raiz.querySelectorAll("[data-ig]").forEach(function (b) {
       b.onclick = function (ev) { ev.stopPropagation(); var p = porId(S.prospec, b.dataset.ig); if (!p) return; copiar(mensagem(p)).then(function () { aviso("Mensagem copiada"); }).catch(function () {}); abrir(igUrl(p)); };
     });
@@ -894,12 +881,6 @@
     raiz.querySelectorAll("[data-buscar]").forEach(function (b) { b.onclick = folhaBuscarNegocios; });
     raiz.querySelectorAll("[data-lead]").forEach(function (b) { b.onclick = function () { var l = porId(S.leads, b.dataset.lead); if (l) folhaLead(l); }; });
     raiz.querySelectorAll("[data-novo]").forEach(function (b) { b.onclick = function () { folhaLancar(b.dataset.novo, b.dataset.novo === "evento" ? diaSel : null); }; });
-    raiz.querySelectorAll("[data-seg]").forEach(function (b) {
-      b.onclick = function () {
-        lojaSeg = b.dataset.seg; PROD.ordenando = false; render(true);
-        if (lojaSeg === "pedidos" && verAtendidos && !S.pedidosTodos) carregarPedidosTodos();
-      };
-    });
     raiz.querySelectorAll("[data-mesnav]").forEach(function (b) { b.onclick = function () { if (b.disabled) return; lojaMesDesloc = Math.min(0, lojaMesDesloc + Number(b.dataset.mesnav)); render(true); }; });
     raiz.querySelectorAll("[data-lanc]").forEach(function (b) { b.onclick = function () { var l = porId(S.lancamentos, b.dataset.lanc); if (l) folhaEntrada(l); }; });
     raiz.querySelectorAll("[data-ped]").forEach(function (b) { b.onclick = function () { var p = porId(S.pedidosTodos || [], b.dataset.ped, "codigo") || porId(S.pedidos, b.dataset.ped, "codigo"); if (p) folhaPedido(p); }; });
@@ -920,7 +901,7 @@
     raiz.querySelectorAll("[data-nota]").forEach(function (b) { b.onclick = function () { var n = porId(S.notas, b.dataset.nota); if (n) folhaNota(n); }; });
     raiz.querySelectorAll("[data-fonte]").forEach(function (b) { b.onclick = function () { lojaFonte = b.dataset.fonte; render(true); }; });
     if (vista === "agenda" && pc() && agendaModo === "semana") ligarSemana(raiz);
-    if (vista === "loja" && lojaSeg === "produtos") ligarProdutos(raiz);
+    if (vista === "oficina" && abaDe("oficina") === "pecas") ligarProdutos(raiz);
     raiz.querySelectorAll("[data-impfolha]").forEach(function (x) { x.onclick = function (ev) { ev.preventDefault(); folhaImpressora(); }; });
   }
   function carregarPedidosTodos() {
@@ -1179,6 +1160,7 @@
     var tel = soDigitos(l.contato);
     abrirFolha(l.nome || "Lead",
       (tel.length >= 10 ? '<a class="bt preto cheio" href="' + esc(waLink(l.contato)) + '" target="_blank" rel="noopener">' + IC.wa + "Abrir no WhatsApp</a>" : "") +
+      (l.status !== "perdido" && !clientes().some(function (c) { return c.lead_id === l.id; }) ? '<button class="bt verde cheio" id="lCli">' + IC.check + "Virou cliente</button>" : "") +
       formLead(l) + '<button class="bt cheio perigo" id="lApaga">Apagar lead</button><div class="fixo"><button class="bt acento cheio" id="lSalva">Salvar</button></div>',
       function (c) {
         ligaPilulas(c);
@@ -1188,6 +1170,12 @@
           if (fechou) m.followup = hoje();
           Object.assign(l, m); fecharFolha(); render(true); aviso(fechou ? "Fechado" : "Lead salvo");
           gravarTabela("leads", function (a) { return trocaItem(a, l.id, m); });
+        };
+        var vc = c.querySelector("#lCli");
+        if (vc) vc.onclick = function () {
+          fecharFolha();
+          if (l.status !== "fechado") { var m = { status: "fechado", followup: hoje() }; Object.assign(l, m); gravarTabela("leads", function (a) { return trocaItem(a, l.id, m); }); }
+          folhaCliente(null, { nome: l.nome, contato: l.contato, tipo: tipoDoInteresse(l.interesse), lead_id: l.id, notas: l.notas || null });
         };
         confirmaDuplo(c.querySelector("#lApaga"), "Toque de novo pra apagar", function () {
           fecharFolha(); var antes = S.leads.slice();
@@ -1356,7 +1344,7 @@
   }
 
   /* --- lançar --- */
-  var TIPOS_LANCAR = [["entrada", "Entrada", IC.entrada], ["evento", "Evento", IC.evento], ["lead", "Lead", IC.lead], ["carne", "Carnê", IC.carne], ["nota", "Lembrete", IC.nota], ["orcamento", "Orçamento", IC.calc], ["post", "Post", IC.post], ["selos", "Selos", IC.selo]];
+  var TIPOS_LANCAR = [["entrada", "Entrada", IC.entrada], ["evento", "Evento", IC.evento], ["lead", "Lead", IC.lead], ["carne", "Carnê", IC.carne], ["nota", "Lembrete", IC.nota], ["orcamento", "Orçamento", IC.calc], ["post", "Post", IC.post]];
   function folhaLancar(tipo, dia, hora) {
     tipo = tipo || lerLS("maratu.painel.lancar", "entrada");
     if (tipo === "selos") tipo = "entrada";
@@ -1367,7 +1355,6 @@
       function (c) {
         var orc = null;
         function monta(t) {
-          if (t === "selos") { fecharFolha(); abrirSelos(); return; }
           tipo = t; gravarLS("maratu.painel.lancar", t);
           c.querySelectorAll("[data-tl]").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.tl === t)); });
           var f = c.querySelector("#lForm");
@@ -1526,7 +1513,7 @@
     PROD.erro = false;
     return api("/api/catalog/all").then(function (d) { PROD.lista = d.produtos || []; PROD.layout = d.layout || null; })
       .catch(function () { PROD.erro = true; })
-      .then(function () { PROD.carregando = false; if (vista === "loja" && lojaSeg === "produtos") render(true); });
+      .then(function () { PROD.carregando = false; if (vista === "oficina" && abaDe("oficina") === "pecas") render(true); });
   }
   function faixasDe(lista) {
     var vistas = {}; lista.forEach(function (p) { vistas[p.subcategoria] = 1; });
@@ -1871,6 +1858,8 @@
       '<div class="duas">' + campo("Máquina (R$/h)", '<input id="cMaq" inputmode="decimal" value="' + v(p.maquina) + '">') + campo("Mão de obra (R$/h)", '<input id="cMao" inputmode="decimal" value="' + v(p.maodeobra) + '">') + "</div>" +
       '<div class="rot">Mês</div>' +
       '<div class="duas">' + campo("Custo fixo (R$)", '<input id="cFix" inputmode="decimal" value="' + v(p.fixo) + '">') + campo("Retirada (R$)", '<input id="cRet" inputmode="decimal" value="' + v(p.retirada) + '">') + "</div>" +
+      '<div class="rot">Vendas de site</div>' +
+      '<div class="duas">' + campo("Contatos por semana", '<input id="cMc" type="number" min="1" inputmode="numeric" value="' + esc(metasParam().contatos) + '">') + campo("Sites por mês", '<input id="cMs" type="number" min="1" inputmode="numeric" value="' + esc(metasParam().sites) + '">') + "</div>" +
       '<div class="rot">Tabela do pôster</div><div class="tam-precos" id="cPb">' + TAM_POSTER.map(function (t) { return campo(t, '<input data-pb="' + t + '" inputmode="decimal">'); }).join("") + "</div>" +
       '<div class="fixo"><button class="bt acento cheio" id="cSalva">Salvar custos</button></div>',
       function (c) {
@@ -1881,7 +1870,7 @@
         }).catch(function () {});
         c.querySelector("#cSalva").onclick = function () {
           var q = function (s) { return c.querySelector(s); };
-          var mudou = { filamento: num(q("#cFil").value), margem: num(q("#cMar").value) || 1, maquina: num(q("#cMaq").value), maodeobra: num(q("#cMao").value), fixo: num(q("#cFix").value), retirada: num(q("#cRet").value) };
+          var mudou = { filamento: num(q("#cFil").value), margem: num(q("#cMar").value) || 1, maquina: num(q("#cMaq").value), maodeobra: num(q("#cMao").value), fixo: num(q("#cFix").value), retirada: num(q("#cRet").value), meta_contatos: Math.max(1, parseInt(q("#cMc").value, 10) || META_CONTATOS), meta_sites: Math.max(1, parseInt(q("#cMs").value, 10) || META_SITES) };
           var pb = {}; c.querySelectorAll("[data-pb]").forEach(function (i) { if (num(i.value) > 0) pb[i.dataset.pb] = Math.round(num(i.value) * 100); });
           if (base && Object.keys(pb).length && Object.keys(pb).length < 4) { aviso("Preencha os quatro tamanhos do pôster"); return; }
           var bt = this; bt.disabled = true;
@@ -1917,24 +1906,13 @@
         S.extras = S.extras || {}; S.extras.imp = imp;
         if (!folhaAberta || !c.querySelector(".esqueleto")) return;
         if (!imp || !imp.conectada) { c.innerHTML = '<p class="vazio" style="color:var(--suave);">A impressora ainda não mandou notícia.</p>'; return; }
-        var d = imp.estado || {}, an = imp.analise || {}, idade = idadeImp(imp), ativo = ["printing", "paused"].indexOf(d.estado) >= 0;
-        var pct = Math.round((Number(an.progresso != null ? an.progresso : d.progresso) || 0) * 100), termina = an.termina ? new Date(an.termina) : null;
-        c.innerHTML =
-          '<div class="cartao imp-estado"><div class="imp-l1"><span class="pulso' + (ativo && idade < 180 ? "" : " parado") + '"></span><b>' + esc(ESTADO_IMP[d.estado] || d.estado || "Sem estado") + '</b><small>sinal há ' + (idade < 90 ? Math.round(idade) + " s" : Math.round(idade / 60) + " min") + "</small></div>" +
-            (ativo ? '<p class="imp-peca">' + esc(nomeArquivo(d.arquivo)) + '</p><div class="barra-meta"><i style="width:' + pct + '%"></i></div><div class="rodape-imp"><span>' + pct + "%" + (d.camada ? ", camada " + esc(d.camada) + (d.camadas ? " de " + esc(d.camadas) : "") : "") + "</span><span>" + (termina && !isNaN(termina) ? "termina " + pad2(termina.getHours()) + ":" + pad2(termina.getMinutes()) : an.restante ? "faltam " + duracaoTxt(an.restante) : "") + "</span></div>" : "") +
-          "</div>" +
-          ((imp.saude || []).filter(function (s) { return s.k !== "sinal"; }).length ? '<div class="imp-saude">' + imp.saude.filter(function (s) { return s.k !== "sinal"; }).map(function (s) { return '<div class="num' + (s.ok ? "" : " ruim") + '"><b>' + esc(s.txt) + "</b><span>" + esc(s.rot) + "</span></div>"; }).join("") + "</div>" : "") +
-          ((imp.historico || []).length ? '<div class="rot">Últimas impressões</div><div class="cartao lista" style="box-shadow:none;">' + imp.historico.map(function (h) {
-            var ok = h.status === "completed" || h.status === "complete";
-            return '<div class="linha"><div class="o"><b>' + esc(h.nome || nomeArquivo(h.arquivo)) + "</b><small>" + (h.inicio ? esc(dm(diaLocal(h.inicio))) + ", " : "") + (h.duracao ? duracaoTxt(h.duracao) : "") + '</small></div><span class="tipo ' + (ok ? "t-feito" : h.status === "printing" ? "t-lead" : "t-aviso") + '">' + esc(ok ? "pronta" : h.status === "printing" ? "agora" : h.status || "?") + "</span></div>";
-          }).join("") + "</div>" : "");
+        c.innerHTML = impHTML(imp);
       }).catch(function () { if (folhaAberta && c.querySelector(".esqueleto")) c.innerHTML = '<p class="vazio" style="color:var(--suave);">Não carregou. Confira a internet.</p>'; });
     });
   }
 
   /* ---------- Estúdio por dentro: Empresa (MEI) e Números ---------- */
-  var estudioSub = "", NUM = { range: "7d", ga4: {}, ig: {}, carregando: {} }, MEI = { dash: null, carregando: false, erro: false };
-  function voltaEstudio() { return '<button class="chip-bt volta" data-estsub="">' + IC.esq + "Estúdio</button>"; }
+  var NUM = { range: "7d", ga4: {}, ig: {}, carregando: {} }, MEI = { dash: null, carregando: false, erro: false };
   function centavos(c) { return brl(Number(c || 0) / 100); }
   function centavosCurto(c) { return brlCurto(Number(c || 0) / 100); }
 
@@ -1955,11 +1933,11 @@
     if (MEI.carregando) return; MEI.carregando = true; MEI.erro = false;
     api("/api/mei/dashboard").then(function (d) { MEI.dash = d; S.extras = S.extras || {}; S.extras.mei = d; guardaCache(); })
       .catch(function () { MEI.erro = true; })
-      .then(function () { MEI.carregando = false; if (vista === "estudio" && estudioSub === "empresa") render(true); });
+      .then(function () { MEI.carregando = false; if (vista === "financas" && abaDe("financas") === "mei") render(true); });
   }
   function telaEmpresa() {
     var d = MEI.dash;
-    if (!d) { if (!MEI.erro) carregarMei(); return '<div class="nav-dia">' + voltaEstudio() + '</div><div class="cab"><h1>Empresa</h1></div>' + (MEI.erro ? '<div class="cartao"><h3 style="margin:0 0 8px;font-weight:900;">O MEI não carregou</h3><button class="bt preto" data-meitenta>Tentar de novo</button></div>' : '<div class="esqueleto"></div>'); }
+    if (!d) { if (!MEI.erro) carregarMei(); return (MEI.erro ? '<div class="cartao"><h3 style="margin:0 0 8px;font-weight:900;">O MEI não carregou</h3><button class="bt preto" data-meitenta>Tentar de novo</button></div>' : '<div class="esqueleto"></div>'); }
     var f = d.faturamento || {}, pct = f.pct_usado || 0, cfg = d.config || {};
     var limite = '<div class="cartao mes"><div class="topo-mes"><span class="grande">' + (oculto() ? "R$ •••" : centavosCurto(f.total_ano_centavos)) + '</span><span class="comp' + (f.alerta ? " desce" : "") + '">projeção ' + (oculto() ? "•••" : centavosCurto(f.projecao_anual_centavos)) + "</span></div>" +
       '<div class="barra-meta"><i style="width:' + Math.min(100, pct) + "%" + (f.alerta ? ";background:var(--c-aviso)" : "") + '"></i></div><div class="rodape"><span>Faturado em ' + esc(f.ano || d.ano_atual) + "</span><span>" + pct + "% do limite de " + centavosCurto(f.limite_anual_centavos) + "</span></div></div>";
@@ -1974,8 +1952,8 @@
       '<div class="cartao lista">' + meses.filter(function (m) { return m.month <= mesAtual; }).reverse().map(function (m) {
         return '<div class="linha toca" data-fatmes="' + m.month + '"><div class="o"><b>' + cap(MESES[m.month - 1]) + "</b><small>" + (m.lancamentos || 0) + (m.lancamentos === 1 ? " entrada" : " entradas") + (m.ajuste_centavos && !oculto() ? ", ajuste " + centavos(m.ajuste_centavos) : "") + (m.nota ? ", " + esc(m.nota) : "") + '</small></div><span class="valor">' + (oculto() ? "R$ •••" : centavos(m.total_centavos)) + "</span>" + IC.seta + "</div>";
       }).join("") + "</div>";
-    var conf = '<div class="cartao lista"><div class="linha toca" data-meiconf><div class="o"><b>Configuração do MEI</b><small>DAS de ' + (oculto() ? "R$ •••" : centavos(cfg.das_valor_centavos)) + ", vence dia " + esc(cfg.das_vencimento_dia || 20) + '</small></div>' + IC.seta + '</div><div class="linha toca" data-atalho="custos"><div class="o"><b>Custos do estúdio</b><small>Preço da peça e meta do mês</small></div>' + IC.seta + "</div></div>";
-    return '<div class="nav-dia">' + voltaEstudio() + '</div><div class="cab"><h1>Empresa</h1></div>' + colunas(limite + das + dasn, fat + conf);
+    var conf = '<div class="cartao lista"><div class="linha toca" data-meiconf><div class="o"><b>Configuração do MEI</b><small>DAS de ' + (oculto() ? "R$ •••" : centavos(cfg.das_valor_centavos)) + ", vence dia " + esc(cfg.das_vencimento_dia || 20) + '</small></div>' + IC.seta + '</div><div class="linha toca" data-aba="financas:metas"><div class="o"><b>Custos e metas</b><small>Preço da peça e meta do mês</small></div>' + IC.seta + "</div></div>";
+    return colunas(limite + das + dasn, fat + conf);
   }
   function ligarEmpresa(raiz) {
     raiz.querySelectorAll("[data-meitenta]").forEach(function (b) { b.onclick = function () { MEI.erro = false; render(true); }; });
@@ -2047,7 +2025,7 @@
       NUM.carregando[k + r] = true;
       api(k === "ga4" ? "/api/analytics/ga4?range=" + r : "/api/analytics/instagram?range=" + r)
         .then(function (d) { NUM[k][r] = d; }).catch(function () { NUM[k][r] = { error: "falhou", falhaEm: Date.now() }; })
-        .then(function () { NUM.carregando[k + r] = false; if (vista === "estudio" && estudioSub === "numeros") render(true); });
+        .then(function () { NUM.carregando[k + r] = false; if (vista === "divulgacao" && abaDe("divulgacao") === "numeros") render(true); });
     });
   }
   function ga4Linhas(rep) { return rep && rep.rows ? rep.rows : []; }
@@ -2058,13 +2036,6 @@
   function variacao(a, b) { if (!b) return ""; var d = Math.round((a - b) / b * 100); return '<em class="' + (d >= 0 ? "sobe" : "desce") + '">' + (d >= 0 ? "+" : "") + d + "%</em>"; }
   function telaNumeros() {
     carregarNumeros();
-    var h = hoje(), dias = [], vals7 = [];
-    for (var i = 6; i >= 0; i--) { var d = somaDias(h, -i); dias.push(SEM3[dataDe(d).getDay()].slice(0, 3)); vals7.push(S.lancamentos.filter(function (l) { return l.data === d; }).reduce(function (a, l) { return a + num(l.valor); }, 0)); }
-    var hoj = new Date(), meses = [], vals6 = [];
-    for (var k = 5; k >= 0; k--) { var dt = new Date(hoj.getFullYear(), hoj.getMonth() - k, 1); meses.push(MESES[dt.getMonth()].slice(0, 3)); vals6.push(somaMes(dt.getFullYear(), dt.getMonth())); }
-    var soma7 = vals7.reduce(function (a, b) { return a + b; }, 0), soma6 = vals6.reduce(function (a, b) { return a + b; }, 0);
-    var entradas = '<div class="secao">Entradas</div><div class="cartao g-cartao' + (oculto() ? " g-oculto" : "") + '"><div class="g-cab"><b>Últimos 7 dias</b><span class="valor">' + brlCurtoV(soma7) + "</span></div>" + graficoBarras(vals7, dias, 6) + "</div>" +
-      '<div class="cartao g-cartao' + (oculto() ? " g-oculto" : "") + '"><div class="g-cab"><b>Últimos 6 meses</b><span class="valor">' + brlCurtoV(soma6) + "</span></div>" + graficoBarras(vals6, meses, 5) + "</div>";
     var r = NUM.range, ga = NUM.ga4[r], ig = NUM.ig[r];
     var chips = '<div class="filtros">' + [["1d", "Ontem"], ["7d", "7 dias"], ["28d", "28 dias"], ["90d", "90 dias"]].map(function (x) { return '<button class="chip-bt" data-nrange="' + x[0] + '" aria-pressed="' + (r === x[0]) + '">' + x[1] + "</button>"; }).join("") + "</div>";
     var site;
@@ -2092,10 +2063,10 @@
           return "<" + tag + ">" + (img && /^https:\/\//.test(img) ? '<img loading="lazy" alt="" src="' + esc(img) + '">' : "") + "<span>" + esc(m.like_count || 0) + " curtidas, " + esc(m.comments_count || 0) + " comentários</span></" + (link ? "a" : "div") + ">";
         }).join("") + "</div>" : "");
     }
-    var a = '<div class="nav-dia">' + voltaEstudio() + '</div><div class="cab"><h1>Números</h1></div>' + entradas +
+    var a = chips + '<div class="secao">Site</div>' + site +
       '<div class="cartao lista"><div class="linha toca" data-relatorio><div class="o"><b>Relatório da semana</b><small>Pronto pra copiar</small></div>' + IC.seta + "</div></div>";
-    var b = chips + '<div class="secao">Site</div>' + site + '<div class="secao">Instagram' + (ig && ig.account && ig.account.username ? " <small>@" + esc(ig.account.username) + "</small>" : "") + "</div>" + insta;
-    return pc() ? colunas(a, b) : a + b;
+    var b = '<div class="secao">Instagram' + (ig && ig.account && ig.account.username ? " <small>@" + esc(ig.account.username) + "</small>" : "") + "</div>" + insta;
+    return colunas(a, b);
   }
   function relatorioSemana() {
     var h = hoje(), ini = somaDias(h, -6), linhas = [];
@@ -2136,7 +2107,6 @@
   }
   function ligarNumeros(raiz) {
     raiz.querySelectorAll("[data-nrange]").forEach(function (b) { b.onclick = function () { NUM.range = b.dataset.nrange; render(true); }; });
-    raiz.querySelectorAll("[data-relatorio]").forEach(function (b) { b.onclick = folhaRelatorio; });
   }
 
   /* ---------- Divulgação: conteúdo, newsletter e links da bio ---------- */
@@ -2146,35 +2116,6 @@
   var LINKS_BIO = [["loja", "Loja"], ["servicos", "Serviços"], ["wpp", "WhatsApp, encomenda"], ["contato", "WhatsApp, contato"], ["news", "Newsletter"], ["agenda", "Agenda"], ["parceiros", "Parceiros"], ["ig", "Instagram"], ["tiktok", "TikTok"]];
   var DIV = { etapa: "ideia", links: null, news: null };
   function posts() { return S.marketing || []; }
-  function telaDivulgacao() {
-    var lista = posts(), h = hoje(), cont = {};
-    lista.forEach(function (p) { cont[p.status || "ideia"] = (cont[p.status || "ideia"] || 0) + 1; });
-    var prox = lista.filter(function (p) { return p.status === "aprovado" && p.data; }).sort(function (a, b) { return (a.data + (a.hora || "")) < (b.data + (b.hora || "")) ? -1 : 1; });
-    var vis = lista.filter(function (p) { return (p.status || "ideia") === DIV.etapa; }).sort(function (a, b) { return DIV.etapa === "ideia" ? (String(b.criado) < String(a.criado) ? -1 : 1) : (String(a.data || "9") < String(b.data || "9") ? (DIV.etapa === "publicado" ? 1 : -1) : (DIV.etapa === "publicado" ? -1 : 1)); });
-    var linhaPost = function (p) {
-      var atras = p.status === "aprovado" && p.data && p.data < h;
-      return '<div class="linha toca" data-post="' + esc(p.id) + '"><div class="o"><b>' + esc(p.titulo || "Sem título") + "</b><small" + (atras ? ' style="color:var(--atraso);font-weight:900"' : "") + ">" + esc([p.formato, p.rede, p.data ? (atras ? "era pra " : "") + quandoRel(p.data) + (p.hora ? " " + p.hora : "") : ""].filter(Boolean).join(", ")) + "</small></div>" + IC.seta + "</div>";
-    };
-    var a = '<div class="nav-dia">' + voltaEstudio() + '</div><div class="cab"><h1>Divulgação</h1></div>' +
-      '<div class="nums">' + ETAPAS_POST.map(function (e) { return '<div class="num"><b>' + (cont[e[0]] || 0) + "</b><span>" + e[1].toLowerCase() + "</span></div>"; }).join("") + "</div>" +
-      '<button class="bt acento cheio" data-novopost>' + IC.mais + "Nova ideia de post</button>" +
-      (prox.length ? '<div class="secao">Próximos a publicar</div><div class="cartao lista">' + prox.slice(0, 5).map(linhaPost).join("") + "</div>" : "") +
-      '<div class="seg" role="group">' + ETAPAS_POST.map(function (e) { return '<button data-etapa="' + e[0] + '" aria-pressed="' + (DIV.etapa === e[0]) + '">' + e[1] + "</button>"; }).join("") + "</div>" +
-      (vis.length ? '<div class="cartao lista">' + vis.map(linhaPost).join("") + "</div>" : '<p class="vazio">Nada aqui.</p>');
-    if (!DIV.links) { DIV.links = "carregando"; api("/api/links/stats").then(function (d) { DIV.links = d.stats || []; }).catch(function () { DIV.links = []; }).then(function () { if (estudioSub === "divulgacao") render(true); }); }
-    if (!DIV.news) { DIV.news = "carregando"; api("/api/newsletter/lista").then(function (d) { DIV.news = d; }).catch(function () { DIV.news = {}; }).then(function () { if (estudioSub === "divulgacao") render(true); }); }
-    var porSlug = {};
-    if (Array.isArray(DIV.links)) DIV.links.forEach(function (s) { var k = String(s.slug || ""); (porSlug[k] = porSlug[k] || { n: 0, origens: [] }); porSlug[k].n += Number(s.n) || 0; porSlug[k].origens.push([s.origem || "sem origem", Number(s.n) || 0]); });
-    var ativos = DIV.news && typeof DIV.news === "object" && DIV.news.ativos != null ? DIV.news.ativos : null;
-    var b = '<div class="secao">Newsletter</div><div class="cartao lista"><div class="linha toca" data-news><div class="o"><b>Escrever e enviar</b><small>' + (ativos == null ? "" : ativos + (ativos === 1 ? " contato ativo" : " contatos ativos")) + "</small></div>" + IC.seta + "</div></div>" +
-      '<div class="secao">Links da bio</div>' +
-      (DIV.links === "carregando" ? '<div class="esqueleto"></div>' : '<div class="cartao lista">' + LINKS_BIO.map(function (l) {
-        var s = porSlug[l[0]] || { n: 0, origens: [] };
-        var ori = s.origens.sort(function (x, y) { return y[1] - x[1]; }).slice(0, 3).map(function (o) { return o[0] + " " + o[1]; }).join(", ");
-        return '<div class="linha"><div class="o"><b>' + esc(l[1]) + "</b><small>maratu.com.br/go/" + esc(l[0]) + (ori ? ", " + esc(ori) : "") + '</small></div><span class="valor">' + s.n + '</span><button class="ico-bt copia-link" data-golink="' + esc(l[0]) + '" aria-label="Copiar o link">' + IC.copia + "</button></div>";
-      }).join("") + "</div>");
-    return colunas(a, b);
-  }
   function ligarDivulgacao(raiz) {
     raiz.querySelectorAll("[data-etapa]").forEach(function (b) { b.onclick = function () { DIV.etapa = b.dataset.etapa; render(true); }; });
     raiz.querySelectorAll("[data-post]").forEach(function (b) { b.onclick = function () { var p = porId(posts(), b.dataset.post); if (p) folhaPost(p); }; });
@@ -2333,30 +2274,32 @@
   /* --- busca: caixa no topo da tela, acha registro e roda comando --- */
   var buscaAberta = false, buscaSel = 0, buscaLista = [];
   function norm(s) { return semAcento(s).toLowerCase(); }
+  function vaiAba(v, a) { return function () { irAba(v, a); }; }
   var COMANDOS = [
-    ["Ir", "Hoje", function () { irPara("hoje"); }, IC.dir], ["Ir", "Sites", function () { irPara("sites"); }, IC.site],
-    ["Ir", "Loja", function () { irPara("loja"); }, IC.entrada], ["Ir", "Agenda", function () { irPara("agenda"); }, IC.evento],
     ["Lançar", "Entrada", function () { folhaLancar("entrada"); }, IC.entrada], ["Lançar", "Evento", function () { folhaLancar("evento", vista === "agenda" ? diaSel : null); }, IC.evento],
     ["Lançar", "Lead", function () { folhaLancar("lead"); }, IC.lead], ["Lançar", "Carnê", function () { folhaLancar("carne"); }, IC.carne],
-    ["Lançar", "Lembrete", function () { folhaLancar("nota"); }, IC.nota],
-    ["Lançar", "Orçamento", function () { folhaLancar("orcamento"); }, IC.calc],
-    ["Oficina", "Selos", function () { abrirSelos(); }, IC.selo],
-    ["Oficina", "Ler selo", function () { abrirSelos("vincular"); }, IC.selo],
-    ["Oficina", "Impressora", function () { folhaImpressora(); }, IC.imp],
-    ["Oficina", "Custos", function () { folhaCustos(); }, IC.calc],
-    ["Lançar", "Lista de orçamentos", function () { folhaOrcamentos(); }, IC.calc],
-    ["Loja", "Ordem das faixas", function () { carregarProdutos().then(folhaFaixas); }, IC.entrada],
-    ["Loja", "Buscar entradas no banco", function () { buscarEntradas(null); }, IC.entrada],
-    ["Estúdio", "Divulgação", function () { DIV.links = null; DIV.news = null; estudioSub = "divulgacao"; if (vista === "estudio") render(true); else irPara("estudio"); }, IC.post],
-    ["Estúdio", "Newsletter", function () { abrirNews(); }, IC.envelope],
+    ["Lançar", "Lembrete", function () { folhaLancar("nota"); }, IC.nota], ["Lançar", "Orçamento", function () { folhaLancar("orcamento"); }, IC.calc],
     ["Lançar", "Post", function () { folhaLancar("post"); }, IC.post],
-    ["Estúdio", "Números", function () { estudioSub = "numeros"; if (vista === "estudio") render(true); else irPara("estudio"); }, IC.dir],
-    ["Estúdio", "Empresa e MEI", function () { estudioSub = "empresa"; if (vista === "estudio") render(true); else irPara("estudio"); }, IC.dir],
-    ["Estúdio", "Relatório da semana", function () { folhaRelatorio(); }, IC.nota],
-    ["Loja", "Peça nova", function () { lojaSeg = "produtos"; irPara("loja"); carregarProdutos().then(function () { folhaProduto(null); }); }, IC.mais],
-    ["Ir", "Produtos", function () { lojaSeg = "produtos"; if (vista === "loja") render(true); else irPara("loja"); }, IC.entrada],
+    ["Ir", "Hoje", function () { irPara("hoje"); }, IC.dir],
+    ["Sites", "Abordar", vaiAba("sites", "abordar"), IC.site], ["Sites", "Prospectar", vaiAba("sites", "prospectar"), IC.site],
+    ["Sites", "Conversas e leads", vaiAba("sites", "conversas"), IC.lead], ["Sites", "Clientes de site", vaiAba("sites", "clientes"), IC.site],
+    ["Sites", "Novo cliente", function () { folhaCliente(null); }, IC.mais],
     ["Sites", "Buscar negócios", function () { folhaBuscarNegocios(); }, IC.site], ["Sites", "Escolher na reserva", function () { folhaReserva(); }, IC.site],
-    ["Ir", "Estúdio", function () { irPara("estudio"); }, IC.dir], ["Estúdio", "Ligar notificações", function () { irPara("estudio"); }, IC.dir]
+    ["Finanças", "Caixa", vaiAba("financas", "caixa"), IC.entrada], ["Finanças", "A receber", vaiAba("financas", "receber"), IC.carne],
+    ["Finanças", "MEI e DAS", vaiAba("financas", "mei"), IC.entrada], ["Finanças", "Metas e custos", vaiAba("financas", "metas"), IC.calc],
+    ["Finanças", "Buscar entradas no banco", function () { buscarEntradas(null); }, IC.entrada],
+    ["Finanças", "Relatório da semana", function () { folhaRelatorio(); }, IC.nota],
+    ["Ir", "Agenda", function () { irPara("agenda"); }, IC.evento],
+    ["Oficina", "Peças", vaiAba("oficina", "pecas"), IC.entrada], ["Oficina", "Pedidos", vaiAba("oficina", "pedidos"), IC.entrada],
+    ["Oficina", "Orçamentos", vaiAba("oficina", "orcamentos"), IC.calc], ["Oficina", "Produção", vaiAba("oficina", "producao"), IC.imp],
+    ["Oficina", "Peça nova", function () { irAba("oficina", "pecas"); carregarProdutos().then(function () { folhaProduto(null); }); }, IC.mais],
+    ["Oficina", "Ordem das faixas", function () { carregarProdutos().then(folhaFaixas); }, IC.entrada],
+    ["Oficina", "Selos", function () { abrirSelos(); }, IC.selo], ["Oficina", "Ler selo", function () { abrirSelos("vincular"); }, IC.selo],
+    ["Oficina", "Impressora", function () { irAba("oficina", "producao"); }, IC.imp],
+    ["Divulgação", "Conteúdo", vaiAba("divulgacao", "conteudo"), IC.post], ["Divulgação", "Newsletter", vaiAba("divulgacao", "newsletter"), IC.envelope],
+    ["Divulgação", "Links da bio", vaiAba("divulgacao", "links"), IC.copia], ["Divulgação", "Números", vaiAba("divulgacao", "numeros"), IC.dir],
+    ["Ir", "Ajustes", function () { irPara("ajustes"); }, IC.engrenagem], ["Ajustes", "Ligar notificações", function () { irPara("ajustes"); }, IC.engrenagem],
+
   ];
   function abrirBusca() {
     if (folhaAberta) fecharFolha();
@@ -2392,6 +2335,7 @@
       (PROD.lista || []).forEach(function (pr) { if (tem(pr.nome, pr.subtitulo, pr.id)) achados.push({ tipo: "loja", rot: "Peça", tit: pr.nome, sub: nomeFaixa(pr.subcategoria) + ", " + brl(num(pr.preco)), fn: function () { folhaProduto(pr); } }); });
       S.lancamentos.forEach(function (l) { if (tem(l.label)) achados.push({ tipo: "feito", rot: "Entrada", tit: tituloEntrada(l), sub: dm(l.data) + ", " + brl(num(l.valor)), fn: function () { folhaEntrada(l); } }); });
       (S.marketing || []).forEach(function (p) { if (tem(p.titulo, p.ideia)) achados.push({ tipo: "post", rot: "Post", tit: p.titulo, sub: [p.formato, p.data ? dm(p.data) : ""].filter(Boolean).join(", "), fn: function () { folhaPost(p); } }); });
+      clientes().forEach(function (c) { if (tem(c.nome, c.contato, c.tipo, c.notas)) achados.push({ tipo: "site", rot: "Cliente", tit: c.nome, sub: [c.tipo, (ETAPAS_CLI.filter(function (x) { return x[0] === c.etapa; })[0] || [])[1]].filter(Boolean).join(", "), fn: function () { folhaCliente(c); } }); });
       S.notas.forEach(function (n) { if (tem(n.titulo, n.detalhe)) achados.push({ tipo: "nota", rot: "Lembrete", tit: n.titulo, sub: n.data ? dm(n.data) : "", fn: function () { folhaNota(n); } }); });
       var porTipo = {};
       grupo("Resultados", achados.filter(function (a) { porTipo[a.rot] = (porTipo[a.rot] || 0) + 1; return porTipo[a.rot] <= 6; }).slice(0, 30));
@@ -2450,7 +2394,7 @@
       ajustes.push = r[0]; ajustes.feed = r[1] && r[1].feedUrl || null;
       ajustes.totp = r[2] ? !!r[2].enabled : null; ajustes.passkeys = r[3] && r[3].passkeys ? r[3].passkeys.length : null;
       ajustes.carregado = true;
-      if (vista === "estudio") render(true);
+      if (vista === "ajustes") render(true);
     });
   }
   function ligarPush() {
@@ -2473,45 +2417,6 @@
       .then(function () { ajustes.push = null; ajustes.pushMsg = ""; render(true); aviso("Notificações desligadas"); })
       .catch(function () { aviso("Não desligou. Tente de novo."); });
   }
-  var ATALHOS = [
-    ["Números", "Site, Instagram e relatório", "numeros", '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>'],
-    ["Divulgação", "Conteúdo, newsletter e links", "divulgacao", '<path d="M3 11l18-7v16L3 13z"/><path d="M7 13v5a2 2 0 0 0 4 0v-4"/>'],
-    ["Empresa", "MEI, DAS e limite do ano", "empresa", '<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>'],
-    ["Selos", "Gerar, ler e vincular", "selos", ""],
-    ["Impressora", "Estado e últimas impressões", "impressora", ""],
-    ["Custos", "Preço da peça e do pôster", "custos", ""]
-  ];
-  function telaEstudio() {
-    if (estudioSub === "empresa") return telaEmpresa();
-    if (estudioSub === "numeros") return telaNumeros();
-    if (estudioSub === "divulgacao") return telaDivulgacao();
-    if (!ajustes.carregado) carregarAjustes();
-    var tema = ""; try { tema = localStorage.getItem("maratu.painel.tema") || ""; } catch (e) {}
-    var est = estadoPush(), podeLigar = est === "ligadas" || est === "desligadas";
-    var linhaAj = function (attr, tit, estado, sub, seta) {
-      return '<div class="linha' + (attr ? ' toca" ' + attr : '"') + '><div class="o"><b>' + tit + "</b>" + (sub ? "<small>" + esc(sub) + "</small>" : "") + '</div><span class="estado-aj">' + esc(estado || "") + "</span>" + (seta === false ? "" : IC.seta) + "</div>";
-    };
-    var a = '<div class="cab"><h1>Estúdio</h1></div>' +
-      '<div class="atalhos">' + ATALHOS.map(function (t) {
-        if (t[2].charAt(0) !== "/") return '<button class="cartao atalho" data-atalho="' + t[2] + '">' + (t[3] ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + t[3] + "</svg>" : t[2] === "selos" ? IC.selo : t[2] === "impressora" ? IC.imp : IC.calc) + "<b>" + t[0] + "</b><small>" + t[1] + "</small></button>";
-        return '<a class="cartao atalho" href="' + t[2] + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + t[3] + "</svg><b>" + t[0] + "</b><small>" + t[1] + '</small><span class="no-antigo">painel antigo</span></a>';
-      }).join("") + "</div>";
-    var b = '<div class="secao">Ajustes</div>' +
-      '<div class="cartao lista">' +
-        '<div class="linha"><div class="o"><b>Cor</b></div>' + pilulas("tema", [["", "Areia"], ["laranja", "Laranja"], ["noite", "Noite"]], tema) + "</div>" +
-        linhaAj(podeLigar ? 'data-aj="push"' : "", "Notificações", est, ajustes.pushMsg, podeLigar) +
-        (ajustes.push ? linhaAj('data-aj="teste"', "Mandar notificação de teste", "", "", false) : "") +
-        linhaAj(ajustes.feed ? 'data-aj="feed"' : "", "Agenda no Apple Calendar", ajustes.feed ? "assinar" : "", "") +
-        linhaAj('data-aj="passkey"', "Entrar com Face ID", ajustes.passkeys == null ? "" : ajustes.passkeys ? ajustes.passkeys + (ajustes.passkeys === 1 ? " aparelho" : " aparelhos") : "nenhum", "") +
-        linhaAj('data-aj="2fa"', "Verificação em duas etapas", ajustes.totp == null ? "" : ajustes.totp ? "ligada" : "desligada", "") +
-      "</div>" +
-      '<div class="cartao lista">' +
-        linhaAj('data-aj="atualizar"', "Atualizar os dados", "", "", false) +
-        linhaAj('data-aj="antigo"', "Abrir o painel antigo", "", "", true) +
-        '<div class="linha toca" data-aj="sair"><div class="o"><b class="perigo">Sair</b></div></div>' +
-      "</div>";
-    return colunas(a, b);
-  }
   function ligarEstudio(raiz) {
     var tp = raiz.querySelector('[data-pil="tema"]');
     if (tp) {
@@ -2523,11 +2428,6 @@
         corDaBarra();
       });
     }
-    raiz.querySelectorAll("[data-atalho]").forEach(function (el) { el.onclick = function () { var k = el.dataset.atalho; if (k === "selos") abrirSelos(); else if (k === "impressora") folhaImpressora(); else if (k === "numeros" || k === "empresa" || k === "divulgacao") { if (k === "divulgacao") { DIV.links = null; DIV.news = null; } estudioSub = k; window.scrollTo(0, 0); render(false, "dir"); } else folhaCustos(); }; });
-    raiz.querySelectorAll("[data-estsub]").forEach(function (el) { el.onclick = function () { estudioSub = el.dataset.estsub; window.scrollTo(0, 0); render(false, "esq"); }; });
-    if (estudioSub === "empresa") ligarEmpresa(raiz);
-    if (estudioSub === "numeros") ligarNumeros(raiz);
-    if (estudioSub === "divulgacao") ligarDivulgacao(raiz);
     raiz.querySelectorAll("[data-aj]").forEach(function (el) {
       var k = el.dataset.aj;
       if (k === "sair") { confirmaDuplo(el, "Toque de novo pra sair", sair); return; }
@@ -2549,6 +2449,475 @@
     location.replace("/login.html?logout=1");
   }
 
+  /* ---------- áreas com abas: Sites, Finanças, Oficina, Divulgação ---------- */
+  var ABAS = {
+    sites: [["abordar", "Abordar"], ["prospectar", "Prospectar"], ["conversas", "Conversas"], ["clientes", "Clientes"]],
+    financas: [["caixa", "Caixa"], ["receber", "A receber"], ["mei", "MEI"], ["metas", "Metas"]],
+    oficina: [["pecas", "Peças"], ["pedidos", "Pedidos"], ["orcamentos", "Orçamentos"], ["producao", "Produção"]],
+    divulgacao: [["conteudo", "Conteúdo"], ["newsletter", "Newsletter"], ["links", "Links"], ["numeros", "Números"]]
+  };
+  var NOME_AREA = { hoje: "Hoje", sites: "Sites", financas: "Finanças", agenda: "Agenda", oficina: "Oficina", divulgacao: "Divulgação", ajustes: "Ajustes" };
+  var aba = Object.assign({ sites: "abordar", financas: "caixa", oficina: "pecas", divulgacao: "conteudo" }, lerLS("maratu.painel.abas", {}));
+  function abaDe(v) { var l = ABAS[v] || [], a = aba[v]; return l.some(function (x) { return x[0] === a; }) ? a : (l[0] || [])[0]; }
+  function irAba(v, a) {
+    aba[v] = a; gravarLS("maratu.painel.abas", aba);
+    if (v === "oficina") PROD.ordenando = false;
+    if (vista !== v) { irPara(v); return; }
+    window.scrollTo(0, 0); render(true);
+  }
+  function abasHTML(v, cont) {
+    return '<div class="seg abas" role="tablist">' + ABAS[v].map(function (x) {
+      var n = cont && cont[x[0]];
+      return '<button role="tab" data-aba="' + v + ":" + x[0] + '" aria-pressed="' + (abaDe(v) === x[0]) + '">' + x[1] + (n ? ' <span class="n">' + n + "</span>" : "") + "</button>";
+    }).join("") + "</div>";
+  }
+  function cabArea(v, sub, extra) { return '<div class="cab cab-area"><h1>' + NOME_AREA[v] + "</h1>" + (sub ? "<p>" + sub + "</p>" : "") + (extra || "") + "</div>"; }
+  /* número clicável: leva pra aba ou abre algo */
+  function numBt(n, rot, attr) { return '<button class="num num-bt" ' + attr + "><b>" + n + "</b><span>" + rot + "</span></button>"; }
+  function ligarArea(raiz) {
+    raiz.querySelectorAll("[data-aba]").forEach(function (b) { b.onclick = function () { var p = b.dataset.aba.split(":"); irAba(p[0], p[1]); }; });
+    raiz.querySelectorAll("[data-cli]").forEach(function (b) { b.onclick = function (ev) { ev.stopPropagation(); var c = porId(clientes(), b.dataset.cli); if (c) folhaCliente(c); }; });
+    raiz.querySelectorAll("[data-clinovo]").forEach(function (b) { b.onclick = function () { folhaCliente(null); }; });
+    raiz.querySelectorAll("[data-clirecebi]").forEach(function (b) { b.onclick = function (ev) { ev.stopPropagation(); var c = porId(clientes(), b.dataset.clirecebi); if (c) folhaRecebiCliente(c, b.dataset.qual || "site"); }; });
+    raiz.querySelectorAll("[data-leadst]").forEach(function (b) { b.onclick = function () { leadFiltro = b.dataset.leadst; render(true); }; });
+    raiz.querySelectorAll("[data-esc]").forEach(function (b) { b.onclick = function () { var p = porId(S.prospec, b.dataset.esc); if (p) acaoProspec(p, "escolher", "Escolhido pra virar site"); }; });
+    raiz.querySelectorAll("[data-insta]").forEach(function (b) { b.onclick = function () { var p = porId(S.prospec, b.dataset.insta); if (p) abrir(igUrl(p)); }; });
+    raiz.querySelectorAll("[data-buscatira]").forEach(function (b) {
+      confirmaDuplo(b, "Tirar?", function () {
+        var i = Number(b.dataset.buscatira); S.buscas = S.buscas.filter(function (x, j) { return j !== i; }); render(true); aviso("Busca semanal tirada");
+        api("/api/prospec/buscas", { method: "PUT", body: { buscas: S.buscas } }).catch(function () { aviso("Não salvou. Confira a internet."); });
+      });
+    });
+    raiz.querySelectorAll("[data-orcapaga]").forEach(function (b) {
+      confirmaDuplo(b, "Apagar?", function () {
+        var id = b.dataset.orcapaga; S.orcamentos = (S.orcamentos || []).filter(function (x) { return String(x.id) !== id; });
+        render(true); aviso("Orçamento apagado");
+        gravarTabela("orcamentos", function (a) { return a.filter(function (x) { return String(x.id) !== id; }); });
+      });
+    });
+    raiz.querySelectorAll("[data-selos]").forEach(function (b) { b.onclick = function () { abrirSelos(b.dataset.selos || undefined); }; });
+    raiz.querySelectorAll("[data-custos]").forEach(function (b) { b.onclick = folhaCustos; });
+    raiz.querySelectorAll("[data-newsst]").forEach(function (b) {
+      b.onclick = function () {
+        var i = porId(DIV.news.inscritos || [], b.dataset.newsst); if (!i) return;
+        var novo = i.ativo ? 0 : 1; i.ativo = novo; DIV.news.ativos = (DIV.news.inscritos || []).filter(function (x) { return x.ativo; }).length; render(true);
+        api("/api/newsletter/status", { method: "POST", body: { id: i.id, ativo: !!novo } }).catch(function () { i.ativo = novo ? 0 : 1; render(true); aviso("Não salvou. Confira a internet."); });
+      };
+    });
+    raiz.querySelectorAll("[data-mais]").forEach(function (b) { b.onclick = function () { fecharFolha(); irPara(b.dataset.mais); }; });
+    if (vista === "divulgacao") ligarDivulgacao(raiz);
+    if (vista === "divulgacao" && abaDe("divulgacao") === "numeros") ligarNumeros(raiz);
+    if (vista === "financas" && abaDe("financas") === "mei") ligarEmpresa(raiz);
+    if (vista === "ajustes") ligarEstudio(raiz);
+  }
+
+  /* ---------- Sites ---------- */
+  var leadFiltro = "ativos";
+  function telaSites() {
+    var g = prospecGrupos(), s = semanaAbordagem(), a = abaDe("sites");
+    var leadsAtivos = S.leads.filter(function (l) { return l.status !== "fechado" && l.status !== "perdido"; });
+    var emObra = clientes().filter(function (c) { return c.etapa !== "noar"; }).length;
+    var topo = cabArea("sites", S.uso ? "Google " + (Number(S.uso.n) || 0) + " de " + (Number(S.teto) || 0) + " no mês" : "") +
+      abasHTML("sites", { abordar: g.doDia.length, conversas: leadsAtivos.length, clientes: emObra });
+    if (a === "prospectar") return topo + sitesProspectar(g);
+    if (a === "conversas") return topo + sitesConversas();
+    if (a === "clientes") return topo + sitesClientes();
+    var itens = itensHoje().filter(function (i) { return i.tipo === "site"; });
+    var esq = metasSites() +
+      '<div class="nums">' + numBt(g.doDia.length, "pra hoje", 'data-rola="filaSites"') + numBt(s.resp, "respostas na semana", 'data-aba="sites:conversas"') + numBt(g.noAr.length, "no ar", 'data-rola="noAr"') + "</div>" +
+      (itens.length ? '<div class="secao" id="filaSites">Pra hoje</div><div class="fila">' + itens.map(cartaHTML).join("") + "</div>" :
+        '<div class="cartao vazio-acao" id="filaSites"><b>Nenhum envio pra hoje</b><button class="bt acento" data-aba="sites:prospectar">Escolher novos</button></div>');
+    var dir = (g.noAr.length ? '<div class="secao" id="noAr">No ar <small>' + g.noAr.length + '</small></div><div class="cartao lista">' + g.noAr.slice().sort(function (x, y) { return (Number(y.ex_vistas) || 0) - (Number(x.ex_vistas) || 0); }).map(function (p) {
+        var n = Number(p.ex_vistas) || 0;
+        return '<div class="linha toca" data-site="' + esc(p.id) + '"><div class="o"><b>' + esc(p.nome) + "</b><small>" + (n ? "abriu " + n + "x" + (p.ex_ultima ? ", última " + quandoRel(diaLocal(p.ex_ultima)) : "") : "não abriu ainda") + (p.ex_expira ? ", sai do ar em " + dm(String(p.ex_expira).slice(0, 10)) : "") + "</small></div>" + IC.seta + "</div>";
+      }).join("") + "</div>" : "") +
+      (g.depois.length ? '<div class="secao">Aguardando <small>' + g.depois.length + '</small></div><div class="cartao lista">' + g.depois.slice().sort(function (x, y) { return (x.proximo || "9") < (y.proximo || "9") ? -1 : 1; }).map(function (p) {
+        return '<div class="linha toca" data-site="' + esc(p.id) + '"><div class="o"><b>' + esc(p.nome) + "</b><small>" + PASSO[Math.min(Number(p.passo) || 0, 3)] + (p.proximo ? " em " + dm(p.proximo) : "") + "</small></div>" + IC.seta + "</div>";
+      }).join("") + "</div>" : "");
+    if (!dir) dir = '<div class="secao">No ar</div><p class="vazio">Nenhum site no ar.</p>';
+    return topo + colunas(esq, dir);
+  }
+  function sitesProspectar(g) {
+    var res = g.reserva.slice().sort(function (a, b) { return (Number(b.seguidores) || 0) - (Number(a.seguidores) || 0) || (Number(b.avaliacoes) || 0) - (Number(a.avaliacoes) || 0); });
+    var esq = '<div class="nums">' + numBt(res.length, "na reserva", "data-reserva") + numBt(g.escolhidos.length, "escolhidos", 'data-rola="escolhidos"') + numBt((S.buscas || []).length, "buscas semanais", 'data-rola="buscasSem"') + "</div>" +
+      '<div class="grade-bts"><button class="bt" data-reserva>Ver a reserva toda</button><button class="bt acento" data-buscar>Buscar negócios</button></div>' +
+      '<div class="secao" id="escolhidos">Escolhidos pra virar site <small>' + g.escolhidos.length + "</small></div>" +
+      (g.escolhidos.length ? '<div class="cartao lista">' + g.escolhidos.map(function (p) {
+        return '<div class="linha"><div class="o"><b>' + esc(p.nome) + "</b><small>" + esc([p.consulta || p.ramo, p.cidade].filter(Boolean).join(", ")) + '</small></div><button class="bt" data-devolver="' + esc(p.id) + '">Devolver</button></div>';
+      }).join("") + "</div>" : '<p class="vazio">Nenhum escolhido.</p>') +
+      '<div class="secao" id="buscasSem">Buscas toda segunda</div>' +
+      ((S.buscas || []).length ? '<div class="cartao lista">' + S.buscas.map(function (b, i) {
+        return '<div class="linha"><div class="o"><b>' + esc(b.consulta) + "</b><small>" + esc(b.cidade === "capitais" ? "as 27 capitais" : b.cidade === "grandes" ? "as 40 maiores cidades" : b.cidade) + '</small></div><button class="ico-bt copia-link" data-buscatira="' + i + '" aria-label="Tirar">' + IC.x + "</button></div>";
+      }).join("") + "</div>" : '<p class="vazio">Nenhuma busca semanal.</p>');
+    var dir = '<div class="secao">Melhores da reserva</div>' + (res.length ? '<div class="cartao lista">' + res.slice(0, 12).map(function (p) {
+      var meta = [p.consulta || p.ramo, p.cidade, p.seguidores ? Number(p.seguidores).toLocaleString("pt-BR") + " seguidores" : ""].filter(Boolean).join(", ");
+      return '<div class="linha"><div class="o"><b>' + esc(p.nome) + "</b><small>" + esc(meta) + '</small></div><button class="bt" data-insta="' + esc(p.id) + '" aria-label="Instagram">' + IC.ig + '</button><button class="bt preto" data-esc="' + esc(p.id) + '">Escolher</button></div>';
+    }).join("") + "</div>" + (res.length > 12 ? '<button class="bt-link" data-reserva style="justify-self:start;color:var(--tinta-sobre-tela);">Mais ' + (res.length - 12) + " na reserva</button>" : "") :
+      '<div class="cartao vazio-acao"><b>A reserva está vazia</b><button class="bt acento" data-buscar>Buscar negócios</button></div>');
+    return colunas(esq, dir);
+  }
+  var STL = { novo: ["Novo", "t-site"], conversando: ["Conversando", "t-lead"], fechado: ["Fechado", "t-feito"], perdido: ["Perdido", "t-loja"] };
+  function sitesConversas() {
+    var cont = { ativos: 0, novo: 0, conversando: 0, fechado: 0, perdido: 0 };
+    S.leads.forEach(function (l) { cont[l.status] = (cont[l.status] || 0) + 1; if (l.status !== "fechado" && l.status !== "perdido") cont.ativos++; });
+    var vis = S.leads.filter(function (l) { return leadFiltro === "ativos" ? l.status !== "fechado" && l.status !== "perdido" : l.status === leadFiltro; })
+      .sort(function (a, b) { return (a.followup || "9") < (b.followup || "9") ? -1 : 1; });
+    if (leadFiltro === "fechado" || leadFiltro === "perdido") vis.reverse();
+    var temCli = {}; clientes().forEach(function (c) { if (c.lead_id) temCli[c.lead_id] = 1; });
+    return '<div class="filtros">' + [["ativos", "Em aberto"], ["novo", "Novos"], ["conversando", "Conversando"], ["fechado", "Fechados"], ["perdido", "Perdidos"]].map(function (x) {
+        return '<button class="chip-bt" data-leadst="' + x[0] + '" aria-pressed="' + (leadFiltro === x[0]) + '">' + x[1] + ' <span class="n">' + (cont[x[0]] || 0) + "</span></button>";
+      }).join("") + "</div>" +
+      '<button class="bt acento cheio" data-novo="lead">' + IC.mais + "Novo lead</button>" +
+      (vis.length ? '<div class="cartao lista">' + vis.map(function (l) {
+        var st = STL[l.status] || [l.status || "", "t-loja"], fim = l.status === "fechado" || l.status === "perdido";
+        var atras = l.followup && l.followup < hoje() && !fim;
+        var quando = l.followup && l.status !== "perdido" ? (l.status === "fechado" ? "fechado em " : atras ? "atrasado desde " : "falar " ) + (l.status === "fechado" || atras ? dm(l.followup) : quandoRel(l.followup)) : "";
+        return '<div class="linha toca" data-lead="' + esc(l.id) + '"><div class="o"><b>' + esc(l.nome || "Sem nome") + "</b><small" + (atras ? ' style="color:var(--atraso);font-weight:900"' : "") + ">" + esc([l.interesse, quando, temCli[l.id] ? "virou cliente" : ""].filter(Boolean).join(", ")) + '</small></div><span class="tipo ' + st[1] + '">' + esc(st[0]) + "</span></div>";
+      }).join("") + "</div>" : '<p class="vazio">Nenhum lead aqui.</p>');
+  }
+
+  /* ---------- Clientes de site: contrato, etapa e mensalidade ---------- */
+  var TIPOS_SITE = ["Página", "Site", "Site + painel", "Painel", "Portfólio"];
+  var ETAPAS_CLI = [["briefing", "Briefing"], ["fazendo", "Fazendo"], ["aprovacao", "Aprovação"], ["noar", "No ar"]];
+  function clientes() { return S.clientes || []; }
+  function saldoCli(c) { return Math.max(0, num(c.valor) - num(c.pago)); }
+  function mesDe(iso) { return String(iso || hoje()).slice(0, 7); }
+  function nomeMes(ym) { return MESES[Number(String(ym).slice(5, 7)) - 1] || ""; }
+  /* a mensalidade do mês conta a partir do dia combinado, e só depois de o site ir pro ar */
+  function mensalDevida(c, ym) {
+    ym = ym || mesDe();
+    if (!(num(c.manut_valor) > 0) || c.etapa !== "noar") return false;
+    if (c.manut_inicio && c.manut_inicio > ym) return false;
+    if (ym === mesDe() && Number(hoje().slice(8)) < Math.min(28, Math.max(1, Number(c.manut_dia) || 10))) return false;
+    return (c.manut_pagos || []).indexOf(ym) < 0;
+  }
+  function aReceberSites() { return clientes().reduce(function (a, c) { return a + saldoCli(c) + (mensalDevida(c) ? num(c.manut_valor) : 0); }, 0); }
+  function etapaTag(c) { var e = ETAPAS_CLI.filter(function (x) { return x[0] === c.etapa; })[0] || ETAPAS_CLI[0]; return '<span class="tipo ' + (c.etapa === "noar" ? "t-feito" : c.etapa === "aprovacao" ? "t-lead" : "t-site") + '">' + e[1] + "</span>"; }
+  function linhaCliente(c) {
+    var saldo = saldoCli(c), info = [c.tipo, num(c.valor) ? (saldo ? "falta " + brlCurtoV(saldo) : "pago") : "", num(c.manut_valor) ? brlCurtoV(num(c.manut_valor)) + " por mês" + (mensalDevida(c) ? ", " + nomeMes(mesDe()) + " em aberto" : "") : ""].filter(Boolean).join(", ");
+    return '<div class="linha toca" data-cli="' + esc(c.id) + '"><div class="o"><b>' + esc(c.nome || "Cliente") + "</b><small>" + esc(info) + "</small></div>" + etapaTag(c) + "</div>";
+  }
+  function sitesClientes() {
+    var l = clientes(), obra = l.filter(function (c) { return c.etapa !== "noar"; }), noar = l.filter(function (c) { return c.etapa === "noar"; });
+    var ordem = { briefing: 0, fazendo: 1, aprovacao: 2 };
+    obra.sort(function (a, b) { return (ordem[a.etapa] || 0) - (ordem[b.etapa] || 0); });
+    var mensal = noar.reduce(function (a, c) { return a + num(c.manut_valor); }, 0);
+    var esq = '<div class="nums">' + numBt(obra.length, "em produção", 'data-rola="cliObra"') + numBt(brlCurtoV(aReceberSites()), "a receber", 'data-aba="financas:receber"') + numBt(brlCurtoV(mensal), "por mês", 'data-rola="cliNoar"') + "</div>" +
+      '<button class="bt acento cheio" data-clinovo>' + IC.mais + "Novo cliente</button>" +
+      '<div class="secao" id="cliObra">Em produção <small>' + obra.length + "</small></div>" +
+      (obra.length ? '<div class="cartao lista">' + obra.map(linhaCliente).join("") + "</div>" : '<p class="vazio">Nenhum site em produção. Um lead que fecha vira cliente pelo botão na ficha dele.</p>');
+    var dir = '<div class="secao" id="cliNoar">No ar <small>' + noar.length + "</small></div>" +
+      (noar.length ? '<div class="cartao lista">' + noar.map(linhaCliente).join("") + "</div>" : '<p class="vazio">Nenhum cliente no ar.</p>');
+    return colunas(esq, dir);
+  }
+  function tipoDoInteresse(t) { t = norm(t); return /painel/.test(t) && /site/.test(t) ? "Site + painel" : /painel/.test(t) ? "Painel" : /portf/.test(t) ? "Portfólio" : /pagina/.test(t) ? "Página" : "Site"; }
+  function folhaCliente(c, base) {
+    var novo = !c; c = c || Object.assign({ etapa: "briefing", tipo: "Site", fechado_em: hoje(), manut_dia: 10 }, base || {});
+    var v = function (x) { return num(x) ? esc(String(num(x)).replace(".", ",")) : ""; }, tel = soDigitos(c.contato), saldo = saldoCli(c);
+    var pagosTxt = (c.manut_pagos || []).slice().sort().reverse().slice(0, 6).map(function (m) { return nomeMes(m).slice(0, 3); }).join(", ");
+    abrirFolha(novo ? "Novo cliente" : c.nome || "Cliente",
+      (!novo ? '<div class="nums" style="grid-template-columns:1fr 1fr;"><div class="num"><b>' + brlCurtoV(num(c.pago)) + '</b><span>recebido de ' + brlCurtoV(num(c.valor)) + '</span></div><div class="num"><b>' + (num(c.manut_valor) ? (mensalDevida(c) ? "em aberto" : "em dia") : "-") + "</b><span>" + (pagosTxt ? "pagou " + esc(pagosTxt) : "mensalidade") + "</span></div></div>" +
+        '<div class="grade-bts">' + (saldo > 0 ? '<button class="bt verde" id="kRec">' + IC.check + "Recebi do projeto</button>" : "") + (mensalDevida(c) ? '<button class="bt verde" id="kMen">' + IC.check + "Mensalidade de " + nomeMes(mesDe()) + "</button>" : "") +
+        (tel.length >= 10 ? '<a class="bt preto" href="' + esc(waLink(c.contato)) + '" target="_blank" rel="noopener">' + IC.wa + "WhatsApp</a>" : "") + (/^https?:\/\//.test(c.site || "") ? '<button class="bt" id="kSite">' + IC.olho + "Ver o site</button>" : "") + "</div>" : "") +
+      campo("Nome", '<input id="kNome" value="' + esc(c.nome || "") + '" autocomplete="off">') +
+      campo("WhatsApp", '<input id="kTel" value="' + esc(c.contato || "") + '" inputmode="tel" autocomplete="off">') +
+      '<div class="rot">O que é</div>' + pilulas("ktipo", TIPOS_SITE.map(function (t) { return [t, t]; }), c.tipo || "Site") +
+      '<div class="rot">Etapa</div>' + pilulas("ketapa", ETAPAS_CLI, c.etapa || "briefing") +
+      '<div class="duas">' + campo("Valor do projeto (R$)", '<input id="kVal" inputmode="decimal" value="' + v(c.valor) + '" autocomplete="off">') + campo("Fechou em", '<input id="kFec" type="date" value="' + esc(c.fechado_em || "") + '">') + "</div>" +
+      (novo ? campo("Já recebi (R$)", '<input id="kPago" inputmode="decimal" autocomplete="off">') : "") +
+      '<div class="duas">' + campo("Mensalidade (R$)", '<input id="kMan" inputmode="decimal" value="' + v(c.manut_valor) + '" autocomplete="off">') + campo("Vence todo dia", '<input id="kDia" type="number" min="1" max="28" inputmode="numeric" value="' + esc(c.manut_dia || 10) + '">') + "</div>" +
+      campo("Endereço do site", '<input id="kUrl" type="url" inputmode="url" value="' + esc(c.site || "") + '" autocomplete="off">') +
+      campo("Notas", '<textarea id="kNot">' + esc(c.notas || "") + "</textarea>") +
+      (novo ? "" : '<button class="bt cheio perigo" id="kApaga">Apagar cliente</button>') +
+      '<div class="fixo"><button class="bt acento cheio" id="kSalva">' + (novo ? "Criar cliente" : "Salvar") + "</button></div>",
+      function (f) {
+        ligaPilulas(f);
+        var q = function (s) { return f.querySelector(s); };
+        if (q("#kRec")) q("#kRec").onclick = function () { fecharFolha(); folhaRecebiCliente(c, "site"); };
+        if (q("#kMen")) q("#kMen").onclick = function () { fecharFolha(); mensalidadePaga(c); };
+        if (q("#kSite")) q("#kSite").onclick = function () { abrir(c.site); };
+        q("#kSalva").onclick = function () {
+          var m = { nome: q("#kNome").value.trim(), contato: q("#kTel").value.trim(), tipo: pil(f, "ktipo") || "Site", etapa: pil(f, "ketapa") || "briefing", valor: num(q("#kVal").value),
+            fechado_em: q("#kFec").value || null, manut_valor: num(q("#kMan").value), manut_dia: Math.min(28, Math.max(1, parseInt(q("#kDia").value, 10) || 10)), site: q("#kUrl").value.trim() || null, notas: q("#kNot").value.trim() || null };
+          if (!m.nome) return q("#kNome").focus();
+          if (m.etapa === "noar" && c.etapa !== "noar" && !c.manut_inicio) m.manut_inicio = somaMesYM(mesDe(), 1);
+          if (novo) {
+            var pago = num(q("#kPago").value), n = Object.assign({ id: uid("c"), criado: new Date().toISOString(), pago: pago, manut_pagos: [], lead_id: c.lead_id || null }, m);
+            if (n.etapa === "noar" && !n.manut_inicio) n.manut_inicio = somaMesYM(mesDe(), 1);
+            S.clientes = clientes().concat([n]); fecharFolha(); aba.sites = "clientes"; gravarLS("maratu.painel.abas", aba); render(true); aviso("Cliente criado");
+            gravarTabela("clientes", function (a) { return a.concat([n]); });
+            if (pago > 0) lancarEntradaCliente(n, pago, "sinal");
+            return;
+          }
+          Object.assign(c, m); fecharFolha(); render(true); aviso("Salvo");
+          gravarTabela("clientes", function (a) { return trocaItem(a, c.id, m); });
+        };
+        if (q("#kApaga")) confirmaDuplo(q("#kApaga"), "Toque de novo pra apagar", function () {
+          fecharFolha(); var antes = clientes().slice();
+          executar("Cliente apagado", function () { S.clientes = clientes().filter(function (x) { return x.id !== c.id; }); }, function () { S.clientes = antes; },
+            function () { gravarTabela("clientes", function (a) { return a.filter(function (x) { return x.id !== c.id; }); }); });
+        });
+      });
+  }
+  function somaMesYM(ym, n) { var p = ym.split("-").map(Number), d = new Date(p[0], p[1] - 1 + n, 1); return d.getFullYear() + "-" + pad2(d.getMonth() + 1); }
+  function lancarEntradaCliente(c, valor, rotulo) {
+    var l = { id: uid("m"), data: hoje(), label: "Site " + (c.nome || "") + ", " + rotulo, valor: valor };
+    S.lancamentos.push(l);
+    gravarTabela("lancamentos", function (a) { return a.concat([l]); });
+    return l;
+  }
+  function folhaRecebiCliente(c, qual) {
+    if (qual === "mensal") { mensalidadePaga(c); return; }
+    var saldo = saldoCli(c);
+    abrirFolha("Recebi de " + (c.nome || "cliente"),
+      campo("Valor", '<input id="rV" class="valor-grande" inputmode="decimal" value="' + (saldo ? esc(String(saldo).replace(".", ",")) : "") + '" autocomplete="off">') +
+      '<p class="sub" style="margin:0;font-size:14px;font-weight:700;">Falta ' + brl(saldo) + " de " + brl(num(c.valor)) + "</p>" +
+      '<div class="fixo"><button class="bt acento cheio" id="rOk">Lançar entrada</button></div>',
+      function (f) {
+        f.querySelector("#rOk").onclick = function () {
+          var v = num(f.querySelector("#rV").value); if (!v) return f.querySelector("#rV").focus();
+          var pago = num(c.pago) + v; c.pago = pago; fecharFolha();
+          lancarEntradaCliente(c, v, pago >= num(c.valor) ? "quitado" : "parcela");
+          conta("carne"); render(true); aviso("Entrou " + brl(v));
+          gravarTabela("clientes", function (a) { return trocaItem(a, c.id, { pago: pago }); });
+        };
+      });
+  }
+  function mensalidadePaga(c) {
+    var ym = mesDe(), antes = (c.manut_pagos || []).slice(), depois = antes.concat([ym]), v = num(c.manut_valor), l = null;
+    conta("carne");
+    executar("Mensalidade de " + nomeMes(ym) + " recebida", function () { c.manut_pagos = depois; }, function () { c.manut_pagos = antes; },
+      function () {
+        l = lancarEntradaCliente(c, v, "mensalidade de " + nomeMes(ym));
+        gravarTabela("clientes", function (a) { return a.map(function (x) { return x.id === c.id ? Object.assign({}, x, { manut_pagos: (x.manut_pagos || []).concat((x.manut_pagos || []).indexOf(ym) < 0 ? [ym] : []) }) : x; }); });
+      });
+  }
+  /* cartões da fila: mensalidade do mês e o resto do projeto depois que o site vai pro ar */
+  function itensClientes() {
+    var out = [], h = hoje(), ym = mesDe();
+    clientes().forEach(function (c) {
+      var tel = soDigitos(c.contato);
+      if (mensalDevida(c)) {
+        var venc = ym + "-" + pad2(Math.min(28, Math.max(1, Number(c.manut_dia) || 10)));
+        out.push({
+          k: "mensal:" + c.id + ":" + ym, tipo: "carne", rot: "Mensalidade", ordem: 1, data: venc,
+          titulo: "Mensalidade do " + (c.nome || "site"), sub: [c.tipo, brlV(num(c.manut_valor))].filter(Boolean).join(", "), quando: quandoRel(venc),
+          acoes: tel.length >= 10 ? '<a class="bt preto" href="' + esc(waLink(c.contato, "Oi, " + (c.nome || "") + "! Passando pra lembrar da mensalidade do site de " + nomeMes(ym) + ", " + brl(num(c.manut_valor)) + ". Pix: " + PIX)) + '" target="_blank" rel="noopener">' + IC.wa + "Cobrar</a>" : "",
+          dir: { rot: "Recebi", fn: function () { mensalidadePaga(c); } },
+          esq: { rot: "Amanhã", fn: function () { adiarCartao("mensal:" + c.id + ":" + ym); } },
+          abre: function () { folhaCliente(c); }
+        });
+      }
+      if (c.etapa === "noar" && saldoCli(c) > 0) {
+        out.push({
+          k: "saldo:" + c.id + ":" + num(c.pago), tipo: "carne", rot: "Site", ordem: 1.2, data: h,
+          titulo: "Receber o resto do " + (c.nome || "site"), sub: "Falta " + brlV(saldoCli(c)) + " de " + brlV(num(c.valor)), quando: "",
+          acoes: tel.length >= 10 ? '<a class="bt preto" href="' + esc(waLink(c.contato)) + '" target="_blank" rel="noopener">' + IC.wa + "WhatsApp</a>" : "",
+          dir: { rot: "Recebi", fn: function () { folhaRecebiCliente(c, "site"); } },
+          esq: { rot: "Depois", fn: function () { adiarCartao("saldo:" + c.id + ":" + num(c.pago), somaDias(h, 3)); } },
+          abre: function () { folhaCliente(c); }
+        });
+      }
+    });
+    return out;
+  }
+
+  /* ---------- Finanças ---------- */
+  function telaFinancas() {
+    var a = abaDe("financas"), r = resumoMes();
+    var cont = { receber: carnesAbertos() + clientes().filter(function (c) { return saldoCli(c) > 0 || mensalDevida(c); }).length };
+    var x = S.extras && S.extras.mei; if (x && x.das_meses) cont.mei = x.das_meses.filter(function (m) { return !m.paid && m.dias_ate_vencimento <= 5; }).length;
+    var topo = cabArea("financas", cap(r.mes) + ", " + brlCurtoV(r.total), '<button class="ico-bt olho" data-olho aria-label="' + (oculto() ? "Mostrar valores" : "Esconder valores") + '" aria-pressed="' + oculto() + '">' + (oculto() ? IC.olhoFechado : IC.olho) + "</button>") + abasHTML("financas", cont);
+    if (a === "receber") return topo + finReceber();
+    if (a === "mei") return topo + telaEmpresa();
+    if (a === "metas") return topo + finMetas();
+    if (pc()) return topo + colunas(lojaCaixa(), '<div class="secao" style="margin-top:6px;">Meta do mês</div>' + cartaoMes(true) + resumoReceber());
+    return topo + lojaCaixa();
+  }
+  function carnesAbertos() {
+    var ids = {}; eventosVivos().forEach(function (e) { if (e.tipo === "cobranca" && !e.feito) ids[kv(e.notas).carne || e.cliente || e.id] = 1; });
+    return Object.keys(ids).length;
+  }
+  function faltaCarne() { var t = 0; eventosVivos().forEach(function (e) { if (e.tipo === "cobranca" && !e.feito) t += num(kv(e.notas).valor); }); return t; }
+  function resumoReceber() {
+    var c = faltaCarne(), s = aReceberSites();
+    return '<div class="secao">A receber<button class="bt-link" data-aba="financas:receber">Ver tudo</button></div><div class="cartao lista">' +
+      '<div class="linha toca" data-aba="financas:receber"><div class="o"><b>Carnês</b><small>' + carnesAbertos() + " em aberto</small></div><span class=\"valor\">" + brlCurtoV(c) + "</span></div>" +
+      '<div class="linha toca" data-aba="financas:receber"><div class="o"><b>Sites</b><small>projetos e mensalidades</small></div><span class="valor">' + brlCurtoV(s) + "</span></div></div>";
+  }
+  function finReceber() {
+    var cl = clientes(), comSaldo = cl.filter(function (c) { return saldoCli(c) > 0; }), manut = cl.filter(function (c) { return num(c.manut_valor) > 0 && c.etapa === "noar"; });
+    var ym = mesDe(), pagas = manut.filter(function (c) { return (c.manut_pagos || []).indexOf(ym) >= 0; }).length;
+    var esq = '<div class="nums">' + numBt(brlCurtoV(faltaCarne() + aReceberSites()), "a receber", 'data-rola="recCarne"') + numBt(carnesAbertos(), "carnês abertos", 'data-rola="recCarne"') + numBt(pagas + "/" + manut.length, "mensalidades de " + nomeMes(ym).slice(0, 3), 'data-rola="recMensal"') + "</div>" +
+      '<div class="secao" id="recCarne">Carnê<button class="bt-link" data-novo="carne">Novo carnê</button></div>' + lojaCarne(true);
+    var dir = '<div class="secao" id="recMensal">Mensalidades de ' + nomeMes(ym) + "</div>" +
+      (manut.length ? '<div class="cartao lista">' + manut.map(function (c) {
+        var paga = (c.manut_pagos || []).indexOf(ym) >= 0, devida = mensalDevida(c);
+        return '<div class="linha toca" data-cli="' + esc(c.id) + '"' + (paga ? ' style="opacity:.6"' : "") + '><div class="o"><b>' + esc(c.nome) + "</b><small>" + (paga ? "paga" : devida ? "venceu dia " + (c.manut_dia || 10) : c.manut_inicio && c.manut_inicio > ym ? "começa em " + nomeMes(c.manut_inicio) : "vence dia " + (c.manut_dia || 10)) + '</small></div><span class="valor">' + brlCurtoV(num(c.manut_valor)) + "</span>" +
+          (devida ? '<button class="bt verde" data-clirecebi="' + esc(c.id) + '" data-qual="mensal">Recebi</button>' : "") + "</div>";
+      }).join("") + "</div>" : '<p class="vazio">Nenhum site com mensalidade.</p>') +
+      '<div class="secao">Projetos com saldo</div>' +
+      (comSaldo.length ? '<div class="cartao lista">' + comSaldo.map(function (c) {
+        return '<div class="linha toca" data-cli="' + esc(c.id) + '"><div class="o"><b>' + esc(c.nome) + "</b><small>recebido " + brlCurtoV(num(c.pago)) + " de " + brlCurtoV(num(c.valor)) + '</small></div><span class="valor">' + brlCurtoV(saldoCli(c)) + '</span><button class="bt verde" data-clirecebi="' + esc(c.id) + '">Recebi</button></div>';
+      }).join("") + "</div>" : '<p class="vazio">Nenhum projeto com saldo.</p>');
+    return colunas(esq, dir);
+  }
+  function metasParam() { var p = S.params || {}; return { contatos: num(p.meta_contatos) || META_CONTATOS, sites: num(p.meta_sites) || META_SITES }; }
+  function finMetas() {
+    var h = hoje(), dias = [], vals7 = [];
+    for (var i = 6; i >= 0; i--) { var d = somaDias(h, -i); dias.push(SEM3[dataDe(d).getDay()].slice(0, 3)); vals7.push(S.lancamentos.filter(function (l) { return l.data === d; }).reduce(function (a, l) { return a + num(l.valor); }, 0)); }
+    var hoj = new Date(), meses = [], vals6 = [];
+    for (var k = 5; k >= 0; k--) { var dt = new Date(hoj.getFullYear(), hoj.getMonth() - k, 1); meses.push(MESES[dt.getMonth()].slice(0, 3)); vals6.push(somaMes(dt.getFullYear(), dt.getMonth())); }
+    var soma7 = vals7.reduce(function (a, b) { return a + b; }, 0), soma6 = vals6.reduce(function (a, b) { return a + b; }, 0), p = S.params || {};
+    var linha = function (rot, val) { return '<div class="linha toca" data-custos><div class="o"><b>' + rot + '</b></div><span class="valor">' + val + "</span></div>"; };
+    var esq = '<div class="secao" style="margin-top:6px;">Meta do mês</div>' + cartaoMes(true) + '<div class="secao">Vendas de site</div>' + metasSites() +
+      '<div class="secao">Entradas</div><div class="cartao g-cartao' + (oculto() ? " g-oculto" : "") + '"><div class="g-cab"><b>Últimos 7 dias</b><span class="valor">' + brlCurtoV(soma7) + "</span></div>" + graficoBarras(vals7, dias, 6) + "</div>" +
+      '<div class="cartao g-cartao' + (oculto() ? " g-oculto" : "") + '"><div class="g-cab"><b>Últimos 6 meses</b><span class="valor">' + brlCurtoV(soma6) + "</span></div>" + graficoBarras(vals6, meses, 5) + "</div>";
+    var dir = '<div class="secao">Mês<button class="bt-link" data-custos>Mudar</button></div><div class="cartao lista">' + linha("Custo fixo", brlCurtoV(num(p.fixo))) + linha("Retirada", brlCurtoV(num(p.retirada))) + linha("Contatos por semana", metasParam().contatos) + linha("Sites por mês", metasParam().sites) + "</div>" +
+      '<div class="secao">Peça impressa<button class="bt-link" data-custos>Mudar</button></div><div class="cartao lista">' + linha("Filamento", brlCurto(num(p.filamento)) + "/kg") + linha("Máquina", brlCurto(num(p.maquina)) + "/h") + linha("Mão de obra", brlCurto(num(p.maodeobra)) + "/h") + linha("Margem", String(num(p.margem) || 1).replace(".", ",") + "x") + "</div>" +
+      '<div class="cartao lista"><div class="linha toca" data-relatorio><div class="o"><b>Relatório da semana</b><small>Pronto pra copiar</small></div>' + IC.seta + "</div></div>";
+    return colunas(esq, dir);
+  }
+
+  /* ---------- Oficina ---------- */
+  var IMP_PEDIDA = 0;
+  function telaOficina() {
+    var a = abaDe("oficina"), abertos = S.pedidos.filter(function (p) { return p.status === "aberto"; }).length;
+    var topo = cabArea("oficina") + abasHTML("oficina", { pedidos: abertos, orcamentos: 0 });
+    if (a === "pedidos") return topo + lojaPedidos();
+    if (a === "orcamentos") return topo + oficinaOrcamentos();
+    if (a === "producao") return topo + oficinaProducao();
+    return topo + lojaProdutos();
+  }
+  function oficinaOrcamentos() {
+    var lista = (S.orcamentos || []).slice().sort(function (a, b) { return String(b.data) < String(a.data) ? -1 : 1; }), p = paramsOrc();
+    var mes = mesDe(), doMes = lista.filter(function (o) { return mesDe(o.data) === mes; });
+    var esq = '<div class="nums">' + '<div class="num"><b>' + lista.length + '</b><span>orçamentos</span></div><div class="num"><b>' + doMes.length + "</b><span>em " + nomeMes(mes).slice(0, 3) + '</span></div><div class="num"><b>' + brlCurtoV(doMes.reduce(function (s, o) { return s + num(o.total); }, 0)) + "</b><span>orçado no mês</span></div></div>" +
+      '<button class="bt acento cheio" data-novo="orcamento">' + IC.mais + "Novo orçamento</button>" +
+      (lista.length ? '<div class="cartao lista">' + lista.map(function (o) {
+        return '<div class="linha"><div class="o"><b>' + esc(o.cliente || "Sem nome") + "</b><small>" + dm(o.data) + ", " + esc(String(o.gramas || 0).replace(".", ",")) + " g, " + esc(String(o.horas || 0).replace(".", ",")) + ' h</small></div><span class="valor">' + brl(num(o.total)) + '</span><button class="ico-bt copia-link" data-orcapaga="' + esc(o.id) + '" aria-label="Apagar">' + IC.x + "</button></div>";
+      }).join("") + "</div>" : '<p class="vazio">Nenhum orçamento.</p>');
+    var dir = '<div class="secao">Conta usada</div><div class="cartao lista">' +
+      [["Filamento", brlCurto(p.filamento) + "/kg"], ["Máquina", brlCurto(p.maquina) + "/h"], ["Mão de obra", brlCurto(p.maodeobra) + "/h"], ["Margem", String(p.margem).replace(".", ",") + "x"]].map(function (x) { return '<div class="linha toca" data-custos><div class="o"><b>' + x[0] + '</b></div><span class="valor">' + x[1] + "</span></div>"; }).join("") + "</div>";
+    return colunas(esq, dir);
+  }
+  var ROT_SELO = { branco: "em branco", fila: "na fila", novo: "novos", ativo: "vinculados", reivindicado: "com dono" };
+  function impHTML(imp) {
+    if (!imp || !imp.conectada) return '<p class="vazio">A impressora ainda não mandou notícia.</p>';
+    var d = imp.estado || {}, an = imp.analise || {}, idade = idadeImp(imp), ativo = ["printing", "paused"].indexOf(d.estado) >= 0;
+    var pct = Math.round((Number(an.progresso != null ? an.progresso : d.progresso) || 0) * 100), termina = an.termina ? new Date(an.termina) : null;
+    return '<div class="cartao imp-estado"><div class="imp-l1"><span class="pulso' + (ativo && idade < 180 ? "" : " parado") + '"></span><b>' + esc(ESTADO_IMP[d.estado] || d.estado || "Sem estado") + '</b><small>sinal há ' + (idade < 90 ? Math.round(idade) + " s" : idade < 5400 ? Math.round(idade / 60) + " min" : Math.round(idade / 3600) + " h") + "</small></div>" +
+        (ativo ? '<p class="imp-peca">' + esc(nomeArquivo(d.arquivo)) + '</p><div class="barra-meta"><i style="width:' + pct + '%"></i></div><div class="rodape-imp"><span>' + pct + "%" + (d.camada ? ", camada " + esc(d.camada) + (d.camadas ? " de " + esc(d.camadas) : "") : "") + "</span><span>" + (termina && !isNaN(termina) ? "termina " + pad2(termina.getHours()) + ":" + pad2(termina.getMinutes()) : an.restante ? "faltam " + duracaoTxt(an.restante) : "") + "</span></div>" : "") +
+      "</div>" +
+      ((imp.saude || []).filter(function (s) { return s.k !== "sinal"; }).length ? '<div class="imp-saude">' + imp.saude.filter(function (s) { return s.k !== "sinal"; }).map(function (s) { return '<div class="num' + (s.ok ? "" : " ruim") + '"><b>' + esc(s.txt) + "</b><span>" + esc(s.rot) + "</span></div>"; }).join("") + "</div>" : "") +
+      ((imp.historico || []).length ? '<div class="rot">Últimas impressões</div><div class="cartao lista">' + imp.historico.map(function (h) {
+        var ok = h.status === "completed" || h.status === "complete";
+        return '<div class="linha"><div class="o"><b>' + esc(h.nome || nomeArquivo(h.arquivo)) + "</b><small>" + (h.inicio ? esc(dm(diaLocal(h.inicio))) + ", " : "") + (h.duracao ? duracaoTxt(h.duracao) : "") + '</small></div><span class="tipo ' + (ok ? "t-feito" : h.status === "printing" ? "t-lead" : "t-aviso") + '">' + esc(ok ? "pronta" : h.status === "printing" ? "agora" : h.status || "?") + "</span></div>";
+      }).join("") + "</div>" : "");
+  }
+  function oficinaProducao() {
+    if (Date.now() - IMP_PEDIDA > 60000) {
+      IMP_PEDIDA = Date.now();
+      api("/api/impressora").then(function (imp) { S.extras = S.extras || {}; S.extras.imp = imp; if (vista === "oficina" && abaDe("oficina") === "producao" && !folhaAberta) render(true); }).catch(function () {});
+    }
+    var imp = S.extras && S.extras.imp, sel = S.extras && S.extras.selos, por = sel && sel.por_status || {};
+    var nums = Object.keys(por).length ? '<div class="nums">' + Object.keys(por).slice(0, 3).map(function (k) { return numBt(por[k], ROT_SELO[k] || k, 'data-selos=""'); }).join("") + "</div>" : "";
+    var esq = '<div class="secao" style="margin-top:6px;">Impressora K1C</div>' + impHTML(imp);
+    var dir = '<div class="secao">Selos' + (sel && sel.alertas ? ' <small style="color:var(--atraso);opacity:1">' + sel.alertas + (sel.alertas === 1 ? " alerta" : " alertas") + "</small>" : "") + "</div>" + nums +
+      '<div class="grade-bts"><button class="bt acento" data-selos="">' + IC.selo + 'Selos</button><button class="bt" data-selos="vincular">Ler selo</button></div>';
+    return colunas(esq, dir);
+  }
+
+  /* ---------- Divulgação ---------- */
+  function telaDivulgacaoArea() {
+    var a = abaDe("divulgacao"), lista = posts(), prog = lista.filter(function (p) { return p.status === "aprovado"; }).length;
+    if (!DIV.links) { DIV.links = "carregando"; api("/api/links/stats").then(function (d) { DIV.links = d.stats || []; }).catch(function () { DIV.links = []; }).then(function () { if (vista === "divulgacao") render(true); }); }
+    if (!DIV.news) { DIV.news = "carregando"; api("/api/newsletter/lista").then(function (d) { DIV.news = d; }).catch(function () { DIV.news = {}; }).then(function () { if (vista === "divulgacao") render(true); }); }
+    var ativos = DIV.news && typeof DIV.news === "object" && DIV.news.ativos != null ? DIV.news.ativos : 0;
+    var topo = cabArea("divulgacao") + abasHTML("divulgacao", { conteudo: prog, newsletter: ativos });
+    if (a === "newsletter") return topo + divNewsletter();
+    if (a === "links") return topo + divLinks();
+    if (a === "numeros") return topo + telaNumeros();
+    return topo + divConteudo();
+  }
+  function divConteudo() {
+    var lista = posts(), h = hoje(), cont = {};
+    lista.forEach(function (p) { cont[p.status || "ideia"] = (cont[p.status || "ideia"] || 0) + 1; });
+    var prox = lista.filter(function (p) { return p.status === "aprovado" && p.data; }).sort(function (a, b) { return (a.data + (a.hora || "")) < (b.data + (b.hora || "")) ? -1 : 1; });
+    var vis = lista.filter(function (p) { return (p.status || "ideia") === DIV.etapa; }).sort(function (a, b) { return DIV.etapa === "ideia" ? (String(b.criado) < String(a.criado) ? -1 : 1) : (String(a.data || "9") < String(b.data || "9") ? (DIV.etapa === "publicado" ? 1 : -1) : (DIV.etapa === "publicado" ? -1 : 1)); });
+    var linhaPost = function (p) {
+      var atras = p.status === "aprovado" && p.data && p.data < h;
+      return '<div class="linha toca" data-post="' + esc(p.id) + '"><div class="o"><b>' + esc(p.titulo || "Sem título") + "</b><small" + (atras ? ' style="color:var(--atraso);font-weight:900"' : "") + ">" + esc([p.formato, p.rede, p.data ? (atras ? "era pra " : "") + quandoRel(p.data) + (p.hora ? " " + p.hora : "") : ""].filter(Boolean).join(", ")) + "</small></div>" + IC.seta + "</div>";
+    };
+    var esq = '<div class="nums">' + ETAPAS_POST.map(function (e) { return numBt(cont[e[0]] || 0, e[1].toLowerCase(), 'data-etapa="' + e[0] + '"'); }).join("") + "</div>" +
+      '<button class="bt acento cheio" data-novopost>' + IC.mais + "Nova ideia de post</button>" +
+      '<div class="seg" role="group">' + ETAPAS_POST.map(function (e) { return '<button data-etapa="' + e[0] + '" aria-pressed="' + (DIV.etapa === e[0]) + '">' + e[1] + "</button>"; }).join("") + "</div>" +
+      (vis.length ? '<div class="cartao lista">' + vis.map(linhaPost).join("") + "</div>" : '<p class="vazio">Nada aqui.</p>');
+    var dir = '<div class="secao">Próximos a publicar</div>' + (prox.length ? '<div class="cartao lista">' + prox.slice(0, 8).map(linhaPost).join("") + "</div>" : '<p class="vazio">Nenhum post com dia marcado.</p>');
+    return colunas(esq, dir);
+  }
+  function divNewsletter() {
+    var n = DIV.news;
+    if (n === "carregando") return '<div class="esqueleto"></div>';
+    var ins = n && n.inscritos || [], mes = mesDe(), novos = ins.filter(function (i) { return mesDe(diaLocal(i.ts)) === mes; }).length;
+    var esq = '<div class="nums"><div class="num"><b>' + (n && n.ativos || 0) + '</b><span>ativos</span></div><div class="num"><b>' + ins.length + '</b><span>inscritos</span></div><div class="num"><b>' + novos + "</b><span>novos em " + nomeMes(mes).slice(0, 3) + "</span></div></div>" +
+      '<button class="bt acento cheio" data-news>' + IC.envelope + "Escrever e enviar</button>";
+    var dir = '<div class="secao">Inscritos</div>' + (ins.length ? '<div class="cartao lista">' + ins.slice(0, 60).map(function (i) {
+      return '<div class="linha"' + (i.ativo ? "" : ' style="opacity:.55"') + '><div class="o"><b>' + esc(i.email) + "</b><small>" + esc([i.origem, dm(diaLocal(i.ts))].filter(Boolean).join(", ")) + '</small></div><button class="bt" data-newsst="' + esc(i.id) + '">' + (i.ativo ? "Pausar" : "Voltar") + "</button></div>";
+    }).join("") + "</div>" : '<p class="vazio">Ninguém inscrito ainda.</p>');
+    return colunas(esq, dir);
+  }
+  function divLinks() {
+    if (DIV.links === "carregando") return '<div class="esqueleto"></div>';
+    var porSlug = {}, total = 0, mes = 0;
+    if (Array.isArray(DIV.links)) DIV.links.forEach(function (s) { var k = String(s.slug || ""); (porSlug[k] = porSlug[k] || { n: 0, ultimo: 0, origens: [] }); porSlug[k].n += Number(s.n) || 0; total += Number(s.n) || 0; porSlug[k].ultimo = Math.max(porSlug[k].ultimo, Number(s.ultimo) || 0); porSlug[k].origens.push([s.origem || "sem origem", Number(s.n) || 0]); });
+    var melhor = LINKS_BIO.slice().sort(function (a, b) { return ((porSlug[b[0]] || {}).n || 0) - ((porSlug[a[0]] || {}).n || 0); })[0];
+    var esq = '<div class="nums" style="grid-template-columns:1fr 1fr;"><div class="num"><b>' + total + '</b><span>cliques nos links</span></div><div class="num"><b>' + esc(melhor && (porSlug[melhor[0]] || {}).n ? melhor[1] : "-") + "</b><span>mais clicado</span></div></div>" +
+      '<div class="cartao lista">' + LINKS_BIO.map(function (l) {
+        var s = porSlug[l[0]] || { n: 0, ultimo: 0, origens: [] };
+        var ori = s.origens.sort(function (x, y) { return y[1] - x[1]; }).slice(0, 3).map(function (o) { return o[0] + " " + o[1]; }).join(", ");
+        return '<div class="linha"><div class="o"><b>' + esc(l[1]) + "</b><small>maratu.com.br/go/" + esc(l[0]) + (ori ? ", " + esc(ori) : "") + '</small></div><span class="valor">' + s.n + '</span><button class="ico-bt copia-link" data-golink="' + esc(l[0]) + '" aria-label="Copiar o link">' + IC.copia + "</button></div>";
+      }).join("") + "</div>";
+    return esq;
+  }
+
+  /* ---------- Ajustes ---------- */
+  function telaAjustes() {
+    if (!ajustes.carregado) carregarAjustes();
+    var tema = ""; try { tema = localStorage.getItem("maratu.painel.tema") || ""; } catch (e) {}
+    var est = estadoPush(), podeLigar = est === "ligadas" || est === "desligadas";
+    var linhaAj = function (attr, tit, estado, sub, seta) {
+      return '<div class="linha' + (attr ? ' toca" ' + attr : '"') + '><div class="o"><b>' + tit + "</b>" + (sub ? "<small>" + esc(sub) + "</small>" : "") + '</div><span class="estado-aj">' + esc(estado || "") + "</span>" + (seta === false ? "" : IC.seta) + "</div>";
+    };
+    var a = '<div class="secao" style="margin-top:6px;">Aparelho</div><div class="cartao lista">' +
+        '<div class="linha"><div class="o"><b>Cor</b></div>' + pilulas("tema", [["", "Areia"], ["laranja", "Laranja"], ["noite", "Noite"]], tema) + "</div>" +
+        linhaAj(podeLigar ? 'data-aj="push"' : "", "Notificações", est, ajustes.pushMsg, podeLigar) +
+        (ajustes.push ? linhaAj('data-aj="teste"', "Mandar notificação de teste", "", "", false) : "") +
+        linhaAj(ajustes.feed ? 'data-aj="feed"' : "", "Agenda no Apple Calendar", ajustes.feed ? "assinar" : "", "") +
+      "</div>" +
+      '<div class="secao">Segurança</div><div class="cartao lista">' +
+        linhaAj('data-aj="passkey"', "Entrar com Face ID", ajustes.passkeys == null ? "" : ajustes.passkeys ? ajustes.passkeys + (ajustes.passkeys === 1 ? " aparelho" : " aparelhos") : "nenhum", "") +
+        linhaAj('data-aj="2fa"', "Verificação em duas etapas", ajustes.totp == null ? "" : ajustes.totp ? "ligada" : "desligada", "") +
+      "</div>";
+    var b = '<div class="secao" style="margin-top:6px;">Dados</div><div class="cartao lista">' +
+        linhaAj('data-aj="atualizar"', "Atualizar os dados", S.carregadoEm ? "às " + pad2(new Date(S.carregadoEm).getHours()) + ":" + pad2(new Date(S.carregadoEm).getMinutes()) : "", "", false) +
+        linhaAj('data-aj="antigo"', "Abrir o painel antigo", "", "", true) +
+        '<div class="linha toca" data-aj="sair"><div class="o"><b class="perigo">Sair</b></div></div>' +
+      "</div>";
+    return cabArea("ajustes") + colunas(a, b);
+  }
+
+  /* ---------- Mais: o que não cabe na barra do celular ---------- */
+  function folhaMais() {
+    var abertos = S.pedidos.filter(function (p) { return p.status === "aberto"; }).length, prog = posts().filter(function (p) { return p.status === "aprovado"; }).length;
+    var linha = function (v, ico, sub) { return '<button class="cartao linha toca mais-item" data-mais="' + v + '">' + ico + '<div class="o"><b>' + NOME_AREA[v] + "</b><small>" + sub + "</small></div>" + IC.seta + "</button>"; };
+    abrirFolha("Mais",
+      linha("oficina", IC.imp, abertos ? abertos + (abertos === 1 ? " pedido em aberto" : " pedidos em aberto") : "Nenhum pedido em aberto") +
+      linha("divulgacao", IC.post, prog ? prog + (prog === 1 ? " post programado" : " posts programados") : "Nenhum post programado") +
+      linha("ajustes", IC.engrenagem, "Notificações " + estadoPush()),
+      function (c) { c.querySelectorAll("[data-mais]").forEach(function (b) { b.onclick = function () { fecharFolha(); irPara(b.dataset.mais); }; }); });
+  }
+
   /* ---------- avisos do sistema: MEI, impressora, selos ---------- */
   function avisosDoSistema() {
     var out = [], h = hoje(), x = S.extras || {};
@@ -2563,7 +2932,7 @@
         quando: m.atrasado ? quandoRel(m.vencimento) : "",
         dir: { rot: "Paguei", fn: function () { dasPago(m); } },
         esq: { rot: "Amanhã", fn: function () { adiarCartao("das:" + m.year + "-" + m.month); } },
-        abre: function () { location.href = "/admin.html"; }
+        abre: function () { irAba("financas", "mei"); }
       });
     });
     if (mei && mei.dasn && !mei.dasn.done && mei.dasn.dias_ate_deadline <= 30) {
@@ -2574,7 +2943,7 @@
         quando: dn.atrasado ? quandoRel(dn.deadline) : "",
         dir: { rot: "Feita", fn: function () { dasnFeita(dn.year); } },
         esq: { rot: "Amanhã", fn: function () { adiarCartao("dasn:" + dn.year); } },
-        abre: function () { location.href = "/admin.html"; }
+        abre: function () { irAba("financas", "mei"); }
       });
     }
     var imp = x.imp;
@@ -2614,7 +2983,7 @@
       function () {
         var cfg = S.extras && S.extras.mei && S.extras.mei.config || {}, corpo = { year: m.year, month: m.month };
         if (Number(cfg.das_valor_centavos) > 0) corpo.valor_centavos = Number(cfg.das_valor_centavos);
-        api("/api/mei/das/pay", { method: "POST", body: corpo }).then(guardaCache).catch(function (e) { m.paid = false; aviso(/HTTP 400/.test(String(e && e.message)) ? "Falta o valor do DAS no painel antigo" : "Não salvou. Confira a internet."); render(true); });
+        api("/api/mei/das/pay", { method: "POST", body: corpo }).then(guardaCache).catch(function (e) { m.paid = false; aviso(/HTTP 400/.test(String(e && e.message)) ? "Falta o valor do DAS em Finanças, MEI" : "Não salvou. Confira a internet."); render(true); });
       });
   }
   function dasnFeita(ano) {
@@ -2651,21 +3020,23 @@
     var k = (e.key || "").toLowerCase(); if (e.isComposing) return;
     if (k === "n") { e.preventDefault(); folhaLancar(null, vista === "agenda" ? diaSel : null); }
     else if (e.key === "/") { e.preventDefault(); abrirBusca(); }
-    else if (/^[1-5]$/.test(e.key)) irPara(ORDEM_VISTAS[Number(e.key) - 1]);
+    else if (/^[1-7]$/.test(e.key)) irPara(ORDEM_VISTAS[Number(e.key) - 1]);
     else if (vista === "agenda" && (e.key === "ArrowLeft" || e.key === "ArrowRight")) { diaSel = somaDias(diaSel, e.key === "ArrowLeft" ? -1 : 1); agendaMes = null; render(false, e.key === "ArrowLeft" ? "esq" : "dir"); }
   });
   $("btLancar").addEventListener("click", function () { if (folhaAberta && $("btLancar").getAttribute("aria-expanded") === "true") fecharFolha(); else folhaLancar(null, vista === "agenda" ? diaSel : null); });
   $("btBusca").addEventListener("click", abrirBusca);
-  $("btMais").addEventListener("click", function () { fecharFolha(); irPara(vista === "estudio" ? "hoje" : "estudio"); });
+  $("btMais").addEventListener("click", function () { if (folhaAberta) fecharFolha(); folhaMais(); });
 
   /* ---------- início ---------- */
   corDaBarra();
   if (!token()) { try { localStorage.removeItem(CACHE); } catch (e) {} return; }
   function lerEndereco() {
-    var h = (location.hash || "").replace("#", ""), mapa = { caixa: "loja", loja: "loja", agenda: "agenda", marketing: "sites", sites: "sites", mei: "hoje", estudio: "estudio", hoje: "hoje" };
+    var h = (location.hash || "").replace("#", ""), mapa = { caixa: "financas", financas: "financas", mei: "financas", receber: "financas", loja: "oficina", oficina: "oficina", pedidos: "oficina", agenda: "agenda", marketing: "divulgacao", divulgacao: "divulgacao", sites: "sites", leads: "sites", clientes: "sites", estudio: "hoje", ajustes: "ajustes", hoje: "hoje" };
     if (!h) return false;
     if (!mapa[h]) { try { history.replaceState(null, "", location.pathname); } catch (e) {} return false; }
-    vista = mapa[h]; if (h === "caixa") lojaSeg = "caixa"; if (vista !== "estudio") estudioSub = "";
+    vista = mapa[h];
+    var abaDoHash = { caixa: ["financas", "caixa"], mei: ["financas", "mei"], receber: ["financas", "receber"], pedidos: ["oficina", "pedidos"], leads: ["sites", "conversas"], clientes: ["sites", "clientes"] }[h];
+    if (abaDoHash) aba[abaDoHash[0]] = abaDoHash[1];
     try { history.replaceState(null, "", location.pathname); } catch (e) {}
     return true;
   }

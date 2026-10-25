@@ -386,6 +386,9 @@
   }
 
   /* ---------- telas ---------- */
+  var pcMQ = window.matchMedia("(min-width: 1024px)");
+  function pc() { return pcMQ.matches; }
+  (pcMQ.addEventListener ? pcMQ.addEventListener.bind(pcMQ, "change") : pcMQ.addListener.bind(pcMQ))(function () { fecharFolha(); render(true); });
   var vista = lerLS("maratu.painel.vista", "hoje"), filtro = "tudo", lojaSeg = "caixa", lojaMesDesloc = 0, diaSel = hoje(), verAtendidos = false;
   var ORDEM_VISTAS = ["hoje", "sites", "loja", "agenda"];
 
@@ -396,8 +399,9 @@
     main.innerHTML = '<div class="vista' + (semAnim ? "" : direcao === "esq" ? " entra-esq" : " entra-dir") + '">' + html + "</div>";
     ligar(main);
     var n = itensHoje().length;
-    document.querySelector('.barra [data-v="hoje"]').setAttribute("data-n", String(n));
-    document.querySelectorAll(".barra [data-v]").forEach(function (b) { if (b.dataset.v === vista) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current"); });
+    document.querySelectorAll('[data-v="hoje"]').forEach(function (b) { b.setAttribute("data-n", String(n)); });
+    var cont = document.querySelector('.lateral [data-v="hoje"] .cont'); if (cont) cont.textContent = n;
+    document.querySelectorAll(".barra [data-v], .lateral [data-v]").forEach(function (b) { if (b.dataset.v === vista) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current"); });
   }
   function irPara(v) {
     if (v === vista) { window.scrollTo({ top: 0, behavior: "smooth" }); return; }
@@ -418,8 +422,19 @@
         "<h3>" + esc(i.titulo) + "</h3>" +
         (i.sub ? '<p class="sub">' + esc(i.sub) + "</p>" : "") +
         (i.msg ? '<div class="msg">' + esc(i.msg) + "</div>" : "") +
-        (i.acoes ? '<div class="acoes">' + i.acoes + "</div>" : "") +
+        '<div class="acoes' + (i.acoes ? "" : " so-pc") + '">' + (i.acoes || "") +
+          '<span class="acoes-pc"><button class="bt" data-pc="esq">' + IC.adiar + esc(i.esq.rot) + '</button><button class="bt verde" data-pc="dir">' + IC.check + esc(i.dir.rot) + "</button></span></div>" +
       "</article></div>";
+  }
+  function colunas(a, b) { return pc() ? '<div class="pc-cols"><div class="col">' + a + '</div><aside class="col">' + b + "</aside></div>" : a + b; }
+
+  function cartaoMes(grande) {
+    var r = resumoMes(), pct = r.meta ? Math.min(100, r.total / r.meta * 100) : 0;
+    if (!grande) return '<button class="cartao mes mini" data-ir="loja">' +
+      '<div class="mini-mes"><b style="font-size:15px;">' + cap(r.mes) + '</b><div class="barra-meta"><i style="width:' + pct.toFixed(1) + '%"></i></div><span class="valor" style="font-size:14px;">' + brlCurto(r.total) + "</span></div>" +
+      '<div class="rodape"><span>' + (r.meta ? "Meta " + brlCurto(r.meta) : "Sem meta") + "</span><span>" + compTxt(r) + "</span></div></button>";
+    return '<div class="cartao mes"><div class="topo-mes"><span class="grande">' + brlCurto(r.total) + '</span><span class="comp ' + (!r.ant ? "" : r.total >= r.ant ? "sobe" : "desce") + '">' + compTxt(r) + '</span></div>' +
+      '<div class="barra-meta"><i style="width:' + pct.toFixed(1) + '%"></i></div><div class="rodape"><span>' + cap(r.mes) + "</span><span>" + (r.meta ? Math.round(pct) + "% de " + brlCurto(r.meta) : "Sem meta") + "</span></div></div>";
   }
 
   function telaHoje() {
@@ -429,17 +444,26 @@
     if (filtro !== "tudo" && !cont[filtro]) filtro = "tudo";
     var vis = filtro === "tudo" ? itens : itens.filter(function (i) { return i.tipo === filtro; });
     var NOMES = [["site", "Sites"], ["lead", "Leads"], ["carne", "Carnê"], ["agenda", "Agenda"], ["loja", "Pedidos"], ["nota", "Lembretes"]];
-    var r = resumoMes(), pct = r.meta ? Math.min(100, r.total / r.meta * 100) : 0;
     var hora = new Date().getHours(), oi = hora < 12 ? "Bom dia" : hora < 18 ? "Boa tarde" : "Boa noite";
-    return '<div class="cab"><h1>' + (itens.length ? itens.length + (itens.length === 1 ? " pra hoje" : " pra hoje") : oi) + "</h1><p>" + dataLonga(h) + "</p></div>" +
+    var a = '<div class="cab"><h1>' + (itens.length ? itens.length + " pra hoje" : oi) + "</h1><p>" + dataLonga(h) + "</p></div>" +
       (itens.length > 1 ? '<div class="filtros">' + '<button class="chip-bt" data-filtro="tudo" aria-pressed="' + (filtro === "tudo") + '">Tudo</button>' +
         NOMES.filter(function (n) { return cont[n[0]]; }).map(function (n) { return '<button class="chip-bt" data-filtro="' + n[0] + '" aria-pressed="' + (filtro === n[0]) + '">' + n[1] + ' <span class="n">' + cont[n[0]] + "</span></button>"; }).join("") + "</div>" : "") +
       (vis.length ? '<div class="fila">' + vis.map(cartaHTML).join("") + "</div>" :
-        '<div class="cartao"><h3 style="margin:0;font-size:18px;font-weight:900;">Nada pendente</h3><p class="sub" style="margin:4px 0 0;color:var(--suave);font-size:14px;">Abordagem, leads, carnê, agenda e pedidos em dia.</p></div>') +
-      '<button class="cartao mes mini" data-ir="loja" style="text-align:left;cursor:pointer;margin-top:4px;">' +
-        '<div class="mini-mes"><b style="font-size:15px;">' + cap(r.mes) + '</b><div class="barra-meta"><i style="width:' + pct.toFixed(1) + '%"></i></div><span class="valor" style="font-size:14px;">' + brlCurto(r.total) + "</span></div>" +
-        '<div class="rodape"><span>' + (r.meta ? "Meta " + brlCurto(r.meta) : "Sem meta") + "</span><span>" + compTxt(r) + "</span></div>" +
-      "</button>";
+        '<div class="cartao"><h3 style="margin:0;font-size:18px;font-weight:900;">Nada pendente</h3><p class="sub" style="margin:4px 0 0;color:var(--suave);font-size:14px;">Abordagem, leads, carnê, agenda e pedidos em dia.</p></div>');
+    if (!pc()) return a + cartaoMes(false);
+    var doDia = itensDoDia(h);
+    agendaItens = doDia;
+    var g = prospecGrupos();
+    var b = '<div class="secao" style="margin-top:6px;">' + cap(MESES[new Date().getMonth()]) + '<button class="bt-link" data-ir="loja">Loja</button></div>' + cartaoMes(true) +
+      '<div class="secao">Agenda de hoje<button class="bt-link" data-ir="agenda">Agenda</button></div>' +
+      (doDia.length ? '<div class="cartao lista">' + doDia.map(function (x, idx) {
+        return '<div class="linha toca" data-item="' + idx + '"' + (x.feito ? ' style="opacity:.55"' : "") + '><span class="hora-pc">' + esc(x.hora || "dia") + '</span><div class="o"><b>' + esc(x.tit) + "</b>" + (x.sub ? "<small>" + esc(x.sub) + "</small>" : "") + '</div><span class="tipo t-' + x.tipo + '">' + esc(x.rot) + "</span></div>";
+      }).join("") + "</div>" : '<p class="vazio">Nada marcado.</p>') +
+      (g.noAr.length ? '<div class="secao">Sites no ar<button class="bt-link" data-ir="sites">Sites</button></div><div class="cartao lista">' + g.noAr.slice(0, 5).map(function (p) {
+        var n = Number(p.ex_vistas) || 0;
+        return '<div class="linha toca" data-site="' + esc(p.id) + '"><div class="o"><b>' + esc(p.nome) + "</b><small>" + (n ? "abriu " + n + "x" : "não abriu ainda") + "</small></div>" + IC.seta + "</div>";
+      }).join("") + "</div>" : "");
+    return colunas(a, b);
   }
   function compTxt(r) {
     if (!r.ant) return r.mesAnt + " até dia " + r.dia + ": nada";
@@ -453,71 +477,76 @@
     var leadsFim = S.leads.filter(function (l) { return l.status === "fechado" || l.status === "perdido"; });
     var itens = itensHoje().filter(function (i) { return i.tipo === "site"; });
     var STL = { novo: ["Novo", "t-site"], conversando: ["Conversando", "t-lead"], fechado: ["Fechado", "t-agenda"], perdido: ["Perdido", "t-loja"] };
-    return '<div class="cab"><h1>Sites</h1><p>' + (S.uso ? "Google " + (Number(S.uso.n) || 0) + " de " + (Number(S.teto) || 0) + " no mês" : "Abordagem") + "</p></div>" +
+    var a = '<div class="cab"><h1>Sites</h1><p>' + (S.uso ? "Google " + (Number(S.uso.n) || 0) + " de " + (Number(S.teto) || 0) + " no mês" : "Abordagem") + "</p></div>" +
       '<div class="nums"><div class="num"><b>' + g.doDia.length + '</b><span>pra hoje</span></div><div class="num"><b>' + s.env + '</b><span>enviadas, 7 dias</span></div><div class="num"><b>' + s.resp + "</b><span>responderam</span></div></div>" +
-      (itens.length ? '<div class="secao">Pra hoje</div><div class="fila">' + itens.map(cartaHTML).join("") + "</div>" : "") +
-      (g.noAr.length ? '<div class="secao">No ar <small>' + g.noAr.length + '</small></div><div class="cartao lista">' + g.noAr.map(function (p) {
+      (itens.length ? '<div class="secao">Pra hoje</div><div class="fila">' + itens.map(cartaHTML).join("") + "</div>" : (pc() ? '<p class="vazio">Nenhum envio pra hoje.</p>' : "")) +
+      '<div class="grade-bts" style="margin-top:4px;"><button class="bt" data-reserva>Escolher na reserva</button><button class="bt acento" data-buscar>Buscar negócios</button></div>';
+    var b = (g.noAr.length ? '<div class="secao">No ar <small>' + g.noAr.length + '</small></div><div class="cartao lista">' + g.noAr.map(function (p) {
         var n = Number(p.ex_vistas) || 0;
         return '<div class="linha toca" data-site="' + esc(p.id) + '"><div class="o"><b>' + esc(p.nome) + "</b><small>" + (n ? "abriu " + n + "x" : "não abriu ainda") + (p.ex_expira ? ", sai do ar em " + dm(String(p.ex_expira).slice(0, 10)) : "") + "</small></div>" + IC.seta + "</div>";
       }).join("") + "</div>" : "") +
-      (g.depois.length ? '<div class="secao">Aguardando <small>' + g.depois.length + '</small></div><div class="cartao lista">' + g.depois.slice().sort(function (a, b) { return (a.proximo || "9") < (b.proximo || "9") ? -1 : 1; }).map(function (p) {
+      (g.depois.length ? '<div class="secao">Aguardando <small>' + g.depois.length + '</small></div><div class="cartao lista">' + g.depois.slice().sort(function (x, y) { return (x.proximo || "9") < (y.proximo || "9") ? -1 : 1; }).map(function (p) {
         return '<div class="linha toca" data-site="' + esc(p.id) + '"><div class="o"><b>' + esc(p.nome) + "</b><small>" + PASSO[Math.min(Number(p.passo) || 0, 3)] + (p.proximo ? " em " + dm(p.proximo) : "") + "</small></div>" + IC.seta + "</div>";
       }).join("") + "</div>" : "") +
       (g.escolhidos.length ? '<div class="secao">Escolhidos pra virar site <small>' + g.escolhidos.length + '</small></div><div class="cartao lista">' + g.escolhidos.map(function (p) {
         return '<div class="linha"><div class="o"><b>' + esc(p.nome) + "</b><small>" + esc([p.consulta || p.ramo, p.cidade].filter(Boolean).join(", ")) + '</small></div><button class="bt" data-devolver="' + esc(p.id) + '">Devolver</button></div>';
       }).join("") + "</div>" : "") +
-      '<div class="grade-bts" style="margin-top:4px;"><button class="bt" data-reserva>Escolher na reserva</button><button class="bt acento" data-buscar>Buscar negócios</button></div>' +
       '<div class="secao">Leads <small>' + leadsAtivos.length + '</small><button class="bt-link" data-novo="lead">Novo lead</button></div>' +
       (S.leads.length ? '<div class="cartao lista">' + leadsAtivos.concat(leadsFim).map(function (l) {
         var st = STL[l.status] || [l.status || "", "t-loja"];
         var atras = l.followup && l.followup < hoje() && l.status !== "fechado" && l.status !== "perdido";
         return '<div class="linha toca" data-lead="' + esc(l.id) + '"' + (l.status === "fechado" || l.status === "perdido" ? ' style="opacity:.6"' : "") + '><div class="o"><b>' + esc(l.nome || "Sem nome") + "</b><small>" + esc([l.interesse, l.followup ? (atras ? "atrasado desde " : "falar em ") + dm(l.followup) : ""].filter(Boolean).join(", ")) + '</small></div><span class="tipo ' + st[1] + '">' + esc(st[0]) + "</span></div>";
       }).join("") + "</div>" : '<p class="vazio">Nenhum lead.</p>');
+    return colunas(a, b);
   }
 
-  function telaLoja() {
-    var r = resumoMes(), pct = r.meta ? Math.min(100, r.total / r.meta * 100) : 0;
+  function lojaCaixa() {
     var d = new Date(); d = new Date(d.getFullYear(), d.getMonth() + lojaMesDesloc, 1);
-    var conteudo = "";
-    if (lojaSeg === "caixa") {
-      var pre = d.getFullYear() + "-" + pad2(d.getMonth() + 1) + "-";
-      var doMes = S.lancamentos.filter(function (l) { return String(l.data || "").indexOf(pre) === 0; }).sort(function (a, b) { return a.data < b.data ? 1 : -1; });
-      var porDia = {}; doMes.forEach(function (l) { (porDia[l.data] = porDia[l.data] || []).push(l); });
-      var totalMes = doMes.reduce(function (a, l) { return a + num(l.valor); }, 0);
-      conteudo = '<div class="nav-dia"><button class="ico-bt" data-mesnav="-1" aria-label="Mês anterior">' + IC.esq + '</button><div class="cab" style="text-align:center;"><h1 style="font-size:20px;">' + cap(MESES[d.getMonth()]) + (d.getFullYear() !== new Date().getFullYear() ? " " + d.getFullYear() : "") + "</h1><p>" + brl(totalMes) + ", " + doMes.length + (doMes.length === 1 ? " entrada" : " entradas") + '</p></div><button class="ico-bt" data-mesnav="1" aria-label="Mês seguinte"' + (lojaMesDesloc >= 0 ? " disabled style=\"visibility:hidden\"" : "") + ">" + IC.dir + "</button></div>" +
-        (doMes.length ? Object.keys(porDia).sort().reverse().map(function (dia) {
-          var soma = porDia[dia].reduce(function (a, l) { return a + num(l.valor); }, 0);
-          return '<div class="dia-rot"><span>' + (dia === hoje() ? "Hoje" : dia === somaDias(hoje(), -1) ? "Ontem" : SEM3[dataDe(dia).getDay()] + " " + dm(dia)) + '</span><span class="valor">+' + brlCurto(soma) + '</span></div><div class="cartao lista">' +
-            porDia[dia].map(function (l) { var f = fonteDe(l); return '<div class="linha toca" data-lanc="' + esc(l.id) + '"><span class="tipo ' + (f === "pix" ? "t-agenda" : f === "mp" ? "t-lead" : f === "carne" ? "t-carne" : "t-loja") + '">' + FONTE[f] + '</span><div class="o"><b>' + esc(tituloEntrada(l)) + '</b></div><span class="valor">' + brl(num(l.valor)) + "</span></div>"; }).join("") + "</div>";
-        }).join("") : '<p class="vazio">Nenhuma entrada nesse mês.</p>');
-    } else if (lojaSeg === "pedidos") {
-      var lista = verAtendidos ? (S.pedidosTodos || []) : S.pedidos.filter(function (p) { return p.status === "aberto"; });
-      conteudo = (lista.length ? '<div class="cartao lista">' + lista.map(function (p) {
-        var itens = (p.itens || []).map(function (i) { return (i.qtd > 1 ? i.qtd + "x " : "") + i.nome; }).join(", ");
-        return '<div class="linha toca" data-ped="' + esc(p.codigo) + '"' + (p.status !== "aberto" ? ' style="opacity:.6"' : "") + '><div class="o"><b>' + esc(itens || p.codigo) + "</b><small>" + esc(p.codigo + ", " + quandoRel(diaLocal(p.criado_em)) + (p.status !== "aberto" ? ", " + p.status : "")) + '</small></div><span class="valor">' + brl(Number(p.total || 0) / 100) + "</span></div>";
-      }).join("") + "</div>" : '<p class="vazio">' + (verAtendidos ? "Nenhum pedido." : "Nenhum pedido em aberto.") + "</p>") +
-        '<button class="bt-link" data-atendidos style="color:var(--tinta-sobre-tela);">' + (verAtendidos ? "Só os em aberto" : "Ver todos os pedidos") + "</button>";
-    } else {
-      var carnes = {};
-      eventosVivos().forEach(function (e) { if (e.tipo !== "cobranca") return; var p = kv(e.notas); var id = p.carne || e.cliente || e.id; (carnes[id] = carnes[id] || []).push(e); });
-      var ids = Object.keys(carnes);
-      var aberto = function (id) { return carnes[id].some(function (e) { return !e.feito; }); };
-      ids.sort(function (a, b) { var x = aberto(a), y = aberto(b); if (x !== y) return x ? -1 : 1; return proxVenc(carnes[a]) < proxVenc(carnes[b]) ? -1 : 1; });
-      var falta = 0; ids.forEach(function (id) { carnes[id].forEach(function (e) { if (!e.feito) falta += num(kv(e.notas).valor); }); });
-      conteudo = '<div class="nums" style="grid-template-columns:1fr 1fr;"><div class="num"><b>' + brlCurto(falta) + '</b><span>a receber</span></div><div class="num"><b>' + ids.filter(aberto).length + "</b><span>carnês abertos</span></div></div>" +
-        (ids.length ? '<div class="cartao lista">' + ids.map(function (id) {
-          var evs = carnes[id].slice().sort(function (a, b) { return a.data < b.data ? -1 : 1; }), pagas = evs.filter(function (e) { return e.feito; }).length;
-          var prox = evs.filter(function (e) { return !e.feito; })[0], p0 = kv(evs[0].notas);
-          var atras = prox && prox.data < hoje();
-          return '<div class="linha toca" data-carne="' + esc(id) + '"' + (!prox ? ' style="opacity:.6"' : "") + '><div class="o"><b>' + esc(evs[0].cliente || "Cliente") + (p0.prod ? " · " + esc(p0.prod) : "") + "</b><small" + (atras ? ' style="color:var(--c-site);font-weight:900"' : "") + ">" + pagas + " de " + evs.length + " pagas" + (prox ? ", " + (atras ? "atrasada desde " : "próxima ") + dm(prox.data) + " " + brlCurto(num(kv(prox.notas).valor)) : ", quitado") + "</small></div>" + IC.seta + "</div>";
-        }).join("") + "</div>" : '<p class="vazio">Nenhum carnê.</p>');
+    var pre = d.getFullYear() + "-" + pad2(d.getMonth() + 1) + "-";
+    var doMes = S.lancamentos.filter(function (l) { return String(l.data || "").indexOf(pre) === 0; }).sort(function (a, b) { return a.data < b.data ? 1 : -1; });
+    var porDia = {}; doMes.forEach(function (l) { (porDia[l.data] = porDia[l.data] || []).push(l); });
+    var totalMes = doMes.reduce(function (a, l) { return a + num(l.valor); }, 0);
+    return '<div class="nav-dia"><button class="ico-bt" data-mesnav="-1" aria-label="Mês anterior">' + IC.esq + '</button><div class="cab" style="text-align:center;"><h1 style="font-size:20px;">' + cap(MESES[d.getMonth()]) + (d.getFullYear() !== new Date().getFullYear() ? " " + d.getFullYear() : "") + "</h1><p>" + brl(totalMes) + ", " + doMes.length + (doMes.length === 1 ? " entrada" : " entradas") + '</p></div><button class="ico-bt" data-mesnav="1" aria-label="Mês seguinte"' + (lojaMesDesloc >= 0 ? ' disabled style="visibility:hidden"' : "") + ">" + IC.dir + "</button></div>" +
+      (doMes.length ? Object.keys(porDia).sort().reverse().map(function (dia) {
+        var soma = porDia[dia].reduce(function (a, l) { return a + num(l.valor); }, 0);
+        return '<div class="dia-rot"><span>' + (dia === hoje() ? "Hoje" : dia === somaDias(hoje(), -1) ? "Ontem" : SEM3[dataDe(dia).getDay()] + " " + dm(dia)) + '</span><span class="valor">+' + brlCurto(soma) + '</span></div><div class="cartao lista">' +
+          porDia[dia].map(function (l) { var f = fonteDe(l); return '<div class="linha toca" data-lanc="' + esc(l.id) + '"><span class="tipo ' + (f === "pix" ? "t-agenda" : f === "mp" ? "t-lead" : f === "carne" ? "t-carne" : "t-loja") + '">' + FONTE[f] + '</span><div class="o"><b>' + esc(tituloEntrada(l)) + '</b></div><span class="valor">' + brl(num(l.valor)) + "</span></div>"; }).join("") + "</div>";
+      }).join("") : '<p class="vazio">Nenhuma entrada nesse mês.</p>');
+  }
+  function lojaPedidos() {
+    var lista = verAtendidos ? (S.pedidosTodos || []) : S.pedidos.filter(function (p) { return p.status === "aberto"; });
+    return (lista.length ? '<div class="cartao lista">' + lista.map(function (p) {
+      var itens = (p.itens || []).map(function (i) { return (i.qtd > 1 ? i.qtd + "x " : "") + i.nome; }).join(", ");
+      return '<div class="linha toca" data-ped="' + esc(p.codigo) + '"' + (p.status !== "aberto" ? ' style="opacity:.6"' : "") + '><div class="o"><b>' + esc(itens || p.codigo) + "</b><small>" + esc(p.codigo + ", " + quandoRel(diaLocal(p.criado_em)) + (p.status !== "aberto" ? ", " + p.status : "")) + '</small></div><span class="valor">' + brl(Number(p.total || 0) / 100) + "</span></div>";
+    }).join("") + "</div>" : '<p class="vazio">' + (verAtendidos ? "Nenhum pedido." : "Nenhum pedido em aberto.") + "</p>") +
+      '<button class="bt-link" data-atendidos style="color:var(--tinta-sobre-tela);justify-self:start;">' + (verAtendidos ? "Só os em aberto" : "Ver todos os pedidos") + "</button>";
+  }
+  function lojaCarne() {
+    var carnes = {};
+    eventosVivos().forEach(function (e) { if (e.tipo !== "cobranca") return; var p = kv(e.notas); var id = p.carne || e.cliente || e.id; (carnes[id] = carnes[id] || []).push(e); });
+    var ids = Object.keys(carnes);
+    var aberto = function (id) { return carnes[id].some(function (e) { return !e.feito; }); };
+    ids.sort(function (a, b) { var x = aberto(a), y = aberto(b); if (x !== y) return x ? -1 : 1; return proxVenc(carnes[a]) < proxVenc(carnes[b]) ? -1 : 1; });
+    var falta = 0; ids.forEach(function (id) { carnes[id].forEach(function (e) { if (!e.feito) falta += num(kv(e.notas).valor); }); });
+    return '<div class="nums" style="grid-template-columns:1fr 1fr;"><div class="num"><b>' + brlCurto(falta) + '</b><span>a receber</span></div><div class="num"><b>' + ids.filter(aberto).length + "</b><span>carnês abertos</span></div></div>" +
+      (ids.length ? '<div class="cartao lista">' + ids.map(function (id) {
+        var evs = carnes[id].slice().sort(function (a, b) { return a.data < b.data ? -1 : 1; }), pagas = evs.filter(function (e) { return e.feito; }).length;
+        var prox = evs.filter(function (e) { return !e.feito; })[0], p0 = kv(evs[0].notas);
+        var atras = prox && prox.data < hoje();
+        return '<div class="linha toca" data-carne="' + esc(id) + '"' + (!prox ? ' style="opacity:.6"' : "") + '><div class="o"><b>' + esc(evs[0].cliente || "Cliente") + (p0.prod ? " · " + esc(p0.prod) : "") + "</b><small" + (atras ? ' style="color:var(--c-site);font-weight:900"' : "") + ">" + pagas + " de " + evs.length + " pagas" + (prox ? ", " + (atras ? "atrasada desde " : "próxima ") + dm(prox.data) + " " + brlCurto(num(kv(prox.notas).valor)) : ", quitado") + "</small></div>" + IC.seta + "</div>";
+      }).join("") + "</div>" : '<p class="vazio">Nenhum carnê.</p>');
+  }
+  var LINK_ANTIGO = '<a class="cartao linha toca" href="/admin.html" style="text-decoration:none;margin-top:6px;padding:4px 14px;"><div class="o"><b>Produtos, preços e selos</b><small>No painel antigo</small></div>' + IC.fora + "</a>";
+  function telaLoja() {
+    if (pc()) {
+      return colunas('<div class="cab"><h1>Caixa</h1></div>' + lojaCaixa(),
+        '<div class="secao" style="margin-top:6px;">' + cap(MESES[new Date().getMonth()]) + "</div>" + cartaoMes(true) +
+        '<div class="secao">Pedidos' + (S.pedidos.length ? " <small>" + S.pedidos.length + "</small>" : "") + "</div>" + lojaPedidos() +
+        '<div class="secao">Carnê</div>' + lojaCarne() + LINK_ANTIGO);
     }
-    return '<div class="cab"><h1>Loja</h1></div>' +
-      '<div class="cartao mes"><div class="topo-mes"><span class="grande">' + brlCurto(r.total) + '</span><span class="comp ' + (!r.ant ? "" : r.total >= r.ant ? "sobe" : "desce") + '">' + compTxt(r) + '</span></div>' +
-      '<div class="barra-meta"><i style="width:' + pct.toFixed(1) + '%"></i></div><div class="rodape"><span>' + cap(r.mes) + "</span><span>" + (r.meta ? Math.round(pct) + "% de " + brlCurto(r.meta) : "Sem meta") + "</span></div></div>" +
+    return '<div class="cab"><h1>Loja</h1></div>' + cartaoMes(true) +
       '<div class="seg" role="group"><button data-seg="caixa" aria-pressed="' + (lojaSeg === "caixa") + '">Caixa</button><button data-seg="pedidos" aria-pressed="' + (lojaSeg === "pedidos") + '">Pedidos' + (S.pedidos.length ? " " + S.pedidos.length : "") + '</button><button data-seg="carne" aria-pressed="' + (lojaSeg === "carne") + '">Carnê</button></div>' +
-      conteudo +
-      '<a class="cartao linha toca" href="/admin.html" style="text-decoration:none;margin-top:6px;padding:4px 14px;"><div class="o"><b>Produtos, preços e selos</b><small>No painel antigo</small></div>' + IC.fora + "</a>";
+      (lojaSeg === "caixa" ? lojaCaixa() : lojaSeg === "pedidos" ? lojaPedidos() : lojaCarne()) + LINK_ANTIGO;
   }
   function proxVenc(evs) { var p = evs.filter(function (e) { return !e.feito; }).map(function (e) { return e.data; }).sort()[0]; return p || "9999"; }
 
@@ -533,13 +562,23 @@
     out.sort(function (a, b) { return (a.hora || "") < (b.hora || "") ? -1 : (a.hora || "") > (b.hora || "") ? 1 : 0; });
     return out;
   }
+  function gradeMes(ym) {
+    var p = ym.split("-").map(Number), ano = p[0], mes = p[1] - 1;
+    var prim = new Date(ano, mes, 1), ini = somaDias(isoDe(prim), -((prim.getDay() + 6) % 7));
+    var g = '<div class="mes-grade">' + ["seg", "ter", "qua", "qui", "sex", "sáb", "dom"].map(function (d) { return '<span class="dsem">' + d + "</span>"; }).join("");
+    for (var i = 0; i < 42; i++) {
+      var d = somaDias(ini, i), dd = dataDe(d), n = itensDoDia(d).filter(function (x) { return !x.feito; }).length;
+      g += '<button data-pdia="' + d + '" class="' + (dd.getMonth() !== mes ? "fora " : "") + (d === hoje() ? "hoje " : "") + (d === diaSel ? "sel" : "") + '">' + dd.getDate() + "<i>" + (n ? "<em></em>" : "") + (n > 1 ? "<em></em>" : "") + (n > 2 ? "<em></em>" : "") + "</i></button>";
+    }
+    return g + "</div>";
+  }
+  function navMes(ym, attr) {
+    var p = ym.split("-").map(Number), ant = isoDe(new Date(p[0], p[1] - 2, 1)).slice(0, 7), prox = isoDe(new Date(p[0], p[1], 1)).slice(0, 7);
+    return '<div class="nav-dia"><button class="ico-bt" ' + attr + '="' + ant + '" aria-label="Mês anterior">' + IC.esq + '</button><b style="flex:1;text-align:center;font-size:17px;font-weight:900;">' + cap(MESES[p[1] - 1]) + " " + p[0] + '</b><button class="ico-bt" ' + attr + '="' + prox + '" aria-label="Mês seguinte">' + IC.dir + "</button></div>";
+  }
+  var agendaMes = null;
   function telaAgenda() {
     var h = hoje(), sel = dataDe(diaSel), dow = (sel.getDay() + 6) % 7, seg = somaDias(diaSel, -dow);
-    var semana = "";
-    for (var i = 0; i < 7; i++) {
-      var d = somaDias(seg, i), tem = itensDoDia(d).some(function (x) { return !x.feito; });
-      semana += '<button data-dia="' + d + '" aria-pressed="' + (d === diaSel) + '" class="' + (tem ? "tem " : "") + (d === h ? "hoje" : "") + '"><small>' + SEM3[dataDe(d).getDay()] + "</small><b>" + dataDe(d).getDate() + "</b><i></i></button>";
-    }
     var itens = itensDoDia(diaSel), ehHoje = diaSel === h, agora = new Date(), agoraHM = pad2(agora.getHours()) + ":" + pad2(agora.getMinutes());
     var entrou = S.lancamentos.filter(function (l) { return l.data === diaSel; }), somaEntrou = entrou.reduce(function (a, l) { return a + num(l.valor); }, 0);
     var linhas = "", pos = false;
@@ -549,12 +588,21 @@
     });
     if (ehHoje && !pos) linhas += '<div class="agora"><span>agora ' + agoraHM + "</span></div>";
     agendaItens = itens;
-    return '<div class="nav-dia"><div class="cab"><h1 style="font-size:26px;">' + (ehHoje ? "Hoje" : diaSel === somaDias(h, 1) ? "Amanhã" : diaSel === somaDias(h, -1) ? "Ontem" : cap(SEM[sel.getDay()])) + "</h1><p>" + sel.getDate() + " de " + MESES[sel.getMonth()] + (sel.getFullYear() !== new Date().getFullYear() ? " de " + sel.getFullYear() : "") + "</p></div>" +
-        (!ehHoje ? '<button class="chip-bt" data-dia="' + h + '">Hoje</button>' : "") + '<button class="chip-bt" data-mesfolha>Mês</button></div>' +
-      '<div class="semana" id="semana">' + semana + "</div>" +
-      (somaEntrou ? '<div class="cartao entrou"><span class="tipo">Entrou</span><span class="valor">' + brl(somaEntrou) + "</span><span style=\"color:var(--suave);font-weight:700;\">" + entrou.length + (entrou.length === 1 ? " entrada" : " entradas") + "</span></div>" : "") +
+    var titulo = '<div class="nav-dia"><div class="cab"><h1 style="font-size:26px;">' + (ehHoje ? "Hoje" : diaSel === somaDias(h, 1) ? "Amanhã" : diaSel === somaDias(h, -1) ? "Ontem" : cap(SEM[sel.getDay()])) + "</h1><p>" + sel.getDate() + " de " + MESES[sel.getMonth()] + (sel.getFullYear() !== new Date().getFullYear() ? " de " + sel.getFullYear() : "") + "</p></div>" +
+      (!ehHoje ? '<button class="chip-bt" data-dia="' + h + '">Hoje</button>' : "") + (pc() ? '<button class="ico-bt" data-dia="' + somaDias(diaSel, -1) + '" aria-label="Dia anterior">' + IC.esq + '</button><button class="ico-bt" data-dia="' + somaDias(diaSel, 1) + '" aria-label="Dia seguinte">' + IC.dir + "</button>" : '<button class="chip-bt" data-mesfolha>Mês</button>') + "</div>";
+    var dia = (somaEntrou ? '<div class="cartao entrou"><span class="tipo">Entrou</span><span class="valor">' + brl(somaEntrou) + '</span><span style="color:var(--suave);font-weight:700;">' + entrou.length + (entrou.length === 1 ? " entrada" : " entradas") + "</span></div>" : "") +
       '<div class="linha-dia" id="linhaDia">' + (itens.length || ehHoje ? linhas : "") + (!itens.length ? '<p class="vazio" style="margin:6px 0 0;">Nada marcado.</p>' : "") + "</div>" +
       '<button class="bt cheio" data-novo="evento">' + IC.mais + "Evento em " + dm(diaSel) + "</button>";
+    if (pc()) {
+      var ym = agendaMes || diaSel.slice(0, 7);
+      return colunas(titulo + dia, '<div class="cartao">' + navMes(ym, "data-agm") + gradeMes(ym) + "</div>");
+    }
+    var semana = "";
+    for (var i = 0; i < 7; i++) {
+      var d = somaDias(seg, i), tem = itensDoDia(d).some(function (x) { return !x.feito; });
+      semana += '<button data-dia="' + d + '" aria-pressed="' + (d === diaSel) + '" class="' + (tem ? "tem " : "") + (d === h ? "hoje" : "") + '"><small>' + SEM3[dataDe(d).getDay()] + "</small><b>" + dataDe(d).getDate() + "</b><i></i></button>";
+    }
+    return titulo + '<div class="semana" id="semana">' + semana + "</div>" + dia;
   }
   var agendaItens = [];
 
@@ -585,9 +633,11 @@
     raiz.querySelectorAll("[data-ped]").forEach(function (b) { b.onclick = function () { var p = porId(S.pedidosTodos || [], b.dataset.ped, "codigo") || porId(S.pedidos, b.dataset.ped, "codigo"); if (p) folhaPedido(p); }; });
     raiz.querySelectorAll("[data-atendidos]").forEach(function (b) { b.onclick = function () { verAtendidos = !verAtendidos; render(true); if (verAtendidos && !S.pedidosTodos) carregarPedidosTodos(); }; });
     raiz.querySelectorAll("[data-carne]").forEach(function (b) { b.onclick = function () { folhaCarne(b.dataset.carne); }; });
-    raiz.querySelectorAll("[data-dia]").forEach(function (b) { b.onclick = function () { var dir = b.dataset.dia < diaSel ? "esq" : "dir"; diaSel = b.dataset.dia; render(false, dir); }; });
+    raiz.querySelectorAll("[data-dia]").forEach(function (b) { b.onclick = function () { var dir = b.dataset.dia < diaSel ? "esq" : "dir"; diaSel = b.dataset.dia; agendaMes = null; render(false, dir); }; });
     raiz.querySelectorAll("[data-mesfolha]").forEach(function (b) { b.onclick = function () { folhaMes(diaSel.slice(0, 7)); }; });
-    raiz.querySelectorAll(".ponto-dia").forEach(function (b) {
+    raiz.querySelectorAll("[data-pdia]").forEach(function (b) { b.onclick = function () { var dir = b.dataset.pdia < diaSel ? "esq" : "dir"; diaSel = b.dataset.pdia; render(false, dir); }; });
+    raiz.querySelectorAll("[data-agm]").forEach(function (b) { b.onclick = function () { agendaMes = b.dataset.agm; render(true); }; });
+    raiz.querySelectorAll(".ponto-dia, .linha[data-item]").forEach(function (b) {
       b.onclick = function () { var x = agendaItens[Number(b.dataset.item)]; if (!x) return; if (x.e) { if (x.e.tipo === "cobranca") folhaParcela(x.e); else folhaEvento(x.e); } else if (x.n) folhaNota(x.n); };
     });
     var ld = raiz.querySelector("#linhaDia"); if (ld) arrastaDia(ld);
@@ -601,17 +651,17 @@
   function arrastavel(slot, item) {
     if (!item) return;
     var carta = slot.querySelector(".carta"), fDir = slot.querySelector(".fundo.dir"), fEsq = slot.querySelector(".fundo.esq");
-    var x0 = 0, y0 = 0, t0 = 0, dx = 0, modo = null, id = null;
+    var x0 = 0, y0 = 0, t0 = 0, dx = 0, modo = null, id = null, moveu = false, saiu = false;
     carta.addEventListener("pointerdown", function (ev) {
       if (ev.button !== 0 || ev.target.closest("button, a")) return;
-      x0 = ev.clientX; y0 = ev.clientY; t0 = Date.now(); dx = 0; modo = "?"; id = ev.pointerId;
+      x0 = ev.clientX; y0 = ev.clientY; t0 = Date.now(); dx = 0; modo = "?"; id = ev.pointerId; moveu = false;
       carta.classList.remove("solta");
     });
     carta.addEventListener("pointermove", function (ev) {
       if (ev.pointerId !== id || !modo) return;
       var mx = ev.clientX - x0, my = ev.clientY - y0;
       if (modo === "?") {
-        if (Math.abs(mx) > 9 && Math.abs(mx) > Math.abs(my) * 1.2) { modo = "x"; try { carta.setPointerCapture(id); } catch (e) {} }
+        if (Math.abs(mx) > 9 && Math.abs(mx) > Math.abs(my) * 1.2) { modo = "x"; moveu = true; try { carta.setPointerCapture(id); } catch (e) {} }
         else if (Math.abs(my) > 9) { modo = null; return; }
         else return;
       }
@@ -621,11 +671,25 @@
       fDir.style.opacity = dx > 0 ? p : 0; fEsq.style.opacity = dx < 0 ? p : 0;
       fDir.style.filter = dx > 0 && p >= 1 ? "none" : "saturate(.6)"; fEsq.style.filter = dx < 0 && p >= 1 ? "none" : "saturate(.6)";
     });
+    function sai(lado) {
+      if (saiu) return; saiu = true;
+      var w = slot.offsetWidth;
+      carta.classList.add("solta");
+      carta.style.transform = "translateX(" + (lado * w * 1.25) + "px) rotate(" + (lado * 8) + "deg)";
+      fDir.style.opacity = lado > 0 ? 1 : 0; fEsq.style.opacity = lado < 0 ? 1 : 0;
+      setTimeout(function () {
+        slot.style.height = slot.offsetHeight + "px"; void slot.offsetHeight;
+        slot.style.height = "0px"; slot.style.marginTop = "-10px"; slot.classList.add("saindo");
+        setTimeout(function () { (lado > 0 ? item.dir : item.esq).fn(); }, 260);
+      }, 180);
+    }
+    slot.querySelectorAll("[data-pc]").forEach(function (b) { b.addEventListener("click", function (ev) { ev.stopPropagation(); sai(b.dataset.pc === "dir" ? 1 : -1); }); });
+    carta.addEventListener("click", function (ev) { if (moveu || saiu) { setTimeout(function () { moveu = false; }, 0); return; } if (pc() && !ev.target.closest("button, a")) item.abre(); });
     function solta(ev) {
       if (ev.pointerId !== id) return;
       var m = modo; modo = null; id = null;
       if (m === "?") {
-        if (Date.now() - t0 < 450) item.abre();
+        if (!pc() && Date.now() - t0 < 450) item.abre();
         return;
       }
       if (m !== "x") return;
@@ -633,13 +697,7 @@
       var vai = Math.abs(dx) > w * 0.3 || (vel > 0.6 && Math.abs(dx) > 50);
       carta.classList.add("solta");
       if (!vai) { carta.style.transform = ""; fDir.style.opacity = 0; fEsq.style.opacity = 0; return; }
-      var lado = dx > 0 ? 1 : -1;
-      carta.style.transform = "translateX(" + (lado * w * 1.25) + "px) rotate(" + (lado * 8) + "deg)";
-      setTimeout(function () {
-        slot.style.height = slot.offsetHeight + "px"; void slot.offsetHeight;
-        slot.style.height = "0px"; slot.style.marginTop = "-10px"; slot.classList.add("saindo");
-        setTimeout(function () { (lado > 0 ? item.dir : item.esq).fn(); }, 260);
-      }, 180);
+      sai(dx > 0 ? 1 : -1);
     }
     carta.addEventListener("pointerup", solta);
     carta.addEventListener("pointercancel", function (ev) { if (ev.pointerId === id) { modo = null; carta.classList.add("solta"); carta.style.transform = ""; fDir.style.opacity = 0; fEsq.style.opacity = 0; } });
@@ -673,8 +731,9 @@
   }, { passive: true });
 
   /* ---------- folha ---------- */
-  var folhaAberta = false, aoFechar = null;
+  var folhaAberta = false, aoFechar = null, folhaVolta = null;
   function abrirFolha(titulo, html, montar, fechar) {
+    if (!folhaAberta) folhaVolta = document.activeElement;
     $("folhaTit").textContent = titulo;
     var corpo = $("folhaCorpo");
     corpo.innerHTML = html; corpo.scrollTop = 0;
@@ -694,6 +753,8 @@
     $("btLancar").setAttribute("aria-expanded", "false");
     if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
     var cb = aoFechar; aoFechar = null; if (cb) cb();
+    if (folhaVolta && folhaVolta.focus) { try { folhaVolta.focus({ preventScroll: true }); } catch (e) {} }
+    folhaVolta = null;
   }
   $("veu").addEventListener("click", fecharFolha);
   $("folhaFecha").addEventListener("click", fecharFolha);
@@ -701,7 +762,7 @@
   (function () {
     var f = $("folha"), y0 = 0, dy = 0, t0 = 0, id = null;
     function desce(ev) {
-      if (ev.target.closest("button")) return;
+      if (pc() || ev.target.closest("button")) return;
       y0 = ev.clientY; dy = 0; t0 = Date.now(); id = ev.pointerId; f.classList.add("arrastando");
       try { ev.currentTarget.setPointerCapture(id); } catch (e) {}
     }
@@ -978,16 +1039,8 @@
 
   /* --- mês --- */
   function folhaMes(ym) {
-    var p = ym.split("-").map(Number), ano = p[0], mes = p[1] - 1;
-    var prim = new Date(ano, mes, 1), ini = somaDias(isoDe(prim), -((prim.getDay() + 6) % 7));
-    var g = '<div class="mes-grade">' + ["seg", "ter", "qua", "qui", "sex", "sáb", "dom"].map(function (d) { return '<span class="dsem">' + d + "</span>"; }).join("");
-    for (var i = 0; i < 42; i++) {
-      var d = somaDias(ini, i), dd = dataDe(d), n = itensDoDia(d).filter(function (x) { return !x.feito; }).length;
-      g += '<button data-pdia="' + d + '" class="' + (dd.getMonth() !== mes ? "fora " : "") + (d === hoje() ? "hoje " : "") + (d === diaSel ? "sel" : "") + '">' + dd.getDate() + "<i>" + (n ? "<em></em>" : "") + (n > 1 ? "<em></em>" : "") + (n > 2 ? "<em></em>" : "") + "</i></button>";
-    }
-    g += "</div>";
-    var ant = isoDe(new Date(ano, mes - 1, 1)).slice(0, 7), prox = isoDe(new Date(ano, mes + 1, 1)).slice(0, 7);
-    abrirFolha(cap(MESES[mes]) + " " + ano, '<div class="nav-dia"><button class="ico-bt" data-m="' + ant + '" aria-label="Mês anterior">' + IC.esq + '</button><span style="flex:1"></span><button class="ico-bt" data-m="' + prox + '" aria-label="Mês seguinte">' + IC.dir + "</button></div>" + g, function (c) {
+    var p = ym.split("-").map(Number);
+    abrirFolha(cap(MESES[p[1] - 1]) + " " + p[0], navMes(ym, "data-m") + gradeMes(ym), function (c) {
       c.querySelectorAll("[data-m]").forEach(function (b) { b.onclick = function () { folhaMes(b.dataset.m); }; });
       c.querySelectorAll("[data-pdia]").forEach(function (b) { b.onclick = function () { diaSel = b.dataset.pdia; fecharFolha(); render(false); }; });
     });
@@ -1118,7 +1171,20 @@
   }
 
   /* ---------- barra ---------- */
-  document.querySelectorAll(".barra [data-v]").forEach(function (b) { b.addEventListener("click", function () { fecharFolha(); irPara(b.dataset.v); }); });
+  document.querySelectorAll(".barra [data-v], .lateral [data-v]").forEach(function (b) { b.addEventListener("click", function () { fecharFolha(); irPara(b.dataset.v); }); });
+  $("ltLancar").addEventListener("click", function () { folhaLancar(null, vista === "agenda" ? diaSel : null); });
+  $("ltBusca").addEventListener("click", folhaBusca);
+  $("ltMais").addEventListener("click", folhaMais);
+  document.addEventListener("keydown", function (e) {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    var t = e.target, campo = t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.tagName === "SELECT" || t.isContentEditable);
+    if (campo || folhaAberta) return;
+    var k = (e.key || "").toLowerCase(); if (e.isComposing) return;
+    if (k === "n") { e.preventDefault(); folhaLancar(null, vista === "agenda" ? diaSel : null); }
+    else if (e.key === "/") { e.preventDefault(); folhaBusca(); }
+    else if (/^[1-4]$/.test(e.key)) irPara(ORDEM_VISTAS[Number(e.key) - 1]);
+    else if (vista === "agenda" && (e.key === "ArrowLeft" || e.key === "ArrowRight")) { diaSel = somaDias(diaSel, e.key === "ArrowLeft" ? -1 : 1); agendaMes = null; render(false, e.key === "ArrowLeft" ? "esq" : "dir"); }
+  });
   $("btLancar").addEventListener("click", function () { if (folhaAberta && $("btLancar").getAttribute("aria-expanded") === "true") fecharFolha(); else folhaLancar(null, vista === "agenda" ? diaSel : null); });
   $("btBusca").addEventListener("click", folhaBusca);
   $("btMais").addEventListener("click", folhaMais);

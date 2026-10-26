@@ -71,6 +71,7 @@
     imp: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21h16M6 21V9h12v12M9 9V4h6v5M10 14h4"/></svg>',
     site: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 8h18"/></svg>',
     x: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+    ler: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3M7 12h10"/></svg>',
     engrenagem: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M2 12h3M19 12h3M4.9 19.1L7 17M17 7l2.1-2.1"/></svg>',
     fora: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6M20 4l-9 9M18 14v6H4V6h6"/></svg>'
   };
@@ -1699,6 +1700,7 @@
         '<div class="campo"><select id="pRelAdd"><option value="">Escolher peça…</option>' + outros.map(function (x) { return '<option value="' + esc(x.id) + '">' + esc(x.nome) + "</option>"; }).join("") + "</select></div>" +
         '<div class="duas">' + campo("Máximo por pedido", '<input id="pMax" type="number" min="1" max="99" inputmode="numeric" value="' + esc(p.qtd_max || "") + '">') + campo("Código no WhatsApp", '<input id="pSku" value="' + esc(p.sku_whatsapp && p.sku_whatsapp !== p.id ? p.sku_whatsapp : "") + '" inputmode="numeric" autocomplete="off">') + "</div>" +
       "</details>" +
+      (novo ? "" : '<details class="pagina-peca" id="pCert"><summary>Certificado do selo</summary>' + campo("Dimensões", '<input id="pDim" autocomplete="off">') + campo("Texto de origem", '<textarea id="pOrig" maxlength="400"></textarea>') + "</details>") +
       (novo ? "" : '<div class="grade-bts"><a class="bt" href="https://maratu.com.br/produto/' + encodeURIComponent(p.id) + '" target="_blank" rel="noopener">' + IC.fora + 'Ver na loja</a><button class="bt perigo" id="pApaga">Apagar peça</button></div>') +
       '<div class="fixo"><button class="bt acento cheio" id="pSalva">' + (novo ? "Criar peça" : "Salvar") + "</button></div>";
     abrirFolha(novo ? "Peça nova" : p.nome, html, function (c) {
@@ -1748,6 +1750,11 @@
         var box = c.querySelector("#pRel"); if (box.children.length >= 4 || box.querySelector('[data-id="' + id + '"]')) return;
         var x = porId(PROD.lista || [], id), sp = document.createElement("span"); sp.className = "rel"; sp.dataset.id = id; sp.innerHTML = esc(x ? x.nome : id) + '<button type="button" aria-label="Tirar">×</button>'; box.appendChild(sp); ligaRel(sp);
       });
+      if (!novo) carregaSelProdutos().then(function (lista) {
+        var sp = porId(lista, p.id), d = c.querySelector("#pDim"), o = c.querySelector("#pOrig"); if (!d || !folhaAberta) return;
+        d.value = sp && sp.dimensoes || ""; o.value = sp && sp.origem_texto || ""; d.dataset.antes = d.value; o.dataset.antes = o.value; d.dataset.carregado = "1";
+        if (d.value || o.value) c.querySelector("#pCert").open = true;
+      }).catch(function () {});
       var ap = c.querySelector("#pApaga");
       if (ap) confirmaDuplo(ap, "Toque de novo pra apagar", function () {
         api("/api/catalog/" + encodeURIComponent(p.id), { method: "DELETE" }).then(function () {
@@ -1795,6 +1802,11 @@
           if (soltas.length) api("/api/img/apagar", { method: "POST", body: { chaves: soltas } }).catch(function () {});
           var salvo = Object.assign({}, p0 || {}, corpo, { ficha: corpo.ficha ? JSON.stringify(corpo.ficha) : null, galeria: corpo.galeria.length ? JSON.stringify(corpo.galeria) : null, relacionados: corpo.relacionados.length ? JSON.stringify(corpo.relacionados) : null });
           if (novo) PROD.lista.push(salvo); else PROD.lista = PROD.lista.map(function (x) { return x.id === p.id ? salvo : x; });
+          var dimV = c.querySelector("#pDim"), orgV = c.querySelector("#pOrig");
+          if (dimV && dimV.dataset.carregado && (dimV.value.trim() !== dimV.dataset.antes || orgV.value.trim() !== orgV.dataset.antes)) {
+            api("/api/selos/produto", { method: "POST", body: { sku: corpo.id, dimensoes: dimV.value.trim() || null, origem_texto: orgV.value.trim() || null } })
+              .then(function () { SEL.produtos = null; }).catch(function () { aviso("O certificado não salvou"); });
+          }
           fecharFolha(); render(true); aviso(novo ? "Peça criada" : "Peça salva");
         }).catch(function (e) {
           bt.disabled = false; bt.textContent = novo ? "Criar peça" : "Salvar";
@@ -1883,18 +1895,6 @@
             .catch(function () { bt.disabled = false; aviso("Não salvou. Confira a internet."); });
         };
       });
-  }
-
-  /* selos: o mesmo módulo do painel antigo, aberto aqui dentro */
-  var selosCarregando = null;
-  function abrirSelos(aba) {
-    if (window.maratuSelos) { window.maratuSelos.abrir(aba); return; }
-    if (selosCarregando) return;
-    selosCarregando = new Promise(function (ok, falha) {
-      var s = document.createElement("script"); s.src = "/admin-selos.js?v=20261028a"; s.onload = ok; s.onerror = falha; document.body.appendChild(s);
-    }).then(function () { if (window.maratuSelos) window.maratuSelos.abrir(aba); else aviso("Os selos não abriram"); })
-      .catch(function () { aviso("Os selos não abriram. Confira a internet."); })
-      .then(function () { selosCarregando = null; });
   }
 
   /* impressora */
@@ -2294,7 +2294,8 @@
     ["Oficina", "Orçamentos", vaiAba("oficina", "orcamentos"), IC.calc], ["Oficina", "Produção", vaiAba("oficina", "producao"), IC.imp],
     ["Oficina", "Peça nova", function () { irAba("oficina", "pecas"); carregarProdutos().then(function () { folhaProduto(null); }); }, IC.mais],
     ["Oficina", "Ordem das faixas", function () { carregarProdutos().then(folhaFaixas); }, IC.entrada],
-    ["Oficina", "Selos", function () { abrirSelos(); }, IC.selo], ["Oficina", "Ler selo", function () { abrirSelos("vincular"); }, IC.selo],
+    ["Oficina", "Selos", function () { irAba("oficina", "producao"); }, IC.selo], ["Oficina", "Selar uma peça", function () { folhaSelar(); }, IC.ler],
+    ["Oficina", "Imprimir folha de selos", function () { folhaImprimirSelos(); }, IC.imp], ["Oficina", "Lista de selos", function () { folhaListaSelos(""); }, IC.selo],
     ["Oficina", "Impressora", function () { irAba("oficina", "producao"); }, IC.imp],
     ["Divulgação", "Conteúdo", vaiAba("divulgacao", "conteudo"), IC.post], ["Divulgação", "Newsletter", vaiAba("divulgacao", "newsletter"), IC.envelope],
     ["Divulgação", "Links da bio", vaiAba("divulgacao", "links"), IC.copia], ["Divulgação", "Números", vaiAba("divulgacao", "numeros"), IC.dir],
@@ -2495,7 +2496,7 @@
         gravarTabela("orcamentos", function (a) { return a.filter(function (x) { return String(x.id) !== id; }); });
       });
     });
-    raiz.querySelectorAll("[data-selos]").forEach(function (b) { b.onclick = function () { abrirSelos(b.dataset.selos || undefined); }; });
+    if (vista === "oficina" && abaDe("oficina") === "producao") ligarSelos(raiz);
     raiz.querySelectorAll("[data-custos]").forEach(function (b) { b.onclick = folhaCustos; });
     raiz.querySelectorAll("[data-newsst]").forEach(function (b) {
       b.onclick = function () {
@@ -2801,7 +2802,6 @@
       [["Filamento", brlCurto(p.filamento) + "/kg"], ["Máquina", brlCurto(p.maquina) + "/h"], ["Mão de obra", brlCurto(p.maodeobra) + "/h"], ["Margem", String(p.margem).replace(".", ",") + "x"]].map(function (x) { return '<div class="linha toca" data-custos><div class="o"><b>' + x[0] + '</b></div><span class="valor">' + x[1] + "</span></div>"; }).join("") + "</div>";
     return colunas(esq, dir);
   }
-  var ROT_SELO = { branco: "em branco", fila: "na fila", novo: "novos", ativo: "vinculados", reivindicado: "com dono" };
   function impHTML(imp) {
     if (!imp || !imp.conectada) return '<p class="vazio">A impressora ainda não mandou notícia.</p>';
     var d = imp.estado || {}, an = imp.analise || {}, idade = idadeImp(imp), ativo = ["printing", "paused"].indexOf(d.estado) >= 0;
@@ -2820,12 +2820,7 @@
       IMP_PEDIDA = Date.now();
       api("/api/impressora").then(function (imp) { S.extras = S.extras || {}; S.extras.imp = imp; if (vista === "oficina" && abaDe("oficina") === "producao" && !folhaAberta) render(true); }).catch(function () {});
     }
-    var imp = S.extras && S.extras.imp, sel = S.extras && S.extras.selos, por = sel && sel.por_status || {};
-    var nums = Object.keys(por).length ? '<div class="nums">' + Object.keys(por).slice(0, 3).map(function (k) { return numBt(por[k], ROT_SELO[k] || k, 'data-selos=""'); }).join("") + "</div>" : "";
-    var esq = '<div class="secao" style="margin-top:6px;">Impressora K1C</div>' + impHTML(imp);
-    var dir = '<div class="secao">Selos' + (sel && sel.alertas ? ' <small style="color:var(--atraso);opacity:1">' + sel.alertas + (sel.alertas === 1 ? " alerta" : " alertas") + "</small>" : "") + "</div>" + nums +
-      '<div class="grade-bts"><button class="bt acento" data-selos="">' + IC.selo + 'Selos</button><button class="bt" data-selos="vincular">Ler selo</button></div>';
-    return colunas(esq, dir);
+    return colunas(telaSelos(), '<div class="secao" style="margin-top:6px;">Impressora K1C</div>' + impHTML(S.extras && S.extras.imp));
   }
 
   /* ---------- Divulgação ---------- */
@@ -2907,6 +2902,389 @@
     return cabArea("ajustes") + colunas(a, b);
   }
 
+  /* ---------- Selos: selar peça, imprimir folha, lista e alertas (antes era o módulo do painel antigo) ---------- */
+  var SITE = "https://maratu.com.br";
+  var EST_SELO = { branco: ["Em branco", "e-branco"], ativo: ["Na peça", "e-ativo"], vendido: ["Vendido", "e-vendido"], reivindicado: ["Com dono", "e-dono"], bloqueado: ["Bloqueado", "e-bloq"] };
+  var SEL = { lista: null, alertas: null, produtos: null, pedindo: {} };
+  function estSelo(k) { var e = EST_SELO[k] || [k || "?", "e-branco"]; return '<span class="est ' + e[1] + '">' + esc(e[0]) + "</span>"; }
+  function normCodigo(s) { return String(s || "").toUpperCase().replace(/[^0-9A-Z]/g, "").slice(0, 10); }
+  function codigoDaLeitura(txt) { var m = /\/a\/([0-9A-Za-z]{6,12})/.exec(String(txt || "")); return m ? normCodigo(m[1]) : (/^[0-9A-Za-z]{6,12}$/.test(String(txt || "").trim()) ? normCodigo(txt) : ""); }
+  function carregaSelos(forcar) {
+    if (SEL.pedindo.lista || (SEL.lista && !forcar)) return SEL.pedindo.lista || Promise.resolve(SEL.lista);
+    SEL.pedindo.lista = api("/api/selos?limit=1000").then(function (d) { SEL.lista = d.selos || []; return SEL.lista; })
+      .then(function (x) { SEL.pedindo.lista = null; return x; }, function (e) { SEL.pedindo.lista = null; throw e; });
+    return SEL.pedindo.lista;
+  }
+  function carregaAlertas(forcar) {
+    if (SEL.pedindo.alertas || (SEL.alertas && !forcar)) return SEL.pedindo.alertas || Promise.resolve(SEL.alertas);
+    SEL.pedindo.alertas = api("/api/selos/alertas").then(function (d) { SEL.alertas = d.alertas || []; return SEL.alertas; })
+      .then(function (x) { SEL.pedindo.alertas = null; return x; }, function (e) { SEL.pedindo.alertas = null; throw e; });
+    return SEL.pedindo.alertas;
+  }
+  function carregaSelProdutos() {
+    if (SEL.produtos) return Promise.resolve(SEL.produtos);
+    return api("/api/selos/produtos").then(function (d) { SEL.produtos = d.produtos || []; return SEL.produtos; });
+  }
+  /* "está tudo bem" fica guardado no aparelho, junto com o motivo: se o motivo mudar, o alerta volta */
+  var SEL_OK = "maratu.selos.ok";
+  function chaveAlerta(a) { return a.codigo + ":" + (a.motivos || []).join("|"); }
+  function alertasAtivos() { var ok = lerLS(SEL_OK, {}); return (SEL.alertas || []).filter(function (a) { return !ok[chaveAlerta(a)]; }); }
+  function alertaDe(codigo) { return alertasAtivos().filter(function (a) { return a.codigo === codigo; })[0] || null; }
+  function recarregaSelos() {
+    SEL.lista = null; SEL.alertas = null;
+    api("/api/selos/resumo").then(function (d) { S.extras = S.extras || {}; S.extras.selos = d; guardaCache(); }).catch(function () {})
+      .then(function () { if (vista === "oficina" && abaDe("oficina") === "producao" && !folhaAberta) render(true); });
+  }
+  function fotoPeca(sku) { var p = porId(PROD.lista || [], sku); return p && p.imagem_principal ? '<img class="miniprod" alt="" loading="lazy" src="' + esc(imgUrl(p.imagem_principal, "t")) + '">' : '<span class="miniprod sem-foto">' + esc(String((p && p.nome) || "?").charAt(0)) + "</span>"; }
+  function linhaSelo(s) {
+    var al = alertaDe(s.codigo);
+    return '<div class="linha toca" data-selo="' + esc(s.codigo) + '">' + fotoPeca(s.sku) + '<div class="o"><b>' + esc(s.produto_nome || s.nome_peca || "Sem peça") + '</b><small><span class="codigo">' + esc(s.codigo) + "</span>" +
+      (s.status === "branco" ? "" : ", " + (Number(s.acessos) || 0) + (Number(s.acessos) === 1 ? " acesso" : " acessos")) + (s.data_impressao ? ", " + dm(s.data_impressao) : "") + "</small></div>" +
+      (al ? '<span class="est e-vendido">Alerta</span>' : estSelo(s.status)) + "</div>";
+  }
+  function telaSelos() {
+    var sel = S.extras && S.extras.selos, por = sel && sel.por_status || {};
+    if (sel && sel.alertas && !SEL.alertas) carregaAlertas().then(function () { if (vista === "oficina" && abaDe("oficina") === "producao" && !folhaAberta) render(true); }).catch(function () {});
+    if (!SEL.lista) carregaSelos().then(function () { if (vista === "oficina" && abaDe("oficina") === "producao" && !folhaAberta) render(true); }).catch(function () {});
+    if (!PROD.lista && !PROD.erro && !PROD.carregando) carregarProdutos().then(function () { if (vista === "oficina" && abaDe("oficina") === "producao" && !folhaAberta) render(true); }).catch(function () {});
+    var als = alertasAtivos(), nAl = SEL.alertas ? als.length : (sel && sel.alertas) || 0;
+    var recentes = (SEL.lista || []).filter(function (s) { return s.status !== "branco"; }).sort(function (a, b) { return String(b.data_impressao || "") < String(a.data_impressao || "") ? -1 : 1; }).slice(0, 4);
+    return '<div class="sl-acao">' +
+        '<button class="sl-grande prim" data-selar>' + IC.ler + "Selar uma peça<small>" + (por.ativo || 0) + " na peça</small></button>" +
+        '<button class="sl-grande sec" data-imprimirselos>' + IC.imp + "Imprimir folha<small>" + (por.branco || 0) + " em branco</small></button></div>" +
+      (nAl ? '<div class="cartao alerta-c"><div class="l"><span class="est e-vendido">Alerta</span><b>' + nAl + (nAl === 1 ? " selo com acesso estranho" : " selos com acesso estranho") + "</b></div>" +
+        (als.length ? "<p>" + esc(als.slice(0, 2).map(function (a) { return (a.produto_nome || a.codigo) + ": " + a.motivos.join(", "); }).join(". ")) + "</p>" : "<p></p>") +
+        '<button class="bt cheio" data-sellista="alerta">Ver ' + (nAl === 1 ? "o alerta" : "os " + nAl) + "</button></div>" : "") +
+      '<div class="nums">' + numBt(por.branco || 0, "em branco", 'data-sellista="branco"') + numBt(por.ativo || 0, "na peça", 'data-sellista="ativo"') + numBt((por.reivindicado || 0) + (por.vendido || 0), "com dono", 'data-sellista="reivindicado"') + "</div>" +
+      '<div class="secao">Últimos selados<button class="bt-link" data-sellista="">Todos</button></div>' +
+      (SEL.lista ? (recentes.length ? '<div class="cartao lista">' + recentes.map(linhaSelo).join("") + "</div>" : '<p class="vazio">Nenhuma peça selada.</p>') : '<div class="esqueleto"></div>') +
+      '<div class="cartao lista"><div class="linha toca" data-selespecial><div class="o"><b>Selo de peça especial</b></div>' + IC.seta + "</div></div>";
+  }
+  function ligarSelos(raiz) {
+    raiz.querySelectorAll("[data-selar]").forEach(function (b) { b.onclick = function () { folhaSelar(); }; });
+    raiz.querySelectorAll("[data-imprimirselos]").forEach(function (b) { b.onclick = folhaImprimirSelos; });
+    raiz.querySelectorAll("[data-sellista]").forEach(function (b) { b.onclick = function () { folhaListaSelos(b.dataset.sellista); }; });
+    raiz.querySelectorAll("[data-selespecial]").forEach(function (b) { b.onclick = folhaSeloEspecial; });
+    raiz.querySelectorAll("[data-selo]").forEach(function (b) { b.onclick = function () { abrirSelo(b.dataset.selo); }; });
+  }
+
+  /* --- câmera: BarcodeDetector quando existe, jsQR no Safari --- */
+  var libs = {};
+  function carregaLib(src) {
+    if (libs[src]) return libs[src];
+    libs[src] = new Promise(function (ok, falha) { var s = document.createElement("script"); s.src = src; s.onload = ok; s.onerror = function () { libs[src] = null; falha(new Error("lib")); }; document.head.appendChild(s); });
+    return libs[src];
+  }
+  var cam = null;
+  function paraCamera() {
+    if (!cam) return; cam.parado = true; clearTimeout(cam.timer);
+    try { cam.stream.getTracks().forEach(function (t) { t.stop(); }); } catch (e) {}
+    try { cam.video.srcObject = null; } catch (e) {}
+    cam = null;
+  }
+  function ligaCamera(video, msg, achou) {
+    paraCamera();
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { msg.textContent = "Sem câmera aqui. Digite o código."; return; }
+    var meu = { video: video, parado: false };
+    cam = meu;
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: "environment" } }, audio: false }).then(function (stream) {
+      if (meu.parado) { stream.getTracks().forEach(function (t) { t.stop(); }); return; }
+      meu.stream = stream; video.srcObject = stream; video.setAttribute("playsinline", ""); return video.play();
+    }).then(function () {
+      if (meu.parado) return;
+      if (window.BarcodeDetector) return window.BarcodeDetector.getSupportedFormats().then(function (fs) { if (fs.indexOf("qr_code") >= 0) meu.detector = new window.BarcodeDetector({ formats: ["qr_code"] }); else return carregaLib("/vendor/jsQR.min.js?v=1"); }).catch(function () { return carregaLib("/vendor/jsQR.min.js?v=1"); });
+      return carregaLib("/vendor/jsQR.min.js?v=1");
+    }).then(function () {
+      if (meu.parado) return;
+      msg.textContent = "Aponte pro adesivo";
+      var cv = document.createElement("canvas");
+      var varre = function () {
+        if (meu.parado) return;
+        var seguinte = function () { meu.timer = setTimeout(varre, 220); };
+        if (!video.videoWidth) return seguinte();
+        var pegou = function (txt) { var c = codigoDaLeitura(txt); if (!c) return seguinte(); if (navigator.vibrate) navigator.vibrate(40); paraCamera(); achou(c); };
+        if (meu.detector) { meu.detector.detect(video).then(function (r) { if (r && r.length) pegou(r[0].rawValue); else seguinte(); }).catch(seguinte); return; }
+        if (window.jsQR) {
+          var l = Math.min(video.videoWidth, video.videoHeight, 640); cv.width = l; cv.height = l;
+          var ctx = cv.getContext("2d"); ctx.drawImage(video, (video.videoWidth - l) / 2, (video.videoHeight - l) / 2, l, l, 0, 0, l, l);
+          var r = window.jsQR(ctx.getImageData(0, 0, l, l).data, l, l, { inversionAttempts: "dontInvert" });
+          if (r && r.data) return pegou(r.data);
+        }
+        seguinte();
+      };
+      varre();
+    }).catch(function (e) { if (!meu.parado) msg.textContent = "A câmera não abriu. Digite o código."; paraCamera(); });
+  }
+
+  /* --- selar uma peça: ler, escolher, pronto --- */
+  function folhaSelar() {
+    abrirFolha("Selar uma peça",
+      '<div class="camera-sl"><video id="slVideo" playsinline muted></video><div class="mira"></div><div class="dica-c" id="slMsg">Abrindo a câmera…</div></div>' +
+      '<div class="digitar-sl"><input id="slCod" class="codigo" placeholder="Código do adesivo" autocapitalize="characters" autocomplete="off" spellcheck="false"><button class="bt" id="slIr">Abrir</button></div>',
+      function (c) {
+        var ir = function (cod) { cod = normCodigo(cod); if (!cod) return c.querySelector("#slCod").focus(); paraCamera(); passoPeca(cod); };
+        c.querySelector("#slIr").onclick = function () { ir(c.querySelector("#slCod").value); };
+        c.querySelector("#slCod").addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); ir(this.value); } });
+        if (!PROD.lista && !PROD.erro) carregarProdutos();
+        ligaCamera(c.querySelector("#slVideo"), c.querySelector("#slMsg"), ir);
+      }, paraCamera);
+  }
+  function maisSeladas() {
+    var desde = somaDias(hoje(), -30), n = {};
+    (SEL.lista || []).forEach(function (s) { if (s.sku && s.status !== "branco" && String(s.data_impressao || "") >= desde) n[s.sku] = (n[s.sku] || 0) + 1; });
+    return n;
+  }
+  function gradePecas(sel, filtro) {
+    var n = maisSeladas(), lista = (SEL.produtos || []).filter(function (p) { return p.ativo || p.id === sel; });
+    var q = norm(filtro || "");
+    if (q) lista = lista.filter(function (p) { return norm(p.nome + " " + (p.subtitulo || "")).indexOf(q) >= 0; });
+    lista.sort(function (a, b) { return (n[b.id] || 0) - (n[a.id] || 0) || String(a.nome).localeCompare(String(b.nome)); });
+    return lista.length ? lista.map(function (p) {
+      var pr = porId(PROD.lista || [], p.id);
+      return '<button type="button" class="gp' + (p.id === sel ? " sel" : "") + '" data-gp="' + esc(p.id) + '">' + (pr && pr.imagem_principal ? '<img alt="" loading="lazy" src="' + esc(imgUrl(pr.imagem_principal, "t")) + '">' : '<i class="gp-sem">' + esc(String(p.nome).charAt(0)) + "</i>") +
+        "<span>" + esc(p.nome) + "</span><small>" + (n[p.id] ? n[p.id] + " no mês" : esc(nomeFaixa(p.subcategoria || ""))) + "</small></button>";
+    }).join("") : '<p class="vazio" style="grid-column:1/-1;color:var(--suave)">Nenhuma peça com esse nome.</p>';
+  }
+  function escolhePeca(c, atual, aoEscolher) {
+    var sel = atual || "";
+    var pinta = function () {
+      c.querySelector("#gpGrade").innerHTML = gradePecas(sel, c.querySelector("#gpBusca").value);
+      c.querySelectorAll("[data-gp]").forEach(function (b) { b.onclick = function () { sel = b.dataset.gp; c.querySelectorAll("[data-gp]").forEach(function (x) { x.classList.toggle("sel", x === b); }); aoEscolher(sel); }; });
+    };
+    c.querySelector("#gpBusca").addEventListener("input", pinta);
+    pinta();
+  }
+  function passoPeca(cod) {
+    abrirFolha("Selar uma peça", '<div class="esqueleto"></div>', function (c) {
+      Promise.all([api("/api/selos/um?codigo=" + encodeURIComponent(cod)), carregaSelProdutos(), carregaSelos().catch(function () {}), PROD.lista ? null : carregarProdutos()]).then(function (r) {
+        var s = r[0].selo;
+        if (!folhaAberta) return;
+        if (s.status !== "branco") { abrirSelo(s.codigo, s); return; }
+        var escolhida = "", dataI = hoje();
+        abrirFolha("Qual é a peça?",
+          '<div class="sl-cod">' + estSelo("branco") + '<span class="codigo">' + esc(s.codigo) + "</span></div>" +
+          '<div class="campo"><input id="gpBusca" type="search" placeholder="Buscar peça" autocomplete="off"></div>' +
+          '<div class="grade-prod" id="gpGrade"></div>' +
+          '<details class="sl-data"><summary>Impressa hoje, mudar</summary><div class="duas">' + campo("Impressa em", '<input id="slData" type="date" value="' + dataI + '">') + campo("Feita em", '<input id="slCidade" value="Aracaju, Sergipe">') + "</div></details>" +
+          '<div class="fixo"><button class="bt acento cheio" id="slOk" disabled>Escolha a peça</button></div>',
+          function (f) {
+            var ok = f.querySelector("#slOk");
+            escolhePeca(f, "", function (id) { escolhida = id; var p = porId(SEL.produtos, id); ok.disabled = false; ok.textContent = "Selar como " + (p ? p.nome : id); });
+            f.querySelector("#slData").addEventListener("change", function () { f.querySelector(".sl-data summary").textContent = this.value === hoje() ? "Impressa hoje, mudar" : "Impressa em " + dm(this.value) + ", mudar"; });
+            ok.onclick = function () {
+              if (!escolhida) return;
+              ok.disabled = true; ok.textContent = "Selando…";
+              var corpo = { codigo: s.codigo, sku: escolhida, data_impressao: f.querySelector("#slData").value || hoje(), cidade: f.querySelector("#slCidade").value.trim() || null };
+              api("/api/selos/vincular", { method: "POST", body: corpo }).then(function (d) {
+                conta("aviso"); recarregaSelos();
+                passoPronto(s.codigo, d.produto || (porId(SEL.produtos, escolhida) || {}).nome, corpo.data_impressao);
+              }).catch(function (e) { ok.disabled = false; ok.textContent = "Tentar de novo"; aviso(/409/.test(String(e && e.message)) ? "Esse selo já foi usado" : "Não selou. Confira a internet."); });
+            };
+          }, paraCamera);
+      }).catch(function (e) {
+        if (!folhaAberta) return;
+        var naoExiste = /404/.test(String(e && e.message));
+        abrirFolha("Selar uma peça", '<div class="cartao" style="box-shadow:none"><b style="font-weight:900">' + (naoExiste ? esc(cod) + " não existe" : "Não carregou. Confira a internet.") + '</b></div><button class="bt acento cheio" id="slDeNovo">Ler de novo</button>',
+          function (f) { f.querySelector("#slDeNovo").onclick = folhaSelar; });
+      });
+    }, paraCamera);
+  }
+  function passoPronto(cod, nome, data) {
+    abrirFolha("Selada",
+      '<div class="ok-grande"><div class="bola">' + IC.check + "</div><b>" + esc(nome || "Peça") + '</b><span class="codigo">' + esc(cod) + "</span></div>" +
+      '<div class="cert"><div class="l1"><span>Certificado</span><span>maratu.com.br/a/' + esc(cod) + "</span></div><b>" + esc(nome || "") + "</b><span>Impressa em " + dm(data) + "/" + String(data).slice(0, 4) + "</span></div>" +
+      '<div class="grade-bts"><a class="bt" href="' + SITE + "/a/" + esc(cod) + '" target="_blank" rel="noopener">' + IC.fora + 'Ver certificado</a><button class="bt" id="slTroca">Trocar a peça</button></div>' +
+      '<div class="fixo grade-bts"><button class="bt" id="slFim">Terminei</button><button class="bt acento" id="slProx">Selar a próxima</button></div>',
+      function (f) {
+        f.querySelector("#slProx").onclick = folhaSelar;
+        f.querySelector("#slFim").onclick = fecharFolha;
+        f.querySelector("#slTroca").onclick = function () { folhaTrocarPeca({ codigo: cod }); };
+      });
+  }
+
+  /* --- imprimir folha de selos em branco --- */
+  /* mesma receita do adesivo do painel antigo: 15 ou 20 mm, folga de 2 módulos, Aratu no meio */
+  var TAM_SELO = [{ k: "15", qr: 15 }, { k: "20", qr: 20 }];
+  TAM_SELO.forEach(function (t) { t.cel = t.qr; t.txt = Math.max(1.6, t.qr / 9); t.alt = t.qr + t.txt * 1.5; t.cols = Math.floor(194 / t.cel); t.linhas = Math.floor(281 / t.alt); t.porFolha = t.cols * t.linhas; });
+  var ARATU_D = ["M0,72.78c0,18.46,14.97,33.43,33.43,33.43V39.35C14.97,39.35,0,54.31,0,72.78Z", "M187.62,39.35v66.86c18.46,0,33.43-14.97,33.43-33.43s-14.97-33.43-33.43-33.43Z", "M110.53,106.21c36.93,0,66.86-29.94,66.86-66.86H43.66c0,36.93,29.94,66.86,66.86,66.86Z", "M156.17,16.73c0-9.24-7.49-16.73-16.73-16.73v33.45c9.24,0,16.73-7.49,16.73-16.73Z", "M81.61,33.45V0c-9.24,0-16.73,7.49-16.73,16.73s7.49,16.73,16.73,16.73Z"];
+  function qrDoSelo(qrcode, codigo) {
+    var qr = qrcode(0, "Q"); qr.addData("maratu.com.br/a/" + codigo); qr.make();
+    var n = qr.getModuleCount(), F = 2, total = n + F * 2, aW = n * 0.28, aH = aW * (106.21 / 221.06), aX = F + (n - aW) / 2, aY = F + (n - aH) / 2, fo = 0.6;
+    var jX = aX - fo, jY = aY - fo, jW = aW + fo * 2, jH = aH + fo * 2, d = "";
+    for (var r = 0; r < n; r++) for (var c = 0; c < n; c++) {
+      if (!qr.isDark(r, c)) continue;
+      var x = F + c, y = F + r;
+      if (x + 1 > jX && x < jX + jW && y + 1 > jY && y < jY + jH) continue;
+      d += "M" + x + " " + y + "h1v1h-1z";
+    }
+    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + total + " " + total + '" shape-rendering="crispEdges"><rect width="' + total + '" height="' + total + '" fill="#fff"/><path fill="#000" d="' + d + '"/>' +
+      '<g fill="#000" transform="translate(' + aX.toFixed(3) + " " + aY.toFixed(3) + ") scale(" + (aW / 221.06).toFixed(5) + ')">' + ARATU_D.map(function (p) { return '<path d="' + p + '"/>'; }).join("") + "</g></svg>";
+  }
+  function folhaImprimirSelos() {
+    var tam = lerLS("maratu.selos.tam", "15"), folhas = 1;
+    var t = function () { return TAM_SELO.filter(function (x) { return x.k === tam; })[0] || TAM_SELO[0]; };
+    abrirFolha("Imprimir folha",
+      '<div class="seg" role="group" id="slTam">' + TAM_SELO.map(function (x) { return '<button data-tam="' + x.k + '" aria-pressed="' + (x.k === tam) + '">' + x.k + " mm</button>"; }).join("") + "</div>" +
+      '<div class="qtd" id="slQtd"></div><div class="folha-a4" id="slA4"></div>' +
+      '<div class="fixo"><button class="bt acento cheio" id="slMonta"></button></div>',
+      function (c) {
+        var pinta = function () {
+          var x = t();
+          c.querySelectorAll("[data-tam]").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.tam === tam)); });
+          c.querySelector("#slQtd").innerHTML = [1, 2, 3].filter(function (k) { return k * x.porFolha <= 500; }).map(function (k) { return '<button data-folhas="' + k + '" aria-pressed="' + (k === folhas) + '">' + k + "<small>" + (k * x.porFolha) + " selos</small></button>"; }).join("");
+          var a4 = c.querySelector("#slA4"); a4.style.gridTemplateColumns = "repeat(" + x.cols + ", 1fr)"; a4.innerHTML = new Array(x.porFolha + 1).join("<span></span>");
+          c.querySelector("#slMonta").textContent = "Montar " + (folhas * x.porFolha) + " selos";
+          c.querySelectorAll("[data-folhas]").forEach(function (b) { b.onclick = function () { folhas = Number(b.dataset.folhas); pinta(); }; });
+        };
+        c.querySelectorAll("[data-tam]").forEach(function (b) { b.onclick = function () { tam = b.dataset.tam; gravarLS("maratu.selos.tam", tam); pinta(); }; });
+        pinta();
+        c.querySelector("#slMonta").onclick = function () {
+          var x = t(), n = Math.min(500, folhas * x.porFolha), bt = this;
+          bt.disabled = true; bt.textContent = "Gerando…";
+          Promise.all([api("/api/selos/lote", { method: "POST", body: { n: n } }), carregaLib("/vendor/qrcode.min.js?v=1")]).then(function (r) {
+            fecharFolha(); folhaA4(r[0].codigos || [], x); recarregaSelos();
+          }).catch(function () { bt.disabled = false; bt.textContent = "Tentar de novo"; aviso("Não gerou. Confira a internet."); });
+        };
+      });
+  }
+  function folhaA4(codigos, tam) {
+    var velha = $("seloFolha"); if (velha) velha.remove();
+    var f = document.createElement("div"); f.id = "seloFolha";
+    f.innerHTML = '<div class="sf-barra"><b>' + codigos.length + " selos, " + tam.k + ' mm</b><button class="bt acento" id="sfImprimir">' + IC.imp + 'Imprimir</button><button class="bt" id="sfFechar">Fechar</button></div>' +
+      '<div class="sf-grade" style="width:' + (tam.cel * tam.cols).toFixed(2) + 'mm">' + codigos.map(function (c) {
+        return '<div class="sf-cel" style="width:' + tam.cel.toFixed(2) + "mm;height:" + tam.alt.toFixed(2) + 'mm"><div class="sf-qr" style="width:' + tam.qr + "mm;height:" + tam.qr + 'mm">' + qrDoSelo(window.qrcode, c) + '</div><div class="sf-cod" style="font-size:' + tam.txt.toFixed(2) + 'mm">' + esc(c) + "</div></div>";
+      }).join("") + "</div>";
+    document.body.appendChild(f); document.body.classList.add("selo-imprimindo");
+    $("sfImprimir").onclick = function () { window.print(); };
+    $("sfFechar").onclick = function () { f.remove(); document.body.classList.remove("selo-imprimindo"); };
+  }
+
+  /* --- lista com chips no lugar dos menus --- */
+  function folhaListaSelos(filtro) {
+    var f0 = filtro || "", busca = "";
+    abrirFolha("Selos", '<div class="campo"><input id="slBusca" type="search" placeholder="Código ou peça" autocomplete="off"></div><div class="filtros" id="slChips"></div><div id="slLista"><div class="esqueleto"></div></div>', function (c) {
+      var pinta = function () {
+        var todos = SEL.lista || [], cont = { "": todos.length, alerta: alertasAtivos().length };
+        todos.forEach(function (s) { var k = s.status === "vendido" ? "reivindicado" : s.status; cont[k] = (cont[k] || 0) + 1; });
+        c.querySelector("#slChips").innerHTML = [["", "Todos"], ["alerta", "Alerta"], ["branco", "Em branco"], ["ativo", "Na peça"], ["reivindicado", "Com dono"], ["bloqueado", "Bloqueados"]].filter(function (x) { return x[0] === "" || cont[x[0]] || x[0] === f0; })
+          .map(function (x) { return '<button class="chip-bt" data-slf="' + x[0] + '" aria-pressed="' + (f0 === x[0]) + '">' + x[1] + ' <span class="n">' + (cont[x[0]] || 0) + "</span></button>"; }).join("");
+        c.querySelectorAll("[data-slf]").forEach(function (b) { b.onclick = function () { f0 = b.dataset.slf; pinta(); }; });
+        var q = norm(busca), alertas = {}; alertasAtivos().forEach(function (a) { alertas[a.codigo] = 1; });
+        var vis = todos.filter(function (s) {
+          if (f0 === "alerta" && !alertas[s.codigo]) return false;
+          if (f0 && f0 !== "alerta" && (f0 === "reivindicado" ? ["reivindicado", "vendido"].indexOf(s.status) < 0 : s.status !== f0)) return false;
+          return !q || norm(s.codigo + " " + (s.produto_nome || "") + " " + (s.nome_peca || "")).indexOf(q) >= 0;
+        });
+        if (f0 === "alerta") vis.sort(function (a, b) { return (Number(b.acessos) || 0) - (Number(a.acessos) || 0); });
+        c.querySelector("#slLista").innerHTML = SEL.lista ? (vis.length ? '<div class="cartao lista" style="box-shadow:none">' + vis.slice(0, 120).map(linhaSelo).join("") + "</div>" + (vis.length > 120 ? '<p class="vazio" style="color:var(--suave)">Mostrando 120 de ' + vis.length + ". Busque pelo código.</p>" : "") : '<p class="vazio" style="color:var(--suave)">Nenhum selo aqui.</p>') : '<div class="esqueleto"></div>';
+        c.querySelectorAll("[data-selo]").forEach(function (b) { b.onclick = function () { abrirSelo(b.dataset.selo); }; });
+      };
+      c.querySelector("#slBusca").addEventListener("input", function () { busca = this.value; pinta(); });
+      Promise.all([carregaSelos(), carregaAlertas().catch(function () { return []; })]).then(function () { if (folhaAberta) pinta(); }).catch(function () { c.querySelector("#slLista").innerHTML = '<p class="vazio">Não carregou. Confira a internet.</p>'; });
+      if (!PROD.lista && !PROD.erro) carregarProdutos().then(function () { if (folhaAberta && SEL.lista) pinta(); });
+      pinta();
+    });
+  }
+
+  /* --- um selo: estado, alerta e o que dá pra fazer --- */
+  function abrirSelo(codigo, ja) {
+    var monta = function (s) {
+      var al = alertaDe(s.codigo), dono = s.dono_nome && s.confirmado_em;
+      abrirFolha(s.produto_nome || s.nome_peca || s.codigo,
+        '<div class="sl-cod">' + (al ? '<span class="est e-vendido">Alerta</span>' : "") + estSelo(s.status) + '<span class="codigo">' + esc(s.codigo) + "</span></div>" +
+        '<div class="nums"><div class="num"><b>' + (Number(s.acessos) || 0) + '</b><span>acessos</span></div><div class="num"><b>' + (al && al.regioes ? Number(al.regioes) || 0 : s.data_impressao ? dm(s.data_impressao) : "-") + "</b><span>" + (al && al.regioes ? "regiões" : "impressa em") + '</span></div><div class="num"><b>' + esc(dono ? String(s.dono_nome).split(" ")[0] : "-") + "</b><span>dono</span></div></div>" +
+        (al ? '<div class="resp">' + esc(cap(al.motivos.join(", "))) + ". Pode ser cópia do adesivo.</div>" + '<div class="grade-bts"><button class="bt preto" data-slac="bloqueado">Bloquear</button><button class="bt" id="slTudoBem">Está tudo bem</button></div>' : "") +
+        '<div class="grade-bts"><a class="bt" href="' + SITE + "/a/" + esc(s.codigo) + '" target="_blank" rel="noopener">' + IC.fora + "Ver certificado</a>" + (s.status === "branco" ? '<button class="bt acento" id="slUsar">Selar agora</button>' : '<button class="bt" id="slTroca">Trocar a peça</button>') + "</div>" +
+        (s.status === "branco" ? "" : '<details class="sl-data"><summary>Texto só desta peça</summary>' + campo("Texto", '<textarea id="slTexto" placeholder="' + esc(s.produto_origem ? "Usa o da peça" : "") + '">' + esc(s.texto_selo || "") + "</textarea>") + '<button class="bt cheio" id="slTextoOk">Salvar o texto</button></details>') +
+        '<div class="cartao lista" style="box-shadow:none">' +
+          (s.status === "reivindicado" || s.status === "vendido" ? '<div class="linha toca" data-slac="liberar"><div class="o"><b>Apagar o registro do dono</b></div></div>' : "") +
+          (s.status === "bloqueado" ? '<div class="linha toca" data-slac="ativo"><div class="o"><b>Desbloquear</b></div></div>' : !al ? '<div class="linha toca" data-slac="bloqueado"><div class="o"><b>Bloquear</b></div></div>' : "") +
+          '<div class="linha toca" id="slApaga"><div class="o"><b class="perigo">Apagar este selo</b></div></div>' +
+        "</div>",
+        function (f) {
+          var q = function (x) { return f.querySelector(x); };
+          if (q("#slUsar")) q("#slUsar").onclick = function () { passoPeca(s.codigo); };
+          if (q("#slTroca")) q("#slTroca").onclick = function () { folhaTrocarPeca(s); };
+          if (q("#slTudoBem")) q("#slTudoBem").onclick = function () { var ok = lerLS(SEL_OK, {}); ok[chaveAlerta(al)] = 1; gravarLS(SEL_OK, ok); fecharFolha(); render(true); aviso("Alerta guardado"); };
+          if (q("#slTextoOk")) q("#slTextoOk").onclick = function () {
+            var txt = q("#slTexto").value.trim(), bt = this; bt.disabled = true;
+            api("/api/selos/texto", { method: "POST", body: { codigo: s.codigo, texto_selo: txt || null } }).then(function () { s.texto_selo = txt; bt.disabled = false; aviso(txt ? "Texto salvo" : "Volta a usar o texto da peça"); }).catch(function () { bt.disabled = false; aviso("Não salvou. Confira a internet."); });
+          };
+          f.querySelectorAll("[data-slac]").forEach(function (b) {
+            b.onclick = function () {
+              var ac = b.dataset.slac;
+              var req = ac === "liberar" ? api("/api/selos/liberar", { method: "POST", body: { codigo: s.codigo } }) : api("/api/selos/status", { method: "POST", body: { codigo: s.codigo, status: ac } });
+              fecharFolha();
+              req.then(function () { aviso(ac === "liberar" ? "Registro apagado" : ac === "bloqueado" ? "Selo bloqueado" : "Selo desbloqueado"); recarregaSelos(); }).catch(function () { aviso("Não salvou. Confira a internet."); });
+            };
+          });
+          confirmaDuplo(q("#slApaga"), "Toque de novo pra apagar de vez", function () {
+            fecharFolha();
+            api("/api/selos/apagar", { method: "POST", body: { codigo: s.codigo } }).then(function () { aviso("Selo apagado"); recarregaSelos(); }).catch(function () { aviso("Não apagou. Confira a internet."); });
+          });
+        });
+    };
+    if (ja) { monta(ja); return; }
+    abrirFolha(codigo, '<div class="esqueleto"></div>');
+    Promise.all([api("/api/selos/um?codigo=" + encodeURIComponent(codigo)), carregaAlertas().catch(function () { return []; })]).then(function (r) { if (folhaAberta) monta(r[0].selo); })
+      .catch(function () { if (folhaAberta) $("folhaCorpo").innerHTML = '<p class="vazio" style="color:var(--suave)">Não carregou. Confira a internet.</p>'; });
+  }
+  function folhaTrocarPeca(s0) {
+    abrirFolha("Trocar a peça", '<div class="esqueleto"></div>', function () {
+      Promise.all([api("/api/selos/um?codigo=" + encodeURIComponent(s0.codigo)), carregaSelProdutos(), PROD.lista ? null : carregarProdutos()]).then(function (r) {
+        var s = r[0].selo, escolhida = s.sku || "";
+        if (!folhaAberta) return;
+        abrirFolha("Trocar a peça",
+          '<div class="sl-cod">' + estSelo(s.status) + '<span class="codigo">' + esc(s.codigo) + "</span></div>" +
+          (s.dono_nome && s.confirmado_em ? '<div class="resp">' + esc(s.dono_nome) + " já registrou. O certificado dele muda junto.</div>" : "") +
+          '<div class="campo"><input id="gpBusca" type="search" placeholder="Buscar peça" autocomplete="off"></div><div class="grade-prod" id="gpGrade"></div>' +
+          '<div class="fixo"><button class="bt acento cheio" id="trOk">Salvar</button></div>',
+          function (f) {
+            escolhePeca(f, escolhida, function (id) { escolhida = id; });
+            f.querySelector("#trOk").onclick = function () {
+              if (!escolhida) return;
+              var bt = this; bt.disabled = true;
+              api("/api/selos/editar", { method: "POST", body: { codigo: s.codigo, sku: escolhida, nome_peca: null, sub_peca: null, data_impressao: s.data_impressao || null, cidade: s.cidade || null, nota: s.nota || null } })
+                .then(function (d) { fecharFolha(); aviso(s.codigo + " agora é " + (d.peca || "outra peça")); recarregaSelos(); })
+                .catch(function () { bt.disabled = false; aviso("Não salvou. Confira a internet."); });
+            };
+          });
+      }).catch(function () { if (folhaAberta) $("folhaCorpo").innerHTML = '<p class="vazio" style="color:var(--suave)">Não carregou. Confira a internet.</p>'; });
+    });
+  }
+
+  /* --- peça especial: selo sem adesivo, já vinculado --- */
+  function folhaSeloEspecial() {
+    abrirFolha("Selo de peça especial", '<div class="esqueleto"></div>', function () {
+      carregaSelProdutos().then(function (prods) {
+        if (!folhaAberta) return;
+        abrirFolha("Selo de peça especial",
+          campo("Peça", '<select id="esProd"><option value="">Fora do catálogo</option>' + prods.filter(function (p) { return p.ativo; }).map(function (p) { return '<option value="' + esc(p.id) + '">' + esc(p.nome) + "</option>"; }).join("") + "</select>") +
+          '<div id="esFora">' + campo("Nome da peça", '<input id="esNome" autocomplete="off">') + campo("Linha de baixo", '<input id="esSub" autocomplete="off">') + "</div>" +
+          '<div class="duas">' + campo("Quantos", '<input id="esN" type="number" min="1" max="200" inputmode="numeric" value="1">') + campo("Impressa em", '<input id="esData" type="date">') + "</div>" +
+          campo("Texto desta peça", '<textarea id="esTxt"></textarea>') +
+          '<div id="esSaida"></div><div class="fixo"><button class="bt acento cheio" id="esOk">Criar selo</button></div>',
+          function (f) {
+            var q = function (x) { return f.querySelector(x); };
+            q("#esProd").onchange = function () { q("#esFora").hidden = !!this.value; };
+            q("#esOk").onclick = function () {
+              var sku = q("#esProd").value, nome = q("#esNome").value.trim(), n = Number(q("#esN").value) || 0;
+              if (!sku && !nome) { q("#esNome").focus(); return; }
+              if (n < 1 || n > 200) { aviso("De 1 a 200 por vez"); return; }
+              var bt = this; bt.disabled = true;
+              api("/api/selos/especial", { method: "POST", body: { sku: sku || null, n: n, nome_peca: sku ? null : nome, sub_peca: sku ? null : (q("#esSub").value.trim() || null), data_impressao: q("#esData").value || null, texto_selo: q("#esTxt").value.trim() || null } }).then(function (d) {
+                bt.disabled = false; recarregaSelos();
+                q("#esSaida").innerHTML = '<div class="rot">Criados</div><div class="cartao lista" style="box-shadow:none">' + (d.codigos || []).map(function (c) {
+                  return '<div class="linha"><div class="o"><b class="codigo">' + esc(c) + "</b><small>maratu.com.br/a/" + esc(c) + '</small></div><button class="ico-bt copia-link" data-escopia="' + esc(c) + '" aria-label="Copiar o link">' + IC.copia + "</button></div>";
+                }).join("") + "</div>";
+                q("#esSaida").querySelectorAll("[data-escopia]").forEach(function (b) { b.onclick = function () { var u = SITE + "/a/" + b.dataset.escopia; copiar(u).then(function () { aviso("Link copiado"); }).catch(function () { aviso(u); }); }; });
+              }).catch(function () { bt.disabled = false; aviso("Não criou. Confira a internet."); });
+            };
+          });
+      }).catch(function () { if (folhaAberta) $("folhaCorpo").innerHTML = '<p class="vazio" style="color:var(--suave)">Não carregou. Confira a internet.</p>'; });
+    });
+  }
+
   /* ---------- Mais: o que não cabe na barra do celular ---------- */
   function folhaMais() {
     var abertos = S.pedidos.filter(function (p) { return p.status === "aberto"; }).length, prog = posts().filter(function (p) { return p.status === "aprovado"; }).length;
@@ -2962,7 +3340,8 @@
       }
     }
     var sel = x.selos;
-    var nSel = sel ? Number(sel.alertas) || 0 : 0;
+    var nSel = SEL.alertas ? alertasAtivos().length : sel ? Number(sel.alertas) || 0 : 0;
+    if (sel && sel.alertas && !SEL.alertas) carregaAlertas().then(function () { if (vista === "hoje" && !folhaAberta) render(true); }).catch(function () {});
     if (nSel > 0) {
       out.push({
         k: "selos:" + nSel, tipo: "aviso", rot: "Selos", ordem: 3.5, data: h,
@@ -2970,7 +3349,7 @@
         quando: "",
         dir: { rot: "Visto", fn: function () { adiarCartao("selos:" + nSel, somaDias(h, 7)); } },
         esq: { rot: "Amanhã", fn: function () { adiarCartao("selos:" + nSel); } },
-        abre: function () { abrirSelos(); }
+        abre: function () { folhaListaSelos("alerta"); }
       });
     }
     return out;
@@ -3013,6 +3392,7 @@
   $("btBuscaPc").addEventListener("click", abrirBusca);
   document.addEventListener("keydown", function (e) {
     if (e.key === "Escape" && buscaAberta) { e.preventDefault(); fecharBusca(); return; }
+    if (e.key === "Escape" && $("seloFolha")) { e.preventDefault(); $("sfFechar").click(); return; }
     if ((e.metaKey || e.ctrlKey) && (e.key || "").toLowerCase() === "k") { e.preventDefault(); if (buscaAberta) fecharBusca(); else if (!folhaAberta) abrirBusca(); return; }
     if (e.metaKey || e.ctrlKey || e.altKey) return;
     var t = e.target, campo = t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.tagName === "SELECT" || t.isContentEditable);

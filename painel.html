@@ -835,8 +835,9 @@ body.na-hoje .topo #btMais[aria-pressed="true"] { background: var(--faixa-tinta)
 .fh-nums b { font-size: 19px; font-weight: 900; white-space: nowrap; font-variant-numeric: tabular-nums; }
 .fh-nums span { font-size: 12px; font-weight: 700; white-space: nowrap; }
 .fh-cad { position: relative; margin-top: -38px; padding: 0; overflow: visible; }
-.fh-aratu { position: absolute; right: 14px; top: -29px; width: 60px; color: var(--aratu); pointer-events: none; line-height: 0; }
-.fh-aratu svg { width: 100%; }
+.px-aratu { image-rendering: pixelated; image-rendering: crisp-edges; display: block; }
+.fh-passeio { position: absolute; left: 18px; right: 18px; top: -29px; height: 30px; pointer-events: none; }
+.fh-andando { position: absolute; left: 0; bottom: -1px; width: 60px; height: 30px; will-change: transform; }
 .fh-sec { padding: 16px; border-top: 1px solid var(--linha); }
 .fh-sec:first-of-type { border-top: 0; }
 .fh-t { font-size: 11.5px; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; color: var(--suave); margin-bottom: 8px; display: flex; align-items: baseline; gap: 10px; }
@@ -856,7 +857,7 @@ body.na-hoje .topo #btMais[aria-pressed="true"] { background: var(--faixa-tinta)
 .fh-agora { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 0 10px; align-items: center; margin: 2px 0; }
 .fh-agora .h { font-size: 12.5px; font-weight: 900; color: var(--atraso); font-variant-numeric: tabular-nums; }
 .fh-agora .fio { display: flex; align-items: center; height: 22px; }
-.fh-agora .fio svg { width: 30px; color: var(--faixa); flex: none; margin-left: -8px; }
+.fh-agora .fio canvas { width: 40px; height: 20px; flex: none; margin-left: -13px; }
 .fh-agora .fio::after { content: ""; flex: 1; height: 2px; background: var(--faixa); margin-left: 4px; }
 .fh-livre { margin: 4px 0 6px 54px; border: 1.5px dashed var(--faixa); border-radius: 12px; padding: 9px 10px 9px 12px; display: flex; gap: 10px; align-items: center; }
 .fh-livre b { display: block; color: var(--atraso); font-weight: 900; font-size: 14px; }
@@ -887,7 +888,8 @@ body.na-hoje .topo #btMais[aria-pressed="true"] { background: var(--faixa-tinta)
   .faixa-hoje h1 { font-size: 44px; }
   .fh-cols { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 20px; align-items: start; margin-top: -46px; }
   .fh-cols .fh-cad { margin-top: 0; }
-  .fh-aratu { width: 92px; top: -44px; right: 26px; }
+  .fh-passeio { top: -44px; height: 45px; }
+  .fh-andando { width: 90px; height: 45px; }
   .fh-item:hover .fh-adia { display: grid; }
 }
 </style>
@@ -943,7 +945,7 @@ body.na-hoje .topo #btMais[aria-pressed="true"] { background: var(--faixa-tinta)
 
 <div class="aviso" id="aviso" role="status" aria-live="polite"><span id="avisoTxt"></span><button id="avisoBt" hidden>Desfazer</button></div>
 
-<script src="painel.js?v=20261026h"></script>
+<script src="painel.js?v=20261026q"></script>
 <script>if (navigator.serviceWorker) navigator.serviceWorker.register("/sw.js").catch(function () {});</script>
 </body>
 </html>

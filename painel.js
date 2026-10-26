@@ -534,7 +534,6 @@
   }
 
   /* ---------- Hoje: faixa laranja, o dia na ordem das horas e o que não tem hora ---------- */
-  var ARATU_SVG = '<svg viewBox="0 0 221.06 106.21" fill="currentColor" aria-hidden="true"><path d="M0,72.78c0,18.46,14.97,33.43,33.43,33.43V39.35C14.97,39.35,0,54.31,0,72.78Z"/><path d="M187.62,39.35v66.86c18.46,0,33.43-14.97,33.43-33.43s-14.97-33.43-33.43-33.43Z"/><path d="M110.53,106.21c36.93,0,66.86-29.94,66.86-66.86H43.66c0,36.93,29.94,66.86,66.86,66.86Z"/><path d="M156.17,16.73c0-9.24-7.49-16.73-16.73-16.73v33.45c9.24,0,16.73-7.49,16.73-16.73Z"/><path d="M81.61,33.45V0c-9.24,0-16.73,7.49-16.73,16.73s7.49,16.73,16.73,16.73Z"/></svg>';
   var linhaTempo = [];
   /* o que tem hora hoje: compromissos, cobranças, lembretes com hora, posts e o fim da impressão */
   function doDiaComHora() {
@@ -586,7 +585,7 @@
       if (!passo || gap < 60 || agoraMin < 7 * 60 || agoraMin >= 20 * 60) return "";
       return '<div class="fh-livre"><div><b>' + horaTxt(gap) + ' livre</b><small>' + esc(passo.tit) + '</small></div><button class="bt" data-passo>Abrir</button></div>';
     };
-    var fio = function (ate) { return '<div class="fh-agora"><span class="h">' + agoraHM + '</span><span class="fio">' + ARATU_SVG + "</span></div>" + livre(ate); };
+    var fio = function (ate) { return '<div class="fh-agora"><span class="h">' + agoraHM + '</span><span class="fio"><canvas class="px-aratu fh-agora-px" width="20" height="10" aria-hidden="true"></canvas></span></div>' + livre(ate); };
     tempo.forEach(function (x, i) {
       if (!pos && x.hora > agoraHM) { linhas += fio(minutos(x.hora)); pos = true; }
       linhas += '<div class="fh-ev' + (x.feito || x.hora < agoraHM ? " passou" : "") + '" data-tl="' + i + '"><span class="h">' + esc(x.hora) + '</span><span class="trilho"><i></i></span><div class="o"><b>' + esc(x.tit) + "</b>" + (x.sub ? "<small>" + esc(x.sub) + "</small>" : "") + "</div></div>";
@@ -597,7 +596,7 @@
     var f = feitosHoje();
     var semHora = '<div class="fh-sec"><div class="fh-t">Sem hora' + (f.n ? "<em>" + f.n + (f.n === 1 ? " feito" : " feitos") + "</em>" : "") + "</div>" +
       (fila.length ? '<div class="fh-lista">' + fila.map(linhaFila).join("") + "</div>" : '<p class="fh-nada">' + (f.n ? "Tudo feito" : "Nada pendente") + "</p>") + "</div>";
-    var aratu = '<span class="fh-aratu">' + ARATU_SVG + "</span>";
+    var aratu = '<div class="fh-passeio" aria-hidden="true"><canvas class="px-aratu fh-andando" width="30" height="15"></canvas></div>';
     if (pc()) return faixa + '<div class="fh-cols"><div class="cartao fh-cad">' + aratu + dia + '</div><div class="cartao fh-cad">' + semHora + "</div></div>";
     return faixa + '<div class="cartao fh-cad">' + aratu + dia + semHora + "</div>";
   }
@@ -611,7 +610,58 @@
         '<div class="o"><h3>' + esc(i.titulo) + "</h3>" + (i.quando || i.sub ? '<small' + (i.atraso ? ' class="atraso"' : "") + ">" + esc([i.atraso ? i.quando : "", i.sub].filter(Boolean).join(", ") || i.quando) + "</small>" : "") + "</div>" +
         '<em class="fh-tag">' + esc(i.rot) + '</em><button class="ico-bt fh-adia" data-pc="esq" aria-label="' + esc(i.esq.rot) + '" title="' + esc(i.esq.rot) + '">' + IC.adiar + "</button></article></div>";
   }
+  /* o Aratu em pixel da página de sites: as formas do logo, garras que sobem e descem, olho que pisca */
+  var PECAS_ARATU = {
+    garraE: "M0,104.77c0,26.58,21.55,48.13,48.13,48.13V56.65C21.55,56.65,0,78.19,0,104.77Z",
+    garraD: "M270.11,56.65v96.26c26.58,0,48.13-21.55,48.13-48.13s-21.55-48.13-48.13-48.13Z",
+    corpo: "M159.12,152.9c53.16,0,96.26-43.1,96.26-96.26H62.86c0,53.16,43.1,96.26,96.26,96.26Z",
+    olhoD: "M224.82,24.08c0-13.3-10.78-24.08-24.08-24.08v48.16c13.3,0,24.08-10.78,24.08-24.08Z",
+    olhoE: "M117.49,48.16V0c-13.3,0-24.08,10.78-24.08,24.08s10.78,24.08,24.08,24.08Z"
+  };
+  function desenhaAratu(cv, cor, passo, pisca) {
+    var ctx = cv.getContext("2d"), W = cv.width, H = cv.height, K = W / 318.24;
+    ctx.clearRect(0, 0, W, H);
+    ctx.save(); ctx.scale(K, K); ctx.fillStyle = cor;
+    var peca = function (nome, dy) { ctx.save(); ctx.translate(0, dy || 0); ctx.fill(new Path2D(PECAS_ARATU[nome])); ctx.restore(); };
+    peca("corpo", 6); peca("garraE", passo ? -8 : 6); peca("garraD", passo ? 6 : -8);
+    if (!pisca) { peca("olhoE", 6); peca("olhoD", 6); }
+    ctx.restore();
+    var img = ctx.getImageData(0, 0, W, H), px = img.data;
+    for (var i = 3; i < px.length; i += 4) px[i] = px[i] > 110 ? 255 : 0;
+    ctx.putImageData(img, 0, 0);
+  }
+  var passeioId = 0;
+  function animaAratus(raiz) {
+    var css = getComputedStyle(document.documentElement), corCard = css.getPropertyValue("--aratu").trim() || "#0D0D0B", corFio = css.getPropertyValue("--faixa").trim() || "#C8501A";
+    var andante = raiz.querySelector(".fh-andando"), fio = raiz.querySelector(".fh-agora-px");
+    if (andante) desenhaAratu(andante, corCard, false, false);
+    if (fio) desenhaAratu(fio, corFio, false, false);
+    var meu = ++passeioId;
+    if (!andante || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    var trilho = andante.parentNode, x = 0, dir = -1, tPasso = 0, passo = false, ant = 0, max = -1, medidoEm = 0;
+    /* 30 quadros por segundo e a largura medida uma vez por segundo: o Mac Intel agradece */
+    function anda(t) {
+      if (meu !== passeioId || !andante.isConnected) return;
+      if (document.hidden || folhaAberta) { ant = 0; setTimeout(function () { requestAnimationFrame(anda); }, 400); return; }
+      if (ant && t - ant < 32) { requestAnimationFrame(anda); return; }
+      var dt = ant ? Math.min(0.08, (t - ant) / 1000) : 0; ant = t;
+      if (t - medidoEm > 1000) { var novo = Math.max(0, trilho.clientWidth - andante.clientWidth); if (max < 0) x = novo; max = novo; medidoEm = t; }
+      x += dir * 26 * dt;
+      if (x > max) { x = max; dir = -1; } else if (x < 0) { x = 0; dir = 1; }
+      tPasso += dt;
+      if (tPasso > 0.24) {
+        tPasso = 0; passo = !passo;
+        var pisca = Math.random() < 0.06;
+        desenhaAratu(andante, corCard, passo, pisca);
+        if (fio) desenhaAratu(fio, corFio, !passo, pisca);
+      }
+      andante.style.transform = "translateX(" + x.toFixed(1) + "px)";
+      requestAnimationFrame(anda);
+    }
+    requestAnimationFrame(anda);
+  }
   function ligarHoje(raiz) {
+    animaAratus(raiz);
     raiz.querySelectorAll("[data-tl]").forEach(function (b) { b.onclick = function () { var x = linhaTempo[Number(b.dataset.tl)]; if (x) x.abre(); }; });
     raiz.querySelectorAll("[data-passo]").forEach(function (b) { b.onclick = function () { var p = proximoPasso(); if (p) p.fn(); }; });
   }

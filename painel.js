@@ -474,6 +474,8 @@
     var main = $("tela");
     main.innerHTML = '<div class="vista' + (semAnim ? "" : direcao === "esq" ? " entra-esq" : " entra-dir") + '">' + html + "</div>";
     ligar(main); ligarArea(main);
+    if (vista === "hoje") ligarHoje(main);
+    document.body.classList.toggle("na-hoje", vista === "hoje"); corDaBarra();
     var abaOn = main.querySelector('.abas [aria-pressed="true"]'); if (abaOn && abaOn.parentNode.scrollWidth > abaOn.parentNode.clientWidth) abaOn.parentNode.scrollLeft = abaOn.offsetLeft - 12;
     var wk2 = main.querySelector(".wk-corpo");
     if (wk2) wk2.scrollTop = wkTop != null ? wkTop : Math.max(0, (new Date().getHours() - HORA_INI - 1) * SLOT);
@@ -531,58 +533,87 @@
       '<div class="barra-meta"><i style="width:' + pct.toFixed(1) + '%"></i></div><div class="rodape"><span>' + cap(r.mes) + "</span><span>" + (r.meta ? (oculto() ? "Meta " + brlCurtoV(r.meta) : Math.round(pct) + "% de " + brlCurto(r.meta)) : "Sem meta") + "</span></div></div>";
   }
 
+  /* ---------- Hoje: faixa laranja, o dia na ordem das horas e o que não tem hora ---------- */
+  var ARATU_SVG = '<svg viewBox="0 0 221.06 106.21" fill="currentColor" aria-hidden="true"><path d="M0,72.78c0,18.46,14.97,33.43,33.43,33.43V39.35C14.97,39.35,0,54.31,0,72.78Z"/><path d="M187.62,39.35v66.86c18.46,0,33.43-14.97,33.43-33.43s-14.97-33.43-33.43-33.43Z"/><path d="M110.53,106.21c36.93,0,66.86-29.94,66.86-66.86H43.66c0,36.93,29.94,66.86,66.86,66.86Z"/><path d="M156.17,16.73c0-9.24-7.49-16.73-16.73-16.73v33.45c9.24,0,16.73-7.49,16.73-16.73Z"/><path d="M81.61,33.45V0c-9.24,0-16.73,7.49-16.73,16.73s7.49,16.73,16.73,16.73Z"/></svg>';
+  var linhaTempo = [];
+  /* o que tem hora hoje: compromissos, cobranças, lembretes com hora, posts e o fim da impressão */
+  function doDiaComHora() {
+    var h = hoje(), out = [];
+    itensDoDia(h).forEach(function (x) {
+      if (!x.hora) return;
+      var k = x.e ? "ev:" + x.e.id : x.n ? "nota:" + x.n.id : "";
+      out.push({ k: k, hora: x.hora, tit: x.tit, sub: x.sub, feito: x.feito, abre: function () { abreItem(x); } });
+    });
+    (S.marketing || []).forEach(function (p) {
+      if (p.status !== "aprovado" || p.data !== h || !p.hora) return;
+      out.push({ k: "post:" + p.id, hora: p.hora, tit: "Publicar: " + (p.titulo || "post"), sub: [p.formato, p.rede].filter(Boolean).join(", "), abre: function () { folhaPost(p); } });
+    });
+    var imp = S.extras && S.extras.imp, an = imp && imp.analise || {};
+    if (imp && imp.conectada && imp.estado && imp.estado.estado === "printing" && an.termina && idadeImp(imp) < 1800) {
+      var t = new Date(an.termina);
+      if (!isNaN(t) && isoDe(t) === h) out.push({ k: "", hora: pad2(t.getHours()) + ":" + pad2(t.getMinutes()), tit: "Impressão termina", sub: nomeArquivo(imp.estado.arquivo) + ", " + Math.round((Number(an.progresso != null ? an.progresso : imp.estado.progresso) || 0) * 100) + "%", abre: function () { irAba("oficina", "producao"); } });
+    }
+    return out.sort(function (a, b) { return a.hora < b.hora ? -1 : a.hora > b.hora ? 1 : 0; });
+  }
+  /* o próximo passo do plano dos sites, pra preencher a hora livre */
+  function proximoPasso() {
+    var g = prospecGrupos();
+    if (g.doDia.length) return { tit: g.doDia.length === 1 ? "mandar 1 site" : "mandar " + g.doDia.length + " sites", fn: function () { irAba("sites", "abordar"); } };
+    if (!g.escolhidos.length && g.reserva.length) return { tit: "escolher 5 da reserva", fn: folhaReserva };
+    var semana = somaDias(hoje(), 7), temPost = (S.marketing || []).some(function (p) { return p.status === "aprovado" && p.data && p.data >= hoje() && p.data <= semana; });
+    if (!temPost) return { tit: "pensar o próximo post", fn: function () { folhaLancar("post"); } };
+    return null;
+  }
+  function horaTxt(min) { var h = Math.floor(min / 60), m = min % 60; return h ? h + "h" + (m ? pad2(m) : "") : m + " min"; }
   function telaHoje() {
-    var itens = itensHoje(), h = hoje();
-    var cont = { site: 0, lead: 0, carne: 0, agenda: 0, loja: 0, nota: 0, post: 0, aviso: 0 };
-    itens.forEach(function (i) { cont[i.tipo]++; });
-    if (filtro !== "tudo" && !cont[filtro]) filtro = "tudo";
-    var vis = filtro === "tudo" ? itens : itens.filter(function (i) { return i.tipo === filtro; });
-    var NOMES = [["site", "Sites"], ["lead", "Leads"], ["carne", "Cobranças"], ["agenda", "Agenda"], ["loja", "Pedidos"], ["post", "Posts"], ["nota", "Lembretes"], ["aviso", "Avisos"]];
-    var hora = new Date().getHours(), oi = hora < 12 ? "Bom dia" : hora < 18 ? "Boa tarde" : "Boa noite";
-    var f = feitosHoje(), total = f.n + itens.length;
-    var prog = total && f.n ? '<div class="progresso-dia"><div class="barra-meta"><i style="width:' + (f.n / total * 100).toFixed(1) + '%"></i></div><span>' + f.n + " de " + total + (total === 1 ? " feito" : " feitos") + "</span></div>" : "";
-    var a = '<div class="cab"><h1>' + (itens.length ? itens.length + " pra hoje" : oi) + "</h1><p>" + dataLonga(h) + "</p></div>" + prog + faixaImpressora() +
-      (itens.length > 1 ? '<div class="filtros">' + '<button class="chip-bt" data-filtro="tudo" aria-pressed="' + (filtro === "tudo") + '">Tudo</button>' +
-        NOMES.filter(function (n) { return cont[n[0]]; }).map(function (n) { return '<button class="chip-bt" data-filtro="' + n[0] + '" aria-pressed="' + (filtro === n[0]) + '">' + n[1] + ' <span class="n">' + cont[n[0]] + "</span></button>"; }).join("") + "</div>" : "") +
-      (vis.length ? '<div class="fila">' + vis.map(cartaHTML).join("") + "</div>" :
-        (f.n ? diaFechado(f) : ""));
-    var doDia = itensDoDia(h);
-    agendaItens = doDia;
-    var amanha = !vis.length ? hojeAmanha() : "";
-    if (!pc()) return a + amanha + cartaoMes(false) + hojeAgenda(doDia, true) + hojeSinais();
-    var b = '<div class="secao" style="margin-top:6px;">' + cap(MESES[new Date().getMonth()]) + '<button class="bt-link" data-ir="financas">Finanças</button></div>' + cartaoMes(true) +
-      hojeAgenda(doDia, false) + hojeSinais();
-    return colunas(a + amanha, b);
+    var h = hoje(), agora = new Date(), agoraHM = pad2(agora.getHours()) + ":" + pad2(agora.getMinutes()), agoraMin = agora.getHours() * 60 + agora.getMinutes();
+    var tempo = doDiaComHora(), chaves = {};
+    tempo.forEach(function (x) { if (x.k) chaves[x.k] = 1; });
+    linhaTempo = tempo;
+    var fila = itensHoje().filter(function (i) { return !(chaves[i.k] && !i.atraso); });
+    var r = resumoMes(), entrou = S.lancamentos.filter(function (l) { return l.data === h; }).reduce(function (a, l) { return a + num(l.valor); }, 0);
+    var seg = somaDias(h, -((dataDe(h).getDay() + 6) % 7)), env = 0;
+    S.prospec.forEach(function (p) { try { JSON.parse(p.historico || "[]").forEach(function (x) { if (x.acao === "enviei" && diaLocal(x.ts) >= seg) env++; }); } catch (e) {} });
+    var hora = agora.getHours(), oi = hora < 12 ? "Bom dia" : hora < 18 ? "Boa tarde" : "Boa noite";
+    var faixa = '<div class="faixa-hoje"><div class="fh-data">' + dataLonga(h) + "</div><h1>" + oi + "</h1>" +
+      '<div class="fh-nums"><button data-ir="financas"><b>' + brlCurtoV(entrou) + '</b><span>entrou hoje</span></button>' +
+      '<button data-ir="financas"><b>' + brlCurtoV(r.total) + "</b><span>" + (r.meta ? "de " + brlCurtoV(r.meta) : cap(r.mes)) + "</span></button>" +
+      '<button data-aba="sites:abordar"><b>' + env + "/" + metasParam().contatos + "</b><span>contatos</span></button></div></div>";
+    // o dia: o que já passou apagado, o fio laranja na hora de agora, a hora livre vira sugestão
+    var linhas = "", pos = false, passo = proximoPasso();
+    var livre = function (ate) {
+      var fim = ate != null ? ate : Math.max(agoraMin, 19 * 60), gap = fim - agoraMin;
+      if (!passo || gap < 60 || agoraMin < 7 * 60 || agoraMin >= 20 * 60) return "";
+      return '<div class="fh-livre"><div><b>' + horaTxt(gap) + ' livre</b><small>' + esc(passo.tit) + '</small></div><button class="bt" data-passo>Abrir</button></div>';
+    };
+    var fio = function (ate) { return '<div class="fh-agora"><span class="h">' + agoraHM + '</span><span class="fio">' + ARATU_SVG + "</span></div>" + livre(ate); };
+    tempo.forEach(function (x, i) {
+      if (!pos && x.hora > agoraHM) { linhas += fio(minutos(x.hora)); pos = true; }
+      linhas += '<div class="fh-ev' + (x.feito || x.hora < agoraHM ? " passou" : "") + '" data-tl="' + i + '"><span class="h">' + esc(x.hora) + '</span><span class="trilho"><i></i></span><div class="o"><b>' + esc(x.tit) + "</b>" + (x.sub ? "<small>" + esc(x.sub) + "</small>" : "") + "</div></div>";
+    });
+    if (!pos) linhas += fio(null);
+    var dia = '<div class="fh-sec"><div class="fh-t">O dia<button class="bt-link" data-ir="agenda">Semana</button></div>' + linhas +
+      (!tempo.length && !livre(null) ? '<p class="fh-nada">Nada marcado</p>' : "") + "</div>";
+    var f = feitosHoje();
+    var semHora = '<div class="fh-sec"><div class="fh-t">Sem hora' + (f.n ? "<em>" + f.n + (f.n === 1 ? " feito" : " feitos") + "</em>" : "") + "</div>" +
+      (fila.length ? '<div class="fh-lista">' + fila.map(linhaFila).join("") + "</div>" : '<p class="fh-nada">' + (f.n ? "Tudo feito" : "Nada pendente") + "</p>") + "</div>";
+    var aratu = '<span class="fh-aratu">' + ARATU_SVG + "</span>";
+    if (pc()) return faixa + '<div class="fh-cols"><div class="cartao fh-cad">' + aratu + dia + '</div><div class="cartao fh-cad">' + semHora + "</div></div>";
+    return faixa + '<div class="cartao fh-cad">' + aratu + dia + semHora + "</div>";
   }
-  /* agenda do dia: no celular só aparece quando tem algo marcado */
-  function hojeAgenda(doDia, soSeTem) {
-    if (soSeTem && !doDia.length) return "";
-    return '<div class="secao">Agenda de hoje<button class="bt-link" data-ir="agenda">Agenda</button></div>' +
-      (doDia.length ? '<div class="cartao lista">' + doDia.map(function (x, idx) {
-        return '<div class="linha toca" data-item="' + idx + '"' + (x.feito ? ' style="opacity:.55"' : "") + '><span class="hora-pc">' + esc(x.hora || "dia") + '</span><div class="o"><b>' + esc(x.tit) + "</b>" + (x.sub ? "<small>" + esc(x.sub) + "</small>" : "") + '</div><span class="tipo t-' + x.tipo + '">' + esc(x.rot) + "</span></div>";
-      }).join("") + "</div>" : '<p class="vazio">Nada marcado.</p>');
+  /* linha da fila: a bolinha resolve, arrastar continua valendo, tocar abre */
+  function linhaFila(i) {
+    itensAtuais[i.k] = i;
+    return '<div class="slot fh-slot" data-k="' + esc(i.k) + '">' +
+      '<div class="fundo dir"><span>' + IC.check + esc(i.dir.rot) + "</span></div>" +
+      '<div class="fundo esq"><span>' + esc(i.esq.rot) + IC.adiar + "</span></div>" +
+      '<article class="carta fh-item"><button class="fh-bola" data-pc="dir" aria-label="' + esc(i.dir.rot) + '"></button>' +
+        '<div class="o"><h3>' + esc(i.titulo) + "</h3>" + (i.quando || i.sub ? '<small' + (i.atraso ? ' class="atraso"' : "") + ">" + esc([i.atraso ? i.quando : "", i.sub].filter(Boolean).join(", ") || i.quando) + "</small>" : "") + "</div>" +
+        '<em class="fh-tag">' + esc(i.rot) + '</em><button class="ico-bt fh-adia" data-pc="esq" aria-label="' + esc(i.esq.rot) + '" title="' + esc(i.esq.rot) + '">' + IC.adiar + "</button></article></div>";
   }
-  /* quem abriu o site de amostra nos últimos dois dias: hora boa pra puxar conversa */
-  function hojeSinais() {
-    var lim = Date.now() - 2 * 864e5;
-    var quentes = S.prospec.filter(function (p) { var t = Date.parse(p.ex_ultima || ""); return !isNaN(t) && t >= lim; }).sort(function (a, b) { return String(b.ex_ultima) < String(a.ex_ultima) ? -1 : 1; });
-    var novos = S.leads.filter(function (l) { return l.status === "novo"; });
-    if (!quentes.length && !novos.length) return "";
-    return '<div class="secao">Sinais</div><div class="cartao lista">' +
-      quentes.slice(0, 5).map(function (p) { var t = new Date(p.ex_ultima); return '<div class="linha toca" data-site="' + esc(p.id) + '"><span class="tipo t-site">Abriu</span><div class="o"><b>' + esc(p.nome) + "</b><small>" + (Number(p.ex_vistas) || 0) + "x, a última " + quandoRel(isoDe(t)) + " " + pad2(t.getHours()) + ":" + pad2(t.getMinutes()) + "</small></div>" + IC.seta + "</div>"; }).join("") +
-      (novos.length ? '<div class="linha toca" data-aba="sites:conversas"><span class="tipo t-lead">Leads</span><div class="o"><b>' + novos.length + (novos.length === 1 ? " lead novo" : " leads novos") + "</b><small>" + esc(novos.slice(0, 3).map(function (l) { return l.nome; }).join(", ")) + "</small></div>" + IC.seta + "</div>" : "") + "</div>";
-  }
-  /* fila vazia: mostra o que vem amanhã */
-  function hojeAmanha() {
-    var am = somaDias(hoje(), 1), ag = itensDoDia(am).filter(function (x) { return !x.feito; });
-    var sites = prospecGrupos().depois.filter(function (p) { return p.proximo === am; }).length;
-    var leads = S.leads.filter(function (l) { return l.followup === am && l.status !== "fechado" && l.status !== "perdido"; }).length;
-    var partes = [];
-    if (ag.length) partes.push(ag.length + (ag.length === 1 ? " na agenda" : " na agenda"));
-    if (sites) partes.push(sites + (sites === 1 ? " site pra mandar" : " sites pra mandar"));
-    if (leads) partes.push(leads + (leads === 1 ? " lead pra responder" : " leads pra responder"));
-    return '<button class="cartao amanha toca" data-dia-ag="' + am + '"><span class="tipo t-agenda">Amanhã</span><div class="o"><b>' + (partes.length ? cap(partes.join(", ")) : "Nada marcado") + "</b>" +
-      (ag.length ? "<small>" + esc(ag.slice(0, 3).map(function (x) { return (x.hora ? x.hora + " " : "") + x.tit; }).join(", ")) + "</small>" : "") + "</div>" + IC.seta + "</button>";
+  function ligarHoje(raiz) {
+    raiz.querySelectorAll("[data-tl]").forEach(function (b) { b.onclick = function () { var x = linhaTempo[Number(b.dataset.tl)]; if (x) x.abre(); }; });
+    raiz.querySelectorAll("[data-passo]").forEach(function (b) { b.onclick = function () { var p = proximoPasso(); if (p) p.fn(); }; });
   }
   function diaFechado(f) {
     var h = hoje(), envios = 0;
@@ -3371,20 +3402,10 @@
     executar("Declaração marcada como feita", function () { dn.done = true; }, function () { dn.done = antes; },
       function () { api("/api/mei/dasn/done", { method: "POST", body: { year: ano } }).then(guardaCache).catch(function () { dn.done = antes; render(true); aviso("Não salvou. Confira a internet."); }); });
   }
-  /* faixa da impressora no topo do Hoje, só enquanto imprime */
-  function faixaImpressora() {
-    var imp = S.extras && S.extras.imp;
-    if (!imp || !imp.conectada || !imp.estado || ["printing", "paused"].indexOf(imp.estado.estado) < 0) return "";
-    var idade = idadeImp(imp); if (idade > 1800) return "";
-    var an = imp.analise || {}, pct = Math.max(0, Math.min(100, Math.round((Number(an.progresso != null ? an.progresso : imp.estado.progresso) || 0) * 100)));
-    var termina = an.termina ? new Date(an.termina) : null, semSinal = idade > 180;
-    var txt = semSinal ? "sem sinal há " + Math.round(idade / 60) + " min" : imp.estado.estado === "paused" ? "pausada" : termina && !isNaN(termina) ? "termina " + pad2(termina.getHours()) + ":" + pad2(termina.getMinutes()) : "";
-    return '<a class="cartao faixa-imp" href="#" data-impfolha><span class="pulso' + (imp.estado.estado === "paused" || semSinal ? " parado" : "") + '"></span><div class="o"><b>' + esc(nomeArquivo(imp.estado.arquivo)) + "</b><small>" + pct + "%" + (txt ? ", " + txt : "") + '</small></div><div class="barra-meta"><i style="width:' + pct + '%"></i></div></a>';
-  }
-
   function corDaBarra() {
     var t = document.documentElement.getAttribute("data-theme") || "";
-    document.querySelector('meta[name="theme-color"]').setAttribute("content", t === "laranja" ? "#C8501A" : t === "noite" ? "#0D0D0B" : "#E8E2D6");
+    var faixa = vista === "hoje" && !pc() && S.pronto;
+    document.querySelector('meta[name="theme-color"]').setAttribute("content", faixa ? (t === "laranja" ? "#0D0D0B" : "#C8501A") : t === "laranja" ? "#C8501A" : t === "noite" ? "#0D0D0B" : "#E8E2D6");
   }
 
   /* ---------- barra ---------- */

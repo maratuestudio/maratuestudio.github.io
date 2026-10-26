@@ -1587,8 +1587,9 @@
   </style>
   <style>
   /* aratu-mascote inline */
-  .aratu-mascote{position:absolute;left:0;bottom:4px;width:48px;height:24px;pointer-events:none;z-index:10;overflow:visible}
-  .aratu-mascote svg{width:100%;height:100%;overflow:visible;display:block}
+  .aratu-mascote{position:absolute;left:0;bottom:4px;width:60px;height:30px;z-index:10;overflow:visible;cursor:pointer;-webkit-tap-highlight-color:transparent;outline:none}
+  .aratu-mascote canvas{width:100%;height:100%;display:block;image-rendering:pixelated;image-rendering:crisp-edges}
+  .aratu-mascote:focus-visible{outline:2px dashed #C8501A;outline-offset:4px}
   @media (max-width:640px){.aratu-mascote{width:40px;height:20px;bottom:4px}}
   </style>
   <link rel="stylesheet" href="components/radio/radio.css?v=7">
@@ -2080,25 +2081,7 @@
       <p>Loja · Sites · Impressão 3D · Design</p>
       <p class="footer__servicos footer__links"><a href="#parceiros">Parceiros</a></p>
     </div>
-    <div class="aratu-mascote" aria-hidden="true" style="margin-top:28px;">
-      <svg viewBox="0 0 318.24 152.9" xmlns="http://www.w3.org/2000/svg">
-        <g data-aratu="claw-left">
-          <path fill="#C8501A" d="M0,104.77c0,26.58,21.55,48.13,48.13,48.13V56.65C21.55,56.65,0,78.19,0,104.77Z"/>
-        </g>
-        <g data-aratu="claw-right">
-          <path fill="#C8501A" d="M270.11,56.65v96.26c26.58,0,48.13-21.55,48.13-48.13s-21.55-48.13-48.13-48.13Z"/>
-        </g>
-        <g data-aratu="body">
-          <path fill="#C8501A" d="M159.12,152.9c53.16,0,96.26-43.1,96.26-96.26H62.86c0,53.16,43.1,96.26,96.26,96.26Z"/>
-        </g>
-        <g data-aratu="eye-right">
-          <path fill="#C8501A" d="M224.82,24.08c0-13.3-10.78-24.08-24.08-24.08v48.16c13.3,0,24.08-10.78,24.08-24.08Z"/>
-        </g>
-        <g data-aratu="eye-left">
-          <path fill="#C8501A" d="M117.49,48.16V0c-13.3,0-24.08,10.78-24.08,24.08s10.78,24.08,24.08,24.08Z"/>
-        </g>
-      </svg>
-    </div>
+    <div class="aratu-mascote" aria-hidden="true" style="margin-top:28px;"></div>
   </footer>
 
 
@@ -2893,7 +2876,7 @@
     })();
   </script>
 
-  <script src="aratu-mascote.js?v=9" defer></script>
+  <script src="aratu-mascote.js?v=10" defer></script>
 
   <div class="mr-drop" id="mr-drop">
     <div class="mr-drop-inner" id="mr-drop-inner"></div>

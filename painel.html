@@ -727,9 +727,12 @@ button.atalho { font: inherit; text-align: left; cursor: pointer; }
 .cab-area { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
 .cab-area p { margin: 0; }
 .cab-area .olho { margin-left: auto; align-self: center; }
-.abas { grid-auto-columns: minmax(0, 1fr); }
-.abas button { font-size: 13.5px; padding: 0 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.abas button .n { font-variant-numeric: tabular-nums; opacity: .65; font-size: 12px; }
+.abas { position: relative; display: flex; gap: 24px; border-bottom: 1.5px solid var(--linha); overflow-x: auto; scrollbar-width: none; margin: 0 -12px; padding: 0 12px; }
+.abas::-webkit-scrollbar { display: none; }
+.abas button { flex: none; border: 0; background: none; font: inherit; font-size: 16px; font-weight: 900; color: var(--suave); padding: 6px 0 12px; border-bottom: 3px solid transparent; margin-bottom: -1.5px; white-space: nowrap; cursor: pointer; }
+.abas button:hover { color: var(--tinta); }
+.abas button[aria-pressed="true"] { color: var(--tinta); border-bottom-color: var(--acento); }
+.abas button .n { font-variant-numeric: tabular-nums; opacity: .6; font-size: 12px; margin-left: 2px; }
 .nums .num b { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: clamp(17px, 5.2vw, 24px); }
 .num-bt { text-align: left; font: inherit; cursor: pointer; }
 .num-bt:active { transform: translate(1px, 1px); box-shadow: 1px 1px 0 var(--sombra); }
@@ -742,7 +745,12 @@ button.atalho { font: inherit; text-align: left; cursor: pointer; }
 .mais-item { padding: 14px 16px; }
 .mais-item > svg:first-child { width: 24px; height: 24px; flex: none; }
 .mais-item + .mais-item { margin-top: 8px; }
-@media (max-width: 380px) { .abas button { font-size: 12.5px; } }
+@media (max-width: 420px) { .abas { gap: 18px; } .abas button { font-size: 15px; } }
+@media (min-width: 1024px) { .abas { margin: 0; padding: 0; gap: 28px; } }
+:root[data-theme="laranja"] .abas { border-bottom-color: rgba(13,13,11,.25); }
+:root[data-theme="laranja"] .abas button { color: var(--tinta-sobre-tela); opacity: .78; }
+:root[data-theme="laranja"] .abas button[aria-pressed="true"] { opacity: 1; border-bottom-color: var(--tinta-sobre-tela); }
+:root[data-theme="laranja"] .abas button .n { opacity: .8; }
 
 /* selos */
 .sl-acao { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
@@ -863,7 +871,7 @@ button.atalho { font: inherit; text-align: left; cursor: pointer; }
 
 <div class="aviso" id="aviso" role="status" aria-live="polite"><span id="avisoTxt"></span><button id="avisoBt" hidden>Desfazer</button></div>
 
-<script src="painel.js?v=20261026s"></script>
+<script src="painel.js?v=20261026t"></script>
 <script>if (navigator.serviceWorker) navigator.serviceWorker.register("/sw.js").catch(function () {});</script>
 </body>
 </html>

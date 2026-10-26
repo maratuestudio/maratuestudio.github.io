@@ -474,6 +474,7 @@
     var main = $("tela");
     main.innerHTML = '<div class="vista' + (semAnim ? "" : direcao === "esq" ? " entra-esq" : " entra-dir") + '">' + html + "</div>";
     ligar(main); ligarArea(main);
+    var abaOn = main.querySelector('.abas [aria-pressed="true"]'); if (abaOn && abaOn.parentNode.scrollWidth > abaOn.parentNode.clientWidth) abaOn.parentNode.scrollLeft = abaOn.offsetLeft - 12;
     var wk2 = main.querySelector(".wk-corpo");
     if (wk2) wk2.scrollTop = wkTop != null ? wkTop : Math.max(0, (new Date().getHours() - HORA_INI - 1) * SLOT);
     dicaArrastar(main);
@@ -2467,7 +2468,7 @@
     window.scrollTo(0, 0); render(true);
   }
   function abasHTML(v, cont) {
-    return '<div class="seg abas" role="tablist">' + ABAS[v].map(function (x) {
+    return '<div class="abas" role="tablist">' + ABAS[v].map(function (x) {
       var n = cont && cont[x[0]];
       return '<button role="tab" data-aba="' + v + ":" + x[0] + '" aria-pressed="' + (abaDe(v) === x[0]) + '">' + x[1] + (n ? ' <span class="n">' + n + "</span>" : "") + "</button>";
     }).join("") + "</div>";

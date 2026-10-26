@@ -70,7 +70,7 @@
       if (window.maratuJogo) { window.maratuJogo.abrir(); return; }
       abrindo = true;
       var s = document.createElement('script');
-      s.src = '/aratu-jogo.js?v=1';
+      s.src = '/aratu-jogo.js?v=2';
       s.onload = function () { abrindo = false; if (window.maratuJogo) window.maratuJogo.abrir(); };
       s.onerror = function () { abrindo = false; };
       document.head.appendChild(s);

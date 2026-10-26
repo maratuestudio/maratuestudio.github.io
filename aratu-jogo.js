@@ -8,7 +8,8 @@
   if (window.maratuJogo) return;
 
   var W = 320, H = 120, CHAO = 100;  // W encolhe no celular pra o Aratu sair maior
-  var COR = { fundo: '#0D0D0B', areia: '#F0ECE4', laranja: '#C8501A', mangue: '#26241F', mangue2: '#1A1916', agua: '#17302E', coco: '#7A4B2A', garrafa: '#5E8C7A', pedra: '#8A8577', gaivota: '#F0ECE4' };
+  // dia claro: céu areia, contorno preto, como o resto do site
+  var COR = { fundo: '#F0ECE4', linha: '#0D0D0B', laranja: '#C8501A', mangue: '#B9B09C', mangue2: '#D6CEBD', agua: '#C9D8D2', coco: '#7A4B2A', garrafa: '#4F7F6C', pedra: '#6B675E', gaivota: '#0D0D0B', grao: '#B5AD9C', estrela: '#E2DBCD', numero: '#0D0D0B', recorde: '#7A7466' };
   var G = 0.5, PULO = -7.6, PULO_CURTO = -3.5, VEL0 = 3, ACEL = 0.0012, VMAX = 7;
 
   var PECAS = {
@@ -51,7 +52,7 @@
     for (var i = 0; i < n; i++) { var r = Math.abs(Math.sin((i + 1) * semente)); a.push({ x: Math.round(i * PERIODO / n + r * 10), h: 10 + Math.round(r * 12), c: 5 + Math.round(Math.abs(Math.cos(i * semente)) * 5) }); }
     return a;
   }
-  var CAMADAS = [{ vel: 0.15, base: 78, cor: '#1A1916', arv: arvores(9, 2.3) }, { vel: 0.35, base: 86, cor: '#26241F', arv: arvores(7, 1.7) }];
+  var CAMADAS = [{ vel: 0.15, base: 78, cor: '#D6CEBD', arv: arvores(9, 2.3) }, { vel: 0.35, base: 86, cor: '#B9B09C', arv: arvores(7, 1.7) }];
 
   function novo() {
     st = { estado: 'pronto', y: CHAO, vy: 0, noChao: true, segurando: false, vel: VEL0, dist: 0, pontos: 0, obs: [], prox: 120, fundo: 0, passo: 0, piscaPontos: 0, fimEm: 0 };
@@ -111,7 +112,7 @@
     ctx.fillStyle = COR.laranja;
     var lx = W - 52, ly = 22;
     for (var a = -7; a <= 7; a++) for (var b = -7; b <= 7; b++) if (a * a + b * b <= 46) ctx.fillRect(lx + a, ly + b, 1, 1);
-    ctx.fillStyle = '#3A3830';
+    ctx.fillStyle = COR.estrela;
     [[20, 12], [60, 30], [110, 8], [150, 26], [200, 14], [236, 40], [300, 52], [90, 46]].forEach(function (s) { ctx.fillRect(s[0], s[1], 1, 1); });
     // água ao fundo e o mangue em duas camadas, cada uma no seu ritmo
     ctx.fillStyle = COR.agua; ctx.fillRect(0, 74, W, 26);
@@ -130,15 +131,15 @@
       });
     });
     // areia
-    ctx.fillStyle = COR.areia; ctx.fillRect(0, CHAO, W, 1);
-    ctx.fillStyle = '#8A8577';
+    ctx.fillStyle = COR.linha; ctx.fillRect(0, CHAO, W, 1);
+    ctx.fillStyle = COR.grao;
     var g = Math.floor(st.fundo % 24);
     for (var x = -24; x < W + 24; x += 24) { ctx.fillRect(x - g + 5, CHAO + 4, 2, 1); ctx.fillRect(x - g + 15, CHAO + 9, 1, 1); ctx.fillRect(x - g + 20, CHAO + 14, 3, 1); }
     // obstáculos
     st.obs.forEach(function (o) {
       var x = Math.round(o.x), y = Math.round(o.y);
       if (o.t === 'coco') { ctx.fillStyle = COR.coco; ctx.fillRect(x + 1, y, 6, 8); ctx.fillRect(x, y + 1, 8, 6); ctx.fillStyle = '#3B2414'; ctx.fillRect(x + 2, y + 2, 1, 1); ctx.fillRect(x + 4, y + 2, 1, 1); }
-      else if (o.t === 'garrafa') { ctx.fillStyle = COR.garrafa; ctx.fillRect(x + 1, y, 3, 3); ctx.fillRect(x, y + 3, 5, 10); ctx.fillStyle = COR.areia; ctx.fillRect(x + 1, y + 6, 3, 3); }
+      else if (o.t === 'garrafa') { ctx.fillStyle = COR.garrafa; ctx.fillRect(x + 1, y, 3, 3); ctx.fillRect(x, y + 3, 5, 10); ctx.fillStyle = COR.fundo; ctx.fillRect(x + 1, y + 6, 3, 3); }
       else if (o.t === 'pedra') { ctx.fillStyle = COR.pedra; for (var k = 0; k < o.w; k += 6) { ctx.fillRect(x + k, y + 2, 6, 5); ctx.fillRect(x + k + 1, y, 4, 2); } }
       else { ctx.fillStyle = COR.gaivota; var asa = Math.floor(st.passo / 8) % 2; ctx.fillRect(x + 3, y + 2, 6, 2); ctx.fillRect(x + 9, y + 1, 2, 2); ctx.fillStyle = COR.laranja; ctx.fillRect(x + 11, y + 2, 1, 1); ctx.fillStyle = COR.gaivota; if (asa) { ctx.fillRect(x, y, 4, 1); ctx.fillRect(x + 4, y + 1, 2, 1); } else { ctx.fillRect(x, y + 4, 4, 1); ctx.fillRect(x + 4, y + 3, 2, 1); } }
     });
@@ -147,8 +148,8 @@
     ctx.drawImage(frames[quadro], 30, Math.round(st.y) - 14);
     // pontos
     if (st.piscaPontos > 0) st.piscaPontos--;
-    if (!(st.piscaPontos > 0 && Math.floor(st.piscaPontos / 5) % 2)) numero(ctx, st.pontos, W - 6, 6, COR.areia);
-    if (recorde) numero(ctx, recorde, W - 6 - (String(st.pontos).length * 4) - 10, 6, '#6B675E');
+    if (!(st.piscaPontos > 0 && Math.floor(st.piscaPontos / 5) % 2)) numero(ctx, st.pontos, W - 6, 6, COR.numero);
+    if (recorde) numero(ctx, recorde, W - 6 - (String(st.pontos).length * 4) - 10, 6, COR.recorde);
   }
 
   function laco(t) {
@@ -179,11 +180,11 @@
     css.textContent =
       '.aj-veu{position:fixed;inset:0;z-index:100010;touch-action:none;overscroll-behavior:contain;background:rgba(13,13,11,.72);display:none;align-items:center;justify-content:center;padding:16px}' +
       '.aj-veu.on{display:flex}' +
-      '.aj-card{outline:none;touch-action:none;user-select:none;-webkit-user-select:none;background:#0D0D0B;color:#F0ECE4;border:1.5px solid #F0ECE4;border-radius:18px;box-shadow:6px 6px 0 #C8501A;padding:14px 14px 12px;max-width:100%;font-family:var(--clother,"Helvetica Neue",sans-serif)}' +
+      '.aj-card{outline:none;touch-action:none;user-select:none;-webkit-user-select:none;background:#F0ECE4;color:#0D0D0B;border:1.5px solid #0D0D0B;border-radius:18px;box-shadow:6px 6px 0 #0D0D0B;padding:14px 14px 12px;max-width:100%;font-family:var(--clother,"Helvetica Neue",sans-serif)}' +
       '.aj-cab{display:flex;align-items:center;gap:12px;margin:0 2px 10px}' +
       '.aj-cab b{font-size:18px;font-weight:900;letter-spacing:-.01em}' +
-      '.aj-x{margin-left:auto;width:36px;height:36px;border-radius:50%;border:1.5px solid #F0ECE4;background:none;color:#F0ECE4;font-size:20px;line-height:1;cursor:pointer}' +
-      '.aj-cv{display:block;image-rendering:pixelated;image-rendering:crisp-edges;border-radius:8px;touch-action:none;cursor:pointer;max-width:100%}' +
+      '.aj-x{margin-left:auto;width:36px;height:36px;border-radius:50%;border:1.5px solid #0D0D0B;background:#fff;color:#0D0D0B;box-shadow:2px 2px 0 #0D0D0B;font-size:20px;line-height:1;cursor:pointer}' +
+      '.aj-cv{display:block;border:1.5px solid #0D0D0B;image-rendering:pixelated;image-rendering:crisp-edges;border-radius:8px;touch-action:none;cursor:pointer;max-width:100%}' +
       '.aj-txt{margin:10px 2px 0;font-size:14px;font-weight:700;opacity:.8;min-height:1.3em}';
     document.head.appendChild(css);
     el = document.createElement('div');

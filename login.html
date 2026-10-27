@@ -22,8 +22,7 @@
       }
     })();
   </script>
-<meta name="theme-color" content="#0D0D0B" />
-<style>html:not(.mi-ready),html:not(.mi-ready) body{background:#0D0D0B}</style>
+<meta name="theme-color" content="#E8E2D6" />
 <title>MARATU · entrar</title>
 <meta name="robots" content="noindex,nofollow" />
 
@@ -44,428 +43,336 @@
 <link rel="icon" type="image/png" href="favicon-v6.png" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="mobile-web-app-capable" content="yes" />
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
 <meta name="apple-mobile-web-app-title" content="MARATU" />
 
+<script>
+  /* mesma cor do painel: o tema escolhido lá vale aqui antes do primeiro quadro */
+  (function () { var t = ""; try { t = localStorage.getItem("maratu.painel.tema") || ""; } catch (e) {} try { if (localStorage.getItem("maratu.token")) document.documentElement.classList.add("conferindo"); } catch (e) {} if (!t) return; document.documentElement.setAttribute("data-theme", t); var m = document.querySelector('meta[name="theme-color"]'); if (m) m.content = t === "noite" ? "#0D0D0B" : t === "laranja" ? "#C8501A" : "#E8E2D6"; })();
+</script>
 <style>
-  @font-face { font-family:'Jack';    src:url('TRYJackAlpha-Regular.woff2?v=2') format('woff2'), url('TRYJackAlpha-Regular.ttf') format('truetype'); font-weight:400; font-display:swap; }
-  @font-face { font-family:'Clother'; src:url('TRYClother-Regular.woff2') format('woff2'), url('TRYClother-Regular.ttf') format('truetype'); font-weight:400; font-display:swap; }
-  @font-face { font-family:'Clother'; src:url('TRYClother-Bold.woff2') format('woff2'), url('TRYClother-Bold.ttf') format('truetype'); font-weight:700; font-display:swap; }
-  @font-face { font-family:'Clother'; src:url('TRYClother-Black.woff2') format('woff2'), url('TRYClother-Black.ttf') format('truetype'); font-weight:900; font-display:swap; }
+@font-face { font-family: "Clother"; src: url("TRYClother-Regular.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Clother"; src: url("TRYClother-Bold.woff2") format("woff2"); font-weight: 700; font-display: swap; }
+@font-face { font-family: "Clother"; src: url("TRYClother-Black.woff2") format("woff2"); font-weight: 900; font-display: swap; }
+@font-face { font-family: "Jack"; src: url("TRYJackAlpha-Regular.woff2?v=2") format("woff2"); font-weight: 400; font-display: swap; }
 
-  :root{
-    --laranja:#C8501A; --preto:#0D0D0B; --areia:#F0ECE4;
-    --clother:'Clother','Helvetica Neue',sans-serif;
-  }
-  *{ box-sizing:border-box; }
-  html,body{ margin:0; padding:0; height:100%; }
-  html{ background:var(--laranja); -webkit-font-smoothing:antialiased; }
-  body{
-    background:var(--laranja); color:var(--preto); font-family:var(--clother);
-    line-height:1.5; min-height:100vh;
-    display:flex; align-items:center; justify-content:center;
-    padding:24px; text-align:center; position:relative; overflow:hidden;
-  }
-  /* Textura ruido papel */
-  body::before{
-    content:''; position:fixed; inset:0;
-    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-    pointer-events:none; z-index:0; opacity:0.35;
-  }
-  /* Papel de sketch — grid fino em preto mangue sobre laranja */
-  body::after{
-    content:''; position:fixed; inset:0;
-    background-image:
-      linear-gradient(to right, rgba(13,13,11,0.12) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(13,13,11,0.12) 1px, transparent 1px);
-    background-size: 28px 28px;
-    background-position: -1px -1px;
-    pointer-events:none; z-index:0;
-  }
+/* entrada no conceito do painel novo: caderno areia, um cartão, o Aratu dormindo em cima */
+:root {
+  --tela: #E8E2D6; --cartao: #F7F4EE; --campo: #FFFFFF; --tinta: #0D0D0B;
+  --suave: rgba(13,13,11,.6); --grade: rgba(13,13,11,.07); --borda: #0D0D0B; --sombra: #0D0D0B;
+  --acento: #C8501A; --erro: #B23A2E;
+  --font: "Clother", "Helvetica Neue", Arial, sans-serif;
+  --mola: cubic-bezier(.2, .9, .25, 1);
+}
+:root[data-theme="laranja"] { --tela: #C8501A; --cartao: #F0ECE4; --grade: rgba(13,13,11,.12); --acento: #0D0D0B; }
+:root[data-theme="noite"] {
+  --tela: #0D0D0B; --cartao: #1F1F1B; --campo: #14140F; --tinta: #F0ECE4; --suave: rgba(240,236,228,.6);
+  --grade: rgba(240,236,228,.06); --borda: rgba(240,236,228,.3); --sombra: rgba(240,236,228,.22); --acento: #2E6FC4; --erro: #E0705F;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { margin: 0; height: 100%; }
+body {
+  font-family: var(--font); color: var(--tinta); -webkit-font-smoothing: antialiased;
+  background-color: var(--tela);
+  background-image: linear-gradient(to right, var(--grade) 1px, transparent 1px), linear-gradient(to bottom, var(--grade) 1px, transparent 1px);
+  background-size: 28px 28px;
+  display: grid; place-items: center; min-height: 100dvh;
+  padding: calc(env(safe-area-inset-top, 0px) + 56px) 16px calc(env(safe-area-inset-bottom, 0px) + 24px);
+}
+button { font: inherit; color: inherit; cursor: pointer; }
+.cartao {
+  width: 100%; max-width: 400px; position: relative;
+  background: var(--cartao); border: 1.5px solid var(--borda); border-radius: 20px; box-shadow: 3px 3px 0 var(--sombra);
+  padding: 24px 20px 18px; transition: transform .45s var(--mola), opacity .35s;
+}
+html.conferindo .cartao { visibility: hidden; }
+.cartao.entra { transform: scale(.96); opacity: 0; }
+.px { image-rendering: pixelated; image-rendering: crisp-edges; display: block; }
+.aratu { position: absolute; top: -30px; right: 22px; width: 66px; }
+.zz { position: absolute; top: -52px; right: 6px; width: 30px; }
+.cab { display: flex; align-items: flex-end; justify-content: space-between; border-bottom: 1.5px solid var(--borda); padding-bottom: 14px; margin-bottom: 18px; }
+.marca { font-family: "Jack", var(--font); font-size: 34px; line-height: 1; letter-spacing: .01em; }
+.cab small { font-size: 13px; font-weight: 900; color: var(--suave); }
+.data { font-size: 12px; font-weight: 900; letter-spacing: .14em; text-transform: uppercase; color: var(--suave); }
+.oi { margin: 4px 0 20px; font-size: 32px; font-weight: 900; line-height: 1; letter-spacing: -.02em; }
 
-  .canto{
-    position:fixed; left:0; bottom:0; margin:0; padding:0;
-    width:clamp(140px, 22vw, 240px); height:auto; display:block;
-    pointer-events:none; z-index:1;
-  }
+.bt {
+  min-height: 52px; width: 100%; padding: 0 18px; border-radius: 14px; border: 1.5px solid var(--borda);
+  background: var(--campo); font-size: 16px; font-weight: 900; display: flex; align-items: center; justify-content: center; gap: 10px;
+  box-shadow: 2px 2px 0 var(--sombra); transition: transform .12s, box-shadow .12s, opacity .2s;
+}
+.bt:active { transform: translate(2px, 2px); box-shadow: 0 0 0 var(--sombra); }
+.bt svg { width: 22px; height: 22px; flex: none; }
+.bt.preto { background: var(--tinta); color: var(--cartao); }
+.bt:disabled { opacity: .5; cursor: wait; }
+.bt-link { background: none; border: 0; padding: 12px 4px; font-size: 15px; font-weight: 900; text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 2px; min-height: 44px; justify-self: center; }
+.bt:focus-visible, .bt-link:focus-visible, .olho:focus-visible { outline: 2px solid var(--acento); outline-offset: 3px; }
+.acoes { display: grid; gap: 6px; justify-items: center; }
 
-  .box{ max-width:460px; width:100%; display:flex; flex-direction:column; align-items:center; gap:22px; position:relative; z-index:2; }
+.form { display: grid; gap: 14px; }
+.campo { display: grid; gap: 6px; }
+.campo label { font-size: 12.5px; font-weight: 900; color: var(--suave); }
+.caixa { position: relative; }
+.campo input { width: 100%; min-height: 52px; padding: 12px 52px 12px 14px; border: 1.5px solid var(--borda); border-radius: 14px; background: var(--campo); font: inherit; font-size: 17px; color: var(--tinta); -webkit-appearance: none; appearance: none; }
+.campo input:focus { outline: 2px solid var(--acento); outline-offset: 2px; }
+.olho { position: absolute; right: 4px; top: 4px; width: 44px; height: 44px; border: 0; background: none; display: grid; place-items: center; color: var(--suave); }
+.olho svg { width: 22px; height: 22px; }
 
-  .caranguejo{ width:min(22vw, 96px); height:auto; display:block; opacity:0.95; }
-  .caranguejo path{ fill:var(--preto); }
+/* código de 6 dígitos: um input só, seis casas desenhadas por baixo */
+.codigo { position: relative; height: 60px; }
+.casas { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; pointer-events: none; }
+.casas span { border: 1.5px solid var(--borda); border-radius: 12px; background: var(--campo); display: grid; place-items: center; font-size: 26px; font-weight: 900; font-variant-numeric: tabular-nums; }
+.casas span.vez { outline: 2px solid var(--acento); outline-offset: 2px; }
+.codigo input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; font-size: 16px; border: 0; }
 
-  .lbl{
-    font-family:var(--clother); font-size:0.58rem; font-weight:700;
-    letter-spacing:0.2em; text-transform:uppercase;
-    display:flex; align-items:center; gap:10px; color:rgba(13,13,11,0.65);
-    justify-content:center;
-  }
-  .lbl::before{ content:''; display:block; width:22px; height:1px; background:currentColor; }
-
-  .t1{
-    font-family:var(--clother); font-weight:900; color:var(--preto);
-    font-size:clamp(2.2rem, 6.2vw, 3.6rem); line-height:1;
-    letter-spacing:-0.01em; margin:0;
-  }
-
-  form{ width:100%; display:flex; flex-direction:column; align-items:stretch; gap:14px; margin-top:8px; }
-  .senha-wrap{ position:relative; }
-    input[type="password"], #loginTotp{
-    width:100%;
-    background:transparent; border:none; border-bottom:1px solid rgba(13,13,11,0.35);
-    border-radius:0; padding:14px 4px; text-align:center;
-    font-family:var(--clother); font-size:1.05rem; letter-spacing:0.14em;
-    color:var(--preto);
-  }
-  input[type="password"]::placeholder, #loginTotp::placeholder{ letter-spacing:0.24em; text-transform:uppercase; font-size:0.75rem; color:rgba(13,13,11,0.55); font-weight:700; }
-  input[type="password"]:focus, #loginTotp:focus{ outline:none; border-bottom-color:var(--preto); box-shadow:none; }
-  /* codigo de 6 digitos pede respiro maior entre os numeros */
-  #loginTotp{ letter-spacing:0.42em; font-weight:900; }
-
-  .msg{
-    min-height:1em; font-family:var(--clother); font-weight:700;
-    font-size:0.7rem; letter-spacing:0.18em; text-transform:uppercase;
-    color:var(--preto); opacity:0; transition:opacity .2s;
-  }
-  .msg.on{ opacity:1; }
-  .msg.info{ opacity:0.7; }
-
-  button[type="submit"]{
-    background:var(--preto); color:var(--areia);
-    border:1.5px solid var(--preto); border-radius:999px;
-    box-shadow:3px 3px 0 0 var(--preto);
-    padding:14px 28px; font-family:var(--clother); font-weight:700;
-    font-size:0.72rem; letter-spacing:0.24em; text-transform:uppercase;
-    cursor:pointer; align-self:center;
-    transition:transform .12s, box-shadow .12s, background .18s, color .18s;
-  }
-  button[type="submit"]:hover{ background:var(--areia); color:var(--preto); }
-  button[type="submit"]:active{ transform:translate(3px,3px); box-shadow:0 0 0 0 var(--preto); }
-  button[type="submit"]:disabled{ opacity:0.4; cursor:wait; box-shadow:none; }
-
-  .foot{
-    margin-top:8px; padding-top:14px; border-top:1px solid rgba(13,13,11,0.2);
-    font-size:0.55rem; letter-spacing:0.22em; color:rgba(13,13,11,0.7);
-  }
+.msg { margin: 12px 0 0; min-height: 20px; font-size: 14px; font-weight: 700; color: var(--suave); text-align: center; }
+.msg.erro { color: var(--erro); }
+.oculto { display: none !important; }
+.treme { animation: treme .38s; }
+@keyframes treme { 20% { transform: translateX(-8px); } 40% { transform: translateX(7px); } 60% { transform: translateX(-5px); } 80% { transform: translateX(3px); } }
+.pe { margin-top: 14px; font-size: 12.5px; font-weight: 700; color: var(--suave); text-align: center; }
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
 </style>
 </head>
 <body>
-<style id="mi-style">
-#maratu-splash{
-  --mi-mangue:#0D0D0B; --mi-caju:#C8501A;
-  --mi-logo-size:min(64vw,360px);
-  --mi-crab-stroke:0.75; --mi-wm-stroke:0.75;
-  --mi-crab-draw:720; --mi-crab-fill:360; --mi-crab-stagger:170;
-  --mi-wm-gap:60; --mi-wm-draw:660; --mi-wm-fill:360; --mi-sub-fade:440;
-  --mi-hold:260; --mi-zoom-dur:1100;
-  position:fixed; inset:0; z-index:99999;
-  background:var(--mi-mangue);
-  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:20px;
-  user-select:none; will-change:transform; overflow:hidden;
-}
-#maratu-splash .crab-stage{width:var(--mi-logo-size);line-height:0}
-#maratu-splash .word-stage{width:calc(var(--mi-logo-size) * .92);line-height:0}
-#maratu-splash svg{width:100%;height:auto;display:block;overflow:visible}
-#maratu-splash #mi-crab path, #maratu-splash .lp{
-  fill:var(--mi-caju); stroke:var(--mi-caju);
-  stroke-linecap:round; stroke-linejoin:round;
-  fill-opacity:0; stroke-opacity:0;
-}
-#maratu-splash #mi-crab path{ stroke-width:var(--mi-crab-stroke); vector-effect:non-scaling-stroke; }
-#maratu-splash .lp{ stroke-width:var(--mi-wm-stroke); vector-effect:non-scaling-stroke; }
-#maratu-splash #mi-wm-sub{ fill:var(--mi-caju); opacity:0; }
-</style>
-<div id="maratu-splash" aria-hidden="true">
-    <div class="crab-stage"><svg viewBox="0 0 221.06 106.21" xmlns="http://www.w3.org/2000/svg">
-        <g id="mi-crab">
-          <path id="p-body"   d="M110.53,106.21c36.93,0,66.86-29.94,66.86-66.86H43.66c0,36.93,29.94,66.86,66.86,66.86Z"/>
-          <path id="p-claw-l" d="M0,72.78c0,18.46,14.97,33.43,33.43,33.43V39.35C14.97,39.35,0,54.31,0,72.78Z"/>
-          <path id="p-claw-r" d="M187.62,39.35v66.86c18.46,0,33.43-14.97,33.43-33.43s-14.97-33.43-33.43-33.43Z"/>
-          <path id="p-eye-l"  d="M81.61,33.45V0c-9.24,0-16.73,7.49-16.73,16.73s7.49,16.73,16.73,16.73Z"/>
-          <path id="p-eye-r"  d="M156.17,16.73c0-9.24-7.49-16.73-16.73-16.73v33.45c9.24,0,16.73-7.49,16.73-16.73Z"/>
-        </g>
-      </svg></div>
-    <div class="word-stage"><svg viewBox="0 0 440.48 84.58" xmlns="http://www.w3.org/2000/svg">
-        <g id="mi-wm-main">
-          <polygon class="lp" points="38.49 19.28 32.91 0 .44 0 .44 23.92 31.97 29.14 .44 29.14 .44 53.57 32.91 53.57 32.91 29.94 38.57 47.91 44.15 29.94 44.15 53.57 76.55 53.57 76.55 0 44.15 0 38.49 19.28"/>
-          <path class="lp" d="M80.17,0v23.85l32.55,4.93h-32.62v24.79h13.41c11.23,0,19.35-9.13,19.72-24.72l6.74,24.5v.22h32.4v-23.05l.07-.07L138.45,0h-58.28Z"/>
-          <path class="lp" d="M225.35,15.08c0-11.23-7.39-15.08-26.02-15.08h-44.43l.14,53.57h32.33v-28.56c4.28.14,5.36,1.3,5.36,4.13v2.97h-5.36c3.62,16.89,17.69,21.46,29.28,21.46h8.05v-21.46h-28.99c21.82-1.23,29.65-5.36,29.65-17.03Z"/>
-          <path class="lp" d="M227.96,0v23.85l32.55,4.93h-32.62v24.79h13.41c11.24,0,19.35-9.13,19.72-24.72l6.74,24.5v.22h32.4v-23.05l.07-.07-13.99-30.44h-58.28Z"/>
-          <polygon class="lp" points="300.37 26.38 318.64 26.38 318.64 53.57 350.96 53.57 350.96 26.38 369.3 26.38 369.3 0 300.37 0 300.37 26.38"/>
-          <path class="lp" d="M408.15,0v21.53h-.87c-2.32,0-3.33-.87-3.33-4.2V0h-32.4v28.12c0,18.56,4.78,25.95,17.61,25.95,14.86,0,17.83-8.26,18.99-31.02v30.52h32.33V0h-32.33Z"/>
-        </g>
-        <g id="mi-wm-sub">
-          <path d="M0,64.27h12.62v3.57H4v4.44h7.83v3.56h-7.83v4.88h8.62v3.56H0v-20.02Z"/>
-          <path d="M23.99,72.69c3.74,1.26,5.64,2.81,5.64,5.87,0,3.42-3.04,6.02-7.01,6.02-2.92,0-5.64-1.11-7.69-3.16l2.19-2.69c1.61,1.61,3.42,2.37,5.49,2.37,1.84,0,3.07-.96,3.07-2.4,0-1.34-1.23-1.96-4-2.86-3.97-1.34-6.02-2.81-6.02-6.11s2.92-5.76,6.69-5.76c2.45,0,4.76.96,6.6,2.75l-2.28,2.66c-1.43-1.32-2.75-1.93-4.3-1.93s-2.78.76-2.78,2.13c0,1.46,1.34,2.1,4.38,3.1Z"/>
-          <path d="M37.11,67.84h-5.87v-3.57h15.78v3.57h-5.87v16.45h-4.03v-16.45Z"/>
-          <path d="M49.62,76.31v-12.04h4v11.98c0,2.92,1.46,4.65,3.94,4.65s3.89-1.72,3.89-4.65v-11.98h4.03v12.04c0,5.06-3.07,8.27-7.92,8.27s-7.95-3.21-7.95-8.27ZM60.02,56.41l1.75,2.92-5.84,3.19-1.32-2.05,5.41-4.06Z"/>
-          <path d="M69.93,64.27h5.67c7.07,0,11.37,3.74,11.37,10.02s-4.3,9.99-11.37,9.99h-5.67v-20.02ZM82.85,74.29c0-4.06-2.54-6.37-7.1-6.37h-1.81v12.71h1.81c4.53,0,7.1-2.31,7.1-6.34Z"/>
-          <path d="M90.62,64.27h4v20.02h-4v-20.02Z"/>
-          <path d="M118.7,74.26c0,5.87-4.38,10.32-10.23,10.32s-10.2-4.44-10.2-10.32,4.41-10.29,10.2-10.29,10.23,4.44,10.23,10.29ZM102.42,74.26c0,3.8,2.57,6.63,6.05,6.63s6.08-2.83,6.08-6.63-2.6-6.6-6.08-6.6-6.05,2.83-6.05,6.6Z"/>
-        </g>
-      </svg></div>
+<main class="cartao" id="cartao">
+  <canvas class="px aratu" id="aratu" width="30" height="19" aria-hidden="true"></canvas>
+  <canvas class="px zz" id="zz" width="10" height="12" aria-hidden="true"></canvas>
+  <div class="cab"><span class="marca">maratu</span><small>painel</small></div>
+  <div class="data" id="data"></div>
+  <h1 class="oi" id="oi">Olá, Raphael</h1>
+
+  <div id="passo1" class="acoes">
+    <button class="bt preto" id="pkBtn" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2"/><path d="M9 9v1.5M15 9v1.5M12 9v4h-1M9.5 16c1.5 1 3.5 1 5 0"/></svg>
+      <span id="pkRot">Entrar com Face ID</span>
+    </button>
+    <button class="bt-link" id="btSenha" type="button">Usar senha</button>
   </div>
-<script>
-(function(){
-  var splash = document.getElementById('maratu-splash');
-  if(!splash) return;
-  function kill(){ try{ document.documentElement.classList.add('mi-ready'); }catch(e){} try{ if(splash && splash.parentNode) splash.parentNode.removeChild(splash); }catch(e){} }
-  try{
-    if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches){ kill(); return; }
-    if(sessionStorage.getItem('maratu-intro')){ kill(); return; }
-    var hasTok=false; try{ hasTok=!!localStorage.getItem('maratu.token'); }catch(e){}
-    // login.html: so anima se NAO estiver logado (se logado, autoLogin manda pro admin que anima la)
-    if(hasTok){ kill(); return; }
-    sessionStorage.setItem('maratu-intro','1');
-    // FAILSAFE: nunca deixar o overlay preso na frente do painel
-    var failsafe = setTimeout(kill, 6500);
 
-    var V = getComputedStyle(splash);
-    var num = function(n){ return parseFloat(V.getPropertyValue(n)); };
-    var SMOOTH = 'cubic-bezier(.45,0,.4,1)';
-    var pBody = splash.querySelector('#p-body');
-    var sub   = splash.querySelector('#mi-wm-sub');
-    var crabEls = [].slice.call(splash.querySelectorAll('#mi-crab path'));
-    var wordEls = [].slice.call(splash.querySelectorAll('#mi-wm-main > *'));
-
-    function drawFill(el, delay, draw, fill){
-      var len = el.getTotalLength();
-      el.style.strokeDasharray = len;
-      el.style.strokeDashoffset = len;
-      el.style.strokeOpacity = 1;
-      el.style.fillOpacity = 0;
-      el.animate([{ strokeDashoffset: len }, { strokeDashoffset: 0 }],
-        { duration: draw, delay: delay, fill:'forwards', easing:'cubic-bezier(.65,0,.35,1)' });
-      el.animate([{ fillOpacity:0, strokeOpacity:1 }, { fillOpacity:1, strokeOpacity:0 }],
-        { duration: fill, delay: delay + draw, fill:'forwards', easing:'ease-out' });
-    }
-
-    function zoomInvert(){
-      var zoomDur = num('--mi-zoom-dur');
-      var bodyRect = pBody.getBoundingClientRect();
-      var splashRect = splash.getBoundingClientRect();
-      var cx = bodyRect.left + bodyRect.width/2, cy = bodyRect.top + bodyRect.height/2;
-      var originX = (cx - splashRect.left) / splashRect.width * 100;
-      var originY = (cy - splashRect.top ) / splashRect.height * 100;
-      splash.style.transformOrigin = originX.toFixed(2) + '% ' + originY.toFixed(2) + '%';
-      var W = window.innerWidth, H = window.innerHeight;
-      var maxDist = Math.max(Math.hypot(cx,cy), Math.hypot(W-cx,cy), Math.hypot(cx,H-cy), Math.hypot(W-cx,H-cy));
-      var nearEdge = Math.min(bodyRect.width, bodyRect.height) / 2;
-      var scale = Math.max((maxDist / nearEdge) * 1.5, 12);
-      splash.animate([{ transform:'scale(1)' }, { transform:'scale(' + scale.toFixed(1) + ')' }],
-        { duration: zoomDur, fill:'forwards', easing: SMOOTH });
-      setTimeout(function(){ clearTimeout(failsafe); kill(); }, zoomDur + 40);
-    }
-
-    function play(){
-      var CD=num('--mi-crab-draw'), CF=num('--mi-crab-fill'), CS=num('--mi-crab-stagger');
-      var GAP=num('--mi-wm-gap'), WD=num('--mi-wm-draw'), WF=num('--mi-wm-fill');
-      var SUB=num('--mi-sub-fade'), HOLD=num('--mi-hold');
-      crabEls.forEach(function(el,i){ drawFill(el, i*CS, CD, CF); });
-      var crabEnd = (crabEls.length-1)*CS + CD + CF;
-      var wmStart = crabEnd + GAP;
-      wordEls.forEach(function(el){ drawFill(el, wmStart, WD, WF); });
-      var wmEnd = wmStart + WD + WF;
-      var subDelay = wmStart + Math.round(WD*0.5);
-      sub.animate([{ opacity:0 }, { opacity:1 }], { duration:SUB, delay:subDelay, fill:'forwards', easing:'ease-out' });
-      var introEnd = Math.max(wmEnd, subDelay + SUB);
-      setTimeout(zoomInvert, introEnd + HOLD);
-    }
-
-    requestAnimationFrame(play);
-  }catch(e){ try{ clearTimeout(failsafe); }catch(_){}; kill(); }
-})();
-</script>
-
-
-<img class="canto" src="admin-corner.svg" alt="" aria-hidden="true" />
-
-<div class="box">
-  <svg class="caranguejo" viewBox="0 0 318.24 152.9" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-    <g data-aratu="claw-left">
-      <path d="M0,104.77c0,26.58,21.55,48.13,48.13,48.13V56.65C21.55,56.65,0,78.19,0,104.77Z"/>
-    </g>
-    <g data-aratu="claw-right">
-      <path d="M270.11,56.65v96.26c26.58,0,48.13-21.55,48.13-48.13s-21.55-48.13-48.13-48.13Z"/>
-    </g>
-    <g data-aratu="body">
-      <path d="M159.12,152.9c53.16,0,96.26-43.1,96.26-96.26H62.86c0,53.16,43.1,96.26,96.26,96.26Z"/>
-    </g>
-    <g data-aratu="eye-right">
-      <path d="M224.82,24.08c0-13.3-10.78-24.08-24.08-24.08v48.16c13.3,0,24.08-10.78,24.08-24.08Z"/>
-    </g>
-    <g data-aratu="eye-left">
-      <path d="M117.49,48.16V0c-13.3,0-24.08,10.78-24.08,24.08s10.78,24.08,24.08,24.08Z"/>
-    </g>
-  </svg>
-
-  <div class="lbl">000 &mdash; Admin</div>
-  <h1 class="t1">Seja bem-vindo!</h1>
-
-  <form id="loginForm" autocomplete="off">
-    <div class="senha-wrap">
-      <input id="loginSenha" type="password" placeholder="insira sua senha" autocomplete="current-password" autofocus />
-    </div>
-    <div class="senha-wrap" id="totpWrap" style="display:none">
-      <input id="loginTotp" type="text" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" placeholder="código 2FA (6 dígitos)" autocomplete="one-time-code" />
-    </div>
-    <div class="msg" id="loginMsg">senha incorreta</div>
-    <button type="submit" id="loginBtn">Entrar</button>
-    <button type="button" id="pkBtn" style="display:none; align-self:center; background:transparent; color:var(--preto); border:1.5px solid var(--preto); border-radius:999px; box-shadow:3px 3px 0 0 var(--preto); padding:14px 28px; font-family:var(--clother); font-weight:700; font-size:0.72rem; letter-spacing:0.24em; text-transform:uppercase; cursor:pointer; margin-top:2px;">Entrar com Face ID / Touch ID</button>
-    <div class="foot">MARATU &middot; est. 2026 &middot; Aracaju</div>
+  <form id="loginForm" class="form oculto" autocomplete="on">
+    <input type="text" name="username" value="raphael" autocomplete="username" hidden />
+    <div class="campo"><label for="loginSenha">Senha</label>
+      <div class="caixa"><input id="loginSenha" type="password" autocomplete="current-password" />
+        <button class="olho" id="olho" type="button" aria-label="Mostrar senha"></button></div></div>
+    <button class="bt preto" type="submit" id="loginBtn">Entrar</button>
+    <button class="bt-link" id="voltaPk" type="button">Usar Face ID</button>
   </form>
-</div>
+
+  <form id="totpForm" class="form oculto" autocomplete="off">
+    <div class="campo"><label for="loginTotp">Código do app autenticador</label>
+      <div class="codigo"><div class="casas" id="casas"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+        <input id="loginTotp" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="one-time-code" /></div></div>
+    <button class="bt-link" id="voltaSenha" type="button">Voltar para a senha</button>
+  </form>
+
+  <p class="msg" id="loginMsg" aria-live="polite"></p>
+  <div class="pe">Painel da MARATU, Aracaju</div>
+</main>
 
 <script>
-(function blinkAratu(){
-  const el = document.querySelector('.caranguejo');
-  if(!el) return;
-  const eyeL = el.querySelector('[data-aratu="eye-left"]');
-  const eyeR = el.querySelector('[data-aratu="eye-right"]');
-  let last = Date.now() + 1200;
-  let blinking = false, start = 0;
-  function frame(){
-    const now = Date.now();
-    if(!blinking && now - last > 2500 + Math.random()*2000){ blinking = true; start = now; }
-    if(blinking){
-      const p = (now - start) / 180;
-      if(p >= 1){
-        blinking = false; last = now;
-        eyeL.setAttribute('transform','translate(105.5 24.08) scale(1 1) translate(-105.5 -24.08)');
-        eyeR.setAttribute('transform','translate(212.74 24.08) scale(1 1) translate(-212.74 -24.08)');
-      } else {
-        const s = p < 0.5 ? 1 - p*2*0.9 : 0.1 + (p-0.5)*2*0.9;
-        eyeL.setAttribute('transform','translate(105.5 24.08) scale(1 '+s+') translate(-105.5 -24.08)');
-        eyeR.setAttribute('transform','translate(212.74 24.08) scale(1 '+s+') translate(-212.74 -24.08)');
-      }
-    }
-    requestAnimationFrame(frame);
+(function () {
+  var API = "https://maratu-api.raphaelnascimento.workers.dev";
+  var $ = function (id) { return document.getElementById(id); };
+  var cartao = $("cartao"), msg = $("loginMsg");
+  var senha = $("loginSenha"), totp = $("loginTotp"), casas = $("casas");
+  var pkBtn = $("pkBtn"), btSenha = $("btSenha"), loginBtn = $("loginBtn");
+
+  /* data e saudação */
+  var agora = new Date(), h = agora.getHours();
+  $("data").textContent = agora.toLocaleDateString("pt-BR", { weekday: "long", day: "numeric", month: "long" }).replace("-feira", "");
+  $("oi").textContent = (h < 5 ? "Boa noite" : h < 12 ? "Bom dia" : h < 18 ? "Boa tarde" : "Boa noite") + ", Raphael";
+
+  /* no Mac é o Touch ID */
+  var mac = /Macintosh/.test(navigator.userAgent) && !("ontouchend" in document);
+  var nomeBio = mac ? "Touch ID" : "Face ID";
+  $("pkRot").textContent = "Entrar com " + nomeBio;
+  $("voltaPk").textContent = "Usar " + nomeBio;
+
+  var IC_OLHO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>';
+  var IC_OLHO_X = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18M10.6 5.1A10.8 10.8 0 0 1 12 5c6.5 0 10 7 10 7a17 17 0 0 1-2.6 3.4M6.6 6.6A17 17 0 0 0 2 12s3.5 7 10 7a10 10 0 0 0 4.4-1"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>';
+  $("olho").innerHTML = IC_OLHO;
+
+  /* ---------- o Aratu em pixel: as formas do logo, como no painel ---------- */
+  var P = {
+    garraE: "M0,104.77c0,26.58,21.55,48.13,48.13,48.13V56.65C21.55,56.65,0,78.19,0,104.77Z",
+    garraD: "M270.11,56.65v96.26c26.58,0,48.13-21.55,48.13-48.13s-21.55-48.13-48.13-48.13Z",
+    corpo: "M159.12,152.9c53.16,0,96.26-43.1,96.26-96.26H62.86c0,53.16,43.1,96.26,96.26,96.26Z",
+    olhoD: "M224.82,24.08c0-13.3-10.78-24.08-24.08-24.08v48.16c13.3,0,24.08-10.78,24.08-24.08Z",
+    olhoE: "M117.49,48.16V0c-13.3,0-24.08,10.78-24.08,24.08s10.78,24.08,24.08,24.08Z"
+  };
+  var cv = $("aratu"), zz = $("zz");
+  var est = { pisca: false, tapa: false, dorme: true, pulo: 0 };
+  var cor = getComputedStyle(document.documentElement).getPropertyValue("--tinta").trim() || "#0D0D0B";
+  function desenha() {
+    var ctx = cv.getContext("2d"), K = cv.width / 318.24;
+    ctx.clearRect(0, 0, cv.width, cv.height);
+    ctx.save(); ctx.scale(K, K); ctx.translate(0, 40 - est.pulo); ctx.fillStyle = cor;
+    var peca = function (n, dx, dy) { ctx.save(); ctx.translate(dx, dy); ctx.fill(new Path2D(P[n])); ctx.restore(); };
+    peca("corpo", 0, 6);
+    if (est.dorme || est.pisca) { ctx.fillRect(93, 34, 25, 12); ctx.fillRect(200, 34, 25, 12); }
+    else { peca("olhoE", 0, 6); peca("olhoD", 0, 6); }
+    if (est.tapa) { peca("garraE", 72, -66); peca("garraD", -72, -66); }
+    else { peca("garraE", 0, 6); peca("garraD", 0, -8); }
+    ctx.restore();
+    var img = ctx.getImageData(0, 0, cv.width, cv.height), px = img.data;
+    for (var i = 3; i < px.length; i += 4) px[i] = px[i] > 110 ? 255 : 0;
+    ctx.putImageData(img, 0, 0);
   }
-  requestAnimationFrame(frame);
-})();
-
-const API = "https://maratu-api.raphaelnascimento.workers.dev";
-const form = document.getElementById('loginForm');
-const input = document.getElementById('loginSenha');
-const msg = document.getElementById('loginMsg');
-const btn = document.getElementById('loginBtn');
-
-/* Se veio de expiração, mostrar aviso */
-(function showReason(){
-  const p = new URLSearchParams(location.search);
-  if(p.get('expired') === '1'){
-    msg.textContent = 'sessão expirou — entre de novo';
-    msg.classList.add('on','info');
-  } else if(p.get('logout') === '1'){
-    msg.textContent = 'você saiu';
-    msg.classList.add('on','info');
+  function desenhaZ(fase) {
+    var ctx = zz.getContext("2d"); ctx.clearRect(0, 0, zz.width, zz.height); ctx.fillStyle = cor;
+    var z = function (x, y) { ctx.fillRect(x, y, 4, 1); ctx.fillRect(x + 2, y + 1, 1, 1); ctx.fillRect(x + 1, y + 2, 1, 1); ctx.fillRect(x, y + 3, 4, 1); };
+    if (fase > 0) z(1, 7); if (fase > 1) z(5, 1);
   }
-})();
-
-function __destino(){try{var v=localStorage.getItem('maratu.volta');localStorage.removeItem('maratu.volta');if(v==='/painel.html')return v;}catch(e){}return '/admin.html';}
-/* Se já tem token válido salvo, entra direto. Senão fica no form de login. */
-(async function autoLogin(){
-  let tk = null;
-  try { tk = localStorage.getItem('maratu.token'); } catch(e){}
-  if (!tk) return;
-  try{
-    const r = await fetch(API + "/api/state", {
-      headers: { Authorization: "Bearer " + tk }
-    });
-    if(r.ok){
-      location.replace(__destino());
-    } else if(r.status === 401){
-      try { localStorage.removeItem('maratu.token'); } catch(e){}
-    }
-  }catch(e){}
-})();
-
-const totpWrap = document.getElementById('totpWrap');
-const totpInput = document.getElementById('loginTotp');
-
-form.addEventListener('submit', async (e)=>{
-  e.preventDefault();
-  const pw = (input.value || '').trim();
-  if(!pw) return;
-  const totp = (totpInput.value || '').trim();
-  btn.disabled = true; msg.classList.remove('on','info');
-  try{
-    const headers = { Authorization: "Bearer " + pw };
-    if(totp) headers['X-TOTP-Code'] = totp;
-    const r = await fetch(API + "/api/state", { credentials:'include', headers });
-    if(r.status === 401){
-      let body = {};
-      try { body = await r.json(); } catch(e){}
-      btn.disabled = false;
-      if(body.error === 'totp_required'){
-        totpWrap.style.display = '';
-        totpInput.focus();
-        msg.textContent = 'código 2FA necessário';
-        msg.classList.add('on','info');
-        return;
-      }
-      if(body.error === 'totp_invalid'){
-        totpWrap.style.display = '';
-        totpInput.value = ''; totpInput.focus();
-        msg.textContent = 'código 2FA inválido';
-        msg.classList.add('on');
-        return;
-      }
-      msg.textContent = 'senha incorreta';
-      msg.classList.add('on');
-      input.value = ''; input.focus();
-      return;
-    }
-    if(!r.ok){
-      btn.disabled = false;
-      msg.textContent = 'erro ' + r.status;
-      msg.classList.add('on');
-      return;
-    }
-    /* Guarda a SESSAO que o /api/state devolve, nao a senha. Guardando a senha, o token
-             mestre ficava no aparelho e o portao passava a exigir X-TOTP-Code em toda chamada
-             assim que o 2FA fosse ligado — o admin respondia 401 em tudo. */
-          let sess = '';
-          try { const j = await r.json(); sess = j && j.session ? j.session : ''; } catch(e){}
-          try { localStorage.setItem('maratu.token', sess || pw); } catch(e){}
-    location.replace(__destino());
-  }catch(e){
-    btn.disabled = false;
-    msg.textContent = 'sem conexão';
-    msg.classList.add('on');
+  var reduz = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function pula() {
+    if (reduz) return desenha();
+    var i = 0, alt = [18, 30, 34, 30, 18, 0];
+    (function salto() { est.pulo = alt[i++] || 0; desenha(); if (i < alt.length) setTimeout(salto, 45); })();
   }
-});
+  function acorda() { if (!est.dorme) return; est.dorme = false; zz.style.visibility = "hidden"; pula(); }
+  function tapa(sim) { if (est.tapa === sim) return; est.tapa = sim; desenha(); }
+  /* 4 quadros por segundo bastam: o zz e uma piscada de vez em quando */
+  var zf = 0;
+  setInterval(function () {
+    if (document.hidden) return;
+    if (est.dorme) { zf = (zf + 1) % 6; desenhaZ(zf < 3 ? zf : 2); }
+    else if (!est.tapa) { var p = Math.random() < 0.04; if (p !== est.pisca) { est.pisca = p; desenha(); } }
+  }, 260);
+  desenha(); desenhaZ(2);
 
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function () {
-    navigator.serviceWorker.register('/sw.js').catch(function (e) {
-      console.warn('sw register failed:', e);
-    });
+  /* ---------- telas ---------- */
+  function aviso(t, tipo) { msg.textContent = t || ""; msg.classList.toggle("erro", tipo === "erro"); }
+  function mostra(qual) {
+    $("passo1").classList.toggle("oculto", qual !== 1);
+    $("loginForm").classList.toggle("oculto", qual !== 2);
+    $("totpForm").classList.toggle("oculto", qual !== 3);
+  }
+  function treme(el) { el.classList.remove("treme"); void el.offsetWidth; el.classList.add("treme"); }
+  function irSenha() { acorda(); mostra(2); senha.focus(); }
+
+  /* Se veio de expiração ou de sair, avisa */
+  (function () {
+    var p = new URLSearchParams(location.search);
+    if (p.get("expired") === "1") aviso("A sessão expirou. Entre de novo.");
+    else if (p.get("logout") === "1") aviso("Você saiu.");
+  })();
+
+  function destino() {
+    try { var v = localStorage.getItem("maratu.volta"); localStorage.removeItem("maratu.volta"); if (v === "/admin.html") return v; } catch (e) {}
+    return "/painel.html";
+  }
+  function entrou(sess) {
+    try { localStorage.setItem("maratu.token", sess); } catch (e) {}
+    aviso("Abrindo o painel");
+    est.tapa = false; if (est.dorme) acorda(); else pula();
+    var vai = destino();
+    setTimeout(function () { cartao.classList.add("entra"); }, 220);
+    setTimeout(function () { location.replace(vai); }, reduz ? 0 : 520);
+  }
+
+  /* Se já tem token válido salvo, entra direto. Senão fica no cartão. */
+  (async function () {
+    var tk = null;
+    try { tk = localStorage.getItem("maratu.token"); } catch (e) {}
+    var mostra = function () { document.documentElement.classList.remove("conferindo"); };
+    if (!tk) return mostra();
+    try {
+      var r = await fetch(API + "/api/state", { headers: { Authorization: "Bearer " + tk } });
+      if (r.ok) return location.replace(destino());
+      if (r.status === 401) { try { localStorage.removeItem("maratu.token"); } catch (e) {} }
+    } catch (e) {}
+    mostra();
+  })();
+
+  /* ---------- senha + 2FA ---------- */
+  btSenha.onclick = irSenha;
+  $("voltaPk").onclick = function () { tapa(false); mostra(1); aviso(""); };
+  $("voltaSenha").onclick = function () { totp.value = ""; pintaCasas(); mostra(2); aviso(""); senha.focus(); };
+  senha.addEventListener("focus", function () { if (senha.type === "password") tapa(true); });
+  senha.addEventListener("blur", function () { tapa(false); });
+  $("olho").onclick = function () {
+    var ver = senha.type === "password"; senha.type = ver ? "text" : "password";
+    this.innerHTML = ver ? IC_OLHO_X : IC_OLHO; this.setAttribute("aria-label", ver ? "Esconder senha" : "Mostrar senha");
+    tapa(!ver); senha.focus();
+  };
+
+  var enviando = false;
+  async function enviar() {
+    var pw = (senha.value || "").trim();
+    if (!pw || enviando) return;
+    var cod = (totp.value || "").trim();
+    enviando = true; loginBtn.disabled = true; aviso("");
+    try {
+      var headers = { Authorization: "Bearer " + pw };
+      if (cod) headers["X-TOTP-Code"] = cod;
+      var r = await fetch(API + "/api/state", { credentials: "include", headers: headers });
+      if (r.status === 401) {
+        var body = {};
+        try { body = await r.json(); } catch (e) {}
+        if (body.error === "totp_required") {
+          tapa(false); mostra(3); totp.focus(); pintaCasas();
+          aviso("Abra o autenticador e digite os 6 números"); return;
+        }
+        if (body.error === "totp_invalid") {
+          mostra(3); totp.value = ""; pintaCasas(); totp.focus();
+          aviso("Código errado ou vencido. Digite o que está na tela agora.", "erro"); treme($("totpForm")); return;
+        }
+        mostra(2); aviso("Senha incorreta", "erro"); treme($("loginForm"));
+        senha.value = ""; totp.value = ""; senha.focus(); return;
+      }
+      if (!r.ok) { aviso("O servidor respondeu " + r.status + ". Tente de novo.", "erro"); return; }
+      /* Guarda a SESSAO que o /api/state devolve, nao a senha. Guardando a senha, o token
+         mestre ficava no aparelho e o portao passava a exigir X-TOTP-Code em toda chamada
+         assim que o 2FA fosse ligado — o admin respondia 401 em tudo. */
+      var sess = "";
+      try { var j = await r.json(); sess = j && j.session ? j.session : ""; } catch (e) {}
+      entrou(sess || pw);
+    } catch (e) {
+      aviso("Sem conexão. Confira a internet e tente de novo.", "erro");
+    } finally { enviando = false; loginBtn.disabled = false; }
+  }
+  $("loginForm").addEventListener("submit", function (e) { e.preventDefault(); enviar(); });
+  $("totpForm").addEventListener("submit", function (e) { e.preventDefault(); enviar(); });
+  function pintaCasas() {
+    var v = totp.value.replace(/\D/g, "").slice(0, 6);
+    if (v !== totp.value) totp.value = v;
+    var foco = document.activeElement === totp;
+    [].forEach.call(casas.children, function (s, i) { s.textContent = v[i] || ""; s.classList.toggle("vez", foco && i === Math.min(v.length, 5)); });
+    return v;
+  }
+  totp.addEventListener("input", function () { if (pintaCasas().length === 6) { totp.blur(); enviar(); } });
+  totp.addEventListener("focus", pintaCasas);
+  totp.addEventListener("blur", pintaCasas);
+
+  /* ---------- Face ID / Touch ID (passkey) ---------- */
+  if (!window.PublicKeyCredential) { mostra(2); $("voltaPk").classList.add("oculto"); acorda(); }
+  var b64url = function (buf) { return btoa(String.fromCharCode.apply(null, new Uint8Array(buf))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, ""); };
+  var toBuf = function (s) { s = String(s).replace(/-/g, "+").replace(/_/g, "/"); while (s.length % 4) s += "="; var bin = atob(s); var u = new Uint8Array(bin.length); for (var i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i); return u.buffer; };
+  pkBtn.addEventListener("click", async function () {
+    acorda(); pkBtn.disabled = true; aviso("");
+    try {
+      var r = await fetch(API + "/api/webauthn/login/options", { method: "POST" });
+      if (!r.ok) throw new Error("options " + r.status);
+      var opt = await r.json();
+      if (!opt.allowCredentials || !opt.allowCredentials.length) {
+        pkBtn.disabled = false; irSenha(); aviso("Nenhum " + nomeBio + " cadastrado ainda. Entre com a senha."); return;
+      }
+      var a = await navigator.credentials.get({ publicKey: { challenge: toBuf(opt.challenge), rpId: opt.rpId, timeout: opt.timeout, userVerification: opt.userVerification, allowCredentials: opt.allowCredentials.map(function (c) { return { type: c.type, id: toBuf(c.id) }; }) } });
+      var v = await fetch(API + "/api/webauthn/login/verify", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: b64url(a.rawId), clientDataJSON: b64url(a.response.clientDataJSON), authenticatorData: b64url(a.response.authenticatorData), signature: b64url(a.response.signature) }) });
+      var j = await v.json();
+      if (j.session) { entrou(j.session); return; }
+      aviso(nomeBio + " não confirmou. Tente de novo ou use a senha.", "erro");
+    } catch (e) {
+      aviso(e && e.name === "NotAllowedError" ? "Cancelado." : "Não deu para usar o " + nomeBio + ". Use a senha.", e && e.name === "NotAllowedError" ? "" : "erro");
+    }
+    pkBtn.disabled = false;
   });
-}
-</script>
 
-<script>
-(function(){
-  var API="https://maratu-api.raphaelnascimento.workers.dev";
-  var btn=document.getElementById('pkBtn'); if(!btn||!window.PublicKeyCredential) return;
-  var b64url=function(buf){return btoa(String.fromCharCode.apply(null,new Uint8Array(buf))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');};
-  var toBuf=function(s){s=String(s).replace(/-/g,'+').replace(/_/g,'/');while(s.length%4)s+='=';var bin=atob(s);var u=new Uint8Array(bin.length);for(var i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);return u.buffer;};
-  var msg=document.getElementById('loginMsg');
-  btn.style.display='';
-  btn.addEventListener('click', async function(){
-    btn.disabled=true; if(msg){ msg.classList.remove('on','info'); }
-    try{
-      var r=await fetch(API+"/api/webauthn/login/options",{method:"POST"});
-      var opt=await r.json();
-      if(!opt.allowCredentials||!opt.allowCredentials.length){ if(msg){ msg.textContent='nenhuma passkey registrada'; msg.classList.add('on','info'); } btn.disabled=false; return; }
-      var a=await navigator.credentials.get({publicKey:{challenge:toBuf(opt.challenge),rpId:opt.rpId,timeout:opt.timeout,userVerification:opt.userVerification,allowCredentials:opt.allowCredentials.map(function(c){return {type:c.type,id:toBuf(c.id)};})}});
-      var v=await fetch(API+"/api/webauthn/login/verify",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({id:b64url(a.rawId),clientDataJSON:b64url(a.response.clientDataJSON),authenticatorData:b64url(a.response.authenticatorData),signature:b64url(a.response.signature)})});
-      var j=await v.json();
-      if(j.session){ try{ localStorage.setItem('maratu.token', j.session); }catch(e){} location.replace(__destino()); }
-      else { if(msg){ msg.textContent='passkey falhou'; msg.classList.add('on'); } btn.disabled=false; }
-    }catch(e){ if(msg){ msg.textContent=(e&&e.name==='NotAllowedError')?'cancelado':'erro passkey'; msg.classList.add('on'); } btn.disabled=false; }
-  });
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", function () { navigator.serviceWorker.register("/sw.js").catch(function () {}); });
+  }
 })();
 </script>
 </body>

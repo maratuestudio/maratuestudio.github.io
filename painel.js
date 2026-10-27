@@ -618,24 +618,44 @@
     olhoD: "M224.82,24.08c0-13.3-10.78-24.08-24.08-24.08v48.16c13.3,0,24.08-10.78,24.08-24.08Z",
     olhoE: "M117.49,48.16V0c-13.3,0-24.08,10.78-24.08,24.08s10.78,24.08,24.08,24.08Z"
   };
-  function desenhaAratu(cv, cor, passo, pisca) {
+  /* garras na mesma altura; olho inteiro (o meio-olho do logo completado em círculo); pisca = olho fechado */
+  function desenhaAratu(cv, cor, pisca) {
     var ctx = cv.getContext("2d"), W = cv.width, H = cv.height, K = W / 318.24;
     ctx.clearRect(0, 0, W, H);
     ctx.save(); ctx.scale(K, K); ctx.fillStyle = cor;
-    var peca = function (nome, dy) { ctx.save(); ctx.translate(0, dy || 0); ctx.fill(new Path2D(PECAS_ARATU[nome])); ctx.restore(); };
-    peca("corpo", 6); peca("garraE", passo ? -8 : 6); peca("garraD", passo ? 6 : -8);
-    if (!pisca) { peca("olhoE", 6); peca("olhoD", 6); }
+    var peca = function (nome) { ctx.save(); ctx.translate(0, 6); ctx.fill(new Path2D(PECAS_ARATU[nome])); ctx.restore(); };
+    peca("corpo"); peca("garraE"); peca("garraD");
+    [117.49, 200.74].forEach(function (cx) {
+      if (pisca) ctx.fillRect(cx - 24.08, 24, 48.16, 16);
+      else { ctx.beginPath(); ctx.arc(cx, 30.08, 24.08, 0, Math.PI * 2); ctx.fill(); }
+    });
     ctx.restore();
     var img = ctx.getImageData(0, 0, W, H), px = img.data;
     for (var i = 3; i < px.length; i += 4) px[i] = px[i] > 110 ? 255 : 0;
     ctx.putImageData(img, 0, 0);
   }
-  /* parado numa pose só, acordado: nada de passeio nem piscada */
+  var piscaId = 0;
   function animaAratus(raiz) {
     var css = getComputedStyle(document.documentElement), corCard = css.getPropertyValue("--aratu").trim() || "#0D0D0B", corFio = css.getPropertyValue("--faixa").trim() || "#C8501A";
     var andante = raiz.querySelector(".fh-andando"), fio = raiz.querySelector(".fh-agora-px");
-    if (andante) desenhaAratu(andante, corCard, false, false);
-    if (fio) desenhaAratu(fio, corFio, false, false);
+    var pinta = function (p) { if (andante) desenhaAratu(andante, corCard, p); if (fio) desenhaAratu(fio, corFio, p); };
+    pinta(false);
+    var meu = ++piscaId;
+    if ((!andante && !fio) || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    /* parado; só pisca de vez em quando (a cada 3 a 7 s, às vezes duas seguidas) */
+    (function proxima() {
+      setTimeout(function () {
+        if (meu !== piscaId || !(andante || fio).isConnected) return;
+        if (document.hidden) return proxima();
+        var duas = Math.random() < 0.2;
+        pinta(true);
+        setTimeout(function () {
+          pinta(false);
+          if (duas) setTimeout(function () { pinta(true); setTimeout(function () { pinta(false); }, 140); }, 180);
+          proxima();
+        }, 140);
+      }, 3000 + Math.random() * 4000);
+    })();
   }
   function ligarHoje(raiz) {
     animaAratus(raiz);

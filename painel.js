@@ -630,35 +630,12 @@
     for (var i = 3; i < px.length; i += 4) px[i] = px[i] > 110 ? 255 : 0;
     ctx.putImageData(img, 0, 0);
   }
-  var passeioId = 0;
+  /* parado numa pose só, acordado: nada de passeio nem piscada */
   function animaAratus(raiz) {
     var css = getComputedStyle(document.documentElement), corCard = css.getPropertyValue("--aratu").trim() || "#0D0D0B", corFio = css.getPropertyValue("--faixa").trim() || "#C8501A";
     var andante = raiz.querySelector(".fh-andando"), fio = raiz.querySelector(".fh-agora-px");
     if (andante) desenhaAratu(andante, corCard, false, false);
     if (fio) desenhaAratu(fio, corFio, false, false);
-    var meu = ++passeioId;
-    if (!andante || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    var trilho = andante.parentNode, x = 0, dir = -1, tPasso = 0, passo = false, ant = 0, max = -1, medidoEm = 0;
-    /* 30 quadros por segundo e a largura medida uma vez por segundo: o Mac Intel agradece */
-    function anda(t) {
-      if (meu !== passeioId || !andante.isConnected) return;
-      if (document.hidden || folhaAberta) { ant = 0; setTimeout(function () { requestAnimationFrame(anda); }, 400); return; }
-      if (ant && t - ant < 32) { requestAnimationFrame(anda); return; }
-      var dt = ant ? Math.min(0.08, (t - ant) / 1000) : 0; ant = t;
-      if (t - medidoEm > 1000) { var novo = Math.max(0, trilho.clientWidth - andante.clientWidth); if (max < 0) x = novo; max = novo; medidoEm = t; }
-      x += dir * 26 * dt;
-      if (x > max) { x = max; dir = -1; } else if (x < 0) { x = 0; dir = 1; }
-      tPasso += dt;
-      if (tPasso > 0.24) {
-        tPasso = 0; passo = !passo;
-        var pisca = Math.random() < 0.06;
-        desenhaAratu(andante, corCard, passo, pisca);
-        if (fio) desenhaAratu(fio, corFio, !passo, pisca);
-      }
-      andante.style.transform = "translateX(" + x.toFixed(1) + "px)";
-      requestAnimationFrame(anda);
-    }
-    requestAnimationFrame(anda);
   }
   function ligarHoje(raiz) {
     animaAratus(raiz);

@@ -36,6 +36,9 @@
   function brlV(v) { return oculto() ? "R$ •••" : brl(v); }
   function brlCurtoV(v) { return oculto() ? "R$ •••" : brlCurto(v); }
   function brlCurto(v) { var n = Number(v || 0); return "R$ " + n.toLocaleString("pt-BR", { minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: 2 }); }
+  function cent(v) { return num(v) / 100; } // preço do catálogo vem em centavos
+  function cCampo(v) { return v ? (num(v) / 100).toFixed(2).replace(".", ",").replace(/,00$/, "") : ""; }
+  function campoC(t) { t = String(t || "").trim(); if (/^\d{1,3}(\.\d{3})+$/.test(t)) t = t.replace(/\./g, ""); return Math.round(num(t) * 100); }
   function num(v) { var t = String(v == null ? "" : v).replace(/[^\d,.-]/g, ""); if (t.indexOf(",") > -1) t = t.replace(/\./g, "").replace(",", "."); var n = parseFloat(t); return isFinite(n) ? n : 0; }
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
   function uid(pre) { return (pre || "") + Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
@@ -625,14 +628,23 @@
     ctx.save(); ctx.scale(K, K); ctx.fillStyle = cor;
     var peca = function (nome) { ctx.save(); ctx.translate(0, 6); ctx.fill(new Path2D(PECAS_ARATU[nome])); ctx.restore(); };
     peca("corpo"); peca("garraE"); peca("garraD");
-    [117.49, 200.74].forEach(function (cx) {
-      if (pisca) ctx.fillRect(cx - 24.08, 24, 48.16, 16);
-      else { ctx.beginPath(); ctx.arc(cx, 30.08, 24.08, 0, Math.PI * 2); ctx.fill(); }
-    });
     ctx.restore();
     var img = ctx.getImageData(0, 0, W, H), px = img.data;
     for (var i = 3; i < px.length; i += 4) px[i] = px[i] > 110 ? 255 : 0;
     ctx.putImageData(img, 0, 0);
+    /* olhos em pixel, não em vetor: o círculo vira um quadrado nessa escala. Cantos cortados e
+       um ponto de brilho no alto, do mesmo lado nos dois, que é o que faz o bloco ler como olho */
+    ctx.fillStyle = cor;
+    var r = 24.08 * K, lado = Math.max(2, Math.floor(r * 2)), topo = Math.max(0, Math.round(30.08 * K - r));
+    [117.49, 200.74].forEach(function (cx) {
+      var x = Math.round(cx * K - lado / 2);
+      if (pisca) { ctx.fillRect(x, topo + lado - Math.max(1, Math.round(lado / 4)), lado, Math.max(1, Math.round(lado / 4))); return; }
+      ctx.fillRect(x, topo, lado, lado);
+      if (lado >= 4) {
+        [[x, topo], [x + lado - 1, topo], [x, topo + lado - 1], [x + lado - 1, topo + lado - 1]].forEach(function (c) { ctx.clearRect(c[0], c[1], 1, 1); });
+        ctx.clearRect(x + lado - 2, topo + 1, 1, 1);
+      }
+    });
   }
   var piscaId = 0;
   function animaAratus(raiz) {
@@ -1626,7 +1638,7 @@
       (vis.length ? '<div class="prod-grade">' + vis.map(function (p) {
         var selos = [!p.ativo ? "Inativo" : "", p.prevenda ? "Pré-venda" : "", p.indisponivel ? "Indisponível" : "", p.oculto ? "Sem destaque" : "", p.novo ? "Novo" : ""].filter(Boolean);
         return '<button class="cartao prod' + (!p.ativo ? " inativo" : "") + '" data-prod="' + esc(p.id) + '"><span class="prod-img">' + (p.imagem_principal ? '<img loading="lazy" alt="" src="' + esc(imgUrl(p.imagem_principal, "t")) + '">' : "") + "</span>" +
-          '<span class="prod-txt"><b>' + esc(p.nome) + "</b><small>" + esc(nomeFaixa(p.subcategoria)) + ", " + esc(String(p.marca || "").toUpperCase()) + '</small><span class="valor">' + brl(num(p.preco)) + "</span>" +
+          '<span class="prod-txt"><b>' + esc(p.nome) + "</b><small>" + esc(nomeFaixa(p.subcategoria)) + ", " + esc(String(p.marca || "").toUpperCase()) + '</small><span class="valor">' + brl(cent(p.preco)) + "</span>" +
           (selos.length ? '<span class="prod-selos">' + selos.map(function (s) { return "<i>" + s + "</i>"; }).join("") + "</span>" : "") + "</span></button>";
       }).join("") + "</div>" : '<p class="vazio">Nenhuma peça com esse filtro.</p>');
   }
@@ -1764,10 +1776,10 @@
         [0, 1, 2, 3, 4, 5].map(function (i) { return slot("g" + i, i ? "" : "Galeria", galeria[i]); }).join("") + "</div>" +
       campo("Nome", '<input id="pNome" value="' + esc(p.nome || "") + '" autocomplete="off">') +
       campo("Subtítulo", '<input id="pSub" value="' + esc(p.subtitulo || "") + '" autocomplete="off">') +
-      '<div class="duas">' + campo("Preço", '<input id="pPreco" inputmode="decimal" value="' + (p.preco != null ? esc(String(p.preco).replace(".", ",")) : "") + '" autocomplete="off">') + campo("Preço riscado", '<input id="pCheio" inputmode="decimal" value="' + (p.preco_cheio != null ? esc(String(p.preco_cheio).replace(".", ",")) : "") + '" autocomplete="off">') + "</div>" +
+      '<div class="duas">' + campo("Preço", '<input id="pPreco" inputmode="decimal" value="' + esc(cCampo(p.preco)) + '" autocomplete="off">') + campo("Preço riscado", '<input id="pCheio" inputmode="decimal" value="' + esc(cCampo(p.preco_cheio)) + '" autocomplete="off">') + "</div>" +
       '<div class="rot">Marca</div>' + pilulas("marca", [["use", "USE"], ["casa", "CASA"]], p.marca || "use") +
       '<div class="rot">Faixa da loja</div>' + pilulas("faixa", faixas.map(function (f) { return [f, nomeFaixa(f)]; }), p.subcategoria) +
-      '<div class="poster" ' + (p.subcategoria === "posteres" ? "" : "hidden") + '><div class="rot">Preço por tamanho</div><div class="tam-precos">' + TAM_POSTER.map(function (t) { var v = p.precos_custom && p.precos_custom[t]; return campo(t, '<input data-tam="' + t + '" inputmode="decimal" value="' + (v != null ? esc(String(v).replace(".", ",")) : "") + '" autocomplete="off">'); }).join("") + "</div></div>" +
+      '<div class="poster" ' + (p.subcategoria === "posteres" ? "" : "hidden") + '><div class="rot">Preço por tamanho</div><div class="tam-precos">' + TAM_POSTER.map(function (t) { var v = p.precos_custom && p.precos_custom[t]; return campo(t, '<input data-tam="' + t + '" inputmode="decimal" value="' + esc(cCampo(v)) + '" autocomplete="off">'); }).join("") + "</div></div>" +
       '<div class="rot">Situação</div><div class="pilulas multi" data-multi="flags">' + FLAGS.map(function (f) { return '<button type="button" data-val="' + f[0] + '" aria-pressed="' + (flags.indexOf(f[0]) >= 0) + '">' + f[1] + "</button>"; }).join("") + "</div>" +
       '<div class="rot">Coleções</div><div class="pilulas multi" data-multi="col">' + COLECOES.concat((p.colecoes || []).filter(function (c) { return !COLECOES.some(function (x) { return x[0] === c; }); }).map(function (c) { return [c, cap(c)]; })).map(function (c) { return '<button type="button" data-val="' + esc(c[0]) + '" aria-pressed="' + ((p.colecoes || []).indexOf(c[0]) >= 0) + '">' + esc(c[1]) + "</button>"; }).join("") + "</div>" +
       campo("Tamanhos", '<input id="pTam" value="' + esc(tamTexto) + '" autocomplete="off">') +
@@ -1844,17 +1856,17 @@
         if (subindo) return;
         var q = function (s) { return c.querySelector(s); };
         var nome = q("#pNome").value.trim(); if (!nome) { q("#pNome").focus(); return; }
-        var preco = num(q("#pPreco").value); if (!(preco > 0)) { q("#pPreco").focus(); aviso("Preço inválido"); return; }
+        var preco = campoC(q("#pPreco").value); if (!(preco > 0)) { q("#pPreco").focus(); aviso("Preço inválido"); return; }
         var principal = q('[data-slot="principal"]').dataset.key; if (!principal) { aviso("Falta a foto principal"); return; }
         var multi = function (k) { return Array.prototype.map.call(c.querySelectorAll('[data-multi="' + k + '"] [aria-pressed="true"]'), function (b) { return b.dataset.val; }); };
         var fl = multi("flags"), faixa = pil(c, "faixa") || p.subcategoria, pc = {};
-        if (faixa === "posteres") c.querySelectorAll("[data-tam]").forEach(function (i) { if (i.value.trim() && num(i.value) > 0) pc[i.dataset.tam] = num(i.value); });
+        if (faixa === "posteres") c.querySelectorAll("[data-tam]").forEach(function (i) { if (i.value.trim() && num(i.value) > 0) pc[i.dataset.tam] = campoC(i.value); });
         var fic = {}; c.querySelectorAll(".ficha-linha").forEach(function (r) { var k = r.querySelector(".f-k").value.trim(), v = r.querySelector(".f-v").value.trim(); if (k && v) fic[k] = v; });
         var id = p.id || slugify(nome);
         if (novo && (PROD.lista || []).some(function (x) { return x.id === id; })) id = id + "-" + Date.now().toString(36).slice(-4);
         var corpo = {
           id: id, nome: nome, subtitulo: q("#pSub").value.trim() || null, marca: pil(c, "marca") || "use", subcategoria: faixa,
-          preco: preco, preco_cheio: q("#pCheio").value.trim() ? num(q("#pCheio").value) : null,
+          preco: preco, preco_cheio: num(q("#pCheio").value) > 0 ? campoC(q("#pCheio").value) : null,
           sku_whatsapp: q("#pSku").value.trim() || (novo ? id : (p.sku_whatsapp || id)),
           imagem_principal: principal, imagem_hover: q('[data-slot="hover"]').dataset.key || null,
           colecoes: multi("col"), tamanhos: (function () {
@@ -2412,7 +2424,7 @@
       S.prospec.forEach(function (p) { if (tem(p.nome, p.cidade, p.ramo)) achados.push({ tipo: "site", rot: "Site", tit: p.nome, sub: [p.cidade, p.status].filter(Boolean).join(", "), fn: function () { folhaSite(p); } }); });
       eventosVivos().forEach(function (e) { if (tem(e.titulo, e.cliente)) achados.push({ tipo: e.tipo === "cobranca" ? "carne" : "agenda", rot: e.tipo === "cobranca" ? "Carnê" : "Agenda", tit: e.titulo, sub: dm(e.data) + (e.feito ? ", feito" : ""), fn: function () { if (e.tipo === "cobranca") folhaParcela(e); else folhaEvento(e); } }); });
       (S.pedidosTodos || S.pedidos).forEach(function (p) { var nomes = (p.itens || []).map(function (i) { return i.nome; }).join(", "); if (tem(p.codigo, nomes)) achados.push({ tipo: "loja", rot: "Pedido", tit: p.codigo, sub: nomes, fn: function () { folhaPedido(p); } }); });
-      (PROD.lista || []).forEach(function (pr) { if (tem(pr.nome, pr.subtitulo, pr.id)) achados.push({ tipo: "loja", rot: "Peça", tit: pr.nome, sub: nomeFaixa(pr.subcategoria) + ", " + brl(num(pr.preco)), fn: function () { folhaProduto(pr); } }); });
+      (PROD.lista || []).forEach(function (pr) { if (tem(pr.nome, pr.subtitulo, pr.id)) achados.push({ tipo: "loja", rot: "Peça", tit: pr.nome, sub: nomeFaixa(pr.subcategoria) + ", " + brl(cent(pr.preco)), fn: function () { folhaProduto(pr); } }); });
       S.lancamentos.forEach(function (l) { if (tem(l.label)) achados.push({ tipo: "feito", rot: "Entrada", tit: tituloEntrada(l), sub: dm(l.data) + ", " + brl(num(l.valor)), fn: function () { folhaEntrada(l); } }); });
       (S.marketing || []).forEach(function (p) { if (tem(p.titulo, p.ideia)) achados.push({ tipo: "post", rot: "Post", tit: p.titulo, sub: [p.formato, p.data ? dm(p.data) : ""].filter(Boolean).join(", "), fn: function () { folhaPost(p); } }); });
       clientes().forEach(function (c) { if (tem(c.nome, c.contato, c.tipo, c.notas)) achados.push({ tipo: "site", rot: "Cliente", tit: c.nome, sub: [c.tipo, (ETAPAS_CLI.filter(function (x) { return x[0] === c.etapa; })[0] || [])[1]].filter(Boolean).join(", "), fn: function () { folhaCliente(c); } }); });

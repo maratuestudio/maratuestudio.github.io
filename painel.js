@@ -71,6 +71,7 @@
     post: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M3 15l5-5 4 4 3-3 6 6"/></svg>',
     calc: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 12h2M12 12h2M16 12h0M8 16h2M12 16h2M16 16h0"/></svg>',
     selo: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3M21 14v.01M14 21h3M21 18v3"/></svg>',
+    loja: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3 3.5 7v12a2 2 0 0 0 2 2h13a2 2 0 0 0 2-2V7L18 3Z"/><path d="M3.5 7h17"/><path d="M15.5 11a3.5 3.5 0 0 1-7 0"/></svg>',
     imp: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21h16M6 21V9h12v12M9 9V4h6v5M10 14h4"/></svg>',
     site: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 8h18"/></svg>',
     x: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>',
@@ -2381,13 +2382,13 @@
     ["Finanças", "Buscar entradas no banco", function () { buscarEntradas(null); }, IC.entrada],
     ["Finanças", "Relatório da semana", function () { folhaRelatorio(); }, IC.nota],
     ["Ir", "Agenda", function () { irPara("agenda"); }, IC.evento],
-    ["Oficina", "Peças", vaiAba("oficina", "pecas"), IC.entrada], ["Oficina", "Pedidos", vaiAba("oficina", "pedidos"), IC.entrada],
-    ["Oficina", "Orçamentos", vaiAba("oficina", "orcamentos"), IC.calc], ["Oficina", "Produção", vaiAba("oficina", "producao"), IC.imp],
-    ["Oficina", "Peça nova", function () { irAba("oficina", "pecas"); carregarProdutos().then(function () { folhaProduto(null); }); }, IC.mais],
-    ["Oficina", "Ordem das faixas", function () { carregarProdutos().then(folhaFaixas); }, IC.entrada],
-    ["Oficina", "Selos", function () { irAba("oficina", "producao"); }, IC.selo], ["Oficina", "Selar uma peça", function () { folhaSelar(); }, IC.ler],
-    ["Oficina", "Imprimir folha de selos", function () { folhaImprimirSelos(); }, IC.imp], ["Oficina", "Lista de selos", function () { folhaListaSelos(""); }, IC.selo],
-    ["Oficina", "Impressora", function () { irAba("oficina", "producao"); }, IC.imp],
+    ["Loja", "Peças", vaiAba("oficina", "pecas"), IC.entrada], ["Loja", "Pedidos", vaiAba("oficina", "pedidos"), IC.entrada],
+    ["Loja", "Orçamentos", vaiAba("oficina", "orcamentos"), IC.calc], ["Loja", "Produção", vaiAba("oficina", "producao"), IC.imp],
+    ["Loja", "Peça nova", function () { irAba("oficina", "pecas"); carregarProdutos().then(function () { folhaProduto(null); }); }, IC.mais],
+    ["Loja", "Ordem das faixas", function () { carregarProdutos().then(folhaFaixas); }, IC.entrada],
+    ["Loja", "Selos", function () { irAba("oficina", "producao"); }, IC.selo], ["Loja", "Selar uma peça", function () { folhaSelar(); }, IC.ler],
+    ["Loja", "Imprimir folha de selos", function () { folhaImprimirSelos(); }, IC.imp], ["Loja", "Lista de selos", function () { folhaListaSelos(""); }, IC.selo],
+    ["Loja", "Impressora", function () { irAba("oficina", "producao"); }, IC.imp],
     ["Divulgação", "Conteúdo", vaiAba("divulgacao", "conteudo"), IC.post], ["Divulgação", "Newsletter", vaiAba("divulgacao", "newsletter"), IC.envelope],
     ["Divulgação", "Links da bio", vaiAba("divulgacao", "links"), IC.copia], ["Divulgação", "Números", vaiAba("divulgacao", "numeros"), IC.dir],
     ["Ir", "Ajustes", function () { irPara("ajustes"); }, IC.engrenagem], ["Ajustes", "Ligar notificações", function () { irPara("ajustes"); }, IC.engrenagem],
@@ -2548,7 +2549,7 @@
     oficina: [["pecas", "Peças"], ["pedidos", "Pedidos"], ["orcamentos", "Orçamentos"], ["producao", "Produção"]],
     divulgacao: [["conteudo", "Conteúdo"], ["newsletter", "Newsletter"], ["links", "Links"], ["numeros", "Números"]]
   };
-  var NOME_AREA = { hoje: "Hoje", sites: "Sites", financas: "Finanças", agenda: "Agenda", oficina: "Oficina", divulgacao: "Divulgação", ajustes: "Ajustes" };
+  var NOME_AREA = { hoje: "Hoje", sites: "Sites", financas: "Finanças", agenda: "Agenda", oficina: "Loja", divulgacao: "Divulgação", ajustes: "Ajustes" };
   var aba = Object.assign({ sites: "abordar", financas: "caixa", oficina: "pecas", divulgacao: "conteudo" }, lerLS("maratu.painel.abas", {}));
   function abaDe(v) { var l = ABAS[v] || [], a = aba[v]; return l.some(function (x) { return x[0] === a; }) ? a : (l[0] || [])[0]; }
   function irAba(v, a) {
@@ -3381,7 +3382,7 @@
     var abertos = S.pedidos.filter(function (p) { return p.status === "aberto"; }).length, prog = posts().filter(function (p) { return p.status === "aprovado"; }).length;
     var linha = function (v, ico, sub) { return '<button class="cartao linha toca mais-item" data-mais="' + v + '">' + ico + '<div class="o"><b>' + NOME_AREA[v] + "</b><small>" + sub + "</small></div>" + IC.seta + "</button>"; };
     abrirFolha("Mais",
-      linha("oficina", IC.imp, abertos ? abertos + (abertos === 1 ? " pedido em aberto" : " pedidos em aberto") : "Nenhum pedido em aberto") +
+      linha("oficina", IC.loja, abertos ? abertos + (abertos === 1 ? " pedido em aberto" : " pedidos em aberto") : "Nenhum pedido em aberto") +
       linha("divulgacao", IC.post, prog ? prog + (prog === 1 ? " post programado" : " posts programados") : "Nenhum post programado") +
       linha("ajustes", IC.engrenagem, "Notificações " + estadoPush()),
       function (c) { c.querySelectorAll("[data-mais]").forEach(function (b) { b.onclick = function () { fecharFolha(); irPara(b.dataset.mais); }; }); });

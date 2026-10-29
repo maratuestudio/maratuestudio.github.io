@@ -23,7 +23,7 @@ import sys
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor
 
-from PIL import Image
+from PIL import Image, ImageOps
 
 import marca_dagua
 
@@ -73,7 +73,9 @@ def gerar(k):
     origem = baixar(k)
     os.makedirs(OUT, exist_ok=True)
     base = os.path.splitext(k)[0].replace("/", "__")
-    im = Image.open(origem)
+    # foto de celular vem deitada com a ordem de girar no EXIF; o navegador obedece no
+    # original, entao a variante tem que sair ja girada (e sem EXIF)
+    im = ImageOps.exif_transpose(Image.open(origem))
     if im.mode not in ("RGB", "RGBA"):
         im = im.convert("RGBA" if "A" in im.getbands() else "RGB")
 

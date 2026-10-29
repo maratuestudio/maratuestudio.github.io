@@ -467,10 +467,6 @@
       font-family: var(--clother); font-weight: 700; text-transform: uppercase;
       font-size: 12px; line-height: 1; letter-spacing: 0.12em;
     }
-    .porta-sites__fato {
-      font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.1em;
-      text-transform: uppercase; color: rgba(240,236,228,0.55);
-    }
     .porta-sites__cta {
       display: inline-flex; align-items: center; gap: 10px; flex-shrink: 0;
       font-family: var(--clother); font-weight: 700; font-size: 11px;
@@ -479,12 +475,9 @@
       padding: 7px 14px 6px; transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
     }
     .porta-sites:hover .porta-sites__cta, .porta-sites:focus-visible .porta-sites__cta { background: var(--laranja); border-color: var(--laranja); color: #fff; }
-    .porta-sites__cta .cta-curto { display: none; }
     @media (max-width: 600px) {
       .porta-sites { gap: 12px; }
       .porta-sites__cta { padding: 7px 13px 6px; }
-      .porta-sites__cta .cta-longo { display: none; }
-      .porta-sites__cta .cta-curto { display: inline; }
     }
 
     /* ── MONO (utilitário) ── */
@@ -1675,10 +1668,9 @@
   <!-- ①b PORTA PARA OS SITES -->
   <a class="porta-sites" href="/servicos" data-servico="sites_sistemas" data-origem="faixa_topo">
     <span class="porta-sites__txt">
-      <span class="porta-sites__titulo">Sites para negócios</span>
-      <span class="porta-sites__fato">Esta loja é um exemplo</span>
+      <span class="porta-sites__titulo">Site para seu negócio</span>
     </span>
-    <span class="porta-sites__cta"><span class="cta-longo">Ver os sites</span><span class="cta-curto">Ver</span><span aria-hidden="true">↗</span></span>
+    <span class="porta-sites__cta"><span>Saiba mais</span><span aria-hidden="true">↗</span></span>
   </a>
 
   <!-- ② LOJA -->

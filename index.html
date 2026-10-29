@@ -354,8 +354,8 @@
       position: relative;
       overflow: hidden;
     }
-    /* a faixa dos sites tem 84px exatos no desktop e o hero cede esse espaço: ela cabe inteira na primeira tela */
-    @media (min-width: 769px) { .hero { min-height: calc(100vh - 84px); } .porta-sites { height: 84px; padding-top: 0; padding-bottom: 0; box-sizing: border-box; } }
+    /* a faixa dos sites tem 64px exatos no desktop e o hero cede esse espaço: ela cabe inteira na primeira tela */
+    @media (min-width: 769px) { .hero { min-height: calc(100vh - 64px); } .porta-sites { height: 64px; padding-top: 0; padding-bottom: 0; box-sizing: border-box; } }
     .hero__bg {
       position: absolute; inset: 0;
       overflow: hidden;
@@ -464,8 +464,8 @@
     }
     .porta-sites__txt { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
     .porta-sites__titulo {
-      font-family: var(--clother); font-weight: 900; text-transform: uppercase;
-      font-size: clamp(1.1rem, 2vw, 1.6rem); line-height: 1; letter-spacing: -0.01em;
+      font-family: var(--clother); font-weight: 700; text-transform: uppercase;
+      font-size: 12px; line-height: 1; letter-spacing: 0.12em;
     }
     .porta-sites__fato {
       font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.1em;
@@ -473,18 +473,16 @@
     }
     .porta-sites__cta {
       display: inline-flex; align-items: center; gap: 10px; flex-shrink: 0;
-      font-family: var(--clother); font-weight: 900; font-size: 0.8rem;
-      letter-spacing: 0.05em; text-transform: uppercase; color: #fff;
-      background: var(--laranja); border: 1.5px solid var(--preto); border-radius: 999px;
-      box-shadow: 3px 3px 0 0 var(--areia);
-      padding: 12px 22px; transition: transform 0.15s ease, box-shadow 0.15s ease;
+      font-family: var(--clother); font-weight: 700; font-size: 11px;
+      letter-spacing: 0.12em; text-transform: uppercase; color: var(--areia);
+      border: 1px solid rgba(240,236,228,0.45); border-radius: 999px;
+      padding: 7px 14px 6px; transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
     }
-    .porta-sites:hover .porta-sites__cta { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 0 var(--areia); }
-    .porta-sites:active .porta-sites__cta { transform: translate(2px, 2px); box-shadow: 1px 1px 0 0 var(--areia); }
+    .porta-sites:hover .porta-sites__cta, .porta-sites:focus-visible .porta-sites__cta { background: var(--laranja); border-color: var(--laranja); color: #fff; }
     .porta-sites__cta .cta-curto { display: none; }
     @media (max-width: 600px) {
       .porta-sites { gap: 12px; }
-      .porta-sites__cta { padding: 11px 18px; }
+      .porta-sites__cta { padding: 7px 13px 6px; }
       .porta-sites__cta .cta-longo { display: none; }
       .porta-sites__cta .cta-curto { display: inline; }
     }

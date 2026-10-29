@@ -225,20 +225,17 @@
     .header__nav a:hover { opacity: 0.5; }
     .header__nav a.active { border-bottom-color: currentColor; }
     .header__nav { align-items: center; }
-    /* Porta dos sites: pílula laranja (a loja usa dourado). Mesmo gesto das outras pílulas: borda 1.5px + sombra dura */
+    /* Porta dos sites: pílula vazada e discreta; enche de laranja no hover */
     .header .header__nav a.nav-sites {
-      padding: 8px 16px; border: 1.5px solid var(--preto); border-radius: 999px;
-      background: var(--laranja); color: #fff;
-      box-shadow: 3px 3px 0 0 var(--preto);
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      padding: 6px 13px 5px; border: 1px solid currentColor; border-radius: 999px;
+      transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
     }
-    .header .header__nav a.nav-sites:hover { opacity: 1; box-shadow: 1px 1px 0 0 var(--preto); transform: translate(2px, 2px); }
-    .header .header__nav a.nav-sites:active { box-shadow: 0 0 0 0 var(--preto); transform: translate(3px, 3px); }
+    .header .header__nav a.nav-sites:hover { opacity: 1; background: var(--laranja); border-color: var(--laranja); color: #fff; }
     /* tablet em pé: cabe logo, 4 itens, pílula e rádio sem encostar */
     @media (min-width: 769px) and (max-width: 1050px) {
       .header__nav { gap: 14px; }
       .header__nav a { font-size: 11px; letter-spacing: 0.08em; }
-      .header .header__nav a.nav-sites { padding: 7px 12px; }
+      .header .header__nav a.nav-sites { padding: 5px 10px 4px; }
     }
     .btn-loja {
       display: inline-flex; align-items: center; gap: 10px;

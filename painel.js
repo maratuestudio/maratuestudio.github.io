@@ -622,30 +622,18 @@
     olhoD: "M224.82,24.08c0-13.3-10.78-24.08-24.08-24.08v48.16c13.3,0,24.08-10.78,24.08-24.08Z",
     olhoE: "M117.49,48.16V0c-13.3,0-24.08,10.78-24.08,24.08s10.78,24.08,24.08,24.08Z"
   };
-  /* garras na mesma altura; olho inteiro (o meio-olho do logo completado em círculo); pisca = olho fechado */
+  /* garras na mesma altura; olhos do logo como no site (mascote, /servicos); pisca = olho some */
   function desenhaAratu(cv, cor, pisca) {
-    var ctx = cv.getContext("2d"), W = cv.width, H = cv.height, K = W / 318.24;
+    var ctx = cv.getContext("2d", { willReadFrequently: true }), W = cv.width, H = cv.height, K = W / 318.24;
     ctx.clearRect(0, 0, W, H);
     ctx.save(); ctx.scale(K, K); ctx.fillStyle = cor;
     var peca = function (nome) { ctx.save(); ctx.translate(0, 6); ctx.fill(new Path2D(PECAS_ARATU[nome])); ctx.restore(); };
     peca("corpo"); peca("garraE"); peca("garraD");
+    if (!pisca) { peca("olhoE"); peca("olhoD"); }
     ctx.restore();
     var img = ctx.getImageData(0, 0, W, H), px = img.data;
     for (var i = 3; i < px.length; i += 4) px[i] = px[i] > 110 ? 255 : 0;
     ctx.putImageData(img, 0, 0);
-    /* olhos em pixel, não em vetor: o círculo vira um quadrado nessa escala. Cantos cortados e
-       um ponto de brilho no alto, do mesmo lado nos dois, que é o que faz o bloco ler como olho */
-    ctx.fillStyle = cor;
-    var r = 24.08 * K, lado = Math.max(2, Math.floor(r * 2)), topo = Math.max(0, Math.round(30.08 * K - r));
-    [117.49, 200.74].forEach(function (cx) {
-      var x = Math.round(cx * K - lado / 2);
-      if (pisca) { ctx.fillRect(x, topo + lado - Math.max(1, Math.round(lado / 4)), lado, Math.max(1, Math.round(lado / 4))); return; }
-      ctx.fillRect(x, topo, lado, lado);
-      if (lado >= 4) {
-        [[x, topo], [x + lado - 1, topo], [x, topo + lado - 1], [x + lado - 1, topo + lado - 1]].forEach(function (c) { ctx.clearRect(c[0], c[1], 1, 1); });
-        ctx.clearRect(x + lado - 2, topo + 1, 1, 1);
-      }
-    });
   }
   var piscaId = 0;
   function animaAratus(raiz) {

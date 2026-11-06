@@ -1625,7 +1625,7 @@
       '<div class="prod-acoes"><button class="bt-link" data-faixas style="color:var(--tinta-sobre-tela);">Ordem das faixas</button>' +
       (PROD.faixa !== "todas" && vis.length > 1 && !PROD.busca ? '<button class="bt-link" data-ordenar style="justify-self:start;color:var(--tinta-sobre-tela);">Mudar a ordem de ' + esc(nomeFaixa(PROD.faixa)) + "</button>" : "") + "</div>" +
       (vis.length ? '<div class="prod-grade">' + vis.map(function (p) {
-        var selos = [!p.ativo ? "Inativo" : "", p.prevenda ? "Pré-venda" : "", p.indisponivel ? "Indisponível" : "", p.oculto ? "Sem destaque" : "", p.novo ? "Novo" : ""].filter(Boolean);
+        var selos = [!p.ativo ? "Inativo" : "", p.preco_cheio && p.preco && Math.round((1 - p.preco / p.preco_cheio) * 100) >= 1 ? "Promo −" + Math.round((1 - p.preco / p.preco_cheio) * 100) + "%" : "", p.prevenda ? "Pré-venda" : "", p.indisponivel ? "Indisponível" : "", p.oculto ? "Sem destaque" : "", p.novo ? "Novo" : ""].filter(Boolean);
         return '<button class="cartao prod' + (!p.ativo ? " inativo" : "") + '" data-prod="' + esc(p.id) + '"><span class="prod-img">' + (p.imagem_principal ? '<img loading="lazy" alt="" src="' + esc(imgUrl(p.imagem_principal, "t")) + '">' : "") + "</span>" +
           '<span class="prod-txt"><b>' + esc(p.nome) + "</b><small>" + esc(nomeFaixa(p.subcategoria)) + ", " + esc(String(p.marca || "").toUpperCase()) + '</small><span class="valor">' + brl(cent(p.preco)) + "</span>" +
           (selos.length ? '<span class="prod-selos">' + selos.map(function (s) { return "<i>" + s + "</i>"; }).join("") + "</span>" : "") + "</span></button>";

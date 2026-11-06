@@ -1583,7 +1583,7 @@
   /* ---------- Produtos do site ---------- */
   var PROD = { lista: null, layout: null, carregando: false, busca: "", marca: "todas", faixa: "todas", ordenando: false };
   var FAIXA_NOME = { chaveiros: "Chaveiros", adesivos: "Adesivos", blusas: "Blusas", posteres: "Pôsteres", essenciais: "Essenciais", decor: "Decor" };
-  var COLECOES = [["origens", "Origens"], ["manguehaus", "Manguehaus"], ["kit", "Kit"]];
+  var COLECOES = [["origens", "Origens"], ["manguehaus", "Manguehaus"], ["encanto", "Encanto"], ["kit", "Kit"]];
   var FLAGS = [["ativo", "Ativo"], ["novo", "Novo"], ["prevenda", "Pré-venda"], ["indisponivel", "Indisponível"], ["oculto", "Sem destaque"]];
   var TAM_POSTER = ["A4", "A3", "A2", "A1"];
   function nomeFaixa(f) { return FAIXA_NOME[f] || cap(String(f || "")); }

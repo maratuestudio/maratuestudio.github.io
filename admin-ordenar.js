@@ -19,6 +19,7 @@
     { v: "essenciais", l: "Decor" },
     { v: "blusas", l: "Blusas" },
     { v: "chaveiros", l: "Chaveiros" },
+    { v: "brincos", l: "Brincos" },
     { v: "adesivos", l: "Adesivos" }
   ];
   var MARCA_LABEL = { casa: "MARATU CASA", use: "MARATU USE" };

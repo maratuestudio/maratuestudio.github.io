@@ -1702,6 +1702,7 @@
       <button class="filtro-btn" data-filtro="essenciais" onclick="filtrar('essenciais')">Decor <span class="filtro-count">7</span></button>
       <button class="filtro-btn" data-filtro="blusa" onclick="filtrar('blusa')">Blusas <span class="filtro-count">2</span></button>
       <button class="filtro-btn" data-filtro="chaveiro" onclick="filtrar('chaveiro')">Chaveiros <span class="filtro-count">5</span></button>
+      <button class="filtro-btn" data-filtro="brinco" onclick="filtrar('brinco')">Brincos <span class="filtro-count">1</span></button>
       <button class="filtro-btn" data-filtro="adesivo" onclick="filtrar('adesivo')">Adesivos <span class="filtro-count">1</span></button>
     </div>
   </div>
@@ -1852,6 +1853,14 @@
         <a href="https://wa.me/p/26944524715199428/5579991957415" target="_blank" rel="noopener" class="btn-encomendar" data-produto="Chaveiro MARATU">Peça agora</a>
       </div>
       </div>
+    </div>
+
+    <div class="sub-faixa" id="faixa-brincos">
+      <div class="sub-faixa-header">
+        <h3 class="sub-faixa-nome">BRINCOS</h3>
+        <button class="faixa-ver-todos" id="btn-ver-brincos" onclick="verTodos('brincos')" style="display:none">VER TODOS</button>
+      </div>
+      <div class="produtos-grid" id="grid-brincos"></div>
     </div>
 
     <div class="sub-faixa" id="faixa-adesivos">
@@ -2388,7 +2397,7 @@
       document.querySelectorAll('.produto-card').forEach(function(c) {
         var tipoOk;
       if (!filtrando) { tipoOk = true; }
-      else if (f === 'usemaratu')  { tipoOk = ['chaveiro','adesivo','blusa'].indexOf(c.dataset.tipo) !== -1; }
+      else if (f === 'usemaratu')  { tipoOk = ['chaveiro','brinco','adesivo','blusa'].indexOf(c.dataset.tipo) !== -1; }
       else if (f === 'casamaratu') { tipoOk = ['poster','essenciais'].indexOf(c.dataset.tipo) !== -1; }
       else { tipoOk = c.dataset.tipo === f; }
         var isExtra = c.dataset.extra === '1';
@@ -2396,7 +2405,7 @@
         var bloqueadoPorExtra = !filtrando && isExtra && !expanded;
         c.style.display = (tipoOk && !bloqueadoPorExtra) ? '' : 'none';
       });
-      ['chaveiros', 'adesivos', 'blusas', 'posteres', 'essenciais'].forEach(function(faixa) {
+      ['chaveiros', 'brincos', 'adesivos', 'blusas', 'posteres', 'essenciais'].forEach(function(faixa) {
         var subfaixa = document.getElementById('faixa-' + faixa);
         if (!subfaixa) return;
         var cards = Array.from(subfaixa.querySelectorAll('.produto-card'));
@@ -2423,7 +2432,7 @@
       var cards = Array.from(document.querySelectorAll('.produto-card'));
       function conta(f) {
         if (f === 'todos') return cards.length;
-        if (f === 'usemaratu')  return cards.filter(function(c){ return ['chaveiro','adesivo','blusa'].indexOf(c.dataset.tipo) !== -1; }).length;
+        if (f === 'usemaratu')  return cards.filter(function(c){ return ['chaveiro','brinco','adesivo','blusa'].indexOf(c.dataset.tipo) !== -1; }).length;
         if (f === 'casamaratu') return cards.filter(function(c){ return ['poster','essenciais'].indexOf(c.dataset.tipo) !== -1; }).length;
         return cards.filter(function(c){ return c.dataset.tipo === f; }).length;
       }
@@ -2433,7 +2442,7 @@
         if (el) el.textContent = n;
         b.style.display = n ? '' : 'none';
       });
-      ['chaveiros','adesivos','blusas','posteres','essenciais'].forEach(function(faixa){
+      ['chaveiros','brincos','adesivos','blusas','posteres','essenciais'].forEach(function(faixa){
         var btn = document.getElementById('btn-ver-' + faixa);
         var faixaEl = document.getElementById('faixa-' + faixa);
         if (btn && faixaEl) btn.textContent = 'VER TODOS (' + faixaEl.querySelectorAll('.produto-card').length + ') ↗';
@@ -2545,12 +2554,13 @@
     atualizarContadores();
     a11yCards();
 
-    // Hidrata catálogo do D1 (chaveiros, adesivos, blusas). Se fetch falhar, HTML hardcoded fica.
+    // Hidrata catálogo do D1 (chaveiros, brincos, adesivos, blusas). Se fetch falhar, HTML hardcoded fica.
     (function hydrateCatalog() {
       var R2 = 'https://maratu-api.raphaelnascimento.workers.dev/img/';
       var API = 'https://maratu-api.raphaelnascimento.workers.dev/api/catalog';
       var GRIDS = {
         chaveiros:  { el: 'grid-chaveiros',  tipo: 'chaveiro',   btnLabel: 'Peça agora', extraFrom: 4 },
+        brincos:    { el: 'grid-brincos',    tipo: 'brinco',     btnLabel: 'Peça agora', extraFrom: Infinity },
         adesivos:   { el: 'grid-adesivos',   tipo: 'adesivo',    btnLabel: 'Peça agora', extraFrom: Infinity },
         blusas:     { el: 'grid-blusas',     tipo: 'blusa',      btnLabel: null,            extraFrom: Infinity },
         posteres:   { el: 'grid-posteres',   tipo: 'poster',     btnLabel: 'Encomendar',  extraFrom: 4 },
@@ -2851,7 +2861,7 @@
           sessionStorage.setItem(CHAVE, JSON.stringify({
             y: window.scrollY, em: Date.now(),
             filtro: state.filtro,
-            faixas: ['chaveiros', 'adesivos', 'blusas', 'posteres', 'essenciais']
+            faixas: ['chaveiros', 'brincos', 'adesivos', 'blusas', 'posteres', 'essenciais']
               .reduce(function (o, f) { o[f] = !!state[f]; return o; }, {})
           }));
         } catch (err) {}

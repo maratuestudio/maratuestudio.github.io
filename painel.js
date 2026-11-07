@@ -1582,7 +1582,7 @@
 
   /* ---------- Produtos do site ---------- */
   var PROD = { lista: null, layout: null, carregando: false, busca: "", marca: "todas", faixa: "todas", ordenando: false };
-  var FAIXA_NOME = { chaveiros: "Chaveiros", adesivos: "Adesivos", blusas: "Blusas", posteres: "Pôsteres", essenciais: "Essenciais", decor: "Decor" };
+  var FAIXA_NOME = { chaveiros: "Chaveiros", brincos: "Brincos", adesivos: "Adesivos", blusas: "Blusas", posteres: "Pôsteres", essenciais: "Essenciais", decor: "Decor" };
   var COLECOES = [["origens", "Origens"], ["manguehaus", "Manguehaus"], ["encanto", "Encanto"], ["kit", "Kit"]];
   var FLAGS = [["ativo", "Ativo"], ["novo", "Novo"], ["prevenda", "Pré-venda"], ["indisponivel", "Indisponível"], ["oculto", "Sem destaque"]];
   var TAM_POSTER = ["A4", "A3", "A2", "A1"];
@@ -1598,7 +1598,7 @@
   }
   function faixasDe(lista) {
     var vistas = {}; lista.forEach(function (p) { vistas[p.subcategoria] = 1; });
-    return Object.keys(Object.assign({ chaveiros: 1, adesivos: 1, blusas: 1, posteres: 1, essenciais: 1 }, vistas));
+    return Object.keys(Object.assign({ chaveiros: 1, brincos: 1, adesivos: 1, blusas: 1, posteres: 1, essenciais: 1 }, vistas));
   }
   function produtosVisiveis() {
     var q = norm(PROD.busca).trim();

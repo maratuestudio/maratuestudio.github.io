@@ -15,11 +15,11 @@
   flex-shrink: 0;
   white-space: nowrap;
 }
-.btn-radio:hover {
+@media (hover: hover) and (pointer: fine) { .btn-radio:hover {
   background: rgba(240,236,228,0.15);
   transform: translate(-1px, -1px);
   box-shadow: 4px 4px 0 rgba(13,13,11,0.55);
-}
+} }
 .btn-radio:active {
   transform: translate(2px, 2px);
   box-shadow: 1px 1px 0 rgba(13,13,11,0.55);
@@ -98,7 +98,7 @@
   max-height: 0;
   opacity: 0;
   pointer-events: none;
-  transition: max-height 0.35s ease, opacity 0.25s ease;
+  transition: max-height 0.25s ease, opacity 0.2s ease;
 }
 .mr-drop.open {
   max-height: 200px;
@@ -119,3 +119,6 @@
 @media (max-width: 768px) {
   .mr-drop { right: 15px; width: calc(100vw - 30px); max-width: 320px; }
 }
+
+/* alvo de toque de 44 px no celular */
+@media (max-width: 768px) { .btn-radio { min-height: 44px; } }

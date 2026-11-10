@@ -187,7 +187,7 @@
       display: grid; grid-template-columns: 1fr auto 1fr;
       align-items: center;
       color: var(--areia);
-      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s ease;
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s ease;
     }
     .header::before {
       content: ''; position: absolute; inset: 0; z-index: -1;
@@ -247,12 +247,12 @@
       border: 1.5px solid #0D0D0B;
       box-shadow: 3px 3px 0 0 #0D0D0B;
       justify-self: end; position: relative;
-      transition: all 0.15s ease;
+      transition: 0.15s ease; transition-property: transform, box-shadow, background-color, color, border-color, opacity;
     }
-    .btn-loja:hover {
+    @media (hover: hover) and (pointer: fine) { .btn-loja:hover {
       box-shadow: 1px 1px 0 0 #0D0D0B;
       transform: translate(2px, 2px);
-    }
+    } }
     .btn-loja:active {
       box-shadow: 0 0 0 0 #0D0D0B;
       transform: translate(3px, 3px);
@@ -280,10 +280,10 @@
       border-radius: 999px;
       border: 1.5px solid var(--preto);
       box-shadow: 3px 3px 0 0 var(--preto);
-      transition: all 0.15s ease;
+      transition: 0.15s ease; transition-property: transform, box-shadow, background-color, color, border-color, opacity;
       cursor: pointer;
     }
-    .header__menu-toggle:hover { box-shadow: 1px 1px 0 0 var(--preto); transform: translate(2px, 2px); }
+    @media (hover: hover) and (pointer: fine) { .header__menu-toggle:hover { box-shadow: 1px 1px 0 0 var(--preto); transform: translate(2px, 2px); } }
     @media (max-width: 768px) {
       .header { grid-template-columns: 1fr auto auto; gap: 8px; }
       .header__nav { display: none; }
@@ -599,14 +599,14 @@
       padding: 16px 28px; font-family: var(--clother); font-weight: 900;
       font-size: 0.9rem; letter-spacing: 0.04em; text-transform: uppercase;
       border-radius: 999px; text-decoration: none; border: 2px solid;
-      align-self: flex-start; transition: all 0.25s;
+      align-self: flex-start; transition: 0.25s; transition-property: transform, box-shadow, background-color, color, border-color, opacity;
     }
     .btn-dark { background: var(--preto); color: var(--areia); border-color: var(--preto); }
     .btn-dark:hover { background: transparent; color: var(--preto); }
     .btn-circle {
       width: 36px; height: 36px; border-radius: 50%;
       background: var(--laranja); display: flex; align-items: center;
-      justify-content: center; font-size: 1rem; flex-shrink: 0; transition: all 0.25s;
+      justify-content: center; font-size: 1rem; flex-shrink: 0; transition: 0.25s; transition-property: transform, box-shadow, background-color, color, border-color, opacity;
     }
 
     /* ── SLIDESHOW ── */
@@ -668,7 +668,7 @@
       text-decoration: none; color: var(--preto);
       transition: box-shadow 0.15s ease, transform 0.15s ease;
     }
-    .clink-pill:hover { box-shadow: 1px 1px 0 0 var(--preto); transform: translate(2px, 2px); }
+    @media (hover: hover) and (pointer: fine) { .clink-pill:hover { box-shadow: 1px 1px 0 0 var(--preto); transform: translate(2px, 2px); } }
     .clink-pill__icon {
       width: 40px; height: 40px; flex-shrink: 0;
       display: flex; align-items: center; justify-content: center;
@@ -717,9 +717,9 @@
       font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase;
       border-radius: 999px; border: 1.5px solid var(--preto);
       box-shadow: 3px 3px 0 0 var(--preto);
-      cursor: pointer; transition: all 0.15s ease; white-space: nowrap;
+      cursor: pointer; transition: 0.15s ease; transition-property: transform, box-shadow, background-color, color, border-color, opacity; white-space: nowrap;
     }
-    .nl-vintage__btn:hover { box-shadow: 1px 1px 0 0 var(--preto); transform: translate(2px, 2px); }
+    @media (hover: hover) and (pointer: fine) { .nl-vintage__btn:hover { box-shadow: 1px 1px 0 0 var(--preto); transform: translate(2px, 2px); } }
     .nl-vintage__btn:active { box-shadow: 0 0 0 0 var(--preto); transform: translate(3px, 3px); }
     @media (max-width: 600px) {
       .nl-vintage { flex-direction: column; align-items: stretch; border-radius: 24px; padding: 16px; }
@@ -828,7 +828,7 @@
       text-align: left; gap: 8px; text-decoration: none;
       transition: transform 0.15s ease;
     }
-    .footer__indica-marca:hover { transform: translateY(-2px); }
+    @media (hover: hover) and (pointer: fine) { .footer__indica-marca:hover { transform: translateY(-2px); } }
     .footer__indica-marca-circulo {
       width: 56px; height: 56px; border-radius: 50%;
       background: #FFFFFF; color: var(--preto);
@@ -925,7 +925,7 @@
       padding: 6px 12px; border-radius: 999px;
       border: 1px solid rgba(13,13,11,0.25);
       background: transparent; color: var(--preto);
-      cursor: pointer; transition: all 0.15s ease;
+      cursor: pointer; transition: 0.15s ease; transition-property: transform, box-shadow, background-color, color, border-color, opacity;
       display: inline-flex; align-items: center; gap: 5px;
       -webkit-tap-highlight-color: transparent;
     }
@@ -958,9 +958,9 @@
       padding: 8px 16px; border-radius: 999px;
       border: 1.5px solid var(--preto); box-shadow: 2px 2px 0 0 var(--preto);
       cursor: pointer; white-space: nowrap; align-self: center;
-      transition: all 0.15s ease; -webkit-tap-highlight-color: transparent;
+      transition: 0.15s ease; transition-property: transform, box-shadow, background-color, color, border-color, opacity; -webkit-tap-highlight-color: transparent;
     }
-    .faixa-ver-todos:hover { box-shadow: 1px 1px 0 0 var(--preto); transform: translate(1px, 1px); }
+    @media (hover: hover) and (pointer: fine) { .faixa-ver-todos:hover { box-shadow: 1px 1px 0 0 var(--preto); transform: translate(1px, 1px); } }
 
     /* GRID */
     .produtos-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px 16px; }
@@ -1027,7 +1027,7 @@
       object-fit: cover; display: block;
       transition: transform 0.2s ease, opacity 0.4s ease;
     }
-    .produto-card:hover .img-principal:not(.com-hover) { transform: scale(1.02); }
+    @media (hover: hover) and (pointer: fine) { .produto-card:hover .img-principal:not(.com-hover) { transform: scale(1.02); } }
     .produto-card:hover .img-principal.com-hover { opacity: 0; }
     .img-hover { opacity: 0; }
     .produto-card:hover .img-hover { opacity: 1; }
@@ -1145,8 +1145,8 @@
     .produto-card--off .img-principal, .produto-card--off .img-hover {
       filter: grayscale(0.55) brightness(0.62);
     }
-    .produto-card--off:hover { transform: none; }
-    .produto-card--off:hover .img-principal { transform: none; }
+    @media (hover: hover) and (pointer: fine) { .produto-card--off:hover { transform: none; } }
+    @media (hover: hover) and (pointer: fine) { .produto-card--off:hover .img-principal { transform: none; } }
     /* Fundo sólido, não translúcido: a pílula fica sobre a arte, e sobre foto escura o
        translúcido sumia. Preto com texto esmaecido lê como estado e não se confunde
        com a pílula vazada da pré-venda. */
@@ -1230,7 +1230,12 @@
     }
 
     /* TAMANHOS */
+    /* margem negativa em cima: a área de toque sobe sobre o respiro do preço (que não é clicável) */
     .tam-selector { display: flex; gap: 4px; margin-bottom: 6px; flex-wrap: wrap; }
+    @media (pointer: coarse), (max-width: 768px) {
+      .tam-selector { gap: 0 4px; margin: -11px 0 0; }
+      .tam-btn { min-height: 44px; }
+    }
     /* No celular o card tem ~130-170px e os quatro tamanhos do pôster quebravam
        em duas linhas. Dividindo o espaço por igual eles cabem numa linha só, em
        qualquer largura, sem depender de acertar um padding fixo.
@@ -1238,42 +1243,45 @@
        espremer cinco nessa largura deixaria o alvo de toque pequeno demais. */
     @media (max-width: 599px) {
       .produto-card[data-tipo="poster"] .tam-selector { flex-wrap: nowrap; gap: 3px; }
-      .produto-card[data-tipo="poster"] .tam-btn {
-        flex: 1 1 0; min-width: 0; padding: 3px 2px;
-        letter-spacing: 0.04em; text-align: center;
+      .produto-card[data-tipo="poster"] .tam-btn { flex: 1 1 0; min-width: 0; }
+      .produto-card[data-tipo="poster"] .tam-btn > span {
+        padding: 3px 2px; letter-spacing: 0.04em; text-align: center;
       }
     }
+    /* O botão é a área de toque (44 px de altura); a pílula visível é o <span> de dentro.
+       Assim o desenho fica igual e o dedo acerta. Aumentado por padding, sem pseudo-elemento. */
     .tam-btn {
-      font-family: 'Clother', sans-serif; font-size: 9px; font-weight: 700;
+      display: flex; align-items: center;
+      padding: 0; margin: 0; border: 0; background: none;
+      font: inherit; color: inherit; cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .tam-btn > span {
+      display: block; width: 100%;
+      font-family: 'Clother', sans-serif; font-size: 9px; font-weight: 700; line-height: normal;
       letter-spacing: 0.12em; text-transform: uppercase;
       padding: 3px 10px; border-radius: 999px;
       border: 1.5px solid rgba(13,13,11,0.3);
       background: transparent; color: rgba(13,13,11,0.55);
-      cursor: pointer; transition: all 0.12s ease;
-      -webkit-tap-highlight-color: transparent;
+      transition: 0.12s ease; transition-property: box-shadow, background-color, color, border-color, opacity;
     }
-    .tam-btn.selected {
+    .tam-btn.selected > span {
       background: var(--dourado); color: var(--preto);
       border-color: var(--preto);
       box-shadow: 2px 2px 0 0 var(--preto);
     }
-    .tam-btn:hover:not(.selected) {
-      border-color: var(--preto);
-      color: var(--preto);
+    @media (hover: hover) and (pointer: fine) {
+      .tam-btn:hover:not(.selected) > span { border-color: var(--preto); color: var(--preto); }
     }
-    .tam-btn.tam-esgotado {
-      opacity: 0.28;
-      cursor: not-allowed;
-      text-decoration: line-through;
-      pointer-events: none;
-    }
+    .tam-btn.tam-esgotado { cursor: not-allowed; pointer-events: none; }
+    .tam-btn.tam-esgotado > span { opacity: 0.28; text-decoration: line-through; }
     .cor-btn {
       width: 18px; height: 18px; border-radius: 50%;
       border: 1.5px solid rgba(13,13,11,0.3); box-sizing: border-box;
       cursor: pointer; padding: 0; flex-shrink: 0;
       transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease; -webkit-tap-highlight-color: transparent;
     }
-    .cor-btn:hover:not(.selected) { transform: scale(1.12); border-color: var(--preto); }
+    @media (hover: hover) and (pointer: fine) { .cor-btn:hover:not(.selected) { transform: scale(1.12); border-color: var(--preto); } }
     .cor-btn.selected { border-color: var(--areia); box-shadow: 0 0 0 2px var(--preto); }
     /* Seletor de cores: mesmo layout do seletor de TEMAS do admin — pilula com bolinhas pequenas em linha */
     .cor-selector {
@@ -1299,9 +1307,9 @@
       color: var(--preto); background: var(--dourado);
       padding: 10px 16px; border-radius: 999px;
       border: 1.5px solid var(--preto); box-shadow: 3px 3px 0 0 var(--preto);
-      text-decoration: none; transition: all 0.15s ease; cursor: pointer;
+      text-decoration: none; transition: 0.15s ease; transition-property: transform, box-shadow, background-color, color, border-color, opacity; cursor: pointer;
     }
-    .btn-encomendar:hover { box-shadow: 1px 1px 0 0 var(--preto); transform: translate(2px, 2px); }
+    @media (hover: hover) and (pointer: fine) { .btn-encomendar:hover { box-shadow: 1px 1px 0 0 var(--preto); transform: translate(2px, 2px); } }
     .btn-encomendar:active { box-shadow: 0 0 0 0 var(--preto); transform: translate(3px, 3px); }
     /* Botao de compra compacto a direita — so cards de botao unico (sem seletor de tamanho/cor).
        >=600px (desktop/tablet); no mobile empilha embaixo (largura total). */
@@ -1335,10 +1343,10 @@
       color: var(--preto); background: var(--areia);
       padding: 8px 14px; border-radius: 999px;
       border: 1.5px solid var(--preto); box-shadow: 3px 3px 0 0 var(--preto);
-      cursor: pointer; transition: all 0.15s ease; -webkit-tap-highlight-color: transparent;
+      cursor: pointer; transition: 0.15s ease; transition-property: transform, box-shadow, background-color, color, border-color, opacity; -webkit-tap-highlight-color: transparent;
     }
     .btn-ar svg { flex-shrink: 0; }
-    .btn-ar:hover { background: var(--dourado); box-shadow: 1px 1px 0 0 var(--preto); transform: translate(2px, 2px); }
+    @media (hover: hover) and (pointer: fine) { .btn-ar:hover { background: var(--dourado); box-shadow: 1px 1px 0 0 var(--preto); transform: translate(2px, 2px); } }
     .btn-ar:active { box-shadow: 0 0 0 0 var(--preto); transform: translate(3px, 3px); }
     /* com o botão de AR no card, quem empurra pro rodapé é ele, não o Encomendar */
     .produto-card:has(.btn-ar) > .btn-encomendar { margin-top: 0; }
@@ -1364,7 +1372,7 @@
       letter-spacing: 0.1em; text-transform: uppercase; color: var(--preto);
       background: var(--dourado); border: 1.5px solid var(--preto);
       box-shadow: 3px 3px 0 0 var(--preto); border-radius: 999px;
-      padding: 8px 16px; cursor: pointer; transition: all 0.15s ease;
+      padding: 8px 16px; cursor: pointer; transition: 0.15s ease; transition-property: transform, box-shadow, background-color, color, border-color, opacity;
     }
     .ar-btn-principal:active { box-shadow: 0 0 0 0 var(--preto); transform: translate(3px, 3px); }
     @media (max-width: 520px) {
@@ -1388,7 +1396,7 @@
     .ar-moldura {
       flex: 1 1 0; display: flex; flex-direction: column; align-items: center; gap: 7px;
       background: none; border: 1.5px solid rgba(13,13,11,0.18); border-radius: 12px;
-      padding: 12px 4px 10px; cursor: pointer; transition: all 0.14s ease;
+      padding: 12px 4px 10px; cursor: pointer; transition: 0.14s ease; transition-property: transform, box-shadow, background-color, color, border-color, opacity;
       -webkit-tap-highlight-color: transparent;
     }
     .ar-moldura__amostra {
@@ -1418,9 +1426,9 @@
       color: var(--preto); background: var(--dourado);
       padding: 12px 18px; border-radius: 999px;
       border: 1.5px solid var(--preto); box-shadow: 3px 3px 0 0 var(--preto);
-      text-decoration: none; transition: all 0.15s ease; cursor: pointer;
+      text-decoration: none; transition: 0.15s ease; transition-property: transform, box-shadow, background-color, color, border-color, opacity; cursor: pointer;
     }
-    .qa-action-btn:hover { box-shadow: 1px 1px 0 0 var(--preto); transform: translate(2px, 2px); }
+    @media (hover: hover) and (pointer: fine) { .qa-action-btn:hover { box-shadow: 1px 1px 0 0 var(--preto); transform: translate(2px, 2px); } }
     .qa-action-btn:active { box-shadow: 0 0 0 0 var(--preto); transform: translate(3px, 3px); }
     .qa-action-btn.secundario { background: var(--areia); }
 
@@ -1474,7 +1482,7 @@
     .tam-popup-overlay.open { display: flex; }
     .tam-popup { background: var(--areia); border: 1.5px solid var(--preto); border-radius: 16px; box-shadow: 6px 6px 0 0 var(--preto); padding: 28px; max-width: 480px; width: 100%; position: relative; }
     .tam-popup-close { position: absolute; top: 16px; right: 16px; background: none; border: 1.5px solid var(--preto); color: var(--preto); font-family: 'Clother', sans-serif; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em; padding: 6px 12px; cursor: pointer; border-radius: 999px; box-shadow: 2px 2px 0 0 var(--preto); transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease; }
-    .tam-popup-close:hover { background: var(--dourado); transform: translate(1px, 1px); box-shadow: 1px 1px 0 0 var(--preto); }
+    @media (hover: hover) and (pointer: fine) { .tam-popup-close:hover { background: var(--dourado); transform: translate(1px, 1px); box-shadow: 1px 1px 0 0 var(--preto); } }
     .tam-popup-title { font-family: 'Clother', sans-serif; font-weight: 900; font-size: 1.25rem; color: var(--preto); text-transform: uppercase; margin-bottom: 4px; }
     .tam-popup-sub { font-family: 'Clother', sans-serif; font-size: 0.58rem; color: rgba(13,13,11,0.35); letter-spacing: 0.1em; margin-bottom: 24px; }
     .cor-popup { max-width: 540px; }
@@ -1482,7 +1490,7 @@
     @media (max-width: 480px) { .cor-popup-grid { grid-template-columns: repeat(2, 1fr); } }
     .cor-opcao { display: flex; flex-direction: column; gap: 6px; text-decoration: none; }
     .cor-opcao-img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 10px; border: 1.5px solid var(--preto); background: rgba(13,13,11,0.05); transition: transform 0.15s ease, box-shadow 0.15s ease; }
-    .cor-opcao:hover .cor-opcao-img { transform: translate(-2px, -2px); box-shadow: 3px 3px 0 0 var(--preto); }
+    @media (hover: hover) and (pointer: fine) { .cor-opcao:hover .cor-opcao-img { transform: translate(-2px, -2px); box-shadow: 3px 3px 0 0 var(--preto); } }
     .cor-opcao-nome { display: flex; align-items: center; gap: 6px; font-family: 'Clother', sans-serif; font-weight: 700; font-size: 0.72rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--preto); }
     .cor-opcao-dot { width: 12px; height: 12px; border-radius: 50%; border: 1.5px solid rgba(13,13,11,0.3); flex-shrink: 0; }
     .tam-tabela { width: 100%; border-collapse: collapse; }
@@ -1497,8 +1505,8 @@
     .lightbox { display: none; position: fixed; inset: 0; z-index: 9999; background: rgba(13,13,11,0.96); align-items: center; justify-content: center; padding: 16px; }
     .lightbox.open { display: flex; }
     .lightbox-img { max-height: 88vh; max-width: 92vw; object-fit: contain; border-radius: 14px; }
-    .lightbox-close { position: absolute; top: 20px; right: 20px; background: none; border: 1.5px solid var(--areia); color: var(--areia); font-family: 'Clother', sans-serif; font-weight: 900; font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase; padding: 10px 20px; cursor: pointer; border-radius: 999px; box-shadow: 2px 2px 0 0 var(--areia); transition: all 0.15s ease; }
-    .lightbox-close:hover { box-shadow: 1px 1px 0 0 var(--areia); transform: translate(1px, 1px); }
+    .lightbox-close { position: absolute; top: 20px; right: 20px; background: none; border: 1.5px solid var(--areia); color: var(--areia); font-family: 'Clother', sans-serif; font-weight: 900; font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase; padding: 10px 20px; cursor: pointer; border-radius: 999px; box-shadow: 2px 2px 0 0 var(--areia); transition: 0.15s ease; transition-property: transform, box-shadow, background-color, color, border-color, opacity; }
+    @media (hover: hover) and (pointer: fine) { .lightbox-close:hover { box-shadow: 1px 1px 0 0 var(--areia); transform: translate(1px, 1px); } }
     .lightbox-nome { position: absolute; top: 18px; left: 18px; font-family: 'Clother', sans-serif; font-weight: 900; font-size: 0.8rem; color: rgba(13,13,11,0.5); letter-spacing: 0.12em; text-transform: uppercase; }
 
     /* BAND SERVIÇOS — faixa preta (mangue) entre CASA e USE MARATU, texto areia */
@@ -1528,7 +1536,7 @@
       border-radius: 999px; box-shadow: 3px 3px 0 0 var(--preto);
       padding: 14px 24px; transition: transform 0.15s ease, box-shadow 0.15s ease;
     }
-    .servicos-band:hover .servicos-band__cta { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 0 var(--preto); }
+    @media (hover: hover) and (pointer: fine) { .servicos-band:hover .servicos-band__cta { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 0 var(--preto); } }
     .servicos-band:active .servicos-band__cta { transform: translate(2px, 2px); box-shadow: 1px 1px 0 0 var(--preto); }
     @media (max-width: 600px) {
       .servicos-band__inner { flex-direction: column; align-items: flex-start; }
@@ -1586,6 +1594,45 @@
     }
     @media (prefers-reduced-motion: reduce) { .vaso-slide { transition: none; } }
     .vaso-slide.ativo { opacity: 1; }
+    /* ── FUNDAMENTOS (2026-11-10): foco de teclado, quebra de linha, alvo de toque ──
+       Regra em design.md. Alvo de toque cresce por padding/min-height, nunca por pseudo-elemento. */
+    :focus-visible { outline: 2.5px solid currentColor; outline-offset: 3px; }
+    .nl-vintage:has(.nl-vintage__input:focus-visible) { outline: 2.5px solid var(--laranja); outline-offset: 3px; }
+    .nl-vintage__input:focus-visible { outline: none; }
+    .tam-btn:focus-visible { outline: none; }
+    .tam-btn:focus-visible > span { outline: 2.5px solid var(--preto); outline-offset: 2px; }
+    h1, h2, h3, h4 { text-wrap: balance; }
+    p, li { text-wrap: pretty; }
+    @media (max-width: 768px) {
+      /* botões de 44 px no cabeçalho: o respiro encolhe para a faixa continuar com 74 px */
+      .header { padding-block: 15px; }
+      .header__logo { padding-block: 5px; margin-block: -5px; }
+      .header__menu-toggle { min-height: 44px; }
+      .mobile-menu__nav { gap: 0; margin-top: 38px; }
+      .mobile-menu__nav a { padding-block: 10px; }
+      .mobile-menu__nav a.nav-sites { padding-block: 11px; margin-block: 10px; }
+      .mobile-menu__close { padding: 15px 12px; margin: -15px -12px; }
+      .filtro-mobile-trigger, .faixa-ver-todos, .btn-ar, .nl-vintage__btn { min-height: 44px; }
+      .btn-encomendar { padding-block: 11.5px; }
+      .tam-info-btn { width: 100%; padding: 6px 0 18px; }
+    }
+    /* blusa no celular: os tamanhos ficam numa linha só (antes o GG caía sozinho na segunda) */
+    @media (max-width: 599px) {
+      .produto-card:not([data-tipo="poster"]) .tam-selector { flex-wrap: nowrap; gap: 0 3px; }
+      .produto-card:not([data-tipo="poster"]) .tam-btn { flex: 0 1 35px; min-width: 0; }
+      .produto-card:not([data-tipo="poster"]) .tam-btn > span { padding: 3px 2px; letter-spacing: 0.04em; text-align: center; }
+    }
+    @media (max-width: 768px) {
+      .nl-vintage__input { min-height: 44px; }
+      .footer__baseline { gap: 14px; }
+      .footer__servicos a { display: inline-block; padding-block: 17px; margin-block: -17px; }
+      .filtro-mobile-item, .tam-popup-close, .lightbox-close { min-height: 44px; }
+    }
+    @media (max-width: 600px) { .nl-vintage__input { margin-top: -8px; } }
+    @media (min-width: 600px) and (max-width: 768px) {
+      .produto-card:not(:has(.tam-selector)):not(:has(.cor-selector)) > .btn-encomendar,
+      .produto-card:has(.cor-selector) > .btn-encomendar { padding-block: 13.5px; }
+    }
   </style>
   <style>
   /* aratu-mascote inline */
@@ -1594,7 +1641,7 @@
   .aratu-mascote:focus-visible{outline:2px dashed #C8501A;outline-offset:4px}
   @media (max-width:640px){.aratu-mascote{width:40px;height:20px;bottom:4px}}
   </style>
-  <link rel="stylesheet" href="components/radio/radio.css?v=7">
+  <link rel="stylesheet" href="components/radio/radio.css?v=8">
   <link rel="preconnect" href="https://maratu-api.raphaelnascimento.workers.dev" crossorigin>
   <link rel="preconnect" href="https://www.googletagmanager.com">
   <link rel="preconnect" href="https://www.google-analytics.com">
@@ -1761,11 +1808,11 @@
           <div><p class="produto-nome">Azulejo Portugu&ecirc;s</p><p class="produto-tipo">Blusa &middot; Preta</p></div>
         </div>
         <div class="tam-selector">
-          <button class="tam-btn tam-esgotado" disabled>PP</button>
-          <button class="tam-btn tam-esgotado" disabled>P</button>
-          <button class="tam-btn selected">M</button>
-          <button class="tam-btn tam-esgotado" disabled>G</button>
-          <button class="tam-btn tam-esgotado" disabled>GG</button>
+          <button class="tam-btn tam-esgotado" disabled><span>PP</span></button>
+          <button class="tam-btn tam-esgotado" disabled><span>P</span></button>
+          <button class="tam-btn selected"><span>M</span></button>
+          <button class="tam-btn tam-esgotado" disabled><span>G</span></button>
+          <button class="tam-btn tam-esgotado" disabled><span>GG</span></button>
         </div>
         <a href="https://wa.me/5579991957415?text=Ol%C3%A1%21%20Quero%20a%20blusa%20Azulejo%20Portugu%C3%AAs." target="_blank" rel="noopener" class="btn-encomendar" data-produto="Azulejo Português">Peça agora</a>
       </div>
@@ -1780,11 +1827,11 @@
           <div><p class="produto-nome">Maratu</p><p class="produto-tipo">Blusa &middot; Branca</p></div>
         </div>
         <div class="tam-selector">
-          <button class="tam-btn tam-esgotado" disabled>PP</button>
-          <button class="tam-btn tam-esgotado" disabled>P</button>
-          <button class="tam-btn selected">M</button>
-          <button class="tam-btn tam-esgotado" disabled>G</button>
-          <button class="tam-btn tam-esgotado" disabled>GG</button>
+          <button class="tam-btn tam-esgotado" disabled><span>PP</span></button>
+          <button class="tam-btn tam-esgotado" disabled><span>P</span></button>
+          <button class="tam-btn selected"><span>M</span></button>
+          <button class="tam-btn tam-esgotado" disabled><span>G</span></button>
+          <button class="tam-btn tam-esgotado" disabled><span>GG</span></button>
         </div>
         <a href="https://wa.me/5579991957415?text=Ol%C3%A1%21%20Quero%20a%20blusa%20Maratu." target="_blank" rel="noopener" class="btn-encomendar" data-produto="Maratu">Peça agora</a>
       </div>
@@ -2339,7 +2386,7 @@
           '</div>' +
           '<div class="tam-selector" id="tam-' + p.id + '">' +
           ['A4','A3','A2','A1'].map(function(t) {
-            return '<button class="tam-btn' + (t === 'A4' ? ' selected' : '') + '" data-tam="' + t + '" data-poster="' + p.id + '" onclick="selecionarTam(this)">' + t + '</button>';
+            return '<button class="tam-btn' + (t === 'A4' ? ' selected' : '') + '" data-tam="' + t + '" data-poster="' + p.id + '" onclick="selecionarTam(this)"><span>' + t + '</span></button>';
           }).join('') +
           '</div>' +
           '<button class="tam-info-btn" onclick="abrirTamPopup()">Ficou na dúvida do tamanho? Ver tabela</button>' +
@@ -2666,13 +2713,13 @@
           extraBlock = '<div class="tam-selector">' + tams.map(function(t, i) {
             var cls = 'tam-btn' + (t.esgotado ? ' tam-esgotado' : (i === selIdx ? ' selected' : ''));
             var dis = t.esgotado ? ' disabled' : '';
-            return '<button class="' + cls + '"' + dis + '>' + esc(t.t) + '</button>';
+            return '<button class="' + cls + '"' + dis + '><span>' + esc(t.t) + '</span></button>';
           }).join('') + '</div>';
           btn = '<a href="https://wa.me/5579991957415?text=' + encodeURIComponent('Olá! Quero a blusa ' + p.nome + '.') + '" target="_blank" rel="noopener" class="btn-encomendar" data-produto="' + nomeAttr + '">Peça agora</a>';
         } else if (cfg.tipo === 'poster') {
           extraBlock = '<div class="tam-selector" id="tam-' + esc(p.id) + '">' +
             ['A4','A3','A2','A1'].map(function(t) {
-              return '<button class="tam-btn' + (t === 'A4' ? ' selected' : '') + '" data-tam="' + t + '" data-poster="' + esc(p.id) + '" onclick="selecionarTam(this)">' + t + '</button>';
+              return '<button class="tam-btn' + (t === 'A4' ? ' selected' : '') + '" data-tam="' + t + '" data-poster="' + esc(p.id) + '" onclick="selecionarTam(this)"><span>' + t + '</span></button>';
             }).join('') +
             '</div>' +
             '<button class="tam-info-btn" onclick="abrirTamPopup()">Ficou na dúvida do tamanho? Ver tabela</button>';
@@ -2905,7 +2952,7 @@
   <script src="js/tracking.js?v=5"></script>
   <!-- Pedido montado nas páginas das peças. Aqui a bolha só aparece se já houver item,
        pra quem voltou pra loja poder fechar sem procurar. -->
-  <script src="js/carrinho.js?v=3"></script>
+  <script src="js/carrinho.js?v=4"></script>
   <script src="js/ar-parede.js?v=6" defer></script>
 
   <!-- Parcelamento automático: produtos com preço > R$150 ganham selo "3x sem juros" -->

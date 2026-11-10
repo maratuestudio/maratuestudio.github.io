@@ -6,7 +6,7 @@ html, body { background: #0b0b0b; color: #fff; font-family: 'Clother', system-ui
 img { display: block; }
 
 /* pílula fixa: a única coisa que não muda */
-.pill { position: fixed; z-index: 50; left: 50%; bottom: 20px; transform: translateX(-50%); display: flex; align-items: center; gap: 4px; padding: 5px; border-radius: 999px; background: #fff; color: #111; font-size: 13px; box-shadow: 0 6px 24px rgba(0,0,0,.18); white-space: nowrap; max-width: calc(100vw - 32px); overflow-x: auto; scrollbar-width: none; }
+.pill { position: fixed; z-index: 50; left: 50%; bottom: max(20px, calc(env(safe-area-inset-bottom) + 8px)); transform: translateX(-50%); display: flex; align-items: center; gap: 4px; padding: 5px; border-radius: 999px; background: #fff; color: #111; font-size: 13px; box-shadow: 0 6px 24px rgba(0,0,0,.18); white-space: nowrap; max-width: calc(100vw - 32px); overflow-x: auto; scrollbar-width: none; }
 .pill::-webkit-scrollbar { display: none; }
 .pill__eu { font-weight: 700; padding: 6px 12px 6px 10px; }
 .pill button { font: inherit; border: 0; background: none; color: inherit; padding: 6px 11px; border-radius: 999px; cursor: pointer; }
@@ -165,7 +165,7 @@ img { display: block; }
 /* 3. paleta em arcos */
 .mr-paleta { height: 420vh; background: #0D0D0B; }
 .mr-palco--paleta { background: #F0ECE4; }
-.mr-paleta__tit { position: absolute; left: 6vw; top: 9vh; font-size: clamp(34px, 4.4vw, 64px); line-height: 1; font-weight: 700; color: #0E3272; z-index: 2; }
+.mr-paleta__tit { position: absolute; left: 6vw; top: 9vh; font-size: clamp(34px, 4.4vw, 64px); line-height: 1; letter-spacing: -0.02em; font-weight: 700; color: #0E3272; z-index: 2; }
 .mr-arcos { position: absolute; left: 4vw; right: 4vw; bottom: 0; top: 0; display: flex; align-items: flex-end; gap: 1.2vw; }
 .mr-arco { position: relative; flex: 1; height: var(--h, 80%); border-radius: 999px 999px 0 0; overflow: hidden; will-change: transform; background: var(--c); }
 .mr-arco img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
@@ -358,3 +358,13 @@ img { display: block; }
   .mr-cel__vista { border-radius: 22px; }
 }
 
+
+/* ── FUNDAMENTOS (2026-11-10): foco de teclado, quebra de linha, alvo de toque ── */
+:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+p { text-wrap: pretty; }
+.pill button:focus-visible { outline-offset: -3px; }
+@media (max-width: 700px) {
+  .pill { padding: 3px; }
+  .pill button { min-height: 44px; }
+  .so-acoes a { padding-block: 12.5px; }
+}

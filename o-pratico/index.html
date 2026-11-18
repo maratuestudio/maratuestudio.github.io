@@ -65,7 +65,9 @@ header{text-align:center;line-height:0}
 .carta .f{position:absolute;inset:0;border-radius:8px;backface-visibility:hidden;-webkit-backface-visibility:hidden;overflow:hidden;
  box-shadow:0 2px 0 var(--tinta),0 18px 30px rgba(42,32,24,.28)}
 .carta .f img{width:100%;height:100%;display:block}
-.carta .tras{transform:rotateY(180deg)}
+.carta .tras{transform:rotateY(180deg) translateZ(1px)}
+.carta .frente{transform:rotateY(0deg) translateZ(1px)}
+.carta{-webkit-transform-style:preserve-3d}
 .carta .brilho{position:absolute;inset:0;background:linear-gradient(105deg,transparent 35%,rgba(255,240,200,.55) 50%,transparent 65%);
  transform:translateX(-120%);animation:passa 5s var(--inout) infinite 2.5s;opacity:.5;will-change:transform}
 @keyframes passa{0%,70%{transform:translateX(-120%)}100%{transform:translateX(120%)}}
@@ -115,7 +117,9 @@ h2:after{content:"";display:block;width:132px;height:16px;margin:var(--s1) auto 
 .palco .c .f{position:absolute;inset:0;border-radius:5px;overflow:hidden;backface-visibility:hidden;-webkit-backface-visibility:hidden;
  box-shadow:0 1px 0 rgba(0,0,0,.6),0 8px 16px rgba(0,0,0,.45)}
 .palco .c .f img{width:100%;height:100%;display:block;object-fit:cover}
-.palco .c .tras{transform:rotateY(180deg);background:var(--papel);color:var(--tinta);display:flex;flex-direction:column;align-items:center;justify-content:center}
+.palco .c .frente{transform:rotateY(0deg) translateZ(.5px)}
+.palco .c{-webkit-transform-style:preserve-3d}
+.palco .c .tras{transform:rotateY(180deg) translateZ(.5px);background:var(--papel);color:var(--tinta);display:flex;flex-direction:column;align-items:center;justify-content:center}
 .palco .c .tras .rn{font-size:30px}.palco .c .tras .nm{font-family:"IM Fell English SC";font-size:9px;letter-spacing:.1em;margin-top:6px}
 @media (hover:hover) and (pointer:fine){.palco.leque:not([data-arr=montes]) .c:hover{filter:brightness(1.15) drop-shadow(0 0 14px rgba(212,156,50,.6))}}
 .palco.leque[data-hp="0"] .c[data-p="0"],.palco.leque[data-hp="1"] .c[data-p="1"],.palco.leque[data-hp="2"] .c[data-p="2"]{filter:brightness(1.14)}
@@ -268,10 +272,12 @@ h2:after{content:"";display:block;width:132px;height:16px;margin:var(--s1) auto 
 @media (hover:hover) and (pointer:fine){.sem:hover{opacity:1}}
 
 /* ---------- capa do livro (o TCHAN): fecha a pagina da direita e abre pela lombada ---------- */
-.livro{perspective:2200px}
 .capa{position:absolute;z-index:9;left:0;top:0;width:100%;height:var(--hcapa,100%);transform-origin:0 50%;transform-style:preserve-3d;
  transition:transform 1.5s cubic-bezier(.65,0,.2,1);pointer-events:none}
 .capa .cf,.capa .cv{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:2px 6px 6px 2px}
+/* Safari so respeita backface-visibility se a face da frente tiver transform propria (vira camada 3D) */
+.capa .cf{transform:rotateY(0deg) translateZ(1px)}
+.capa{-webkit-transform-style:preserve-3d}
 .capa .cf{background:radial-gradient(120% 90% at 30% 20%,#2a4a72 0%,#1b3253 45%,#12233b 100%);color:var(--ouro);display:flex;flex-direction:column;align-items:center;justify-content:center;
  box-shadow:inset 0 0 0 10px #1a2f4d,inset 0 0 0 11.5px var(--ouro),inset 0 0 0 16px #1a2f4d,inset 0 0 0 16.8px rgba(212,156,50,.7),inset 14px 0 30px rgba(0,0,0,.45),0 24px 60px rgba(0,0,0,.55);overflow:hidden}
 .capa .cf:before{content:"";position:absolute;inset:0;background:url("img/grao_tile.png") 0 0/256px;opacity:.9;pointer-events:none}
@@ -281,8 +287,10 @@ h2:after{content:"";display:block;width:132px;height:16px;margin:var(--s1) auto 
 .capa .cf .ct{font-size:clamp(30px,5vw,46px);line-height:1;letter-spacing:.06em;text-transform:uppercase;margin-top:var(--s4);color:var(--ouro);text-shadow:0 1px 0 rgba(0,0,0,.5)}
 .capa .cf .cn{font-size:16px;margin-top:14px;letter-spacing:.2em}
 .capa .cf .logo{color:var(--ouro);width:96px;position:absolute;bottom:44px;left:50%;transform:translateX(-50%)}
-.capa .cv{transform:rotateY(180deg);background:var(--papel2);box-shadow:inset -14px 0 30px rgba(42,32,24,.25)}
-.livro.aberto .capa{transform:rotateY(-180deg)}
+.capa .cv{transform:rotateY(180deg) translateZ(1px);background:var(--papel2);box-shadow:inset -14px 0 30px rgba(42,32,24,.25)}
+.capa{transform:perspective(1800px) rotateY(0deg)}
+.livro.aberto .capa{transform:perspective(1800px) rotateY(-180deg)}
+@media (max-width:959px){.capa{transition-duration:1.15s}.capa{transform:perspective(2600px) rotateY(0deg)}.livro.aberto .capa{transform:perspective(2600px) rotateY(-180deg)}}
 .livro.pousou .capa{opacity:0;transition:opacity .5s var(--ease)}
 .livro.feito .capa{display:none}
 /* antes de abrir, o que esta sob a capa espera; depois entra em cascata (um so momento orquestrado na pagina) */
@@ -323,7 +331,7 @@ h2:after{content:"";display:block;width:132px;height:16px;margin:var(--s1) auto 
 .palco.onda .c .f{animation:ergue .55s var(--ease) calc(var(--i) * 32ms) both}
 @keyframes ergue{40%{transform:translateY(-14px)}}
 .palco .c .tras{animation:none!important}
-.palco.onda .c .tras{transform:rotateY(180deg)}
+.palco.onda .c .tras{transform:rotateY(180deg) translateZ(.5px)}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style></head><body>
 <div class="vela e"></div><div class="vela d"></div><div id="po" aria-hidden="true"></div>
@@ -426,7 +434,7 @@ h2:after{content:"";display:block;width:132px;height:16px;margin:var(--s1) auto 
  <p class="cred">Cartas do caminho: tarô de Pamela Colman Smith, 1909, domínio público.</p>
 </footer>
 </main>
-<script>window.VJS="?v=1"</script><script src="som.js?v=1"></script>
+<script>window.VJS="?v=3"</script><script src="som.js?v=3"></script>
 <script>
 const CARTAS=[{"n": "0", "nome": "O Louco", "txt": "Você está saindo do porto pela primeira vez. Vá com coragem, mas não atravesse a barra sem alguém que conheça o caminho.", "img": "cartas/00_The_Fool.webp"}, {"n": "I", "nome": "O Mago", "txt": "O barco está pronto e você sabe o rumo. Solte as amarras e comece hoje.", "img": "cartas/01_The_Magician.webp"}, {"n": "II", "nome": "A Sacerdotisa", "txt": "Antes de levar um navio, eu fico em silêncio olhando a água. Faça o mesmo e confie no que você já sente.", "img": "cartas/02_The_High_Priestess.webp"}, {"n": "III", "nome": "A Imperatriz", "txt": "O que você plantou está crescendo, como a maré que enche devagar. Cuide com carinho e espere a hora certa de colher.", "img": "cartas/03_The_Empress.webp"}, {"n": "IV", "nome": "O Imperador", "txt": "Navio sem rumo acaba no banco de areia. Organize a vida, escolha o caminho e segure o leme firme.", "img": "cartas/04_The_Emperor.webp"}, {"n": "V", "nome": "O Hierofante", "txt": "Ninguém aprende a barra sozinho. Procure quem já fez essa travessia e escute o que essa pessoa tem a ensinar.", "img": "cartas/05_The_Hierophant.webp"}, {"n": "VI", "nome": "Os Enamorados", "txt": "Dois canais estão na sua frente. Escolha o que leva para onde você quer chegar, e não o mais fácil.", "img": "cartas/06_The_Lovers.webp"}, {"n": "VII", "nome": "O Carro", "txt": "Você chega ao porto se não largar o leme. Mantenha o rumo, mesmo com vento contra.", "img": "cartas/07_The_Chariot.webp"}, {"n": "VIII", "nome": "A Força", "txt": "Com mar bravo, força não adianta. Nade com calma, guarde o fôlego e você chega.", "img": "cartas/08_Strength.webp"}, {"n": "IX", "nome": "O Eremita", "txt": "O farol fica sozinho para poder iluminar. Recolha-se um pouco e escute o que vem de dentro.", "img": "cartas/09_The_Hermit.webp"}, {"n": "X", "nome": "A Roda da Fortuna", "txt": "A maré muda todo dia, e quem conhece o mar usa a mudança a seu favor. Aproveite a virada.", "img": "cartas/10_Wheel_of_Fortune.webp"}, {"n": "XI", "nome": "A Justiça", "txt": "O mar devolve tudo o que recebe. Seja justo com os outros e com você.", "img": "cartas/11_Justice.webp"}, {"n": "XII", "nome": "O Enforcado", "txt": "Tem dia em que a maré não deixa sair do porto. Espere com paciência e olhe a situação de outro jeito.", "img": "cartas/12_The_Hanged_Man.webp"}, {"n": "XIII", "nome": "A Morte", "txt": "Uma viagem chegou ao fim. Deixe o navio seguir para o mar aberto e volte, que outro já vem chegando.", "img": "cartas/13_Death.webp"}, {"n": "XIV", "nome": "A Temperança", "txt": "Nem rápido demais, nem devagar demais. No mar, quem acha o próprio ritmo chega mais longe.", "img": "cartas/14_Temperance.webp"}, {"n": "XV", "nome": "O Diabo", "txt": "Tem alguma coisa te prendendo, como âncora enroscada no fundo. Descubra o que é e solte antes que a maré suba.", "img": "cartas/15_The_Devil.webp"}, {"n": "XVI", "nome": "A Torre", "txt": "A tempestade derrubou o que estava mal amarrado. Agora é hora de refazer tudo com nós mais firmes.", "img": "cartas/16_The_Tower.webp"}, {"n": "XVII", "nome": "A Estrela", "txt": "Depois da tempestade, o céu abre e as estrelas mostram o caminho. Confie, você está no rumo certo.", "img": "cartas/17_The_Star.webp"}, {"n": "XVIII", "nome": "A Lua", "txt": "De noite o canal engana e o banco de areia fica escondido. Vá devagar e não decida nada com medo.", "img": "cartas/18_The_Moon.webp"}, {"n": "XIX", "nome": "O Sol", "txt": "Mar calmo e sol forte, dia bom para navegar. Aproveite e divida essa alegria com quem está no barco com você.", "img": "cartas/19_The_Sun.webp"}, {"n": "XX", "nome": "O Julgamento", "txt": "Alguém está chamando lá do mar. Responda, aprenda com a viagem que passou e recomece.", "img": "cartas/20_Judgement.webp"}, {"n": "XXI", "nome": "O Mundo", "txt": "Você completou a travessia. Agora é sua vez de voltar e guiar quem está chegando, como eu fazia na barra.", "img": "cartas/21_The_World.webp"}];
 const calmo=matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -486,8 +494,21 @@ function somVira(){toca('vira',.9);setTimeout(()=>cintila(.05),120)}
 // efeitos (efx.js, ~150 KB) so baixam quando o som liga
 function carregaJs(u){return new Promise(ok=>{if(window.EFX)return ok();const sc=document.createElement('script');sc.src=u;sc.onload=sc.onerror=()=>ok();document.head.appendChild(sc)})}
 let silencio=false;
+// iPhone: Web Audio e "ambiente" e a chave de silencioso corta. Duas saidas, as duas dentro do toque:
+//  1) Audio Session API (iOS 16.4+): sessao de reproducao, como player de musica;
+//  2) iOS antigo: tocar um <audio> mudo em loop poe o aparelho no mesmo modo.
+const MUDO='data:audio/wav;base64,UklGRvQHAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YdAHAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgA==';let mudoEl=null;
+const ehIOS=/iP(hone|ad|od)/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+function tocaMudo(){if(!mudoEl)return;try{const p=mudoEl.play();if(p&&p.catch)p.catch(()=>{})}catch(e){}}
+function destravaIOS(){try{if(navigator.audioSession)navigator.audioSession.type='playback'}catch(e){}
+  if(!ehIOS||navigator.audioSession)return;   // o <audio> mudo so no iPhone antigo, sem Audio Session API
+  if(!mudoEl){mudoEl=new Audio(MUDO);mudoEl.loop=true;mudoEl.setAttribute('playsinline','')}tocaMudo()}
+// saiu da aba ou travou a tela: pausa tudo (sem player fantasma); voltou: retoma, se o som estiver ligado
+document.addEventListener('visibilitychange',()=>{if(!ac)return;
+  if(document.hidden){if(mudoEl)mudoEl.pause();if(ac.state==='running')ac.suspend().catch(()=>{})}
+  else if(!bs.classList.contains('mudo')){if(ac.state!=='running')ac.resume().catch(()=>{});tocaMudo()}});
 function somLiga(forca){
-  if(ac||(silencio&&!forca))return;ac=new (window.AudioContext||window.webkitAudioContext)();
+  if(ac||(silencio&&!forca))return;destravaIOS();ac=new (window.AudioContext||window.webkitAudioContext)();if(ac.state!=='running')ac.resume().catch(()=>{});
   mestre=ac.createGain();mestre.gain.value=0;mestre.connect(ac.destination);mestre.gain.linearRampToValueAtTime(.85,ac.currentTime+6);
   const mar=new Mar(ac,mestre);mar.agenda(ac.currentTime+75);setInterval(()=>mar.agenda(ac.currentTime+75),5000);
   efxG=ac.createGain();efxG.gain.value=.8;efxG.connect(ac.destination);
@@ -495,7 +516,7 @@ function somLiga(forca){
     return new Promise(ok=>ac.decodeAudioData(u.buffer,b=>{sfx[k]=b;ok()},()=>ok()))})));
   bs.classList.add('on');
 }
-bs.addEventListener('click',()=>{if(!ac){silencio=false;somLiga(true);bs.classList.remove('mudo');bs.setAttribute('aria-label','Desligar o som');return}const mudo=bs.classList.toggle('mudo');
+bs.addEventListener('click',()=>{destravaIOS();if(ac&&ac.state!=='running')ac.resume().catch(()=>{});if(!ac){silencio=false;somLiga(true);bs.classList.remove('mudo');bs.setAttribute('aria-label','Desligar o som');return}const mudo=bs.classList.toggle('mudo');if(mudo){if(mudoEl)mudoEl.pause()}else tocaMudo();
   mestre.gain.cancelScheduledValues(ac.currentTime);mestre.gain.setTargetAtTime(mudo?0:.85,ac.currentTime,.3);efxG.gain.setTargetAtTime(mudo?0:.8,ac.currentTime,.05);
   bs.setAttribute('aria-label',mudo?'Ligar o som':'Desligar o som')});
 

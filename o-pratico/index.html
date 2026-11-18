@@ -167,7 +167,10 @@ h2:after{content:"";display:block;width:132px;height:16px;margin:var(--s1) auto 
 .fim{position:relative;z-index:1;max-width:520px;margin:0 auto;background:var(--papel);overflow:hidden}
 .fim:before{content:"";position:absolute;inset:0;pointer-events:none;background:url("img/grao_mult.jpg") 0 0/540px auto;mix-blend-mode:multiply;opacity:.16}
 .fim .folha{padding:var(--s5) 36px var(--s5)}
-.hom{display:grid;grid-template-columns:40% 1fr;grid-template-areas:"fig cab" "hist hist";gap:20px 20px;align-items:center;margin-top:var(--s4)}
+.hom{display:grid;grid-template-columns:1fr;grid-template-areas:"fig" "cab" "hist";gap:var(--s3);align-items:center;margin-top:var(--s4)}
+/* celular: retrato em cima, grande e centrado; nome e datas centrados logo abaixo */
+.hom .prancha{width:min(78%,320px);justify-self:center}
+.hom .cab{text-align:center}.hom .cab .ded{text-align:left}
 .prancha{grid-area:fig}.cab{grid-area:cab}.hist{grid-area:hist}
 .hom .nome{font-size:21px;line-height:1.15;text-wrap:balance}
 .hom .datas{font-size:14px;line-height:1;color:var(--ferrugem);margin-top:10px;letter-spacing:.08em}
@@ -228,6 +231,7 @@ h2:after{content:"";display:block;width:132px;height:16px;margin:var(--s1) auto 
  .palco .c{width:104px;margin:-91.4px 0 0 -52px}
  .fim{max-width:820px;margin-top:var(--s5);box-shadow:0 30px 80px rgba(0,0,0,.6)}
  .fim .folha{padding:var(--s6) 80px}
+ .hom .prancha{width:auto;justify-self:stretch}.hom .cab{text-align:left}
  .hom{grid-template-columns:280px 1fr;grid-template-areas:"fig cab" "hist hist";gap:var(--s4) 48px}
  .hist{max-width:none}
  .duo{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}

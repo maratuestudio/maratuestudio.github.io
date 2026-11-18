@@ -1653,6 +1653,120 @@
     gtag('js', new Date());
     if (window.top === window.self) gtag('config', 'G-HCJ291HL72');
   </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- O Prático: convite na abertura + cartela do cabeçalho. Fonte só com as letras usadas. -->
+  <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&text=DescubraoOPr%C3%A1ticTiesut&display=swap" rel="stylesheet">
+  <style>
+    /* cores do Prático (as da carta e da página /o-pratico; o ouro da carta não é o --dourado do site) */
+    :root { --op-ouro: #D49C32; --op-ouro-claro: color-mix(in oklch, var(--op-ouro), white 18%); --op-azul: #132235; --op-papel: #EFE8D6; }
+    /* cartela do cabeçalho: a mesma da página /o-pratico (ouro, fio fino azul por dentro, estrelinhas) */
+    .op-cartela {
+      position: relative; overflow: hidden;
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      min-height: 34px; padding: 0 14px 0 13px; border-radius: 2px;
+      font-family: "IM Fell English SC", Georgia, serif; font-size: 15px; line-height: 1; letter-spacing: .1em;
+      text-transform: none; white-space: nowrap;
+      background: var(--op-ouro); color: var(--op-azul);
+      box-shadow: inset 0 0 0 3px var(--op-ouro), inset 0 0 0 4px rgba(19,34,53,.6), 0 4px 14px rgba(0,0,0,.18);
+      transition: transform .14s cubic-bezier(.23,1,.32,1), background-color .2s ease, box-shadow .2s ease;
+    }
+    .op-cartela svg { width: 8px; height: 8px; flex: none; }
+    .op-cartela::after {
+      content: ""; position: absolute; inset: 0; pointer-events: none;
+      background: linear-gradient(105deg, transparent 38%, rgba(255,240,200,.55) 50%, transparent 62%);
+      transform: translateX(-110%); animation: op-reflexo 7s cubic-bezier(.77,0,.175,1) 2.5s infinite;
+    }
+    @keyframes op-reflexo { 0%, 78% { transform: translateX(-110%); } 100% { transform: translateX(110%); } }
+    .op-cartela:active { transform: scale(.97); }
+    .op-cartela:focus-visible { outline: 2px solid var(--op-ouro); outline-offset: 3px; }
+    @media (hover: hover) and (pointer: fine) {
+      .op-cartela:hover { background: var(--op-ouro-claro); box-shadow: inset 0 0 0 3px var(--op-ouro-claro), inset 0 0 0 4px rgba(19,34,53,.6), 0 0 22px rgba(212,156,50,.45); }
+    }
+    /* vence o estilo geral dos links do menu (caixa alta, Clother, risco embaixo, opacidade no hover) */
+    .header .header__nav a.op-cartela, .header--on-light .header__nav a.op-cartela, .mobile-menu__nav a.op-cartela {
+      font-family: "IM Fell English SC", Georgia, serif; font-weight: 400; text-transform: none;
+      color: var(--op-azul); padding-bottom: 0; border-bottom: 0; opacity: 1; }
+    .header .header__nav a.op-cartela { font-size: 15px; letter-spacing: .1em; }
+    /* celular: a linha do topo não tem espaço; a cartela pende embaixo do rádio, à direita, e sobe junto quando o cabeçalho esconde */
+    .header__actions .op-cartela { display: none; }
+    @media (max-width: 768px) {
+      .header__actions .op-cartela { display: inline-flex; position: absolute; right: var(--margem); top: calc(100% - 2px);
+        min-height: 44px; padding: 0 14px; font-size: 15px; }
+    }
+    @media (min-width: 769px) and (max-width: 1050px) {
+      .header .header__nav a.op-cartela { font-size: 13px; padding: 0 10px; gap: 6px; letter-spacing: .06em; }
+    }
+    .op-cartela .op-so { display: none; }
+    @media (min-width: 769px) and (max-width: 1050px) {
+      .header .header__nav .op-cartela .op-pre { display: none; }
+      .header .header__nav .op-cartela .op-so { display: inline; }
+    }
+    @media (min-width: 769px) and (max-width: 900px) {
+      .header__nav { gap: 10px; }
+      .header .header__nav a.op-cartela svg { display: none; }
+    }
+    .mobile-menu__nav a.op-cartela { align-self: flex-start; min-height: 44px; font-size: 18px; padding: 0 18px; margin-block: 6px; }
+    @media (prefers-reduced-motion: reduce) { .op-cartela::after { animation: none; } }
+
+    /* convite: site escurecido, carta que vira, glifos do Prático no fundo */
+    .op-conv { position: fixed; inset: 0; z-index: 300; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 24px; padding: max(72px, env(safe-area-inset-top)) 16px max(32px, env(safe-area-inset-bottom));
+      background: rgba(10,14,22,.8); opacity: 0; transition: opacity .35s cubic-bezier(.23,1,.32,1); }
+    .op-conv[hidden] { display: none; }
+    .op-conv.aberto { opacity: 1; }
+    .op-conv.saindo { opacity: 0; transition-duration: .22s; }
+    .op-glifos { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+    .op-glifos i { position: absolute; left: 0; top: 0; background: center/contain no-repeat; will-change: transform, opacity; }
+    .op-palco { position: relative; width: min(300px, 70vw, calc((100svh - 230px) * 70 / 123)); aspect-ratio: 70 / 123; }
+    .op-halo { position: absolute; inset: -18%; border-radius: 50%; pointer-events: none; opacity: 0;
+      background: radial-gradient(closest-side, rgba(212,156,50,.42), transparent); transition: opacity 1s ease; }
+    .op-conv.virou .op-halo { opacity: 1; }
+    .op-carta { position: absolute; inset: 0; display: block; border-radius: 10px; cursor: pointer;
+      transform-style: preserve-3d; -webkit-transform-style: preserve-3d;
+      transform: perspective(1400px) translateY(28px) scale(.9) rotateY(0deg); opacity: 0;
+      transition: transform .8s cubic-bezier(.23,1,.32,1), opacity .5s ease; }
+    .op-conv.aberto .op-carta { transform: perspective(1400px) translateY(0) scale(1) rotateY(0deg); opacity: 1; }
+    .op-conv.virou .op-carta { transform: perspective(1400px) translateY(0) scale(1) rotateY(180deg); transition: transform 1.15s cubic-bezier(.65,0,.2,1); }
+    .op-carta img { position: absolute; inset: 0; width: 100%; height: 100%; border-radius: 10px;
+      backface-visibility: hidden; -webkit-backface-visibility: hidden; box-shadow: 0 24px 60px rgba(0,0,0,.55); }
+    .op-carta .op-f { transform: rotateY(0deg) translateZ(1px); }
+    .op-carta .op-v { transform: rotateY(180deg) translateZ(1px); }
+    /* troca de face no meio do giro por opacidade: não depende do backface do navegador */
+    .op-carta .op-v { opacity: 0; }
+    .op-conv.meio .op-carta .op-v { opacity: 1; }
+    .op-conv.meio .op-carta .op-f { opacity: 0; }
+    .op-carta:focus-visible { outline: 2px solid var(--op-ouro); outline-offset: 6px; }
+    .op-cta { min-height: 52px; padding: 0 30px; font-size: 18px; letter-spacing: .14em; gap: 12px;
+      box-shadow: inset 0 0 0 4px var(--op-ouro), inset 0 0 0 5px rgba(19,34,53,.6), 0 0 0 1px rgba(212,156,50,.5), 0 10px 28px rgba(0,0,0,.35);
+      opacity: 0; transform: translateY(12px); visibility: hidden;
+      transition: opacity .45s cubic-bezier(.23,1,.32,1), transform .45s cubic-bezier(.23,1,.32,1), visibility 0s .45s, background-color .2s ease, box-shadow .2s ease; }
+    .op-cta svg { width: 9px; height: 9px; }
+    .op-conv.virou .op-cta { opacity: 1; transform: none; visibility: visible;
+      transition: opacity .45s cubic-bezier(.23,1,.32,1) .75s, transform .45s cubic-bezier(.23,1,.32,1) .75s, visibility 0s .75s, background-color .2s ease, box-shadow .2s ease; }
+    .op-conv.pronto .op-cta { transition: transform .14s cubic-bezier(.23,1,.32,1), background-color .2s ease, box-shadow .2s ease; }
+    .op-conv.virou .op-cta:active { transform: scale(.97); }
+    @media (hover: hover) and (pointer: fine) {
+      .op-conv .op-cta:hover { background: var(--op-ouro-claro); box-shadow: inset 0 0 0 4px var(--op-ouro-claro), inset 0 0 0 5px rgba(19,34,53,.6), 0 0 0 1px rgba(212,156,50,.7), 0 0 34px rgba(212,156,50,.35); }
+    }
+    .op-fechar { position: absolute; top: max(16px, env(safe-area-inset-top)); right: max(16px, env(safe-area-inset-right));
+      width: 44px; height: 44px; display: grid; place-items: center; padding: 0; border-radius: 50%; cursor: pointer;
+      background: rgba(19,34,53,.7); color: var(--op-papel); border: 1.5px solid rgba(212,156,50,.7);
+      transition: background-color .2s ease, transform .14s cubic-bezier(.23,1,.32,1); }
+    .op-fechar svg { width: 16px; height: 16px; }
+    .op-fechar:active { transform: scale(.94); }
+    .op-fechar:focus-visible { outline: 2px solid var(--op-ouro); outline-offset: 3px; }
+    @media (hover: hover) and (pointer: fine) { .op-fechar:hover { background: var(--op-ouro); color: var(--op-azul); } }
+    html.op-trava, html.op-trava body { overflow: hidden; }
+    @media (prefers-reduced-motion: reduce) {
+      .op-carta, .op-conv.aberto .op-carta { transform: none; transition: opacity .4s ease; }
+      .op-conv.virou .op-carta { transform: none; }
+      .op-carta .op-f, .op-carta .op-v { transform: none; backface-visibility: visible; -webkit-backface-visibility: visible; transition: opacity .6s ease; }
+      .op-carta .op-v { opacity: 0; }
+      .op-conv.virou .op-carta .op-v { opacity: 1; }
+      .op-conv.virou .op-carta .op-f { opacity: 0; }
+      .op-cta { transform: none; }
+    }
+  </style>
 </head>
 <body>
 
@@ -1667,12 +1781,14 @@
   <header class="header">
     <a href="index.html" class="header__logo">maratu</a>
     <nav class="header__nav">
+      <a href="/o-pratico/" data-op="topo" class="op-cartela"><svg viewBox="-10 -10 20 20" aria-hidden="true"><path d="M0 -10 L2.4 -2.4 L10 0 L2.4 2.4 L0 10 L-2.4 2.4 L-10 0 L-2.4 -2.4Z" fill="currentColor"/></svg><span class="op-pre">Descubra o&nbsp;</span><span class="op-so">O&nbsp;</span>Prático<svg viewBox="-10 -10 20 20" aria-hidden="true"><path d="M0 -10 L2.4 -2.4 L10 0 L2.4 2.4 L0 10 L-2.4 2.4 L-10 0 L-2.4 -2.4Z" fill="currentColor"/></svg></a>
       <a href="#loja">loja</a>
       <a href="#sobre">estúdio</a>
       <a href="#contato">contato</a>
       <a href="/servicos" class="nav-sites" data-servico="geral" data-origem="menu">sites para negócios</a>
     </nav>
     <div class="header__actions">
+      <a href="/o-pratico/" data-op="topo-celular" class="op-cartela"><svg viewBox="-10 -10 20 20" aria-hidden="true"><path d="M0 -10 L2.4 -2.4 L10 0 L2.4 2.4 L0 10 L-2.4 2.4 L-10 0 L-2.4 -2.4Z" fill="currentColor"/></svg>O Prático<svg viewBox="-10 -10 20 20" aria-hidden="true"><path d="M0 -10 L2.4 -2.4 L10 0 L2.4 2.4 L0 10 L-2.4 2.4 L-10 0 L-2.4 -2.4Z" fill="currentColor"/></svg></a>
       <button class="btn-radio" id="mr-btn" aria-label="Radio MARATU 88.5 FM" aria-expanded="false"><div class="mr-btn-speaker"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div><div class="mr-btn-display" id="mr-display">88.5 FM</div><span class="mr-btn-led"></span></button>
     </div>
     <button class="header__menu-toggle" aria-label="abrir menu" aria-expanded="false">MENU</button>
@@ -1683,6 +1799,7 @@
   <div class="mobile-menu" aria-hidden="true" id="mobile-menu">
     <button class="mobile-menu__close" aria-label="fechar menu">fechar</button>
     <nav class="mobile-menu__nav">
+      <a href="/o-pratico/" data-op="menu-celular" class="op-cartela"><svg viewBox="-10 -10 20 20" aria-hidden="true"><path d="M0 -10 L2.4 -2.4 L10 0 L2.4 2.4 L0 10 L-2.4 2.4 L-10 0 L-2.4 -2.4Z" fill="currentColor"/></svg><span class="op-pre">Descubra o&nbsp;</span><span class="op-so">O&nbsp;</span>Prático<svg viewBox="-10 -10 20 20" aria-hidden="true"><path d="M0 -10 L2.4 -2.4 L10 0 L2.4 2.4 L0 10 L-2.4 2.4 L-10 0 L-2.4 -2.4Z" fill="currentColor"/></svg></a>
       <a href="#loja">loja</a>
       <a href="/servicos" class="nav-sites" data-servico="geral" data-origem="menu">sites para negócios</a>
       <a href="#sobre">estúdio</a>
@@ -3081,5 +3198,118 @@
     .observe(document.getElementById('loja') || document.body, { childList: true, subtree: true });
 })();
 </script>
+  <!-- O Prático: convite na abertura (uma vez por dia; some de vez depois que a pessoa entra) -->
+  <div class="op-conv" id="op-conv" role="dialog" aria-modal="true" aria-label="O Prático, arcano XXII" hidden>
+    <div class="op-glifos" aria-hidden="true"></div>
+    <button class="op-fechar" type="button" aria-label="Fechar e voltar ao site"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2l12 12M14 2L2 14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+    <div class="op-palco">
+      <div class="op-halo"></div>
+      <a class="op-carta" href="/o-pratico/" data-op="carta" aria-label="Abrir O Prático">
+        <img class="op-f" data-src="/o-pratico/img/frente.webp" width="700" height="1230" alt="Carta O Prático, arcano XXII" decoding="async">
+        <img class="op-v" data-src="/o-pratico/img/verso.webp" width="700" height="1230" alt="" decoding="async">
+      </a>
+    </div>
+    <a class="op-cartela op-cta" href="/o-pratico/" data-op="botao"><svg viewBox="-10 -10 20 20" aria-hidden="true"><path d="M0 -10 L2.4 -2.4 L10 0 L2.4 2.4 L0 10 L-2.4 2.4 L-10 0 L-2.4 -2.4Z" fill="currentColor"/></svg>Tire sua sorte<svg viewBox="-10 -10 20 20" aria-hidden="true"><path d="M0 -10 L2.4 -2.4 L10 0 L2.4 2.4 L0 10 L-2.4 2.4 L-10 0 L-2.4 -2.4Z" fill="currentColor"/></svg></a>
+  </div>
+  <script>
+  (function () {
+    var conv = document.getElementById('op-conv');
+    if (!conv) return;
+    var CHAVE = 'op_convite', hoje = new Date().toISOString().slice(0, 10), visto = '';
+    try { visto = localStorage.getItem(CHAVE) || ''; } catch (e) {}
+    var forcar = /[?&]convite=1/.test(location.search);
+    // não abre: já viu hoje, já entrou na página, veio de link com âncora, ou é robô
+    document.addEventListener('click', function (e) {
+      var a = e.target.closest && e.target.closest('a.op-cartela[data-op]');
+      if (!a || a.classList.contains('op-cta')) return;
+      if (window.gtag) gtag('event', 'o_pratico_menu', { origem: a.getAttribute('data-op'), transport_type: 'beacon' });
+      if (!(e.metaKey || e.ctrlKey)) grava('entrou');
+    });
+    if (!forcar && (visto === hoje || visto === 'entrou' || location.hash || /bot|crawl|spider|lighthouse/i.test(navigator.userAgent))) return;
+    function grava(v) { try { localStorage.setItem(CHAVE, v); } catch (e) {} }
+    function ev(acao) { if (window.gtag) gtag('event', 'o_pratico_convite', { acao: acao, transport_type: 'beacon' }); }
+    var calmo = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var fechar = conv.querySelector('.op-fechar'), cta = conv.querySelector('.op-cta'), carta = conv.querySelector('.op-carta');
+    var camada = conv.querySelector('.op-glifos'), anims = [], tm = [], antes = null;
+
+    // glifos dourados da página do Prático: lua, estrela de 4 pontas, sol, onda, rosa dos ventos, aratu
+    var C = '%23D49C32', svg = function (d) { return 'url("data:image/svg+xml,' + "%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-20 -20 40 40'%3E" + d + '%3C/svg%3E")'; };
+    var GL = [
+      svg("%3Cpath fill='" + C + "' d='M2 -17A17 17 0 1 0 15 9A15 15 0 1 1 2 -17Z'/%3E"),
+      svg("%3Cpath fill='" + C + "' d='M0 -18L4 -4L18 0L4 4L0 18L-4 4L-18 0L-4 -4Z'/%3E"),
+      svg("%3Ccircle r='13' fill='none' stroke='" + C + "' stroke-width='2.4'/%3E%3Ccircle r='3.6' fill='" + C + "'/%3E"),
+      svg("%3Cpath fill='none' stroke='" + C + "' stroke-width='2.6' stroke-linecap='round' d='M-18 2Q-14 -7 -9 2T0 2T9 2T18 2'/%3E"),
+      svg("%3Cpath fill='" + C + "' d='M0 -19L1.6 -4.2L7.8 -7.8L4.2 -1.6L19 0L4.2 1.6L7.8 7.8L1.6 4.2L0 19L-1.6 4.2L-7.8 7.8L-4.2 1.6L-19 0L-4.2 -1.6L-7.8 -7.8L-1.6 -4.2Z'/%3E"),
+      svg("%3Cg transform='scale(.115) translate(-159 -76)' fill='" + C + "'%3E%3Cpath d='M0,104.77c0,26.58,21.55,48.13,48.13,48.13V56.65C21.55,56.65,0,78.19,0,104.77Z M270.11,56.65v96.26c26.58,0,48.13-21.55,48.13-48.13s-21.55-48.13-48.13-48.13Z M159.12,152.9c53.16,0,96.26-43.1,96.26-96.26H62.86c0,53.16,43.1,96.26,96.26,96.26Z M224.82,24.08c0-13.3-10.78-24.08-24.08-24.08v48.16c13.3,0,24.08-10.78,24.08-24.08Z M117.49,48.16V0c-13.3,0-24.08,10.78-24.08,24.08s10.78,24.08,24.08,24.08Z'/%3E%3C/g%3E")
+    ];
+    var PESO = [3, 4, 2, 2, 1, 1], SOMA = 13, R = Math.random;
+    function sorteia() { var r = R() * SOMA; for (var i = 0; i < PESO.length; i++) { r -= PESO[i]; if (r < 0) return i; } return 1; }
+    function glifo(s) { var e = document.createElement('i'); e.style.width = e.style.height = s + 'px'; e.style.backgroundImage = GL[sorteia()]; camada.appendChild(e); return e; }
+    function flutuantes() {
+      var W = innerWidth, H = innerHeight, n = W < 600 ? 14 : 24;
+      for (var i = 0; i < n; i++) {
+        var s = 13 + R() * 13, e = glifo(s), x = R() * W, dx = (R() - .5) * 120, r = R() * 360, dr = (R() - .5) * 160,
+            dur = (H + 80) / (12 + R() * 16) * 1000, mx = .4 + R() * .4;
+        anims.push(e.animate([
+          { transform: 'translate(' + x + 'px,' + (H + 30) + 'px) rotate(' + r + 'deg)', opacity: 0 },
+          { opacity: mx, offset: .12 }, { opacity: mx * .6, offset: .5 }, { opacity: mx, offset: .85 },
+          { transform: 'translate(' + (x + dx) + 'px,-40px) rotate(' + (r + dr) + 'deg)', opacity: 0 }
+        ], { duration: dur, iterations: Infinity, delay: -R() * dur, easing: 'linear' }));
+      }
+    }
+    function explode() {
+      var b = carta.getBoundingClientRect(), x = b.left + b.width / 2, y = b.top + b.height / 2;
+      for (var i = 0; i < 26; i++) {
+        var s = 12 + R() * 14, e = glifo(s), a = R() * Math.PI * 2, d = b.width * .45 + R() * 150, r = R() * 360,
+            tx = x + Math.cos(a) * d - s / 2, ty = y + Math.sin(a) * d * .85 - s / 2;
+        e.animate([
+          { transform: 'translate(' + (x - s / 2) + 'px,' + (y - s / 2) + 'px) rotate(' + r + 'deg) scale(.5)', opacity: 1 },
+          { transform: 'translate(' + tx + 'px,' + (ty - 24) + 'px) rotate(' + (r + 90) + 'deg) scale(1)', opacity: .9, offset: .6 },
+          { transform: 'translate(' + tx + 'px,' + (ty + 18) + 'px) rotate(' + (r + 140) + 'deg) scale(.9)', opacity: 0 }
+        ], { duration: 1500 + R() * 900, easing: 'cubic-bezier(.23,1,.32,1)' }).onfinish = function () { this.effect.target.remove(); };
+      }
+    }
+    function teclas(e) {
+      if (e.key === 'Escape') { e.preventDefault(); sai('esc'); return; }
+      if (e.key !== 'Tab') return;
+      var f = conv.classList.contains('virou') ? [fechar, carta, cta] : [fechar, carta], i = f.indexOf(document.activeElement);
+      e.preventDefault(); f[(i + (e.shiftKey ? f.length - 1 : 1)) % f.length].focus();
+    }
+    function fundo(on) { [].forEach.call(document.body.children, function (el) { if (el !== conv && el.tagName !== 'SCRIPT') { if (on) el.setAttribute('inert', ''); else el.removeAttribute('inert'); } }); }
+    // voltar do navegador (bfcache) não pode devolver a página travada
+    addEventListener('pageshow', function (e) { if (e.persisted && !conv.hidden) { tm.forEach(clearTimeout); conv.hidden = true; conv.className = 'op-conv'; camada.textContent = ''; document.documentElement.classList.remove('op-trava'); fundo(false); } });
+    function sai(acao) {
+      tm.forEach(clearTimeout); grava(hoje); ev(acao);
+      conv.classList.add('saindo'); conv.classList.remove('aberto');
+      document.removeEventListener('keydown', teclas);
+      setTimeout(function () { conv.hidden = true; anims.forEach(function (a) { a.cancel(); }); camada.textContent = '';
+        document.documentElement.classList.remove('op-trava'); fundo(false); if (antes && antes.focus) antes.focus(); }, 240);
+    }
+    function abre() {
+      antes = document.activeElement; conv.hidden = false; grava(hoje); fundo(true);
+      document.documentElement.classList.add('op-trava');
+      if (!calmo) flutuantes();
+      conv.offsetWidth; conv.classList.add('aberto'); fechar.focus({ preventScroll: true });
+      document.addEventListener('keydown', teclas); ev('abriu');
+      tm.push(setTimeout(function () { conv.classList.add('virou'); }, calmo ? 1600 : 2000));
+      tm.push(setTimeout(function () { conv.classList.add('pronto'); }, (calmo ? 1600 : 2000) + 1300));
+      if (!calmo) tm.push(setTimeout(function () { conv.classList.add('meio'); }, 2000 + 520));
+      if (!calmo) tm.push(setTimeout(explode, 2550));
+    }
+    fechar.addEventListener('click', function () { sai('fechar'); });
+    conv.addEventListener('click', function (e) { if (e.target === conv) sai('fora'); });
+    [carta, cta].forEach(function (a) { a.addEventListener('click', function (e) { if (!(e.metaKey || e.ctrlKey)) grava('entrou'); ev(a === cta ? 'botao' : 'carta'); }); });
+    // as duas faces chegam antes de abrir; a home pinta primeiro
+    function pronto() {
+      var imgs = conv.querySelectorAll('.op-carta img'), falta = imgs.length;
+      [].forEach.call(imgs, function (im) {
+        im.src = im.getAttribute('data-src');
+        var ok = function () { if (--falta === 0) setTimeout(abre, 500); };
+        if (im.complete && im.naturalWidth) ok(); else { im.addEventListener('load', ok, { once: true }); im.addEventListener('error', function () { falta = -99; }, { once: true }); }
+      });
+    }
+    if (document.readyState === 'complete') pronto(); else addEventListener('load', pronto, { once: true });
+  })();
+  </script>
 </body>
 </html>

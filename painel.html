@@ -775,8 +775,26 @@ button.atalho { font: inherit; text-align: left; cursor: pointer; }
 .sl-cod .codigo { font-size: 15px; }
 .camera-sl { position: relative; aspect-ratio: 1; max-height: 52vh; border-radius: 18px; background: #111; overflow: hidden; border: 1.5px solid var(--borda); }
 .camera-sl video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-.camera-sl .mira { position: absolute; left: 50%; top: 50%; width: 52%; aspect-ratio: 1; transform: translate(-50%, -50%); border-radius: 18px; box-shadow: 0 0 0 999px rgba(0,0,0,.35); border: 3px solid rgba(255,255,255,.9); }
-.camera-sl .dica-c { position: absolute; left: 0; right: 0; bottom: 14px; text-align: center; color: #fff; font-weight: 800; font-size: 14px; }
+.camera-sl video { transition: transform .22s cubic-bezier(0.23, 1, 0.32, 1); }
+.camera-sl .mira { position: absolute; left: 50%; top: 46%; width: 52%; aspect-ratio: 1; transform: translate(-50%, -50%); border-radius: 18px; box-shadow: 0 0 0 999px rgba(0,0,0,.35); border: 3px solid rgba(255,255,255,.9); pointer-events: none; transition: border-color .16s cubic-bezier(0.23, 1, 0.32, 1), transform .16s cubic-bezier(0.23, 1, 0.32, 1); }
+.camera-sl.leu .mira { border-color: var(--acento); transform: translate(-50%, -50%) scale(.94); }
+.camera-sl .dica-c { position: absolute; left: 12px; right: 12px; top: 12px; text-align: center; color: #fff; font-weight: 800; font-size: 14px; line-height: 1.3; text-shadow: 0 1px 3px rgba(0,0,0,.5); pointer-events: none; }
+.camera-sl.leu .dica-c { font-family: ui-monospace, Menlo, monospace; letter-spacing: .06em; }
+.camera-sl.foca { cursor: crosshair; }
+.cam-ctl { position: absolute; left: 0; right: 0; bottom: 12px; display: flex; justify-content: center; align-items: center; gap: 10px; }
+.cam-ctl:empty { display: none; }
+.zooms { display: flex; gap: 8px; padding: 3px; border-radius: 999px; background: rgba(0,0,0,.5); }
+.zooms button, .cam-luz { min-width: 44px; height: 44px; border-radius: 999px; border: 0; background: transparent; color: #fff; font: inherit; font-weight: 900; font-size: 13px; font-variant-numeric: tabular-nums; cursor: pointer; transition: background-color .14s cubic-bezier(0.23, 1, 0.32, 1), color .14s cubic-bezier(0.23, 1, 0.32, 1), transform .12s cubic-bezier(0.23, 1, 0.32, 1); }
+.zooms button[aria-pressed="true"] { background: #fff; color: #111; }
+.cam-luz { width: 50px; height: 50px; display: grid; place-items: center; background: rgba(0,0,0,.5); }
+.cam-luz svg { width: 22px; height: 22px; }
+.cam-luz[aria-pressed="true"] { background: #fff; color: #111; }
+.zooms button:active, .cam-luz:active { transform: scale(.94); }
+.zooms button:focus-visible, .cam-luz:focus-visible { outline: 2px solid #fff; outline-offset: 2px; box-shadow: 0 0 0 5px rgba(0,0,0,.55); }
+.camera-sl.dorme { cursor: pointer; }
+.anel-foco { position: absolute; width: 64px; height: 64px; margin: -32px 0 0 -32px; border: 2px solid var(--acento); border-radius: 12px; pointer-events: none; animation: anelFoco .7s cubic-bezier(0.23, 1, 0.32, 1) forwards; }
+@keyframes anelFoco { from { transform: scale(1.3); opacity: 0; } 30% { transform: scale(1); opacity: 1; } to { transform: scale(1); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .camera-sl video, .camera-sl .mira { transition: none; } .anel-foco { animation-duration: .01s; } }
 .digitar-sl { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
 .digitar-sl input { width: 100%; text-transform: uppercase; }
 .grade-prod { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; }
@@ -945,7 +963,7 @@ body.na-hoje .topo #btMais[aria-pressed="true"] { background: var(--faixa-tinta)
 
 <div class="aviso" id="aviso" role="status" aria-live="polite"><span id="avisoTxt"></span><button id="avisoBt" hidden>Desfazer</button></div>
 
-<script src="painel.js?v=20261106b"></script>
+<script src="painel.js?v=20261119a"></script>
 <script>if (navigator.serviceWorker) navigator.serviceWorker.register("/sw.js").catch(function () {});</script>
 </body>
 </html>

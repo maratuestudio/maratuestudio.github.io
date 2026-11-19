@@ -75,6 +75,7 @@
     imp: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21h16M6 21V9h12v12M9 9V4h6v5M10 14h4"/></svg>',
     site: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 8h18"/></svg>',
     x: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+    luz: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h10v3l-3 4v11h-4V10L7 6z"/><path d="M7 6h10M12 14v2"/></svg>',
     ler: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3M7 12h10"/></svg>',
     engrenagem: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M2 12h3M19 12h3M4.9 19.1L7 17M17 7l2.1-2.1"/></svg>',
     fora: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6M20 4l-9 9M18 14v6H4V6h6"/></svg>'
@@ -3048,66 +3049,161 @@
     raiz.querySelectorAll("[data-selo]").forEach(function (b) { b.onclick = function () { abrirSelo(b.dataset.selo); }; });
   }
 
-  /* --- câmera: BarcodeDetector quando existe, jsQR no Safari --- */
+  /* --- câmera: BarcodeDetector quando existe, jsQR no Safari ---
+     Adesivo de 15 mm: sem resolução pedida o iPhone entrega 640x480 e o QR vira 30 px; perto demais, sai de foco.
+     Por isso: 1080p, zoom (do aparelho quando existe, senão recorte), lê só a mira e a tela alternadamente,
+     e o stream fica ligado entre "selar a próxima" (desliga sozinho depois de 60 s sem ler). */
   var libs = {};
   function carregaLib(src) {
     if (libs[src]) return libs[src];
     libs[src] = new Promise(function (ok, falha) { var s = document.createElement("script"); s.src = src; s.onload = ok; s.onerror = function () { libs[src] = null; falha(new Error("lib")); }; document.head.appendChild(s); });
     return libs[src];
   }
-  var cam = null;
-  function paraCamera() {
-    if (!cam) return; cam.parado = true; clearTimeout(cam.timer);
-    try { cam.stream.getTracks().forEach(function (t) { t.stop(); }); } catch (e) {}
-    try { cam.video.srcObject = null; } catch (e) {}
-    cam = null;
-  }
-  function ligaCamera(video, msg, achou) {
+  var ZOOM_LS = "maratu.selos.zoom";
+  var cam = null, camStream = null, camDesliga = null, camDetector = null, camAbrindo = null;
+  function apagaLuz() { var t = trilha(); if (t && t.applyConstraints && t.getCapabilities) { try { if (t.getCapabilities().torch) t.applyConstraints({ advanced: [{ torch: false }] }).catch(function () {}); } catch (e) {} } }
+  function trilha() { return camStream && camStream.getVideoTracks()[0]; }
+  function streamVivo() { var t = trilha(); return !!(t && t.readyState === "live"); }
+  function desligaCamera() {
     paraCamera();
-    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { msg.textContent = "Sem câmera aqui. Digite o código."; return; }
-    var meu = { video: video, parado: false };
+    clearTimeout(camDesliga); camDesliga = null;
+    if (camStream) { try { camStream.getTracks().forEach(function (t) { t.stop(); }); } catch (e) {} }
+    camStream = null;
+  }
+  function paraCamera() {
+    if (!cam) return; cam.parado = true; clearTimeout(cam.timer); clearTimeout(cam.dica); clearTimeout(cam.ocioso);
+    apagaLuz();
+    try { cam.video.pause(); cam.video.srcObject = null; } catch (e) {}
+    cam = null;
+    clearTimeout(camDesliga); camDesliga = setTimeout(desligaCamera, 60000);
+  }
+  function abreStream() {
+    if (streamVivo()) return Promise.resolve(camStream);
+    if (camAbrindo) return camAbrindo;
+    camAbrindo = navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: "environment" }, width: { ideal: 1920 }, height: { ideal: 1080 } }, audio: false })
+      .catch(function (e) { if (e && (e.name === "OverconstrainedError" || e.name === "NotFoundError" || e.name === "NotReadableError")) return navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: "environment" } }, audio: false }); throw e; })
+      .then(function (s) {
+        camAbrindo = null;
+        if (camStream && camStream !== s) { try { camStream.getTracks().forEach(function (t) { t.stop(); }); } catch (e) {} }
+        camStream = s;
+        try { var t = trilha(), cp = t && t.getCapabilities ? t.getCapabilities() : {}; if (cp.focusMode && cp.focusMode.indexOf("continuous") >= 0) t.applyConstraints({ advanced: [{ focusMode: "continuous" }] }).catch(function () {}); } catch (e) {}
+        /* fecharam a folha enquanto a permissão era pedida: ninguém vai usar, desliga */
+        if (!cam) desligaCamera();
+        return s;
+      }, function (e) { camAbrindo = null; throw e; });
+    return camAbrindo;
+  }
+  function leitor() {
+    if (camDetector || window.jsQR) return Promise.resolve();
+    if (window.BarcodeDetector) return window.BarcodeDetector.getSupportedFormats().then(function (fs) { if (fs.indexOf("qr_code") >= 0) camDetector = new window.BarcodeDetector({ formats: ["qr_code"] }); else return carregaLib("/vendor/jsQR.min.js?v=1"); }).catch(function () { return carregaLib("/vendor/jsQR.min.js?v=1"); });
+    return carregaLib("/vendor/jsQR.min.js?v=1");
+  }
+  function ligaCamera(caixa, achou) {
+    paraCamera(); clearTimeout(camDesliga);
+    var video = caixa.querySelector("video"), msg = caixa.querySelector(".dica-c"), mira = caixa.querySelector(".mira");
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { msg.textContent = "Sem câmera aqui. Digite o código."; caixa.classList.add("sem"); return; }
+    var meu = { video: video, parado: false, z: 1, hw: false, n: 0 };
     cam = meu;
-    navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: "environment" } }, audio: false }).then(function (stream) {
-      if (meu.parado) { stream.getTracks().forEach(function (t) { t.stop(); }); return; }
-      meu.stream = stream; video.srcObject = stream; video.setAttribute("playsinline", ""); return video.play();
+    abreStream().then(function (stream) {
+      if (meu.parado) return;
+      video.srcObject = stream; video.setAttribute("playsinline", ""); return video.play();
     }).then(function () {
       if (meu.parado) return;
-      if (window.BarcodeDetector) return window.BarcodeDetector.getSupportedFormats().then(function (fs) { if (fs.indexOf("qr_code") >= 0) meu.detector = new window.BarcodeDetector({ formats: ["qr_code"] }); else return carregaLib("/vendor/jsQR.min.js?v=1"); }).catch(function () { return carregaLib("/vendor/jsQR.min.js?v=1"); });
-      return carregaLib("/vendor/jsQR.min.js?v=1");
+      return leitor();
     }).then(function () {
       if (meu.parado) return;
+      caixa.classList.add("viva");
       msg.textContent = "Aponte pro adesivo";
-      var cv = document.createElement("canvas");
+      montaControles(caixa, meu);
+      meu.dica = setTimeout(function () { if (!meu.parado) msg.textContent = "Afaste um pouco e use o zoom"; }, 6000);
+      /* 60 s sem ler: desliga e espera um toque pra religar */
+      meu.ocioso = setTimeout(function () {
+        if (cam !== meu) return;
+        desligaCamera(); caixa.classList.remove("viva"); caixa.classList.add("dorme"); msg.textContent = "Toque pra ligar a câmera";
+        caixa.querySelector(".cam-ctl").innerHTML = ""; caixa.onclick = function () { caixa.onclick = null; caixa.classList.remove("dorme"); msg.textContent = "Abrindo a câmera…"; ligaCamera(caixa, achou); };
+      }, 60000);
+      var cv = document.createElement("canvas"), ctx = cv.getContext("2d", { willReadFrequently: true });
       var varre = function () {
         if (meu.parado) return;
-        var seguinte = function () { meu.timer = setTimeout(varre, 220); };
-        if (!video.videoWidth) return seguinte();
-        var pegou = function (txt) { var c = codigoDaLeitura(txt); if (!c) return seguinte(); if (navigator.vibrate) navigator.vibrate(40); paraCamera(); achou(c); };
-        if (meu.detector) { meu.detector.detect(video).then(function (r) { if (r && r.length) pegou(r[0].rawValue); else seguinte(); }).catch(seguinte); return; }
+        var seguinte = function () { if (!meu.parado) meu.timer = setTimeout(varre, camDetector ? 120 : 60); };
+        var vw = video.videoWidth, vh = video.videoHeight;
+        if (!vw) return seguinte();
+        /* o que aparece na caixa (object-fit: cover), dividido pelo zoom de recorte */
+        var cw = caixa.clientWidth, ch = caixa.clientHeight, s = Math.max(cw / vw, ch / vh), zd = meu.hw ? 1 : meu.z;
+        var lado = meu.n++ % 2 ? Math.min(cw, ch) / s / zd : mira.offsetWidth * 1.3 / s / zd;
+        lado = Math.min(lado, vw, vh);
+        var sai = Math.min(Math.round(lado), 800);
+        cv.width = sai; cv.height = sai;
+        ctx.drawImage(video, (vw - lado) / 2, (vh - lado) / 2, lado, lado, 0, 0, sai, sai);
+        var pegou = function (txt) {
+          if (meu.parado) return;
+          var c = codigoDaLeitura(txt); if (!c) return seguinte();
+          meu.parado = true; clearTimeout(meu.dica);
+          if (navigator.vibrate) navigator.vibrate(40);
+          caixa.classList.add("leu"); msg.textContent = c;
+          setTimeout(function () { if (cam !== meu || !folhaAberta) return; paraCamera(); achou(c); }, 260);
+        };
+        if (camDetector) { camDetector.detect(meu.n % 3 ? cv : video).then(function (r) { if (r && r.length) pegou(r[0].rawValue); else seguinte(); }).catch(seguinte); return; }
         if (window.jsQR) {
-          var l = Math.min(video.videoWidth, video.videoHeight, 640); cv.width = l; cv.height = l;
-          var ctx = cv.getContext("2d"); ctx.drawImage(video, (video.videoWidth - l) / 2, (video.videoHeight - l) / 2, l, l, 0, 0, l, l);
-          var r = window.jsQR(ctx.getImageData(0, 0, l, l).data, l, l, { inversionAttempts: "dontInvert" });
+          var r = window.jsQR(ctx.getImageData(0, 0, sai, sai).data, sai, sai, { inversionAttempts: "dontInvert" });
           if (r && r.data) return pegou(r.data);
         }
         seguinte();
       };
       varre();
-    }).catch(function (e) { if (!meu.parado) msg.textContent = "A câmera não abriu. Digite o código."; paraCamera(); });
+    }).catch(function () { if (cam !== meu) return; msg.textContent = "A câmera não abriu. Digite o código."; caixa.classList.add("sem"); paraCamera(); });
+  }
+  /* zoom 1x 2x 3x (padrão 2x, lembra o último), lanterna e toque pra focar só quando o aparelho deixa */
+  function montaControles(caixa, meu) {
+    var t = trilha(), cp = {};
+    try { cp = t && t.getCapabilities ? t.getCapabilities() : {}; } catch (e) {}
+    var zc = cp.zoom && cp.zoom.max >= 2 ? cp.zoom : null;
+    meu.hw = !!zc;
+    var niveis = [1, 2, 3].filter(function (z) { return !zc || z <= zc.max; });
+    var guardado = Number(lerLS(ZOOM_LS, 2)) || 2;
+    var ctl = caixa.querySelector(".cam-ctl"), video = meu.video;
+    if (cp.torch) apagaLuz();
+    ctl.innerHTML = '<div class="zooms" role="group" aria-label="Zoom">' + niveis.map(function (z) { return '<button type="button" data-z="' + z + '" aria-pressed="false">' + z + "x</button>"; }).join("") + "</div>" +
+      (cp.torch ? '<button type="button" class="cam-luz" aria-label="Lanterna" aria-pressed="false">' + IC.luz + "</button>" : "");
+    var poeZoom = function (z) {
+      meu.z = z; gravarLS(ZOOM_LS, z);
+      ctl.querySelectorAll("[data-z]").forEach(function (b) { b.setAttribute("aria-pressed", String(Number(b.dataset.z) === z)); });
+      if (zc) { video.style.transform = ""; t.applyConstraints({ advanced: [{ zoom: Math.max(zc.min || 1, z) }] }).catch(function () { meu.hw = false; video.style.transform = "scale(" + z + ")"; }); }
+      else video.style.transform = z > 1 ? "scale(" + z + ")" : "";
+    };
+    poeZoom(niveis.indexOf(guardado) >= 0 ? guardado : niveis[niveis.length - 1] >= 2 ? 2 : 1);
+    ctl.querySelectorAll("[data-z]").forEach(function (b) { b.onclick = function () { poeZoom(Number(b.dataset.z)); }; });
+    var luz = ctl.querySelector(".cam-luz");
+    if (luz) luz.onclick = function () { var on = luz.getAttribute("aria-pressed") !== "true"; t.applyConstraints({ advanced: [{ torch: on }] }).then(function () { luz.setAttribute("aria-pressed", String(on)); }).catch(function () {}); };
+    var fm = cp.focusMode || [];
+    if (fm.indexOf("single-shot") >= 0 || fm.indexOf("manual") >= 0) {
+      caixa.classList.add("foca");
+      caixa.onclick = function (e) {
+        if (e.target.closest("button")) return;
+        var r = caixa.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
+        var anel = document.createElement("i"); anel.className = "anel-foco"; anel.style.left = x + "px"; anel.style.top = y + "px";
+        caixa.appendChild(anel); setTimeout(function () { anel.remove(); }, 700);
+        var c = { focusMode: fm.indexOf("single-shot") >= 0 ? "single-shot" : "manual" };
+        if ("pointsOfInterest" in cp) c.pointsOfInterest = [{ x: x / r.width, y: y / r.height }];
+        t.applyConstraints({ advanced: [c] }).then(function () {
+          if (fm.indexOf("continuous") >= 0) setTimeout(function () { if (cam === meu) t.applyConstraints({ advanced: [{ focusMode: "continuous" }] }).catch(function () {}); }, 1500);
+        }).catch(function () {});
+      };
+    }
   }
 
   /* --- selar uma peça: ler, escolher, pronto --- */
   function folhaSelar() {
     abrirFolha("Selar uma peça",
-      '<div class="camera-sl"><video id="slVideo" playsinline muted></video><div class="mira"></div><div class="dica-c" id="slMsg">Abrindo a câmera…</div></div>' +
+      '<div class="camera-sl" id="slCam"><video id="slVideo" playsinline muted autoplay></video><div class="mira"></div><div class="dica-c" id="slMsg" aria-live="polite">Abrindo a câmera…</div><div class="cam-ctl"></div></div>' +
       '<div class="digitar-sl"><input id="slCod" class="codigo" placeholder="Código do adesivo" autocapitalize="characters" autocomplete="off" spellcheck="false"><button class="bt" id="slIr">Abrir</button></div>',
       function (c) {
-        var ir = function (cod) { cod = normCodigo(cod); if (!cod) return c.querySelector("#slCod").focus(); paraCamera(); passoPeca(cod); };
+        var ir = function (cod) { cod = normCodigo(cod); if (!cod) return c.querySelector("#slCod").focus(); if (cam) cam.parado = true; paraCamera(); passoPeca(cod); };
         c.querySelector("#slIr").onclick = function () { ir(c.querySelector("#slCod").value); };
         c.querySelector("#slCod").addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); ir(this.value); } });
         if (!PROD.lista && !PROD.erro) carregarProdutos();
-        ligaCamera(c.querySelector("#slVideo"), c.querySelector("#slMsg"), ir);
-      }, paraCamera);
+        ligaCamera(c.querySelector("#slCam"), ir);
+      }, desligaCamera);
   }
   function maisSeladas() {
     var desde = somaDias(hoje(), -30), n = {};
@@ -3160,14 +3256,14 @@
                 passoPronto(s.codigo, d.produto || (porId(SEL.produtos, escolhida) || {}).nome, corpo.data_impressao);
               }).catch(function (e) { ok.disabled = false; ok.textContent = "Tentar de novo"; aviso(/409/.test(String(e && e.message)) ? "Esse selo já foi usado" : "Não selou. Confira a internet."); });
             };
-          }, paraCamera);
+          }, desligaCamera);
       }).catch(function (e) {
         if (!folhaAberta) return;
         var naoExiste = /404/.test(String(e && e.message));
         abrirFolha("Selar uma peça", '<div class="cartao" style="box-shadow:none"><b style="font-weight:900">' + (naoExiste ? esc(cod) + " não existe" : "Não carregou. Confira a internet.") + '</b></div><button class="bt acento cheio" id="slDeNovo">Ler de novo</button>',
-          function (f) { f.querySelector("#slDeNovo").onclick = folhaSelar; });
+          function (f) { f.querySelector("#slDeNovo").onclick = folhaSelar; }, desligaCamera);
       });
-    }, paraCamera);
+    }, desligaCamera);
   }
   function passoPronto(cod, nome, data) {
     abrirFolha("Selada",
@@ -3179,7 +3275,7 @@
         f.querySelector("#slProx").onclick = folhaSelar;
         f.querySelector("#slFim").onclick = fecharFolha;
         f.querySelector("#slTroca").onclick = function () { folhaTrocarPeca({ codigo: cod }); };
-      });
+      }, desligaCamera);
   }
 
   /* --- imprimir folha de selos em branco --- */

@@ -227,10 +227,10 @@
     .header__nav { align-items: center; }
     /* Porta dos sites: pílula vazada e discreta; enche de laranja no hover */
     .header .header__nav a.nav-sites {
-      padding: 6px 13px 5px; border: 1px solid currentColor; border-radius: 999px;
-      transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+      padding: 6px 13px 5px; border: 0; border-radius: 999px;
+      transition: background-color 0.2s ease, color 0.2s ease;
     }
-    .header .header__nav a.nav-sites:hover { opacity: 1; background: var(--laranja); border-color: var(--laranja); color: #fff; }
+    .header .header__nav a.nav-sites:hover { opacity: 1; background: var(--laranja); color: #fff; }
     /* tablet em pé: cabe logo, 4 itens, pílula e rádio sem encostar */
     @media (min-width: 769px) and (max-width: 1050px) {
       .header__nav { gap: 14px; }
@@ -1638,7 +1638,7 @@
   /* aratu-mascote inline */
   .aratu-mascote{position:absolute;left:0;bottom:4px;width:60px;height:30px;z-index:10;overflow:visible;cursor:pointer;-webkit-tap-highlight-color:transparent;outline:none}
   .aratu-mascote canvas{width:100%;height:100%;display:block;image-rendering:pixelated;image-rendering:crisp-edges}
-  .aratu-mascote:focus-visible{outline:2px dashed #C8501A;outline-offset:4px}
+  .aratu-mascote:focus,.aratu-mascote:focus-visible{outline:none}
   @media (max-width:640px){.aratu-mascote{width:40px;height:20px;bottom:4px}}
   </style>
   <link rel="stylesheet" href="components/radio/radio.css?v=8">
@@ -1815,6 +1815,14 @@
   <section class="hero">
     <div class="hero__bg">
       <div class="hero__bg-slide hero__bg-slide--1 ativo"></div>
+      <div class="hero__bg-slide" data-bg="hero-o-pratico.webp" style="background-position: center 70%;"></div>
+      <div class="hero__bg-slide" data-bg="hero-brinco-frontao.webp" style="background-position: center 72%;"></div>
+      <div class="hero__bg-slide" data-bg="hero-luminaria-mangue.webp" style="background-position: center 40%;"></div>
+      <div class="hero__bg-slide" data-bg="hero-brinco-bricelet.webp" style="background-position: center 76%;"></div>
+      <div class="hero__bg-slide" data-bg="hero-ecobag-sergipe.webp" style="background-position: center 50%;"></div>
+      <div class="hero__bg-slide" data-bg="hero-brinco-sergipe.webp" style="background-position: center 78%;"></div>
+      <div class="hero__bg-slide" data-bg="hero-incensario-arco.webp" style="background-position: center 22%;"></div>
+      <div class="hero__bg-slide" data-bg="hero-brinco-arcos.webp" style="background-position: center 64%;"></div>
       <div class="hero__bg-slide" data-bg="blusa-destrua-frente.webp" style="background-position: center 60%;"></div>
       <div class="hero__bg-slide" data-bg="blusa-destrua-costas.webp" style="background-position: center 60%;"></div>
       <div class="hero__bg-slide" data-bg="blusa-azulejos-costas.webp" style="background-position: center 60%;"></div>

@@ -13,6 +13,8 @@
   <meta name="apple-mobile-web-app-title" content="MARATU">
   <link rel="apple-touch-icon" href="/apple-touch-icon-v6.png">
   <link rel="icon" type="image/png" href="/favicon-v6.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
   <style>
 
     /* ── FONTES ── */
@@ -103,6 +105,25 @@
     .an-folha .an-tira--pe{bottom:3%;transform:rotate(1.5deg);background-image:url('/divulgacao/fasc/anuncio_tira_dourado.webp?v=7');color:var(--preto)}
     .panel--fasc .fasc__marca{transition:opacity .2s}
     .panel--fasc.anunciando .fasc__marca{opacity:0}
+    /* ── TARÔ no painel FASC (a cada 2,5 min): tela escurece, sobe o azul do pano do /o-pratico, a carta vira e mostra o QR, depois se desfaz ── */
+    .tarot{position:absolute;inset:0;z-index:8;pointer-events:none;display:none;overflow:hidden}
+    .tarot.on{display:block}
+    .tarot.on ~ .fasc__chao .qr-card{pointer-events:none}   /* o QR do Instagram fica escondido atras do taro: o toque nao pode abrir ele */
+    .tr-preto{position:absolute;inset:0;background:#000;opacity:0}
+    .tr-azul{position:absolute;inset:0;opacity:0;background:url('/o-pratico/img/grao_tile.png') repeat,radial-gradient(ellipse 70% 80% at var(--cx) 50%,#2F4A6B 0%,#1C2E45 48%,#0B1420 100%)}
+    .tr-po{position:absolute;inset:0}
+    .tr-po i{position:absolute;left:0;top:0;background-size:contain;background-repeat:no-repeat;opacity:0;will-change:transform,opacity}
+    .tr-luz{position:absolute;left:var(--cx);top:50%;width:calc(var(--ch)*1.25);height:calc(var(--ch)*1.25);margin:calc(var(--ch)*-.625) 0 0 calc(var(--ch)*-.625);border-radius:50%;background:radial-gradient(circle,rgba(237,198,113,.32) 0%,rgba(237,198,113,.1) 38%,rgba(237,198,113,0) 66%);opacity:0}
+    .tr-carta{position:absolute;left:var(--cx);top:50%;width:var(--cw);height:var(--ch);margin:calc(var(--ch)/-2) 0 0 calc(var(--cw)/-2);perspective:calc(var(--ch)*4);opacity:0}
+    .tr-giro{position:absolute;inset:0;transform-style:preserve-3d}
+    .tr-frente,.tr-verso{position:absolute;inset:0;width:100%;height:100%;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:calc(var(--cw)*.035);box-shadow:0 calc(var(--ch)*.03) calc(var(--ch)*.08) rgba(0,0,0,.55)}
+    .tr-verso{transform:rotateY(180deg);overflow:hidden;background:#2F4A6B}
+    /* verso animado (anel girando, glifos) e o QR por cima, no centro do sol: 29,76% da largura, igual a carta impressa */
+    .tr-video{position:absolute;inset:0;width:100%;height:100%;object-fit:fill;display:block}
+    .tr-qr{position:absolute;left:50%;top:50%;width:29.76%;height:auto;transform:translate(-50%,-50%)}
+    .tr-texto{position:absolute;left:var(--tx);top:var(--ty);width:var(--tw);transform:translateY(-50%);color:#EFE8D6;text-align:var(--ta)}
+    .tr-t1{margin:0;font-family:"IM Fell English SC",Georgia,serif;font-size:var(--t1);line-height:1;letter-spacing:.02em;color:#EDC671;opacity:0;text-wrap:balance}
+    .tr-t2{margin:.45em 0 0;font-family:"IM Fell English",Georgia,serif;font-style:italic;font-size:var(--t2);line-height:1.25;opacity:0;text-wrap:balance}
     /* ── VOLTO JÁ (painel 1): mesmo papel do FASC, Aratu dormindo no lugar do sol e da igreja ── */
     .panel--volto .fasc__chao{justify-content:center}
     @media (orientation:portrait) and (max-width:560px){ .panel--volto .fasc__chao{align-items:center} }
@@ -181,6 +202,14 @@
           </div>
         </div>
       </div>
+      <div class="tarot" id="tarot" aria-hidden="true">
+        <div class="tr-preto"></div>
+        <div class="tr-azul"></div>
+        <div class="tr-luz"></div>
+        <div class="tr-po"></div>
+        <div class="tr-carta"><div class="tr-giro"><img class="tr-frente" src="/divulgacao/fasc/tarot_frente.webp?v=1" alt="" width="820" height="1440"><div class="tr-verso"><video class="tr-video" src="/divulgacao/fasc/tarot_verso.mp4?v=1" poster="/divulgacao/fasc/tarot_verso_poster.webp?v=1" muted playsinline loop preload="auto" width="640" height="1144"></video><img class="tr-qr" src="/divulgacao/fasc/tarot_qr.svg?v=1" alt="QR para maratu.com.br/o-pratico" width="300" height="300"></div></div></div>
+        <div class="tr-texto"><p class="tr-t1">Tire sua sorte</p><p class="tr-t2">Descubra o que o Prático tem a dizer sobre ela</p></div>
+      </div>
       <div class="fasc__chao" id="fascChao">
         <h1 class="fasc__marca" aria-label="MARATU Estúdio"><img class="fasc__logo" src="/maratu-logo.svg?v=1" alt="MARATU" width="440" height="54"><span class="fasc__est"><img class="estudio-boil" src="/estudio-sprite.webp?v=1" alt="Estúdio" width="5252" height="340"></span></h1>
         <a class="qr-card" href="https://instagram.com/maratuestudio" target="_blank" rel="noopener" aria-label="Siga a MARATU no Instagram">
@@ -258,12 +287,18 @@
         var cs=getComputedStyle(c.chao), pb=parseFloat(cs.paddingBottom), alvo=c.alvo, qr=c.chao.querySelector('.qr-card'),
             col=cs.flexDirection==='column';
         var conteudo=!qr?alvo.offsetHeight:(col?alvo.offsetHeight+qr.offsetHeight+parseFloat(cs.rowGap||0):(w>h?alvo.offsetHeight:Math.max(alvo.offsetHeight,qr.offsetHeight)));
-        s=Math.min(s,(h-conteudo-pb-48-topo)/771);
-        var ox=w/2-540*s, oy=topo-229*s;
-        c.cena.style.transform='translate('+ox+'px,'+oy+'px) scale('+s+')';
-        c.faixa.style.top=(oy+831*s)+'px'; c.faixa.style.height=(169*s)+'px';
-        c.faixa.style.backgroundSize=(2160*s)+'px 100%'; c.faixa.style.backgroundPosition=ox+'px 0';
-        c.chao.style.top=(oy+975*s)+'px';
+        s=Math.max(.15,Math.min(s,(h-conteudo-pb-48-topo)/771));
+        function poe(s){
+          var ox=w/2-540*s, oy=topo-229*s;
+          c.cena.style.transform='translate('+ox+'px,'+oy+'px) scale('+s+')';
+          c.faixa.style.top=(oy+831*s)+'px'; c.faixa.style.height=(169*s)+'px';
+          c.faixa.style.backgroundSize=(2160*s)+'px 100%'; c.faixa.style.backgroundPosition=ox+'px 0';
+          c.chao.style.top=(oy+975*s)+'px';
+        }
+        poe(s);
+        // confere na tela de verdade: se a marca ficou a menos de 48 px da faixa (fonte ou tela mudou depois), encolhe a cena
+        for(var i=0;i<4;i++){ var folga=alvo.getBoundingClientRect().top-c.faixa.getBoundingClientRect().bottom;
+          if(folga>=47) break; s=Math.max(.15,s-(48-folga)/746*(col||w<=h?1.6:1.05)); poe(s); }
         if(c.anuncio) arrumaAnuncio(c,w,h);
       }
       // ANUNCIO: usa a tela toda menos o QR. Deitado, a faixa a esquerda do QR; em pe, tudo acima dele
@@ -277,18 +312,112 @@
         if(!an.palavra){ var t=document.createElement('span'); t.style.cssText='position:absolute;visibility:hidden;white-space:nowrap;font:900 100px Clother,sans-serif;letter-spacing:-.03em;text-transform:uppercase';
           document.body.appendChild(t); an.palavra=0; an.fotos.forEach(function(f){ f.dataset.nome.split(' ').forEach(function(wd){ t.textContent=wd; an.palavra=Math.max(an.palavra,t.offsetWidth/100); }); }); t.remove(); }
         // foto em cima, nome embaixo; o nome nunca e mais largo que a foto, e a folha tem a largura da foto
-        var P=an.palavra+.15, fwMax=Rw-26, fhMax=Rh-m-sobra-6, pad=Math.min(fwMax,fhMax)*.05, gap=pad*.5, foot=tf*2.6, livre=fhMax-2*pad-foot-gap;
+        var P=an.palavra+.15, fwMax=Rw-26, fhMax=Rh-m-sobra-6-Rh*.025,   /* 2,5% a menos: o papel gira e a caixa cresce */ pad=Math.min(fwMax,fhMax)*.05, gap=pad*.5, foot=tf*2.6, livre=fhMax-2*pad-foot-gap;
         var pf=Math.min(fwMax-2*pad, livre/(1+1.8/P)), nf=Math.min(pf/P, fhMax*.11); pf=Math.min(fwMax-2*pad, livre-1.8*nf);
+        an.lim={fwMax:fwMax,fhMax:fhMax,pad:pad,P:P,pf:pf};
         var v={'--fx':(R.x0+14+fwMax/2)+'px','--fy':(R.y0+m+sobra+fhMax/2)+'px','--fw':(pf+2*pad)+'px','--pad':pad+'px','--gap':gap+'px','--pf':pf+'px','--nf':nf+'px','--tf':tf+'px','--foot':foot+'px'};
         // o anuncio passa por cima do MARATU? entao o logo some enquanto ele roda (meio logo coberto parece erro)
         var mk=c.alvo.getBoundingClientRect(); c.escondeMarca=mk.left-pr.left<R.x1&&mk.top-pr.top<R.y1;
         for(var k in v) an.style.setProperty(k,v[k]);
       }
+      // mede a folha montada com cada nome; se passar da altura ou da largura livre, encolhe a foto e o nome juntos
+      function ajustaFolha(c){
+        var an=c.anuncio, L=an.lim; if(!L||!an.int.classList.contains('on'))return;
+        var guarda=an.nome.textContent, pf=L.pf;
+        for(var i=0;i<4;i++){
+          var hMax=0,wMax=0; an.fotos.forEach(function(f){ an.nome.textContent=f.dataset.nome; hMax=Math.max(hMax,an.folha.offsetHeight); wMax=Math.max(wMax,an.folha.offsetWidth); });
+          var k=Math.min(1,L.fhMax/hMax,L.fwMax/wMax); if(k>=.995) break;
+          pf=pf*k-4; var nf=Math.min(pf/L.P,L.fhMax*.11);
+          an.style.setProperty('--pf',pf+'px'); an.style.setProperty('--nf',nf+'px'); an.style.setProperty('--fw',(pf+2*L.pad)+'px');
+        }
+        an.nome.textContent=guarda;
+      }
       function arruma(){ cenas.forEach(arrumaUma); }
       // FASC: sol gira uma volta em 8 s, frontao balanca no pe
-      // ANUNCIO: 30 s de cena, 14 s de intervalo comercial, e de novo (?anuncio=1 comeca no intervalo, pra conferir)
-      var ROTEIRO=[['cena',180],['int',84]], ri=0, rq=0;
-      if(/anuncio=1/.test(location.search)) ri=1;
+      // TARO: 32 s. Escurece, sobe o azul do pano, a carta do Pratico aparece, vira pro QR, balanca devagar e se desfaz em glifos
+      var TAROT=(function(){
+        var el=document.getElementById('tarot'); if(!el)return null;
+        var preto=el.querySelector('.tr-preto'),azul=el.querySelector('.tr-azul'),luz=el.querySelector('.tr-luz'),po=el.querySelector('.tr-po'),
+            carta=el.querySelector('.tr-carta'),giro=el.querySelector('.tr-giro'),fr=el.querySelector('.tr-frente'),vs=el.querySelector('.tr-verso'),t1=el.querySelector('.tr-t1'),t2=el.querySelector('.tr-t2'),anims=[],rodando=false;
+        // glifos dourados da pagina /o-pratico (mesmo desenho)
+        var EST4=new Path2D('M0 -10 L2.4 -2.4 L10 0 L2.4 2.4 L0 10 L-2.4 2.4 L-10 0 L-2.4 -2.4Z');
+        function sprite(f){var c=document.createElement('canvas');c.width=c.height=96;var x=c.getContext('2d');x.scale(1.5,1.5);x.translate(32,32);x.strokeStyle=x.fillStyle='#EDC671';x.lineWidth=2.6;x.lineCap='round';x.lineJoin='round';f(x);return 'url('+c.toDataURL()+')';}
+        var GL=null;
+        function glifos(){ if(GL)return GL; GL=[
+          sprite(function(x){x.beginPath();x.arc(0,0,17,0,7);x.fill();x.globalCompositeOperation='destination-out';x.beginPath();x.arc(8,-5,15,0,7);x.fill();}),
+          sprite(function(x){x.scale(2.1,2.1);x.fill(EST4);}),
+          sprite(function(x){for(var k=0;k<8;k++){var a=k*Math.PI/4,L=k%2?11:19;x.beginPath();x.moveTo(Math.cos(a)*5,Math.sin(a)*5);x.lineTo(Math.cos(a)*L,Math.sin(a)*L);x.stroke();}}),
+          sprite(function(x){x.beginPath();x.arc(0,0,13,0,7);x.stroke();x.beginPath();x.arc(0,0,3.6,0,7);x.fill();}),
+          sprite(function(x){x.beginPath();x.moveTo(-14,-9);x.lineTo(14,-9);x.lineTo(0,15);x.closePath();x.stroke();}),
+          sprite(function(x){x.beginPath();x.moveTo(-18,2);for(var k=0;k<4;k++)x.quadraticCurveTo(-14+k*9,k%2?9:-7,-9+k*9,2);x.stroke();}),
+          sprite(function(x){x.beginPath();for(var k=0;k<16;k++){var a=k*Math.PI/8-Math.PI/2,r=k%4===0?19:(k%2?4.2:11);x.lineTo(Math.cos(a)*r,Math.sin(a)*r);}x.closePath();x.fill();})
+        ]; return GL; }
+        function glifo(sz){ var i=document.createElement('i'); i.style.width=i.style.height=sz+'px'; var g=glifos(); i.style.backgroundImage=g[Math.floor(Math.random()*g.length)]; po.appendChild(i); return i; }
+        function an(a){ anims.push(a); return a; }
+        var EASE='cubic-bezier(.23,1,.32,1)', MOVE='cubic-bezier(.77,0,.175,1)';
+        // a curva vai em cada trecho; passada nas opcoes ela deformaria o tempo do roteiro inteiro de 32 s
+        function kf(l,e){ return l.map(function(k){ var o={}; for(var p in k)o[p]=k[p]; if(!('easing' in o))o.easing=e; return o; }); }
+        function mede(){
+          var w=el.clientWidth,h=el.clientHeight,deitado=w>h*1.05,ch,cw,cx;
+          if(deitado){ ch=h*.84; cw=ch*70/123; cx=w*.36;
+            var tx=cx+cw/2+w*.05; el.style.setProperty('--tx',tx+'px'); el.style.setProperty('--tw',Math.min(w-tx-w*.05,560)+'px'); el.style.setProperty('--ty','50%'); el.style.setProperty('--ta','left');
+            el.style.setProperty('--t1',Math.min(h*.11,(w-tx)*.16)+'px'); el.style.setProperty('--t2',Math.min(h*.045,(w-tx)*.065)+'px'); }
+          else { ch=Math.min(h*.6,w*.9*123/70); cw=ch*70/123; cx=w/2;
+            el.style.setProperty('--tx',(w*.08)+'px'); el.style.setProperty('--tw',(w*.84)+'px'); el.style.setProperty('--ty',(h/2+ch/2+(h/2-ch/2)/2)+'px'); el.style.setProperty('--ta','center');
+            el.style.setProperty('--t1',Math.min(w*.11,h*.06)+'px'); el.style.setProperty('--t2',Math.min(w*.045,h*.026)+'px'); }
+          el.style.setProperty('--cw',cw+'px'); el.style.setProperty('--ch',ch+'px'); el.style.setProperty('--cx',cx+'px');
+          return {w:w,h:h,cw:cw,ch:ch,cx:cx};
+        }
+        function flutua(M,t0,t1){   // glifos subindo devagar pela tela inteira
+          var n=M.w<600?12:22;
+          for(var k=0;k<n;k++){ var sz=12+Math.random()*14,g=glifo(sz),x=Math.random()*M.w,dx=(Math.random()-.5)*120,r=Math.random()*360,dr=(Math.random()-.5)*160,
+              d=(t1-t0)*(.55+Math.random()*.45),ini=t0+Math.random()*(t1-t0-d),op=.35+Math.random()*.45;
+            an(g.animate([{transform:'translate('+x+'px,'+(M.h+30)+'px) rotate('+r+'deg)',opacity:0},{opacity:op,offset:.15},{opacity:op,offset:.8},{transform:'translate('+(x+dx)+'px,'+(-40)+'px) rotate('+(r+dr)+'deg)',opacity:0}],{duration:d,delay:ini,fill:'both',easing:'linear'})); }
+        }
+        function explode(M,t,n,dist,dur){   // glifos saindo da carta
+          for(var k=0;k<n;k++){ var sz=10+Math.random()*16,g=glifo(sz),x=M.cx+(Math.random()-.5)*M.cw,y=M.h/2+(Math.random()-.5)*M.ch,a=Math.atan2(y-M.h/2,x-M.cx)+(Math.random()-.5)*.8,
+              dd=dist*(.4+Math.random()*.8),r=Math.random()*360;
+            an(g.animate([{transform:'translate('+(x-sz/2)+'px,'+(y-sz/2)+'px) rotate('+r+'deg) scale(.4)',opacity:0},{opacity:.95,offset:.12},{transform:'translate('+(x-sz/2+Math.cos(a)*dd)+'px,'+(y-sz/2+Math.sin(a)*dd-dd*.25)+'px) rotate('+(r+180)+'deg) scale(1)',opacity:0}],
+              {duration:dur*(.7+Math.random()*.5),delay:t+Math.random()*400,fill:'both',easing:EASE})); }
+        }
+        var relogios=[];
+        function para(){ relogios.forEach(clearTimeout); relogios=[]; var v=el.querySelector('video'); if(v){ try{v.pause();}catch(e){} }
+          anims.forEach(function(a){ try{a.cancel();}catch(e){} }); anims=[]; po.innerHTML=''; el.classList.remove('on'); rodando=false; }
+        function comeca(){
+          para(); el.classList.add('on'); rodando=true; var M=mede(), D=32000; el.dataset.t0=performance.now();
+          an(preto.animate(kf([{opacity:0},{opacity:1,offset:1200/D},{opacity:1,offset:29800/D},{opacity:0}],'ease-in-out'),{duration:D,fill:'both'}));
+          an(azul.animate(kf([{opacity:0},{opacity:0,offset:900/D},{opacity:1,offset:4200/D},{opacity:1,offset:28600/D},{opacity:0,offset:30800/D},{opacity:0}],'ease-in-out'),{duration:D,fill:'both'}));
+          an(luz.animate(kf([{opacity:0,transform:'scale(.6)'},{opacity:0,transform:'scale(.6)',offset:2600/D},{opacity:1,transform:'scale(1)',offset:5200/D},{opacity:.7,transform:'scale(.92)',offset:12000/D},{opacity:1,transform:'scale(1.04)',offset:19000/D},{opacity:.75,transform:'scale(.95)',offset:26500/D},{opacity:0,transform:'scale(1.3)',offset:29000/D},{opacity:0}],'ease-in-out'),{duration:D,fill:'both'}));
+          // carta: aparece de frente (2,6 s), vira pro QR (6 s), balanca devagar, se desfaz (27 s)
+          an(carta.animate(kf([{opacity:0,transform:'translateY(6%) scale(.82)',filter:'blur(0px)'},{opacity:0,transform:'translateY(6%) scale(.82)',filter:'blur(0px)',offset:2600/D},
+            {opacity:1,transform:'translateY(0) scale(1)',filter:'blur(0px)',offset:5000/D},{opacity:1,transform:'translateY(0) scale(1)',filter:'blur(0px)',offset:26800/D},
+            {opacity:0,transform:'translateY(-3%) scale(1.08)',filter:'blur(10px)',offset:28800/D},{opacity:0,transform:'translateY(-3%) scale(1.08)',filter:'blur(10px)'}],EASE),{duration:D,fill:'both'}));
+          // todos os quadros com a mesma lista (rotateY rotateZ translateY): senao o navegador interpola por matriz e, perto de 180 graus, a carta passa de lado e some
+          function G(y,z,t){ return 'rotateY('+y+'deg) rotateZ('+z+'deg) translateY('+t+'%)'; }
+          var bal=[{transform:G(0,0,0)},{transform:G(0,0,0),offset:6000/D},{transform:G(186,-1,0),offset:7300/D},{transform:G(180,0,0),offset:7900/D}];
+          for(var k=0;k<6;k++){ var t=7900+(k+1)*3000; bal.push({transform:G(180+(k%2?-9:9),k%2?1.2:-1.2,k%2?-1.2:1.2),offset:Math.min(t,26800)/D}); }
+          bal.push({transform:G(180,0,0),offset:27000/D},{transform:G(180,0,0)});
+          an(giro.animate(kf(bal,'ease-in-out'),{duration:D,fill:'both'}));
+          // troca de face no instante em que a carta passa de lado (90 graus). O WebKit ignora backface-visibility
+          // quando a carta tem opacidade ou filtro animado, entao a face escondida vai por opacidade
+          var VIRA=6640;
+          var vid=vs.querySelector('video');
+          if(vid){ try{ vid.pause(); vid.currentTime=0; }catch(e){}
+            relogios.push(setTimeout(function(){ var pr=vid.play(); if(pr&&pr.catch) pr.catch(function(){}); },VIRA-400)); }   // sem autoplay (modo economia), fica o poster com o QR
+          an(fr.animate([{opacity:1},{opacity:1,offset:VIRA/D},{opacity:0,offset:(VIRA+1)/D},{opacity:0}],{duration:D,fill:'both'}));
+          an(vs.animate([{opacity:0},{opacity:0,offset:VIRA/D},{opacity:1,offset:(VIRA+1)/D},{opacity:1}],{duration:D,fill:'both'}));
+          an(t1.animate(kf([{opacity:0,transform:'translateY(14px)'},{opacity:0,transform:'translateY(14px)',offset:7600/D},{opacity:1,transform:'translateY(0)',offset:8600/D},{opacity:1,offset:26600/D},{opacity:0,offset:28000/D},{opacity:0}],EASE),{duration:D,fill:'both'}));
+          an(t2.animate(kf([{opacity:0,transform:'translateY(14px)'},{opacity:0,transform:'translateY(14px)',offset:7800/D},{opacity:1,transform:'translateY(0)',offset:8800/D},{opacity:1,offset:26600/D},{opacity:0,offset:28000/D},{opacity:0}],EASE),{duration:D,fill:'both'}));
+          flutua(M,1500,30500);
+          explode(M,6300,26,M.ch*.45,1800);     // brilho ao virar
+          explode(M,26900,60,M.ch*.9,2600);     // a carta se desfaz
+          relogios.push(setTimeout(function(){ if(rodando)para(); },D+100));
+        }
+        return {comeca:comeca,para:para};
+      })();
+      // ROTEIRO de 2,5 min: cena, intervalo, cena, intervalo, cena, taro (?anuncio=1 comeca no intervalo, ?anuncio=3 no taro, pra conferir)
+      var ROTEIRO=[['cena',180],['int',84],['cena',180],['int',84],['cena',180],['tarot',192]], ri=0, rq=0;
+      if(/anuncio=1/.test(location.search)) ri=1; if(/anuncio=3/.test(location.search)) ri=5;
       function some(el){ el.style.opacity=0; }
       function mostra(el,tx,ty,rot,sc,op){ el.style.opacity=op==null?1:op; el.style.translate=(tx||0)+' '+(ty||0); el.style.rotate=(rot||0)+'deg'; el.style.scale=sc||1; }
       function tapa(el,j,r0){ if(j<0){ some(el); return; } if(j===0)mostra(el,0,'-6%',r0+5,1.18); else if(j===1)mostra(el,0,0,r0-2,.96); else mostra(el,0,0,r0+.6*ruido(p,30+r0),1); }
@@ -296,7 +425,9 @@
         var a=c.anuncio, modo=ROTEIRO[ri][0], q=rq;
         if(++rq>=ROTEIRO[ri][1]){ rq=0; ri=(ri+1)%ROTEIRO.length; }
         a.int.classList.toggle('on',modo==='int');
-        c.painel.classList.toggle('anunciando',modo!=='cena'&&!!c.escondeMarca);
+        if(modo==='tarot'&&q===0&&TAROT) TAROT.comeca();
+        if(modo==='int'&&q===0){ a.nome.textContent=a.fotos[0].dataset.nome; arrumaUma(c); ajustaFolha(c); }   // cada intervalo confere a medida antes de entrar
+        c.painel.classList.toggle('anunciando',modo==='int'&&!!c.escondeMarca);
         if(modo==='int'){
           var f=a.folha;
           if(q<3) mostra(f,0,['-120%','-45%','6%'][q],[-8,-4,2][q]);
@@ -311,6 +442,7 @@
       }
       // tocou na tela: o anuncio sai e a contagem da cena recomeca
       document.addEventListener('pointerdown',function(){ if(ROTEIRO[ri][0]!=='cena'){ ri=(ri+1)%ROTEIRO.length; } rq=0;
+        if(TAROT) TAROT.para();
         cenas.forEach(function(c){ if(c.anuncio){ c.anuncio.int.classList.remove('on'); c.painel.classList.remove('anunciando'); } }); },{passive:true});
       function poseFasc(c){
         if(c.anuncio) poseAnuncio(c);
@@ -347,6 +479,11 @@
         cenas.push(c);
       });
       arruma(); window.addEventListener('resize',arruma);
+      // no iPad (app instalado) a tela e a fonte podem chegar depois do primeiro calculo: refaz quando qualquer uma mudar
+      window.addEventListener('orientationchange',function(){ setTimeout(arruma,300); });
+      window.addEventListener('pageshow',arruma);
+      if(window.visualViewport) visualViewport.addEventListener('resize',arruma);
+      setTimeout(arruma,800); setTimeout(arruma,2500);
       if(document.fonts&&document.fonts.ready) document.fonts.ready.then(function(){ cenas.forEach(function(c){ if(c.anuncio) c.anuncio.palavra=0; }); arruma(); });   // mede de novo na Clother carregada
       var parado=matchMedia('(prefers-reduced-motion: reduce)').matches;
       function quadro(){ cenas.forEach(function(c){ if(c.vis)c.pose(c); }); p=(p+1)%NP; }

@@ -6,7 +6,7 @@
   <title>MARATU · Divulgação</title>
   <meta name="robots" content="noindex">
   <link rel="manifest" href="/divulgacao/divulgacao.webmanifest">
-  <meta name="theme-color" content="#C8501A">
+  <meta name="theme-color" content="#3C74C4">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -62,147 +62,7 @@
     }
 
 
-    /* ── HERO ── */
-    .hero {
-      min-height: 100vh;
-      padding: 0 var(--margem);
-      display: grid;
-      grid-template-columns: repeat(12, 1fr);
-      grid-template-rows: 1fr auto;
-      gap: var(--gutter);
-      padding-top: 120px;
-      padding-bottom: 72px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .hero__bg {
-      position: absolute; inset: 0;
-      overflow: hidden;
-    }
-
-    .hero__bg::after {
-      content: ''; position: absolute; inset: 0;
-      background: linear-gradient(to bottom, rgba(13,13,11,0.15) 0%, rgba(13,13,11,0.96) 65%);
-      z-index: 1;
-    }
-
-    .hero__bg-slide {
-      position: absolute; inset: 0;
-      background-size: cover; background-position: center; background-repeat: no-repeat;
-      opacity: 0; transition: opacity 1.2s ease;
-    }
-
-    .hero__bg-slide.ativo { opacity: 1; }
-
-    .hero__label-tl {
-      position: absolute; top: 64px; left: var(--margem);
-      display: flex; flex-direction: column; gap: 4px;
-      z-index: 2;
-    }
-
-    .hero__label-tr {
-      position: absolute; top: 64px; right: var(--margem);
-      text-align: right; z-index: 2;
-    }
-
-    .hero__title {
-      grid-column: 1 / span 12; grid-row: 2;
-      font-family: var(--jack);
-      font-size: clamp(3rem, 11vw, 10rem);
-      line-height: 0.88;
-      letter-spacing: -0.02em;
-      text-transform: uppercase;
-      color: var(--laranja);
-      align-self: end;
-      position: relative; z-index: 2;
-    }
-
-    .hero__title .offset {
-      display: block;
-      margin-top: 0.08em;
-      transform: translateX(0.02em);
-      color: var(--areia);
-      font-size: 0.42em;
-      font-family: var(--clother);
-      font-weight: 700;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      line-height: 1;
-    }
-
-    /* Subtitulo "Estudio" como GIF animado (sketch). Dimensionado pra casar tamanho/posicao
-       do texto original: altura 1.16em (=cap-height do texto), alinhado a esquerda sob o M. */
-    .hero__title .estudio-boil-wrap { margin-top: -0.05em; line-height: 0; overflow: hidden; width: 4.48em; height: 1.16em; margin-left: -0.12em; }
-
-    .hero__title .estudio-boil { display: block; height: 100%; width: 400%; max-width: none; animation: estudio-boil 0.28s steps(4) infinite; }
-
     @keyframes estudio-boil { to { transform: translateX(-100%); } }
-
-    .hero__title .hero__logo { display: block; width: 6em; height: auto; }
-
-    .hero__subtitle {
-      grid-column: 1 / span 7; grid-row: 3;
-      font-size: clamp(0.9rem, 1.3vw, 1.1rem);
-      color: rgba(240,236,228,0.6);
-      line-height: 1.75;
-      max-width: 52ch;
-      align-self: end;
-      position: relative; z-index: 2;
-    }
-
-    .hero__scroll {
-      position: absolute; right: var(--margem); bottom: 32px;
-      text-align: right;
-      display: flex; flex-direction: column;
-      align-items: flex-end; gap: 12px;
-      z-index: 2;
-    }
-
-    .hero__scroll-line {
-      width: 1px; height: 56px;
-      background: rgba(240,236,228,0.2);
-      position: relative; overflow: hidden;
-    }
-
-    .hero__scroll-line::before {
-      content: ''; position: absolute;
-      top: -100%; left: 0; right: 0; height: 100%;
-      background: var(--laranja);
-      animation: scroll-tick 2.5s cubic-bezier(0.4,0,0.2,1) infinite;
-    }
-
-
-    /* ── MONO (utilitário) ── */
-    .mono {
-      font-family: var(--mono);
-      font-size: 0.65rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: rgba(240,236,228,0.4);
-    }
-
-
-
-
-    /* ── SCROLL REVEAL (fade puro) ── */
-    .reveal {
-      opacity: 0;
-      transition: opacity 0.9s cubic-bezier(0.4,0,0.2,1);
-    }
-
-    .reveal.in { opacity: 1; }
-
-    .reveal[data-delay="1"] { transition-delay: 0.15s; }
-
-    .reveal[data-delay="2"] { transition-delay: 0.3s; }
-
-    .reveal[data-delay="3"] { transition-delay: 0.45s; }
-
-    @keyframes scroll-tick {
-      0%   { top: -100%; }
-      100% { top: 100%; }
-    }
 
     /* ===== DIVULGACAO (kiosk) ===== */
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -210,13 +70,34 @@
     .deck{position:fixed;inset:0;display:flex;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;touch-action:pan-x;cursor:grab;user-select:none}
     .deck::-webkit-scrollbar{display:none}
     .deck.dragging{cursor:grabbing;scroll-snap-type:none}
+    /* ── FASC (painel 0): colagem em stop motion, recortes do story "MARATU no FASC" ── */
+    .panel--fasc{background:#3c74c4 url('/divulgacao/fasc/ceu.webp') center top/cover no-repeat}
+    .fasc__cena{position:absolute;left:0;top:0;width:1080px;height:1000px;transform-origin:0 0;pointer-events:none}
+    .fasc__cena img{position:absolute;display:block;will-change:transform}
+    .fasc__sol{left:217px;top:229px;width:644px;height:644px}
+    .fasc__frontao{left:184px;top:371px;width:707px;height:659px;transform-origin:353px 566px}
+    .fasc__faixa{position:absolute;left:0;right:0;background:url('/divulgacao/fasc/faixa.webp') repeat-x;pointer-events:none}
+    .fasc__chao{position:absolute;left:0;right:0;bottom:0;background:#F6EFE5 url('/divulgacao/fasc/creme.webp');display:flex;align-items:flex-end;justify-content:space-between;gap:var(--margem);padding:0 var(--margem) calc(clamp(56px,9vh,96px) + env(safe-area-inset-bottom,0px))}
+    .fasc__marca{font-size:clamp(34px,5.4vw,78px);line-height:1;margin:0}
+    .fasc__logo{display:block;width:6em;height:auto}
+    /* sketch "Estúdio" da home, em preto sobre o papel creme */
+    .fasc__est{display:block;overflow:hidden;width:3.3em;height:.854em;margin-top:.04em;margin-left:-.12em;line-height:0}
+    .fasc__est .estudio-boil{display:block;height:100%;width:400%;max-width:none;filter:brightness(0);animation:estudio-boil .28s steps(4) infinite}
+    .panel--fasc .qr-card{position:relative;right:auto;bottom:auto;flex-shrink:0;background:url('/divulgacao/fasc/qr_fundo.webp') 0 0/100% 100% no-repeat;border:0;border-radius:0;box-shadow:none;--qw:clamp(210px,27vw,320px);width:var(--qw);padding:calc(var(--qw)*.13) calc(var(--qw)*.13) calc(var(--qw)*.15);gap:6px;color:var(--areia);transform:rotate(-2deg)}
+    .qr-papel{display:block;align-self:stretch;background:url('/divulgacao/fasc/qr_papel.webp') 0 0/100% 100% no-repeat;padding:9%;transform:rotate(3deg)}
+    .panel--fasc .qr-card .qr-papel img{border-radius:0}
+    .panel--fasc .swipe-hint{color:var(--preto)}
+    .swipe-hint{min-height:44px;padding:0 14px}
+    /* retrato: marca e QR lado a lado, centrados no papel creme; no celular empilham */
+    @media (orientation:portrait){ .fasc__chao{align-items:center;padding:0 var(--margem) calc(clamp(40px,6vh,72px) + env(safe-area-inset-bottom,0px))} .fasc__marca{font-size:clamp(28px,6vw,64px)} .panel--fasc .qr-card{--qw:clamp(150px,30vw,260px)} }
+    @media (orientation:portrait) and (max-width:560px){ .fasc__chao{flex-direction:column;align-items:flex-start;justify-content:center;gap:clamp(20px,4vh,40px)} .fasc__marca{font-size:clamp(28px,9.5vw,52px)} .panel--fasc .qr-card{align-self:flex-end;--qw:clamp(150px,42vw,200px)} }
+    @media (prefers-reduced-motion:reduce){ .fasc__cena img{will-change:auto} .swipe-hint,.estudio-boil{animation:none} }
     .panel{flex:0 0 100%;width:100%;height:100%;scroll-snap-align:start;position:relative;overflow:hidden}
-    .panel--hero .hero{min-height:100%;height:100%;padding-top:clamp(40px,7vh,90px)}
     .qr-card{position:absolute;right:var(--margem);bottom:72px;z-index:6;background:var(--areia);border:2px solid var(--preto);border-radius:22px;box-shadow:7px 7px 0 0 var(--preto);padding:clamp(14px,1.6vw,22px);display:flex;flex-direction:column;align-items:center;gap:10px;width:clamp(190px,24vw,280px);text-decoration:none;color:var(--preto)}
     .qr-card img{width:100%;height:auto;display:block;border-radius:6px}
     .qr-card__lbl{font-family:var(--mono);font-size:clamp(.56rem,.9vw,.7rem);letter-spacing:.16em;text-transform:uppercase;text-align:center;line-height:1.5}
     .qr-card__lbl b{font-weight:900}
-    .swipe-hint{position:absolute;bottom:clamp(14px,2.6vh,28px);left:50%;transform:translateX(-50%);z-index:7;font-family:var(--mono);font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--areia);opacity:.92;background:none;border:none;cursor:pointer;animation:sh 1.8s ease-in-out infinite}
+    .swipe-hint{position:absolute;bottom:calc(clamp(14px,2.6vh,28px) + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);z-index:7;font-family:var(--mono);font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--areia);opacity:.92;background:none;border:none;cursor:pointer;animation:sh 1.8s ease-in-out infinite}
     @keyframes sh{0%,100%{transform:translateX(-50%)}50%{transform:translateX(calc(-50% + 7px))}}
     .swipe-hint.back{animation:shb 1.8s ease-in-out infinite}
     @keyframes shb{0%,100%{transform:translateX(-50%)}50%{transform:translateX(calc(-50% - 7px))}}
@@ -237,14 +118,13 @@
 
     @media (max-width:680px){ .panel--pix{flex-direction:column;text-align:center;gap:clamp(14px,2.4vh,28px)} .pix__left{align-items:center;max-width:none} .pix__title{text-align:center} .aratu-pix{margin-left:auto;margin-right:auto} }
 
-    /* retrato: o QR sobe pro meio da direita pra nao tapar o lockup MARATU, que fica na base */
-    @media (max-width:680px){ .qr-card{bottom:auto;top:50%;transform:translateY(-50%);width:clamp(150px,44vw,210px)} }
 
     /* painel Pix ganha 2 dicas de arrastar (volta pro inicio / segue pra loja) */
     .panel--pix .swipe-hint{left:auto;transform:none}
     /* o lockup fixo ocupa o canto inf-esq; o "inicio" fica centralizado, como na loja */
     .panel--pix .swipe-hint.back{left:50%;transform:translateX(-50%);animation:shb 1.8s ease-in-out infinite}
     .panel--pix .swipe-hint.fwd{right:var(--margem);animation:shR 1.8s ease-in-out infinite}
+    @media (max-width:680px){ .panel--pix .swipe-hint.fwd{bottom:calc(clamp(14px,2.6vh,28px) + 52px + env(safe-area-inset-bottom,0px))} }
     @keyframes shR{0%,100%{transform:translateX(0)}50%{transform:translateX(7px)}}
 
     /* ── LOJA (painel 3) — produto grande a esquerda, valor grande a direita ── */
@@ -284,34 +164,19 @@
 </head>
 <body>
   <div class="deck" id="deck">
-    <section class="panel panel--hero">
-      <section class="hero">
-        <div class="hero__bg">
-          <div class="hero__bg-slide ativo" style="background-image: url('/Artboard 1@300x.webp');"></div>
-          <div class="hero__bg-slide" data-bg="/blusa-destrua-frente.webp" style="background-position: center 60%;"></div>
-          <div class="hero__bg-slide" data-bg="/blusa-destrua-costas.webp" style="background-position: center 60%;"></div>
-          <div class="hero__bg-slide" data-bg="/blusa-azulejos-costas.webp" style="background-position: center 60%;"></div>
-          <div class="hero__bg-slide" data-bg="/blusa-maratu-print.webp" style="background-position: center 60%;"></div>
-          <div class="hero__bg-slide" data-bg="/Artboard 4@300x.webp"></div>
-          <div class="hero__bg-slide" data-bg="/Artboard 5@300x.webp"></div>
-          <div class="hero__bg-slide" data-bg="/vaso-pinda-cinza.webp"></div>
-          <div class="hero__bg-slide" data-bg="/kit-cobogo-praia.webp"></div>
-        </div>
-        <div class="hero__label-tl">
-          <span class="mono">EST. 2026 — Aracaju, SE</span>
-          <span class="mono">Impressão 3D · Design · Arte</span>
-        </div>
-        <div class="hero__label-tr">
-          <span class="mono">em atividade</span>
-        </div>
-        <h1 class="hero__title reveal">
-          <img class="hero__logo" src="/maratu-logo.svg?v=1" alt="MARATU"><span class="offset estudio-boil-wrap" aria-label="Estúdio"><img class="estudio-boil" src="/estudio-sprite.webp?v=1" alt="Estúdio"></span>
-        </h1>
-      </section>
-      <a class="qr-card" href="https://instagram.com/maratuestudio" target="_blank" rel="noopener" aria-label="Siga a MARATU no Instagram">
-        <img src="/divulgacao/ig-qr.png?v=2" alt="QR do Instagram @maratuestudio" width="462" height="462">
-        <span class="qr-card__lbl">Siga no Instagram<br><b>@maratuestudio</b></span>
-      </a>
+    <section class="panel panel--fasc" id="fasc">
+      <div class="fasc__cena" id="fascCena" aria-hidden="true">
+        <img class="fasc__sol" id="fascSol" src="/divulgacao/fasc/sol.webp" alt="" width="644" height="644">
+        <img class="fasc__frontao" id="fascFrontao" src="/divulgacao/fasc/frontao.webp" alt="" width="707" height="659">
+      </div>
+      <div class="fasc__faixa" id="fascFaixa" aria-hidden="true"></div>
+      <div class="fasc__chao" id="fascChao">
+        <h1 class="fasc__marca" aria-label="MARATU Estúdio"><img class="fasc__logo" src="/maratu-logo.svg?v=1" alt="MARATU" width="440" height="54"><span class="fasc__est"><img class="estudio-boil" src="/estudio-sprite.webp?v=1" alt="Estúdio" width="5252" height="340"></span></h1>
+        <a class="qr-card" href="https://instagram.com/maratuestudio" target="_blank" rel="noopener" aria-label="Siga a MARATU no Instagram">
+          <span class="qr-papel"><img src="/divulgacao/ig-qr.png?v=2" alt="QR do Instagram @maratuestudio" width="462" height="462"></span>
+          <span class="qr-card__lbl">Siga no Instagram<br><b>@maratuestudio</b></span>
+        </a>
+      </div>
       <button class="swipe-hint" id="toPix" type="button">arraste para o pix &rarr;</button>
     </section>
     <section class="panel panel--pix" id="pix">
@@ -375,11 +240,39 @@
   </div>
   <script>
 
-    var heroSlides=document.querySelectorAll('.hero__bg-slide'),heroAtual=0;
-    function heroEnsureBg(s){ if(s&&s.dataset.bg){ s.style.backgroundImage="url('"+s.dataset.bg+"')"; delete s.dataset.bg; } }
-    if(heroSlides.length>1){ heroEnsureBg(heroSlides[1]);
-      setInterval(function(){ var p=(heroAtual+1)%heroSlides.length; heroEnsureBg(heroSlides[p]); heroEnsureBg(heroSlides[(p+1)%heroSlides.length]); heroSlides[heroAtual].classList.remove('ativo'); heroAtual=p; heroSlides[heroAtual].classList.add('ativo'); },5000); }
-    document.querySelectorAll('.reveal').forEach(function(el){ el.classList.add('in'); });
+    // FASC: stop motion a 6 poses/s, 48 poses = 8 s em loop (mesmo ritmo do story animado)
+    (function(){
+      var painel=document.getElementById('fasc'),cena=document.getElementById('fascCena'),
+          faixa=document.getElementById('fascFaixa'),chao=document.getElementById('fascChao'),
+          sol=document.getElementById('fascSol'),fr=document.getElementById('fascFrontao');
+      if(!painel)return;
+      function arruma(){
+        var w=painel.clientWidth,h=painel.clientHeight,s,topo;
+        if(w>h){ topo=.06*h; s=Math.min((.55*h-topo)/602, w*.62/1080); }
+        else { topo=.06*h; s=Math.min(w/1080,(.5*h-topo)/602); }
+        var ox=w/2-540*s, oy=topo-229*s, t='translate('+ox+'px,'+oy+'px) scale('+s+')';
+        cena.style.transform=t;
+        faixa.style.top=(oy+831*s)+'px'; faixa.style.height=(169*s)+'px';
+        faixa.style.backgroundSize=(2160*s)+'px 100%'; faixa.style.backgroundPosition=ox+'px 0';
+        chao.style.top=(oy+975*s)+'px';
+      }
+      arruma(); window.addEventListener('resize',arruma);
+      if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+      var NP=48,p=0,vivo=true,timer=null;
+      function ruido(p,k){ var v=Math.sin((p%NP)*12.9898+k*78.233)*43758.5453; return ((v%2)+2)%2-1; }
+      function pose(){
+        var a=360*p/NP+.8*ruido(p,1), jx=1.2*ruido(p,2), jy=1.2*ruido(p,3);
+        sol.style.transform='translate('+jx+'px,'+jy+'px) rotate('+a+'deg)';
+        var f=2*Math.PI*p/24, ang=-(1.6*Math.sin(f)+.25*ruido(p,4)), dx=7*Math.sin(f+.6)+.8*ruido(p,5);
+        fr.style.transform='translate('+dx+'px,'+(.6*ruido(p,6))+'px) rotate('+ang+'deg)';
+        p=(p+1)%NP;
+      }
+      function liga(){ if(!timer){ pose(); timer=setInterval(pose,1000/6); } }
+      function desliga(){ clearInterval(timer); timer=null; }
+      // parado quando o painel sai da tela ou a aba some
+      new IntersectionObserver(function(e){ vivo=e[0].isIntersecting; vivo&&!document.hidden?liga():desliga(); },{threshold:.15}).observe(painel);
+      document.addEventListener('visibilitychange',function(){ document.hidden?desliga():(vivo&&liga()); });
+    })();
 
     // SWIPE: toque usa scroll nativo; mouse usa drag-to-scroll
     var deck=document.getElementById('deck');
@@ -393,10 +286,10 @@
     })();
     function goTo(i){ deck.scrollTo({left:i*window.innerWidth,behavior:'smooth'}); }
     // body herda a cor do painel visivel (o iPadOS "estende" o bg do body atras da barra de janela)
-    var panelBg=['#0D0D0B','#C8501A','#0E3272'];
+    var panelBg=['#F6EFE5','#C8501A','#0E3272'];
     function syncBg(){ var i=Math.round(deck.scrollLeft/window.innerWidth); document.body.style.background=panelBg[i]||panelBg[0];
       var q=document.querySelector('.qr-corner'); if(q) q.classList.toggle('show', i===2);
-      // no hero a marca ja aparece gigante no meio; o lockup do canto some pra nao duplicar
+      // no painel FASC a marca ja aparece grande no chao; o lockup do canto some pra nao duplicar
       var b=document.querySelector('.brand-corner'); if(b) b.classList.toggle('hide', i===0); }
     deck.addEventListener('scroll',syncBg,{passive:true}); syncBg();
     document.getElementById('toPix').addEventListener('click',function(){ goTo(1); });

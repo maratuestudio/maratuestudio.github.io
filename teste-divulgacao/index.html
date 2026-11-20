@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>TESTE · MARATU · Divulgação</title>
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#3C74C4">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="MARATU">
+  <link rel="apple-touch-icon" href="/apple-touch-icon-v6.png">
+  <link rel="icon" type="image/png" href="/favicon-v6.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&display=swap" rel="stylesheet">
+  <style>
+
+    /* ── FONTES ── */
+    @font-face { font-family: 'Jack'; src: url('/TRYJackAlpha-Regular.woff2?v=2') format('woff2'), url('/TRYJackAlpha-Regular.ttf') format('truetype'); font-weight: 400; font-display: swap; }
+
+    @font-face { font-family: 'Clother'; src: url('/TRYClother-Regular.woff2') format('woff2'), url('/TRYClother-Regular.ttf') format('truetype'); font-weight: 400; font-display: swap; }
+
+    @font-face { font-family: 'Clother'; src: url('/TRYClother-Bold.woff2') format('woff2'), url('/TRYClother-Bold.ttf') format('truetype'); font-weight: 700; font-display: swap; }
+
+    @font-face { font-family: 'Clother'; src: url('/TRYClother-Black.woff2') format('woff2'), url('/TRYClother-Black.ttf') format('truetype'); font-weight: 900; font-display: swap; }
+
+    @font-face { font-family: 'Clother'; src: url('/TRYClother-Italic.woff2') format('woff2'), url('/TRYClother-Italic.ttf') format('truetype'); font-weight: 400; font-style: italic; font-display: optional; }
+
+
+    /* ── VARIÁVEIS ── */
+    :root {
+      --laranja: #C8501A;
+      --azul: #0E3272;
+      --azul-claro: #2E6FC4;
+      --areia: #F0ECE4;
+      --areia-sombra: #E5DFD3;
+      --preto: #0D0D0B;
+      --dourado: #D4960A;
+      --mono: 'Clother', sans-serif;
+      --jack: 'Jack', 'Arial Black', sans-serif;
+      --clother: 'Clother', 'Helvetica Neue', sans-serif;
+      --gutter: clamp(16px, 2vw, 32px);
+      --margem: clamp(20px, 4vw, 56px);
+      --secao-padding: clamp(56px, 9vh, 120px);
+    }
+
+    html {
+      scroll-behavior: smooth;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      background: var(--areia);
+      scrollbar-color: rgba(200,80,26,0.6) transparent;
+      scrollbar-width: thin;
+      scroll-padding-top: 80px;
+    }
+
+    body {
+      font-family: var(--clother);
+      background: var(--areia);
+      color: var(--preto);
+      line-height: 1.5;
+    }
+
+
+    @keyframes estudio-boil { to { transform: translateX(-100%); } }
+
+    /* ===== DIVULGACAO (kiosk) ===== */
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+    html,body{height:100%;overflow:hidden;background:var(--preto);overscroll-behavior:none}
+    .deck{position:fixed;inset:0;display:flex;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;touch-action:pan-x;cursor:grab;user-select:none}
+    .deck::-webkit-scrollbar{display:none}
+    .deck.dragging{cursor:grabbing;scroll-snap-type:none}
+    /* ── FASC (painel 0): colagem em stop motion, recortes do story "MARATU no FASC" ── */
+    .panel--fasc{background:#3c74c4 url('/divulgacao/fasc/ceu.webp?v=3') center top/cover no-repeat}
+    .fasc__cena{position:absolute;left:0;top:0;width:1080px;height:1000px;transform-origin:0 0;pointer-events:none}
+    .fasc__cena img{position:absolute;display:block;will-change:transform}
+    .fasc__sol{left:217px;top:229px;width:644px;height:644px}
+    .fasc__frontao{left:184px;top:371px;width:707px;height:659px;transform-origin:353px 566px}
+    .fasc__faixa{position:absolute;left:0;right:0;background:url('/divulgacao/fasc/faixa.webp?v=3') repeat-x;pointer-events:none}
+    .fasc__chao{position:absolute;left:0;right:0;bottom:0;background:#F6EFE5 url('/divulgacao/fasc/creme.webp?v=3');display:flex;align-items:flex-end;justify-content:space-between;gap:var(--margem);padding:0 var(--margem) calc(clamp(56px,9vh,96px) + env(safe-area-inset-bottom,0px))}
+    .fasc__marca{font-size:clamp(40px,7.2vw,104px);line-height:1;margin:0}
+    .fasc__logo{display:block;width:6em;height:auto;filter:brightness(0)}
+    /* sketch "Estúdio" da home, em preto sobre o papel creme */
+    .fasc__est{display:block;overflow:hidden;width:3.3em;height:.854em;margin-top:.04em;margin-left:-.12em;line-height:0}
+    .fasc__est .estudio-boil{display:block;height:100%;width:400%;max-width:none;filter:brightness(0);animation:estudio-boil .28s steps(4) infinite}
+    .panel--fasc .qr-card{position:relative;right:auto;bottom:auto;flex-shrink:0;background:url('/divulgacao/fasc/qr_fundo.webp?v=3') 0 0/100% 100% no-repeat;border:0;border-radius:0;box-shadow:none;--qw:clamp(210px,27vw,320px);width:var(--qw);padding:calc(var(--qw)*.13) calc(var(--qw)*.13) calc(var(--qw)*.15);gap:6px;color:var(--areia);transform:rotate(-2deg)}
+    .panel--fasc .qr-card .qr-branco{border-radius:0}
+    .swipe-hint{min-height:44px;padding:0 14px}
+    /* ── ANÚNCIO no painel FASC: intervalo comercial dos produtos que não estão na feirinha ── */
+    .anuncio{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:5}
+    .an-int{position:absolute;inset:0;display:none}
+    .an-int.on{display:block}
+    /* intervalo: uma folha so, foto grande em cima e nome gigante embaixo; o papel abraca os dois */
+    .an-folha{position:absolute;left:var(--fx);top:var(--fy);width:var(--fw);transform:translate(-50%,-50%);background:url('/divulgacao/fasc/anuncio_folha.webp?v=6') 0 0/100% 100% no-repeat;display:flex;flex-direction:column;align-items:flex-start;gap:var(--gap);padding:var(--pad) var(--pad) calc(var(--pad) + var(--foot));opacity:0}
+    .an-fotos{position:relative;width:var(--pf);height:var(--pf);flex-shrink:0}
+    .an-foto{position:absolute;inset:-4%;width:108%;height:108%;max-width:none;opacity:0}
+    .an-nome{margin:0;width:100%;text-align:left;font-family:var(--clother);font-weight:900;font-size:var(--nf);line-height:1;letter-spacing:-.03em;text-transform:uppercase;color:var(--preto);text-wrap:balance}
+    .an-tira{position:absolute;margin:0;background:0 0/100% 100% no-repeat;color:var(--areia);font-family:var(--clother);font-weight:900;line-height:1;letter-spacing:.02em;text-transform:uppercase;white-space:nowrap;padding:.8em 1.4em;opacity:0;font-size:var(--tf)}
+    /* tiras nas cores da marca: laranja com areia no topo, dourado com preto no pe.
+       Eixo unico a esquerda: o texto das tiras e o nome comecam na borda esquerda da foto */
+    .an-folha .an-tira{left:calc(var(--pad) - 1.4em);transform-origin:1.4em 50%}
+    .an-folha .an-tira--topo{top:0;transform:translateY(-50%) rotate(-2deg);background-image:url('/divulgacao/fasc/anuncio_tira_laranja.webp?v=7');color:var(--areia)}
+    .an-folha .an-tira--pe{bottom:3%;transform:rotate(1.5deg);background-image:url('/divulgacao/fasc/anuncio_tira_dourado.webp?v=7');color:var(--preto)}
+    .panel--fasc .fasc__marca{transition:opacity .2s}
+    .panel--fasc.anunciando .fasc__marca{opacity:0}
+    /* ── TARÔ no painel FASC (a cada 2,5 min): tela escurece, sobe o azul do pano do /o-pratico, a carta vira e mostra o QR, depois se desfaz ── */
+    .tarot{position:absolute;inset:0;z-index:8;pointer-events:none;display:none;overflow:hidden}
+    .tarot.on{display:block}
+    .tr-preto{position:absolute;inset:0;background:#000;opacity:0}
+    .tr-azul{position:absolute;inset:0;opacity:0;background:url('/o-pratico/img/grao_tile.png') repeat,radial-gradient(ellipse 70% 80% at var(--cx) 50%,#2F4A6B 0%,#1C2E45 48%,#0B1420 100%)}
+    .tr-po{position:absolute;inset:0}
+    .tr-po i{position:absolute;left:0;top:0;background-size:contain;background-repeat:no-repeat;opacity:0;will-change:transform,opacity}
+    .tr-luz{position:absolute;left:var(--cx);top:50%;width:calc(var(--ch)*1.25);height:calc(var(--ch)*1.25);margin:calc(var(--ch)*-.625) 0 0 calc(var(--ch)*-.625);border-radius:50%;background:radial-gradient(circle,rgba(237,198,113,.32) 0%,rgba(237,198,113,.1) 38%,rgba(237,198,113,0) 66%);opacity:0}
+    .tr-carta{position:absolute;left:var(--cx);top:50%;width:var(--cw);height:var(--ch);margin:calc(var(--ch)/-2) 0 0 calc(var(--cw)/-2);perspective:calc(var(--ch)*4);opacity:0}
+    .tr-giro{position:absolute;inset:0;transform-style:preserve-3d}
+    .tr-giro img{position:absolute;inset:0;width:100%;height:100%;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:calc(var(--cw)*.035);box-shadow:0 calc(var(--ch)*.03) calc(var(--ch)*.08) rgba(0,0,0,.55)}
+    .tr-verso{transform:rotateY(180deg)}
+    .tr-texto{position:absolute;left:var(--tx);top:var(--ty);width:var(--tw);transform:translateY(-50%);color:#EFE8D6;text-align:var(--ta)}
+    .tr-t1{margin:0;font-family:"IM Fell English SC",Georgia,serif;font-size:var(--t1);line-height:1;letter-spacing:.02em;color:#EDC671;opacity:0;text-wrap:balance}
+    .tr-t2{margin:.45em 0 0;font-family:"IM Fell English",Georgia,serif;font-style:italic;font-size:var(--t2);line-height:1.25;opacity:0;text-wrap:balance}
+    /* ── VOLTO JÁ (painel 1): mesmo papel do FASC, Aratu dormindo no lugar do sol e da igreja ── */
+    .panel--volto .fasc__chao{justify-content:center}
+    @media (orientation:portrait) and (max-width:560px){ .panel--volto .fasc__chao{align-items:center} }
+    .volto__titulo{font-family:var(--clother);font-weight:900;font-size:clamp(72px,15vw,240px);line-height:.86;letter-spacing:-.03em;text-transform:uppercase;color:var(--preto);text-align:center;white-space:nowrap;margin:0}
+    .volto__aratu{position:absolute;left:204px;top:580px;width:673px;height:375px;transform-origin:336px 325px;transform:scale(1.35)}
+    .volto__bicho{position:absolute;inset:0;transform-origin:336px 325px}
+    .fasc__cena .volto__corpo{left:0;top:0;width:673px;height:375px}
+    .fasc__cena .volto__olho{top:30px;width:88px;height:128px;transform-origin:50% 50%}
+    .volto__olho--esq{left:196px}
+    .volto__olho--dir{left:390px}
+    .fasc__cena .volto__z{left:0;top:0;width:164px;height:197px;opacity:0}
+    @media (orientation:portrait){ .volto__titulo{font-size:clamp(56px,17.5vw,200px)} }
+    /* retrato: marca e QR lado a lado, centrados no papel creme; no celular empilham */
+    @media (orientation:portrait){ .fasc__chao{align-items:center;padding:0 var(--margem) calc(clamp(40px,6vh,72px) + env(safe-area-inset-bottom,0px))} .fasc__marca{font-size:clamp(32px,7.6vw,80px)} .panel--fasc .qr-card{--qw:clamp(150px,30vw,260px)} }
+    @media (orientation:portrait) and (max-width:560px){ .fasc__chao{flex-direction:column;align-items:flex-start;justify-content:center;gap:clamp(20px,4vh,40px)} .fasc__marca{font-size:clamp(32px,13vw,64px)} .panel--fasc .qr-card{align-self:flex-end;--qw:clamp(150px,42vw,200px)} }
+    @media (prefers-reduced-motion:reduce){ .fasc__cena img{will-change:auto} .swipe-hint,.estudio-boil{animation:none} }
+    .panel{flex:0 0 100%;width:100%;height:100%;scroll-snap-align:start;position:relative;overflow:hidden}
+    .qr-card{position:absolute;right:var(--margem);bottom:72px;z-index:6;background:var(--areia);border:2px solid var(--preto);border-radius:22px;box-shadow:7px 7px 0 0 var(--preto);padding:clamp(14px,1.6vw,22px);display:flex;flex-direction:column;align-items:center;gap:10px;width:clamp(190px,24vw,280px);text-decoration:none;color:var(--preto)}
+    .qr-card img{width:100%;height:auto;display:block;border-radius:6px}
+    .qr-card__lbl{font-family:var(--mono);font-size:clamp(.56rem,.9vw,.7rem);letter-spacing:.16em;text-transform:uppercase;text-align:center;line-height:1.5}
+    .qr-card__lbl b{font-weight:900}
+    .swipe-hint{position:absolute;bottom:calc(clamp(14px,2.6vh,28px) + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);z-index:7;font-family:var(--mono);font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--areia);opacity:.92;background:none;border:none;cursor:pointer;animation:sh 1.8s ease-in-out infinite}
+    @keyframes sh{0%,100%{transform:translateX(-50%)}50%{transform:translateX(calc(-50% + 7px))}}
+    .swipe-hint.back{animation:shb 1.8s ease-in-out infinite}
+    @keyframes shb{0%,100%{transform:translateX(-50%)}50%{transform:translateX(calc(-50% - 7px))}}
+    /* ── LOJA (painel 3) — produto grande a esquerda, valor grande a direita ── */
+    .panel--loja{background:var(--azul)}
+    .loja__label-tr{position:absolute;top:64px;right:var(--margem);text-align:right;z-index:3;display:flex;flex-direction:column;gap:4px}
+    .loja__label-tr .loja__titulo{font-family:var(--clother);font-weight:900;font-size:clamp(1.1rem,1.9vw,1.7rem);letter-spacing:-.01em;text-transform:uppercase;color:var(--areia)}
+    .loja__stage{position:absolute;inset:0}
+    .lj-card{position:absolute;inset:0;display:flex;flex-direction:row;align-items:center;justify-content:flex-start;gap:clamp(28px,5vw,90px);padding:clamp(24px,5vw,80px);opacity:0;transform:translateX(28px);transition:opacity .6s ease,transform .6s ease;pointer-events:none}
+    .lj-card.ativo{opacity:1;transform:translateX(0);pointer-events:auto}
+    .lj-card__img{position:relative;width:clamp(220px,28vw,400px);aspect-ratio:1/1;flex-shrink:0;border-radius:18px;overflow:hidden;background:var(--areia);border:2px solid var(--preto);box-shadow:7px 7px 0 0 var(--preto)}
+    .lj-card__img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+    .lj-card__img--sticker{width:auto;height:clamp(240px,44vh,430px);aspect-ratio:875/1241}
+    .lj-card__img--a3{width:auto;height:clamp(300px,56vh,540px);aspect-ratio:1131/1600}
+    .lj-card__img--a4{width:auto;height:clamp(200px,38vh,370px);aspect-ratio:1131/1600}
+    .lj-card__info{display:flex;flex-direction:column;align-items:center;text-align:center;gap:clamp(6px,1.2vh,16px);max-width:min(46vw,620px)}
+    .lj-card__txt{display:contents}
+    .lj-card__preco{display:flex;align-items:baseline;gap:4px;font-family:var(--clother);font-weight:900;font-size:clamp(2.2rem,6.5vw,5.6rem);line-height:.9;letter-spacing:-.02em;color:var(--areia);text-shadow:.05em .05em 0 var(--preto)}
+    .lj-card__preco small{font-family:var(--clother);font-weight:700;font-size:.28em}
+    .lj-card__nome{font-family:var(--clother);font-weight:900;font-size:clamp(2.2rem,6.5vw,5.6rem);line-height:.9;letter-spacing:-.02em;text-transform:uppercase;color:var(--areia);text-shadow:.05em .05em 0 var(--preto);order:-1}
+    .lj-card__tipo{font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(240,236,228,.6);order:1}
+    .loja__dots{position:absolute;bottom:64px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:3}
+    .loja__dots span{width:6px;height:6px;border-radius:50%;background:rgba(240,236,228,.35)}
+    .loja__dots span.ativo{background:var(--areia)}
+    @media (max-width:680px){ .lj-card{flex-direction:column-reverse;text-align:center} .lj-card__info{align-items:center;max-width:none} }
+    .brand-corner{position:fixed;left:var(--margem);bottom:clamp(20px,4vh,40px);z-index:20;font-size:clamp(22px,2.9vw,38px);pointer-events:none;opacity:1;visibility:visible;transition:opacity .35s ease}
+    .brand-corner.hide{opacity:0;visibility:hidden}
+    .brand-corner__logo{display:block;width:6em;height:auto;filter:brightness(0) invert(1)}
+    .brand-corner__est{display:block;overflow:hidden;width:3.3em;height:0.854em;margin-top:-0.05em;margin-left:-0.12em;line-height:0}
+    .brand-corner__est .estudio-boil{display:block;height:100%;width:400%;max-width:none;animation:estudio-boil .28s steps(4) infinite}
+    .qr-corner{position:fixed;top:50%;right:var(--margem);transform:translateY(-50%);z-index:20;opacity:0;visibility:hidden;transition:opacity .35s ease;display:flex;flex-direction:column;align-items:center;gap:clamp(10px,1.6vh,18px)}
+    .qr-corner.show{opacity:1;visibility:visible}
+    .qr-corner__card{background:var(--areia);border:2px solid var(--preto);border-radius:18px;box-shadow:6px 6px 0 0 var(--preto);padding:clamp(10px,1.2vw,16px);display:flex;flex-direction:column;align-items:center;gap:8px;width:clamp(128px,14vw,180px);text-decoration:none;color:var(--preto)}
+    .qr-corner__card img{width:100%;height:auto;display:block;border-radius:5px}
+    .qr-corner__lbl{font-family:var(--mono);font-size:clamp(.5rem,.8vw,.62rem);letter-spacing:.14em;text-transform:uppercase;text-align:center;line-height:1.5}
+    .qr-corner__lbl b{font-weight:900}
+  </style>
+</head>
+<body>
+  <div class="deck" id="deck">
+    <section class="panel panel--fasc" id="fasc">
+      <div class="fasc__cena" id="fascCena" aria-hidden="true">
+        <img class="fasc__sol" id="fascSol" src="/divulgacao/fasc/sol.webp?v=3" alt="" width="644" height="644">
+        <img class="fasc__frontao" id="fascFrontao" src="/divulgacao/fasc/frontao.webp?v=3" alt="" width="707" height="659">
+      </div>
+      <div class="fasc__faixa" id="fascFaixa" aria-hidden="true"></div>
+      <div class="anuncio" id="anuncio" aria-hidden="true">
+        <div class="an-int">
+          <div class="an-folha">
+            <div class="an-fotos"><img class="an-foto" src="/divulgacao/fasc/anuncio_domo.webp?v=7" alt="" width="996" height="996" data-nome="Domo Relógio"><img class="an-foto" src="/divulgacao/fasc/anuncio_farol.webp?v=7" alt="" width="996" height="996" data-nome="Relógio Farol"><img class="an-foto" src="/divulgacao/fasc/anuncio_inter.webp?v=7" alt="" width="996" height="996" data-nome="Interruptor"></div>
+            <p class="an-nome"></p>
+            <p class="an-tira an-tira--topo">Conheça mais da nossa loja</p>
+            <p class="an-tira an-tira--pe">Visite maratu.com.br</p>
+          </div>
+        </div>
+      </div>
+      <div class="tarot" id="tarot" aria-hidden="true">
+        <div class="tr-preto"></div>
+        <div class="tr-azul"></div>
+        <div class="tr-luz"></div>
+        <div class="tr-po"></div>
+        <div class="tr-carta"><div class="tr-giro"><img class="tr-frente" src="/divulgacao/fasc/tarot_frente.webp?v=1" alt="" width="820" height="1440"><img class="tr-verso" src="/divulgacao/fasc/tarot_verso.webp?v=1" alt="" width="820" height="1440"></div></div>
+        <div class="tr-texto"><p class="tr-t1">Tire sua sorte</p><p class="tr-t2">Descubra o que o Prático tem a dizer sobre ela</p></div>
+      </div>
+      <div class="fasc__chao" id="fascChao">
+        <h1 class="fasc__marca" aria-label="MARATU Estúdio"><img class="fasc__logo" src="/maratu-logo.svg?v=1" alt="MARATU" width="440" height="54"><span class="fasc__est"><img class="estudio-boil" src="/estudio-sprite.webp?v=1" alt="Estúdio" width="5252" height="340"></span></h1>
+        <a class="qr-card" href="https://instagram.com/maratuestudio" target="_blank" rel="noopener" aria-label="Siga a MARATU no Instagram">
+          <img class="qr-branco" src="/divulgacao/fasc/qr_branco.png?v=3" alt="QR do Instagram @maratuestudio" width="462" height="462">
+          <span class="qr-card__lbl">Siga no Instagram<br><b>@maratuestudio</b></span>
+        </a>
+      </div>
+    </section>
+    <section class="panel panel--fasc panel--volto" id="volto">
+      <div class="fasc__cena" aria-hidden="true">
+        <img class="volto__z" src="/divulgacao/fasc/z.webp?v=4" alt="" width="164" height="197">
+        <img class="volto__z" src="/divulgacao/fasc/z.webp?v=4" alt="" width="164" height="197">
+        <img class="volto__z" src="/divulgacao/fasc/z.webp?v=4" alt="" width="164" height="197">
+        <img class="volto__z" src="/divulgacao/fasc/z.webp?v=4" alt="" width="164" height="197">
+        <div class="volto__aratu"><div class="volto__bicho">
+          <img class="volto__corpo" src="/divulgacao/fasc/aratu_corpo.webp?v=3" alt="" width="673" height="375">
+          <img class="volto__olho volto__olho--esq" src="/divulgacao/fasc/olho_esq.webp?v=3" alt="" width="88" height="128">
+          <img class="volto__olho volto__olho--dir" src="/divulgacao/fasc/olho_dir.webp?v=3" alt="" width="88" height="127">
+        </div></div>
+      </div>
+      <div class="fasc__faixa" aria-hidden="true"></div>
+      <div class="fasc__chao"><h1 class="volto__titulo">Volto já</h1></div>
+    </section>
+    <section class="panel panel--loja" id="loja"><div class="loja__stage" id="ljStage">
+        <div class="lj-card ativo">
+          <div class="lj-card__img"><img src="/carranca-chaveiro.webp" alt="Chaveiro"></div>
+          <div class="lj-card__info"><p class="lj-card__preco"><small>R$</small>19</p><div class="lj-card__txt"><p class="lj-card__nome">Chaveiro</p><p class="lj-card__tipo">Chaveiro · 3D</p></div></div>
+        </div>
+        <div class="lj-card">
+          <div class="lj-card__img lj-card__img--sticker"><img src="/adesivos-origens.webp" alt="Adesivos Origens"></div>
+          <div class="lj-card__info"><p class="lj-card__preco"><small>R$</small>19</p><div class="lj-card__txt"><p class="lj-card__nome">Adesivos</p><p class="lj-card__tipo">Adesivos · 12 un</p></div></div>
+        </div>
+        <div class="lj-card">
+          <div class="lj-card__img lj-card__img--a3"><img src="/poster-destrua.webp" alt="Pôster Destrua o Império A3"></div>
+          <div class="lj-card__info"><p class="lj-card__preco"><small>R$</small>109</p><div class="lj-card__txt"><p class="lj-card__nome">Pôster A3</p><p class="lj-card__tipo">Pôster · A3</p></div></div>
+        </div>
+        <div class="lj-card">
+          <div class="lj-card__img lj-card__img--a4"><img src="/poster-destrua.webp" alt="Pôster Destrua o Império A4"></div>
+          <div class="lj-card__info"><p class="lj-card__preco"><small>R$</small>59</p><div class="lj-card__txt"><p class="lj-card__nome">Pôster A4</p><p class="lj-card__tipo">Pôster · A4</p></div></div>
+        </div>
+        <div class="lj-card">
+          <div class="lj-card__img"><img src="/kit-cobogo-praia.webp" alt="Cobogó"></div>
+          <div class="lj-card__info"><p class="lj-card__preco"><small>R$</small>49</p><div class="lj-card__txt"><p class="lj-card__nome">Cobogó</p><p class="lj-card__tipo">Cobogó · 15×15cm</p></div></div>
+        </div>
+        <div class="lj-card">
+          <div class="lj-card__img"><img src="/relogio-farol.webp" alt="Relógio Farol"></div>
+          <div class="lj-card__info"><p class="lj-card__preco"><small>R$</small>329</p><div class="lj-card__txt"><p class="lj-card__nome">Relógio</p><p class="lj-card__tipo">Relógio · Decor</p></div></div>
+        </div>
+      </div>
+      <div class="loja__dots" id="ljDots"></div>
+      <button class="swipe-hint back" id="toPixFromLoja" type="button">&larr; início</button>
+    </section>
+  </div>
+  <div class="brand-corner" aria-label="MARATU Estúdio">
+    <img class="brand-corner__logo" src="/maratu-logo.svg?v=1" alt="MARATU">
+    <span class="brand-corner__est"><img class="estudio-boil" src="/estudio-sprite.webp?v=1" alt="Estúdio"></span>
+  </div>
+  <div class="qr-corner">
+    <a class="qr-corner__card" href="https://instagram.com/maratuestudio" target="_blank" rel="noopener" aria-label="Siga a MARATU no Instagram">
+      <img src="/divulgacao/ig-qr.png?v=2" alt="QR do Instagram @maratuestudio" width="462" height="462">
+      <span class="qr-corner__lbl">Siga no Instagram<br><b>@maratuestudio</b></span>
+    </a>
+  </div>
+  <script>
+
+    // CENAS DE PAPEL (FASC e Volto ja): mesmo ceu, faixa e chao; stop motion a 6 poses/s, 48 poses = 8 s em loop
+    (function(){
+      var NP=48,p=0,timer=null,cenas=[];
+      function ruido(p,k){ var v=Math.sin((p%NP)*12.9898+k*78.233)*43758.5453; return ((v%2)+2)%2-1; }
+      function arrumaUma(c){
+        var painel=c.painel,w=painel.clientWidth,h=painel.clientHeight,s,topo=.06*h;
+        if(w>h){ s=Math.min((.55*h-topo)/602, w*.62/1080); }
+        else { s=Math.min(w/1080,(.5*h-topo)/602); }
+        // o papel creme precisa caber o conteudo com 48 px livres abaixo da faixa
+        var cs=getComputedStyle(c.chao), pb=parseFloat(cs.paddingBottom), alvo=c.alvo, qr=c.chao.querySelector('.qr-card'),
+            col=cs.flexDirection==='column';
+        var conteudo=!qr?alvo.offsetHeight:(col?alvo.offsetHeight+qr.offsetHeight+parseFloat(cs.rowGap||0):(w>h?alvo.offsetHeight:Math.max(alvo.offsetHeight,qr.offsetHeight)));
+        s=Math.min(s,(h-conteudo-pb-48-topo)/771);
+        function poe(s){
+          var ox=w/2-540*s, oy=topo-229*s;
+          c.cena.style.transform='translate('+ox+'px,'+oy+'px) scale('+s+')';
+          c.faixa.style.top=(oy+831*s)+'px'; c.faixa.style.height=(169*s)+'px';
+          c.faixa.style.backgroundSize=(2160*s)+'px 100%'; c.faixa.style.backgroundPosition=ox+'px 0';
+          c.chao.style.top=(oy+975*s)+'px';
+        }
+        poe(s);
+        // confere na tela de verdade: se a marca ficou a menos de 48 px da faixa (fonte ou tela mudou depois), encolhe a cena
+        for(var i=0;i<4;i++){ var folga=alvo.getBoundingClientRect().top-c.faixa.getBoundingClientRect().bottom;
+          if(folga>=47) break; s-=(48-folga)/746*(col||w<=h?1.6:1.05); poe(s); }
+        if(c.anuncio) arrumaAnuncio(c,w,h);
+      }
+      // ANUNCIO: usa a tela toda menos o QR. Deitado, a faixa a esquerda do QR; em pe, tudo acima dele
+      function arrumaAnuncio(c,w,h){
+        var an=c.anuncio, q=c.chao.querySelector('.qr-card').getBoundingClientRect(), pr=c.painel.getBoundingClientRect(),
+            m=Math.max(16,Math.min(w,h)*.035), R;
+        if(w>h) R={x0:0,y0:0,x1:q.left-pr.left-12,y1:h};
+        else R={x0:0,y0:0,x1:w,y1:q.top-pr.top-12};
+        var Rw=R.x1-R.x0, Rh=R.y1-R.y0, tf=Math.max(13,Math.min(Rh*.04,Rw*.035)), sobra=tf*1.3;   // a tira de cima passa da borda da folha
+        // largura da palavra mais longa dos nomes, em em (mede na fonte de verdade)
+        if(!an.palavra){ var t=document.createElement('span'); t.style.cssText='position:absolute;visibility:hidden;white-space:nowrap;font:900 100px Clother,sans-serif;letter-spacing:-.03em;text-transform:uppercase';
+          document.body.appendChild(t); an.palavra=0; an.fotos.forEach(function(f){ f.dataset.nome.split(' ').forEach(function(wd){ t.textContent=wd; an.palavra=Math.max(an.palavra,t.offsetWidth/100); }); }); t.remove(); }
+        // foto em cima, nome embaixo; o nome nunca e mais largo que a foto, e a folha tem a largura da foto
+        var P=an.palavra+.15, fwMax=Rw-26, fhMax=Rh-m-sobra-6-Rh*.025,   /* 2,5% a menos: o papel gira e a caixa cresce */ pad=Math.min(fwMax,fhMax)*.05, gap=pad*.5, foot=tf*2.6, livre=fhMax-2*pad-foot-gap;
+        var pf=Math.min(fwMax-2*pad, livre/(1+1.8/P)), nf=Math.min(pf/P, fhMax*.11); pf=Math.min(fwMax-2*pad, livre-1.8*nf);
+        an.lim={fwMax:fwMax,fhMax:fhMax,pad:pad,P:P,pf:pf};
+        var v={'--fx':(R.x0+14+fwMax/2)+'px','--fy':(R.y0+m+sobra+fhMax/2)+'px','--fw':(pf+2*pad)+'px','--pad':pad+'px','--gap':gap+'px','--pf':pf+'px','--nf':nf+'px','--tf':tf+'px','--foot':foot+'px'};
+        // o anuncio passa por cima do MARATU? entao o logo some enquanto ele roda (meio logo coberto parece erro)
+        var mk=c.alvo.getBoundingClientRect(); c.escondeMarca=mk.left-pr.left<R.x1&&mk.top-pr.top<R.y1;
+        for(var k in v) an.style.setProperty(k,v[k]);
+      }
+      // mede a folha montada com cada nome; se passar da altura ou da largura livre, encolhe a foto e o nome juntos
+      function ajustaFolha(c){
+        var an=c.anuncio, L=an.lim; if(!L||!an.int.classList.contains('on'))return;
+        var guarda=an.nome.textContent, pf=L.pf;
+        for(var i=0;i<4;i++){
+          var hMax=0,wMax=0; an.fotos.forEach(function(f){ an.nome.textContent=f.dataset.nome; hMax=Math.max(hMax,an.folha.offsetHeight); wMax=Math.max(wMax,an.folha.offsetWidth); });
+          var k=Math.min(1,L.fhMax/hMax,L.fwMax/wMax); if(k>=.995) break;
+          pf=pf*k-4; var nf=Math.min(pf/L.P,L.fhMax*.11);
+          an.style.setProperty('--pf',pf+'px'); an.style.setProperty('--nf',nf+'px'); an.style.setProperty('--fw',(pf+2*L.pad)+'px');
+        }
+        an.nome.textContent=guarda;
+      }
+      function arruma(){ cenas.forEach(arrumaUma); }
+      // FASC: sol gira uma volta em 8 s, frontao balanca no pe
+      // TARO: 32 s. Escurece, sobe o azul do pano, a carta do Pratico aparece, vira pro QR, balanca devagar e se desfaz em glifos
+      var TAROT=(function(){
+        var el=document.getElementById('tarot'); if(!el)return null;
+        var preto=el.querySelector('.tr-preto'),azul=el.querySelector('.tr-azul'),luz=el.querySelector('.tr-luz'),po=el.querySelector('.tr-po'),
+            carta=el.querySelector('.tr-carta'),giro=el.querySelector('.tr-giro'),fr=el.querySelector('.tr-frente'),vs=el.querySelector('.tr-verso'),t1=el.querySelector('.tr-t1'),t2=el.querySelector('.tr-t2'),anims=[],rodando=false;
+        // glifos dourados da pagina /o-pratico (mesmo desenho)
+        var EST4=new Path2D('M0 -10 L2.4 -2.4 L10 0 L2.4 2.4 L0 10 L-2.4 2.4 L-10 0 L-2.4 -2.4Z');
+        function sprite(f){var c=document.createElement('canvas');c.width=c.height=96;var x=c.getContext('2d');x.scale(1.5,1.5);x.translate(32,32);x.strokeStyle=x.fillStyle='#EDC671';x.lineWidth=2.6;x.lineCap='round';x.lineJoin='round';f(x);return 'url('+c.toDataURL()+')';}
+        var GL=null;
+        function glifos(){ if(GL)return GL; GL=[
+          sprite(function(x){x.beginPath();x.arc(0,0,17,0,7);x.fill();x.globalCompositeOperation='destination-out';x.beginPath();x.arc(8,-5,15,0,7);x.fill();}),
+          sprite(function(x){x.scale(2.1,2.1);x.fill(EST4);}),
+          sprite(function(x){for(var k=0;k<8;k++){var a=k*Math.PI/4,L=k%2?11:19;x.beginPath();x.moveTo(Math.cos(a)*5,Math.sin(a)*5);x.lineTo(Math.cos(a)*L,Math.sin(a)*L);x.stroke();}}),
+          sprite(function(x){x.beginPath();x.arc(0,0,13,0,7);x.stroke();x.beginPath();x.arc(0,0,3.6,0,7);x.fill();}),
+          sprite(function(x){x.beginPath();x.moveTo(-14,-9);x.lineTo(14,-9);x.lineTo(0,15);x.closePath();x.stroke();}),
+          sprite(function(x){x.beginPath();x.moveTo(-18,2);for(var k=0;k<4;k++)x.quadraticCurveTo(-14+k*9,k%2?9:-7,-9+k*9,2);x.stroke();}),
+          sprite(function(x){x.beginPath();for(var k=0;k<16;k++){var a=k*Math.PI/8-Math.PI/2,r=k%4===0?19:(k%2?4.2:11);x.lineTo(Math.cos(a)*r,Math.sin(a)*r);}x.closePath();x.fill();})
+        ]; return GL; }
+        function glifo(sz){ var i=document.createElement('i'); i.style.width=i.style.height=sz+'px'; var g=glifos(); i.style.backgroundImage=g[Math.floor(Math.random()*g.length)]; po.appendChild(i); return i; }
+        function an(a){ anims.push(a); return a; }
+        var EASE='cubic-bezier(.23,1,.32,1)', MOVE='cubic-bezier(.77,0,.175,1)';
+        // a curva vai em cada trecho; passada nas opcoes ela deformaria o tempo do roteiro inteiro de 32 s
+        function kf(l,e){ return l.map(function(k){ var o={}; for(var p in k)o[p]=k[p]; if(!('easing' in o))o.easing=e; return o; }); }
+        function mede(){
+          var w=el.clientWidth,h=el.clientHeight,deitado=w>h*1.05,ch,cw,cx;
+          if(deitado){ ch=h*.84; cw=ch*70/123; cx=w*.36;
+            var tx=cx+cw/2+w*.05; el.style.setProperty('--tx',tx+'px'); el.style.setProperty('--tw',Math.min(w-tx-w*.05,560)+'px'); el.style.setProperty('--ty','50%'); el.style.setProperty('--ta','left');
+            el.style.setProperty('--t1',Math.min(h*.11,(w-tx)*.16)+'px'); el.style.setProperty('--t2',Math.min(h*.045,(w-tx)*.065)+'px'); }
+          else { ch=Math.min(h*.6,w*.9*123/70); cw=ch*70/123; cx=w/2;
+            el.style.setProperty('--tx',(w*.08)+'px'); el.style.setProperty('--tw',(w*.84)+'px'); el.style.setProperty('--ty',(h/2+ch/2+(h/2-ch/2)/2)+'px'); el.style.setProperty('--ta','center');
+            el.style.setProperty('--t1',Math.min(w*.11,h*.06)+'px'); el.style.setProperty('--t2',Math.min(w*.045,h*.026)+'px'); }
+          el.style.setProperty('--cw',cw+'px'); el.style.setProperty('--ch',ch+'px'); el.style.setProperty('--cx',cx+'px');
+          return {w:w,h:h,cw:cw,ch:ch,cx:cx};
+        }
+        function flutua(M,t0,t1){   // glifos subindo devagar pela tela inteira
+          var n=M.w<600?12:22;
+          for(var k=0;k<n;k++){ var sz=12+Math.random()*14,g=glifo(sz),x=Math.random()*M.w,dx=(Math.random()-.5)*120,r=Math.random()*360,dr=(Math.random()-.5)*160,
+              d=(t1-t0)*(.55+Math.random()*.45),ini=t0+Math.random()*(t1-t0-d),op=.35+Math.random()*.45;
+            an(g.animate([{transform:'translate('+x+'px,'+(M.h+30)+'px) rotate('+r+'deg)',opacity:0},{opacity:op,offset:.15},{opacity:op,offset:.8},{transform:'translate('+(x+dx)+'px,'+(-40)+'px) rotate('+(r+dr)+'deg)',opacity:0}],{duration:d,delay:ini,fill:'both',easing:'linear'})); }
+        }
+        function explode(M,t,n,dist,dur){   // glifos saindo da carta
+          for(var k=0;k<n;k++){ var sz=10+Math.random()*16,g=glifo(sz),x=M.cx+(Math.random()-.5)*M.cw,y=M.h/2+(Math.random()-.5)*M.ch,a=Math.atan2(y-M.h/2,x-M.cx)+(Math.random()-.5)*.8,
+              dd=dist*(.4+Math.random()*.8),r=Math.random()*360;
+            an(g.animate([{transform:'translate('+(x-sz/2)+'px,'+(y-sz/2)+'px) rotate('+r+'deg) scale(.4)',opacity:0},{opacity:.95,offset:.12},{transform:'translate('+(x-sz/2+Math.cos(a)*dd)+'px,'+(y-sz/2+Math.sin(a)*dd-dd*.25)+'px) rotate('+(r+180)+'deg) scale(1)',opacity:0}],
+              {duration:dur*(.7+Math.random()*.5),delay:t+Math.random()*400,fill:'both',easing:EASE})); }
+        }
+        function para(){ anims.forEach(function(a){ try{a.cancel();}catch(e){} }); anims=[]; po.innerHTML=''; el.classList.remove('on'); rodando=false; }
+        function comeca(){
+          para(); el.classList.add('on'); rodando=true; var M=mede(), D=32000; el.dataset.t0=performance.now();
+          an(preto.animate(kf([{opacity:0},{opacity:1,offset:1200/D},{opacity:1,offset:29800/D},{opacity:0}],'ease-in-out'),{duration:D,fill:'both'}));
+          an(azul.animate(kf([{opacity:0},{opacity:0,offset:900/D},{opacity:1,offset:4200/D},{opacity:1,offset:28600/D},{opacity:0,offset:30800/D},{opacity:0}],'ease-in-out'),{duration:D,fill:'both'}));
+          an(luz.animate(kf([{opacity:0,transform:'scale(.6)'},{opacity:0,transform:'scale(.6)',offset:2600/D},{opacity:1,transform:'scale(1)',offset:5200/D},{opacity:.7,transform:'scale(.92)',offset:12000/D},{opacity:1,transform:'scale(1.04)',offset:19000/D},{opacity:.75,transform:'scale(.95)',offset:26500/D},{opacity:0,transform:'scale(1.3)',offset:29000/D},{opacity:0}],'ease-in-out'),{duration:D,fill:'both'}));
+          // carta: aparece de frente (2,6 s), vira pro QR (6 s), balanca devagar, se desfaz (27 s)
+          an(carta.animate(kf([{opacity:0,transform:'translateY(6%) scale(.82)',filter:'blur(0px)'},{opacity:0,transform:'translateY(6%) scale(.82)',filter:'blur(0px)',offset:2600/D},
+            {opacity:1,transform:'translateY(0) scale(1)',filter:'blur(0px)',offset:5000/D},{opacity:1,transform:'translateY(0) scale(1)',filter:'blur(0px)',offset:26800/D},
+            {opacity:0,transform:'translateY(-3%) scale(1.08)',filter:'blur(10px)',offset:28800/D},{opacity:0,transform:'translateY(-3%) scale(1.08)',filter:'blur(10px)'}],EASE),{duration:D,fill:'both'}));
+          // todos os quadros com a mesma lista (rotateY rotateZ translateY): senao o navegador interpola por matriz e, perto de 180 graus, a carta passa de lado e some
+          function G(y,z,t){ return 'rotateY('+y+'deg) rotateZ('+z+'deg) translateY('+t+'%)'; }
+          var bal=[{transform:G(0,0,0)},{transform:G(0,0,0),offset:6000/D},{transform:G(186,-1,0),offset:7300/D},{transform:G(180,0,0),offset:7900/D}];
+          for(var k=0;k<6;k++){ var t=7900+(k+1)*3000; bal.push({transform:G(180+(k%2?-9:9),k%2?1.2:-1.2,k%2?-1.2:1.2),offset:Math.min(t,26800)/D}); }
+          bal.push({transform:G(180,0,0),offset:27000/D},{transform:G(180,0,0)});
+          an(giro.animate(kf(bal,'ease-in-out'),{duration:D,fill:'both'}));
+          // troca de face no instante em que a carta passa de lado (90 graus). O WebKit ignora backface-visibility
+          // quando a carta tem opacidade ou filtro animado, entao a face escondida vai por opacidade
+          var VIRA=6640;
+          an(fr.animate([{opacity:1},{opacity:1,offset:VIRA/D},{opacity:0,offset:(VIRA+1)/D},{opacity:0}],{duration:D,fill:'both'}));
+          an(vs.animate([{opacity:0},{opacity:0,offset:VIRA/D},{opacity:1,offset:(VIRA+1)/D},{opacity:1}],{duration:D,fill:'both'}));
+          an(t1.animate(kf([{opacity:0,transform:'translateY(14px)'},{opacity:0,transform:'translateY(14px)',offset:7600/D},{opacity:1,transform:'translateY(0)',offset:8600/D},{opacity:1,offset:26600/D},{opacity:0,offset:28000/D},{opacity:0}],EASE),{duration:D,fill:'both'}));
+          an(t2.animate(kf([{opacity:0,transform:'translateY(14px)'},{opacity:0,transform:'translateY(14px)',offset:7800/D},{opacity:1,transform:'translateY(0)',offset:8800/D},{opacity:1,offset:26600/D},{opacity:0,offset:28000/D},{opacity:0}],EASE),{duration:D,fill:'both'}));
+          flutua(M,1500,30500);
+          explode(M,6300,26,M.ch*.45,1800);     // brilho ao virar
+          explode(M,26900,60,M.ch*.9,2600);     // a carta se desfaz
+          setTimeout(function(){ if(rodando)para(); },D+100);
+        }
+        return {comeca:comeca,para:para};
+      })();
+      // ROTEIRO de 2,5 min: cena, intervalo, cena, intervalo, cena, taro (?anuncio=1 comeca no intervalo, ?anuncio=3 no taro, pra conferir)
+      var ROTEIRO=[['cena',180],['int',84],['cena',180],['int',84],['cena',180],['tarot',192]], ri=0, rq=0;
+      if(/anuncio=1/.test(location.search)) ri=1; if(/anuncio=3/.test(location.search)) ri=5;
+      function some(el){ el.style.opacity=0; }
+      function mostra(el,tx,ty,rot,sc,op){ el.style.opacity=op==null?1:op; el.style.translate=(tx||0)+' '+(ty||0); el.style.rotate=(rot||0)+'deg'; el.style.scale=sc||1; }
+      function tapa(el,j,r0){ if(j<0){ some(el); return; } if(j===0)mostra(el,0,'-6%',r0+5,1.18); else if(j===1)mostra(el,0,0,r0-2,.96); else mostra(el,0,0,r0+.6*ruido(p,30+r0),1); }
+      function poseAnuncio(c){
+        var a=c.anuncio, modo=ROTEIRO[ri][0], q=rq;
+        if(++rq>=ROTEIRO[ri][1]){ rq=0; ri=(ri+1)%ROTEIRO.length; }
+        a.int.classList.toggle('on',modo==='int');
+        if(modo==='tarot'&&q===0&&TAROT) TAROT.comeca();
+        if(modo==='int'&&q===0){ a.nome.textContent=a.fotos[0].dataset.nome; arrumaUma(c); ajustaFolha(c); }   // cada intervalo confere a medida antes de entrar
+        c.painel.classList.toggle('anunciando',modo!=='cena'&&!!c.escondeMarca);
+        if(modo==='int'){
+          var f=a.folha;
+          if(q<3) mostra(f,0,['-120%','-45%','6%'][q],[-8,-4,2][q]);
+          else if(q<78) mostra(f,0,0,.4*ruido(p,40));
+          else if(q<81) mostra(f,0,['-8%','-50%','-130%'][q-78],[-2,-6,-9][q-78]);
+          else some(f);
+          tapa(a.itopo,q-5,0); tapa(a.ipe,q-8,0);
+          var k=q<10?-1:Math.min(2,Math.floor((q-10)/22)), j=(q-10)-k*22;
+          a.fotos.forEach(function(ft,i){ if(i===k)tapa(ft,j,-1); else some(ft); });
+          if(k>=0&&j===0) a.nome.textContent=a.fotos[k].dataset.nome; if(q===0) a.nome.textContent=a.fotos[0].dataset.nome;   // a folha ja entra com o nome, sem pular de altura
+        }
+      }
+      // tocou na tela: o anuncio sai e a contagem da cena recomeca
+      document.addEventListener('pointerdown',function(){ if(ROTEIRO[ri][0]!=='cena'){ ri=(ri+1)%ROTEIRO.length; } rq=0;
+        if(TAROT) TAROT.para();
+        cenas.forEach(function(c){ if(c.anuncio){ c.anuncio.int.classList.remove('on'); c.painel.classList.remove('anunciando'); } }); },{passive:true});
+      function poseFasc(c){
+        if(c.anuncio) poseAnuncio(c);
+        var a=360*p/NP+.8*ruido(p,1);
+        c.sol.style.transform='translate('+1.2*ruido(p,2)+'px,'+1.2*ruido(p,3)+'px) rotate('+a+'deg)';
+        var f=2*Math.PI*p/24;
+        c.fr.style.transform='translate('+(7*Math.sin(f+.6)+.8*ruido(p,5))+'px,'+(.6*ruido(p,6))+'px) rotate('+(-(1.6*Math.sin(f)+.25*ruido(p,4)))+'deg)';
+      }
+      // VOLTO JA: Aratu respira, olhos pesados de sono fecham devagar, piscam e voltam; Z sobem do lado da cabeca
+      var OLHO=[.55,.55,.55,.55,.55,.55,.55,.55,.5,.42,.33,.24,.16,.1,.06,.06,.06,.06,.06,.06,.06,.06,.06,.06,.06,.06,.06,.06,.3,.55,.55,.55,.55,.55,.55,.55,.06,.55,.55,.55,.55,.55,.06,.55,.55,.55,.55,.55];
+      function poseVolto(c){
+        var f=2*Math.PI*p/24;
+        c.bicho.style.transform='scale(1,'+(1+.035*Math.sin(f))+') rotate('+(.5*ruido(p,11))+'deg)';
+        var o=OLHO[p];
+        c.olhos[0].style.transform='scaleY('+(o+.02*ruido(p,12))+')';
+        c.olhos[1].style.transform='scaleY('+(o+.02*ruido(p,13))+')';
+        c.zs.forEach(function(z,i){
+          var t=((p+i*12)%NP)/NP;
+          if(t>.88){ z.style.opacity=0; return; }
+          var x=700+220*t+24*Math.sin(t*9+i), y=480-250*t, sc=.32+.58*t, r=-14+26*t+3*ruido(p,20+i);
+          z.style.opacity=1;
+          z.style.transform='translate('+(x-82)+'px,'+(y-98)+'px) rotate('+r+'deg) scale('+sc+')';
+        });
+      }
+      [['fasc',poseFasc],['volto',poseVolto]].forEach(function(d){
+        var painel=document.getElementById(d[0]); if(!painel)return;
+        var c={painel:painel,pose:d[1],vis:false,cena:painel.querySelector('.fasc__cena'),faixa:painel.querySelector('.fasc__faixa'),
+               chao:painel.querySelector('.fasc__chao'),alvo:painel.querySelector('.fasc__marca,.volto__titulo'),
+               sol:painel.querySelector('.fasc__sol'),fr:painel.querySelector('.fasc__frontao'),bicho:painel.querySelector('.volto__bicho'),
+               olhos:painel.querySelectorAll('.volto__olho'),zs:Array.prototype.slice.call(painel.querySelectorAll('.volto__z'))};
+        var an=painel.querySelector('.anuncio');
+        if(an){ c.anuncio=Object.assign(an,{int:an.querySelector('.an-int'),folha:an.querySelector('.an-folha'),nome:an.querySelector('.an-nome'),
+          itopo:an.querySelector('.an-folha .an-tira--topo'),ipe:an.querySelector('.an-folha .an-tira--pe'),fotos:Array.prototype.slice.call(an.querySelectorAll('.an-foto'))}); }
+        cenas.push(c);
+      });
+      arruma(); window.addEventListener('resize',arruma);
+      // no iPad (app instalado) a tela e a fonte podem chegar depois do primeiro calculo: refaz quando qualquer uma mudar
+      window.addEventListener('orientationchange',function(){ setTimeout(arruma,300); });
+      window.addEventListener('pageshow',arruma);
+      if(window.visualViewport) visualViewport.addEventListener('resize',arruma);
+      setTimeout(arruma,800); setTimeout(arruma,2500);
+      if(document.fonts&&document.fonts.ready) document.fonts.ready.then(function(){ cenas.forEach(function(c){ if(c.anuncio) c.anuncio.palavra=0; }); arruma(); });   // mede de novo na Clother carregada
+      var parado=matchMedia('(prefers-reduced-motion: reduce)').matches;
+      function quadro(){ cenas.forEach(function(c){ if(c.vis)c.pose(c); }); p=(p+1)%NP; }
+      if(parado){ cenas.forEach(function(c){ if(c.zs.length){ var z=c.zs[1]; z.style.opacity=1; z.style.transform='translate(720px,240px) rotate(-6deg) scale(.6)'; } c.olhos.forEach&&c.olhos.forEach(function(o){ o.style.transform='scaleY(.06)'; }); }); return; }
+      function confere(){ var algum=!document.hidden&&cenas.some(function(c){return c.vis;});
+        if(algum&&!timer){ quadro(); timer=setInterval(quadro,1000/6); } else if(!algum&&timer){ clearInterval(timer); timer=null; } }
+      // parado quando o painel sai da tela ou a aba some
+      var io=new IntersectionObserver(function(es){ es.forEach(function(e){ cenas.forEach(function(c){ if(c.painel===e.target)c.vis=e.isIntersecting; }); }); confere(); },{threshold:.15});
+      cenas.forEach(function(c){ io.observe(c.painel); });
+      document.addEventListener('visibilitychange',confere);
+    })();
+
+    // SWIPE: toque usa scroll nativo; mouse usa drag-to-scroll
+    var deck=document.getElementById('deck');
+    (function(){
+      var down=false,sx=0,sl=0,moved=false;
+      deck.addEventListener('pointerdown',function(e){ if(e.pointerType!=='mouse')return; down=true;moved=false;sx=e.clientX;sl=deck.scrollLeft;deck.classList.add('dragging'); });
+      window.addEventListener('pointermove',function(e){ if(!down)return; var dx=e.clientX-sx; if(Math.abs(dx)>4)moved=true; deck.scrollLeft=sl-dx; });
+      window.addEventListener('pointerup',function(){ if(!down)return; down=false; deck.classList.remove('dragging'); var w=window.innerWidth; deck.scrollTo({left:Math.round(deck.scrollLeft/w)*w,behavior:'smooth'}); });
+      deck.querySelectorAll('img,a').forEach(function(el){ el.setAttribute('draggable','false'); });
+      // impede clique acidental do link apos arraste
+    })();
+    function goTo(i){ deck.scrollTo({left:i*window.innerWidth,behavior:'smooth'}); }
+    // body herda a cor do painel visivel (o iPadOS "estende" o bg do body atras da barra de janela)
+    var panelBg=['#F6EFE5','#F6EFE5','#0E3272'];
+    function syncBg(){ var i=Math.round(deck.scrollLeft/window.innerWidth); document.body.style.background=panelBg[i]||panelBg[0];
+      var q=document.querySelector('.qr-corner'); if(q) q.classList.toggle('show', i===2);
+      // nos paineis de papel (FASC e Volto ja) o lockup do canto some: no FASC a marca ja esta no chao, no Volto ja ele sumiria no creme
+      var b=document.querySelector('.brand-corner'); if(b) b.classList.toggle('hide', i<2); }
+    deck.addEventListener('scroll',syncBg,{passive:true}); syncBg();
+        document.getElementById('toPixFromLoja').addEventListener('click',function(){ goTo(0); });
+
+    // LOJA: troca os blocos de produto um por vez (fade+slide)
+    (function(){
+      var stage=document.getElementById('ljStage'); if(!stage)return;
+      var cards=stage.querySelectorAll('.lj-card'); if(cards.length<2)return;
+      var dotsWrap=document.getElementById('ljDots');
+      cards.forEach(function(_,idx){ var d=document.createElement('span'); if(idx===0)d.className='ativo'; dotsWrap.appendChild(d); });
+      var dots=dotsWrap.querySelectorAll('span');
+      var i=0;
+      setInterval(function(){
+        cards[i].classList.remove('ativo'); dots[i].classList.remove('ativo');
+        i=(i+1)%cards.length;
+        cards[i].classList.add('ativo'); dots[i].classList.add('ativo');
+      },3400);
+    })();
+
+    // ALWAYS ON
+    var _wl=null; async function lock(){ try{ if('wakeLock' in navigator){ _wl=await navigator.wakeLock.request('screen'); } }catch(e){} }
+    document.addEventListener('visibilitychange',function(){ if(document.visibilityState==='visible')lock(); }); lock();
+    window.addEventListener('pointerdown',function o(){ lock(); window.removeEventListener('pointerdown',o); });
+    // TELA CHEIA no 1o toque (fora do PWA)
+    function full(){ var el=document.documentElement,r=el.requestFullscreen||el.webkitRequestFullscreen; if(r){ try{ var p=r.call(el); if(p&&p.catch)p.catch(function(){}); }catch(e){} } }
+    var st=matchMedia('(display-mode: fullscreen)').matches||matchMedia('(display-mode: standalone)').matches||navigator.standalone;
+    if(!st){ window.addEventListener('pointerdown',function o(){ full(); window.removeEventListener('pointerdown',o); }); }
+    // pagina de teste: sem service worker (nao mexe no app do quiosque)
+
+  </script>
+</body>
+</html>

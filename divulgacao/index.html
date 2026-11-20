@@ -382,9 +382,12 @@
         }
         var relogios=[];
         function para(){ relogios.forEach(clearTimeout); relogios=[]; var v=el.querySelector('video'); if(v){ try{v.pause();}catch(e){} }
-          anims.forEach(function(a){ try{a.cancel();}catch(e){} }); anims=[]; po.innerHTML=''; el.classList.remove('on'); rodando=false; }
+          anims.forEach(function(a){ try{a.cancel();}catch(e){} }); anims=[];
+          if(rodando){ document.documentElement.style.background=''; if(typeof syncBg==='function') syncBg(); } po.innerHTML=''; el.classList.remove('on'); rodando=false; }
         function comeca(){
-          para(); el.classList.add('on'); rodando=true; var M=mede(), D=32000; el.dataset.t0=performance.now();
+          para(); el.classList.add('on'); rodando=true; var M=mede(), D=32000;
+          // no app do iPad aparecem uns 20 px de fundo da pagina abaixo do painel (barra de inicio): no taro esse fundo fica escuro tambem
+          document.documentElement.style.background=document.body.style.background='#0B1420'; el.dataset.t0=performance.now();
           an(preto.animate(kf([{opacity:0},{opacity:1,offset:1200/D},{opacity:1,offset:29800/D},{opacity:0}],'ease-in-out'),{duration:D,fill:'both'}));
           an(azul.animate(kf([{opacity:0},{opacity:0,offset:900/D},{opacity:1,offset:4200/D},{opacity:1,offset:28600/D},{opacity:0,offset:30800/D},{opacity:0}],'ease-in-out'),{duration:D,fill:'both'}));
           an(luz.animate(kf([{opacity:0,transform:'scale(.6)'},{opacity:0,transform:'scale(.6)',offset:2600/D},{opacity:1,transform:'scale(1)',offset:5200/D},{opacity:.7,transform:'scale(.92)',offset:12000/D},{opacity:1,transform:'scale(1.04)',offset:19000/D},{opacity:.75,transform:'scale(.95)',offset:26500/D},{opacity:0,transform:'scale(1.3)',offset:29000/D},{opacity:0}],'ease-in-out'),{duration:D,fill:'both'}));

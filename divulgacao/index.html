@@ -6,7 +6,7 @@
   <title>MARATU · Divulgação</title>
   <meta name="robots" content="noindex">
   <link rel="manifest" href="/divulgacao/divulgacao.webmanifest">
-  <meta name="theme-color" content="#3C74C4">
+  <meta name="theme-color" content="#3C74C4" id="corTema">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -106,11 +106,14 @@
     .panel--fasc .fasc__marca{transition:opacity .2s}
     .panel--fasc.anunciando .fasc__marca{opacity:0}
     /* ── TARÔ no painel FASC (a cada 2,5 min): tela escurece, sobe o azul do pano do /o-pratico, a carta vira e mostra o QR, depois se desfaz ── */
-    .tarot{position:absolute;inset:0;z-index:8;pointer-events:none;display:none;overflow:hidden}
+    .tarot{position:fixed;inset:0;z-index:8;pointer-events:none;display:none;overflow:visible}
+    /* o fundo escuro passa da borda de baixo: cobre a faixa da barra de inicio do iPad */
+    .tr-preto,.tr-azul{bottom:calc(-1 * env(safe-area-inset-bottom,0px) - 120px) !important}
+    .tr-po{overflow:hidden}
     .tarot.on{display:block}
     .tarot.on ~ .fasc__chao .qr-card{pointer-events:none}   /* o QR do Instagram fica escondido atras do taro: o toque nao pode abrir ele */
     .tr-preto{position:absolute;inset:0;background:#000;opacity:0}
-    .tr-azul{position:absolute;inset:0;opacity:0;background:url('/o-pratico/img/grao_tile.png') repeat,radial-gradient(ellipse 70% 80% at var(--cx) 50%,#2F4A6B 0%,#1C2E45 48%,#0B1420 100%)}
+    .tr-azul{position:absolute;inset:0;opacity:0;background:url('/o-pratico/img/grao_tile.png') repeat,radial-gradient(ellipse 70% 80% at var(--cx) calc(50% - 60px - env(safe-area-inset-bottom,0px) / 2),#2F4A6B 0%,#1C2E45 48%,#0B1420 100%)}
     .tr-po{position:absolute;inset:0}
     .tr-po i{position:absolute;left:0;top:0;background-size:contain;background-repeat:no-repeat;opacity:0;will-change:transform,opacity}
     .tr-luz{position:absolute;left:var(--cx);top:50%;width:calc(var(--ch)*1.25);height:calc(var(--ch)*1.25);margin:calc(var(--ch)*-.625) 0 0 calc(var(--ch)*-.625);border-radius:50%;background:radial-gradient(circle,rgba(237,198,113,.32) 0%,rgba(237,198,113,.1) 38%,rgba(237,198,113,0) 66%);opacity:0}
@@ -380,14 +383,17 @@
             an(g.animate([{transform:'translate('+(x-sz/2)+'px,'+(y-sz/2)+'px) rotate('+r+'deg) scale(.4)',opacity:0},{opacity:.95,offset:.12},{transform:'translate('+(x-sz/2+Math.cos(a)*dd)+'px,'+(y-sz/2+Math.sin(a)*dd-dd*.25)+'px) rotate('+(r+180)+'deg) scale(1)',opacity:0}],
               {duration:dur*(.7+Math.random()*.5),delay:t+Math.random()*400,fill:'both',easing:EASE})); }
         }
-        var relogios=[];
+        var relogios=[], paradoEm=0;
+        document.addEventListener('click',function(e){ if(Date.now()-paradoEm<700){ e.preventDefault(); e.stopPropagation(); } },true);   // o iPad solta o clique no fim do toque, quando o QR do Instagram ja voltou
         function para(){ relogios.forEach(clearTimeout); relogios=[]; var v=el.querySelector('video'); if(v){ try{v.pause();}catch(e){} }
           anims.forEach(function(a){ try{a.cancel();}catch(e){} }); anims=[];
-          if(rodando){ document.documentElement.style.background=''; if(typeof syncBg==='function') syncBg(); } po.innerHTML=''; el.classList.remove('on'); rodando=false; }
+          if(rodando){ paradoEm=Date.now(); document.documentElement.style.background=''; if(typeof syncBg==='function') syncBg(); var ct=document.getElementById('corTema'); if(ct&&ct.dataset.antes) ct.content=ct.dataset.antes; } po.innerHTML=''; el.classList.remove('on'); rodando=false; }
         function comeca(){
           para(); el.classList.add('on'); rodando=true; var M=mede(), D=32000;
           // no app do iPad aparecem uns 20 px de fundo da pagina abaixo do painel (barra de inicio): no taro esse fundo fica escuro tambem
-          document.documentElement.style.background=document.body.style.background='#0B1420'; el.dataset.t0=performance.now();
+          document.documentElement.style.background=document.body.style.background='#0B1420';
+          var ct=document.getElementById('corTema'); if(ct){ ct.dataset.antes=ct.dataset.antes||ct.content; ct.content='#0B1420'; }   // o iPad pinta as bordas com a cor do tema
+          el.dataset.t0=performance.now();
           an(preto.animate(kf([{opacity:0},{opacity:1,offset:1200/D},{opacity:1,offset:29800/D},{opacity:0}],'ease-in-out'),{duration:D,fill:'both'}));
           an(azul.animate(kf([{opacity:0},{opacity:0,offset:900/D},{opacity:1,offset:4200/D},{opacity:1,offset:28600/D},{opacity:0,offset:30800/D},{opacity:0}],'ease-in-out'),{duration:D,fill:'both'}));
           an(luz.animate(kf([{opacity:0,transform:'scale(.6)'},{opacity:0,transform:'scale(.6)',offset:2600/D},{opacity:1,transform:'scale(1)',offset:5200/D},{opacity:.7,transform:'scale(.92)',offset:12000/D},{opacity:1,transform:'scale(1.04)',offset:19000/D},{opacity:.75,transform:'scale(.95)',offset:26500/D},{opacity:0,transform:'scale(1.3)',offset:29000/D},{opacity:0}],'ease-in-out'),{duration:D,fill:'both'}));
@@ -416,7 +422,8 @@
           explode(M,26900,60,M.ch*.9,2600);     // a carta se desfaz
           relogios.push(setTimeout(function(){ if(rodando)para(); },D+100));
         }
-        return {comeca:comeca,para:para};
+        var dk=document.getElementById('deck'); dk.addEventListener('scroll',function(){ if(rodando&&dk.scrollLeft>4)para(); },{passive:true});   // trocou de painel: o taro sai
+        return {comeca:comeca,para:para,rodando:function(){return rodando;}};
       })();
       // ROTEIRO de 2,5 min: cena, intervalo, cena, intervalo, cena, taro (?anuncio=1 comeca no intervalo, ?anuncio=3 no taro, pra conferir)
       var ROTEIRO=[['cena',180],['int',84],['cena',180],['int',84],['cena',180],['tarot',192]], ri=0, rq=0;
@@ -428,7 +435,7 @@
         var a=c.anuncio, modo=ROTEIRO[ri][0], q=rq;
         if(++rq>=ROTEIRO[ri][1]){ rq=0; ri=(ri+1)%ROTEIRO.length; }
         a.int.classList.toggle('on',modo==='int');
-        if(modo==='tarot'&&q===0&&TAROT) TAROT.comeca();
+        if(modo==='tarot'&&q===0&&TAROT&&document.getElementById('deck').scrollLeft<4) TAROT.comeca();
         if(modo==='int'&&q===0){ a.nome.textContent=a.fotos[0].dataset.nome; arrumaUma(c); ajustaFolha(c); }   // cada intervalo confere a medida antes de entrar
         c.painel.classList.toggle('anunciando',modo==='int'&&!!c.escondeMarca);
         if(modo==='int'){

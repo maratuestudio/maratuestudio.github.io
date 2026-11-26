@@ -260,7 +260,7 @@ html.conferindo .cartao { visibility: hidden; }
   })();
 
   function destino() {
-    try { var v = localStorage.getItem("maratu.volta"); localStorage.removeItem("maratu.volta"); if (v === "/admin.html") return v; } catch (e) {}
+    try { var v = localStorage.getItem("maratu.volta"); localStorage.removeItem("maratu.volta"); } catch (e) {}
     return "/painel.html";
   }
   function entrou(sess) {

@@ -2,7 +2,7 @@
   "name": "MARATU Admin",
   "short_name": "MARATU",
   "description": "Painel operacional do estúdio MARATU",
-  "start_url": "/admin.html",
+  "start_url": "/painel.html",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait",

@@ -1,4 +1,4 @@
-/* MARATU — painel novo (24/10/2026). Escrito do zero, em paralelo ao admin.html.
+/* MARATU — painel (24/10/2026). Escrito do zero; substituiu o admin.html em 26/11/2026.
    Mesmo Worker, mesmo banco, mesmo login (localStorage "maratu.token").
    Hoje é uma fila: cada coisa a fazer vira um cartão; arrastar pra direita resolve,
    pra esquerda adia. Lançar e editar acontecem em folhas que sobem de baixo.
@@ -2520,7 +2520,6 @@
         else if (k === "passkey") location.href = "/passkey.html";
         else if (k === "2fa") location.href = "/2fa.html";
         else if (k === "atualizar") (NUM.ga4 = {}, NUM.ig = {}, MEI.dash = null, PROD.lista = null, carregar()).then(function () { render(true); aviso("Atualizado"); }).catch(function () { aviso("Sem conexão"); });
-        else if (k === "antigo") location.href = "/admin.html";
       };
     });
   }
@@ -3135,7 +3134,6 @@
       "</div>";
     var b = '<div class="secao" style="margin-top:6px;">Dados</div><div class="cartao lista">' +
         linhaAj('data-aj="atualizar"', "Atualizar os dados", S.carregadoEm ? "às " + pad2(new Date(S.carregadoEm).getHours()) + ":" + pad2(new Date(S.carregadoEm).getMinutes()) : "", "", false) +
-        linhaAj('data-aj="antigo"', "Abrir o painel antigo", "", "", true) +
         '<div class="linha toca" data-aj="sair"><div class="o"><b class="perigo">Sair</b></div></div>' +
       "</div>";
     return cabArea("ajustes") + colunas(a, b);

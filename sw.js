@@ -1,5 +1,5 @@
 /* MARATU Admin Service Worker — offline + instant open */
-const VERSION = 'maratu-admin-v40';
+const VERSION = 'maratu-admin-v41';
 const STATIC_CACHE = 'static-' + VERSION;
 const RUNTIME_CACHE = 'runtime-' + VERSION;
 
@@ -70,7 +70,7 @@ self.addEventListener('push', (event) => {
       badge: '/admin-icon-192-v6.png',
       tag: d.tag || 'maratu',
       renotify: true,
-      data: { path: d.path || '/admin.html' }
+      data: { path: d.path || '/painel.html' }
     })
   );
 });

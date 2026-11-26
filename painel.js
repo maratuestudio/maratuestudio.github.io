@@ -2363,7 +2363,7 @@
     ["Lançar", "Post", function () { folhaLancar("post"); }, IC.post],
     ["Ir", "Hoje", function () { irPara("hoje"); }, IC.dir],
     ["Sites", "Abordar", vaiAba("sites", "abordar"), IC.site], ["Sites", "Prospectar", vaiAba("sites", "prospectar"), IC.site],
-    ["Sites", "Conversas e leads", vaiAba("sites", "conversas"), IC.lead], ["Sites", "Clientes de site", vaiAba("sites", "clientes"), IC.site],
+    ["Sites", "Conversas e leads", vaiAba("sites", "conversas"), IC.lead], ["Sites", "Clientes de site", vaiAba("sites", "clientes"), IC.site], ["Sites", "Projetos e notas de cliente", vaiAba("sites", "projetos"), IC.site],
     ["Sites", "Novo cliente", function () { folhaCliente(null); }, IC.mais],
     ["Sites", "Buscar negócios", function () { folhaBuscarNegocios(); }, IC.site], ["Sites", "Escolher na reserva", function () { folhaReserva(); }, IC.site],
     ["Finanças", "Caixa", vaiAba("financas", "caixa"), IC.entrada], ["Finanças", "A receber", vaiAba("financas", "receber"), IC.carne],
@@ -2533,7 +2533,7 @@
 
   /* ---------- áreas com abas: Sites, Finanças, Oficina, Divulgação ---------- */
   var ABAS = {
-    sites: [["abordar", "Abordar"], ["prospectar", "Prospectar"], ["conversas", "Conversas"], ["clientes", "Clientes"]],
+    sites: [["abordar", "Abordar"], ["prospectar", "Prospectar"], ["conversas", "Conversas"], ["clientes", "Clientes"], ["projetos", "Projetos"]],
     financas: [["caixa", "Caixa"], ["receber", "A receber"], ["mei", "MEI"], ["metas", "Metas"]],
     oficina: [["pecas", "Peças"], ["pedidos", "Pedidos"], ["orcamentos", "Orçamentos"], ["producao", "Produção"]],
     divulgacao: [["conteudo", "Conteúdo"], ["newsletter", "Newsletter"], ["links", "Links"], ["numeros", "Números"]]
@@ -2560,6 +2560,10 @@
     raiz.querySelectorAll("[data-aba]").forEach(function (b) { b.onclick = function () { var p = b.dataset.aba.split(":"); irAba(p[0], p[1]); }; });
     raiz.querySelectorAll("[data-cli]").forEach(function (b) { b.onclick = function (ev) { ev.stopPropagation(); var c = porId(clientes(), b.dataset.cli); if (c) folhaCliente(c); }; });
     raiz.querySelectorAll("[data-clinovo]").forEach(function (b) { b.onclick = function () { folhaCliente(null); }; });
+    raiz.querySelectorAll("[data-pj]").forEach(function (b) { b.onclick = function () { folhaProjeto(b.dataset.pj); }; });
+    raiz.querySelectorAll("[data-pjcli]").forEach(function (b) { b.onclick = function () { folhaPjCliente(b.dataset.pjcli); }; });
+    raiz.querySelectorAll("[data-pjnovo]").forEach(function (b) { b.onclick = function () { folhaProjeto(null); }; });
+    raiz.querySelectorAll("[data-pjrecarrega]").forEach(function (b) { b.onclick = function () { PJ.erro = false; carregaProj(true); render(true); }; });
     raiz.querySelectorAll("[data-clirecebi]").forEach(function (b) { b.onclick = function (ev) { ev.stopPropagation(); var c = porId(clientes(), b.dataset.clirecebi); if (c) folhaRecebiCliente(c, b.dataset.qual || "site"); }; });
     raiz.querySelectorAll("[data-leadst]").forEach(function (b) { b.onclick = function () { leadFiltro = b.dataset.leadst; render(true); }; });
     raiz.querySelectorAll("[data-esc]").forEach(function (b) { b.onclick = function () { var p = porId(S.prospec, b.dataset.esc); if (p) acaoProspec(p, "escolher", "Escolhido pra virar site"); }; });
@@ -2600,7 +2604,9 @@
     var leadsAtivos = S.leads.filter(function (l) { return l.status !== "fechado" && l.status !== "perdido"; });
     var emObra = clientes().filter(function (c) { return c.etapa !== "noar"; }).length;
     var topo = cabArea("sites", S.uso ? "Google " + (Number(S.uso.n) || 0) + " de " + (Number(S.teto) || 0) + " no mês" : "") +
-      abasHTML("sites", { abordar: g.doDia.length, conversas: leadsAtivos.length, clientes: emObra });
+      abasHTML("sites", { abordar: g.doDia.length, conversas: leadsAtivos.length, clientes: emObra, projetos: pjAbertas() });
+    carregaProj();
+    if (a === "projetos") return topo + sitesProjetos();
     if (a === "prospectar") return topo + sitesProspectar(g);
     if (a === "conversas") return topo + sitesConversas();
     if (a === "clientes") return topo + sitesClientes();
@@ -2678,6 +2684,158 @@
   function linhaCliente(c) {
     var saldo = saldoCli(c), info = [c.tipo, num(c.valor) ? (saldo ? "falta " + brlCurtoV(saldo) : "pago") : "", num(c.manut_valor) ? brlCurtoV(num(c.manut_valor)) + " por mês" + (mensalDevida(c) ? ", " + nomeMes(mesDe()) + " em aberto" : "") : ""].filter(Boolean).join(", ");
     return '<div class="linha toca" data-cli="' + esc(c.id) + '"><div class="o"><b>' + esc(c.nome || "Cliente") + "</b><small>" + esc(info) + "</small></div>" + etapaTag(c) + "</div>";
+  }
+  /* ---------- Sites > Projetos: portal maratu.com.br/projetos (clientes, sites em revisão, notas) ---------- */
+  var PJ = { ok: false, indo: false, erro: false, d: { clientes: [], projetos: [] } };
+  function carregaProj(forca) {
+    if (PJ.indo || (PJ.ok && !forca)) return;
+    PJ.indo = true;
+    api("/api/projetos").then(function (d) { PJ.d = d || PJ.d; PJ.ok = true; PJ.erro = false; })
+      .catch(function () { PJ.erro = true; }).then(function () { PJ.indo = false; if (vista === "sites") render(true); });
+  }
+  function pjAbertas() { return (PJ.d.projetos || []).reduce(function (a, p) { return a + (Number(p.abertas) || 0); }, 0); }
+  function pjCli(id) { return porId(PJ.d.clientes || [], id); }
+  function pjProj(slug) { return (PJ.d.projetos || []).filter(function (p) { return p.slug === slug; })[0]; }
+  function pjDo(cid) { return (PJ.d.projetos || []).filter(function (p) { return (p.membros || []).indexOf(cid) >= 0; }); }
+  function pjSlug(t) { return String(t || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 60); }
+  function sitesProjetos() {
+    if (!PJ.ok) {
+      if (PJ.erro) return '<div class="cartao vazio-acao"><b>Não carregou</b><button class="bt" data-pjrecarrega>Tentar de novo</button></div>';
+      carregaProj(); return '<p class="vazio">Carregando…</p>';
+    }
+    var ps = PJ.d.projetos || [], cs = PJ.d.clientes || [];
+    var semProj = cs.filter(function (c) { return !pjDo(c.id).length; });
+    var esq = '<div class="nums">' + numBt(ps.length, "projetos", 'data-rola="pjLista"') + numBt(pjAbertas(), "notas abertas", 'data-rola="pjLista"') + numBt(semProj.length, "sem projeto", 'data-rola="pjCli"') + "</div>" +
+      '<button class="bt acento cheio" data-pjnovo>' + IC.mais + "Novo projeto</button>" +
+      '<div class="secao" id="pjLista">Projetos <small>' + ps.length + "</small></div>" +
+      (ps.length ? '<div class="cartao lista">' + ps.map(function (p) {
+        var nomes = (p.membros || []).map(pjCli).filter(Boolean).map(function (c) { return c.nome; }).join(", ");
+        return '<div class="linha toca" data-pj="' + esc(p.slug) + '"><div class="o"><b>' + esc(p.nome) + "</b><small>" +
+          (Number(p.abertas) ? Number(p.abertas) + (Number(p.abertas) === 1 ? " nota aberta" : " notas abertas") : "sem nota aberta") + (nomes ? ", " + esc(nomes) : ", sem cliente") + (p.ativo ? "" : ", desligado") + "</small></div>" + IC.seta + "</div>";
+      }).join("") + "</div>" : '<p class="vazio">Nenhum projeto ainda.</p>');
+    var dir = '<div class="secao" id="pjCli">Clientes do portal <small>' + cs.length + "</small></div>" +
+      (cs.length ? '<div class="cartao lista">' + cs.map(function (c) {
+        var meus = pjDo(c.id);
+        return '<div class="linha toca" data-pjcli="' + esc(c.id) + '"><div class="o"><b>' + esc(c.nome) + "</b><small>" + esc(c.empresa || c.email) + ", " + (meus.length ? esc(meus.map(function (p) { return p.nome; }).join(", ")) : "sem projeto") + "</small></div>" + IC.seta + "</div>";
+      }).join("") + "</div>" : '<p class="vazio">Nenhum cliente ainda.</p>');
+    return colunas(esq, dir);
+  }
+  function pjMarcas(membros) {
+    var cs = PJ.d.clientes || [];
+    if (!cs.length) return '<p class="vazio">Nenhum cliente cadastrado.</p>';
+    return '<div class="cartao lista">' + cs.map(function (c) {
+      return '<label class="linha toca"><input type="checkbox" value="' + esc(c.id) + '"' + (membros.indexOf(c.id) >= 0 ? " checked" : "") + ' style="width:22px;height:22px;accent-color:var(--acento)"><div class="o"><b>' + esc(c.nome) + "</b><small>" + esc(c.empresa || c.email) + "</small></div></label>";
+    }).join("") + "</div>";
+  }
+  function folhaProjeto(slug, cliInicial) {
+    var p = slug ? pjProj(slug) : null, c0 = cliInicial ? pjCli(cliInicial) : null;
+    var membros = p ? (p.membros || []) : (c0 ? [c0.id] : []);
+    var nome0 = p ? p.nome : (c0 ? (c0.empresa || c0.nome) : "");
+    abrirFolha(p ? p.nome : "Novo projeto",
+      (p ? '<div class="grade-bts"><a class="bt preto" href="https://maratu.com.br/projetos/' + esc(p.slug) + "/?k=" + encodeURIComponent(p.chave) + '" target="_blank" rel="noopener">' + IC.olho + 'Abrir</a>' +
+        '<label class="bt">' + IC.site + 'Enviar site<input type="file" id="pjPasta" webkitdirectory directory multiple hidden></label></div>' +
+        '<p class="vazio" id="pjProg" role="status" style="margin:8px 0 0"></p>' +
+        '<div class="rot">Notas</div><div id="pjNotas"><p class="vazio">Carregando…</p></div>' : "") +
+      campo("Nome do projeto", '<input id="pjNome" value="' + esc(nome0) + '" autocomplete="off">') +
+      (p ? "" : campo("Endereço", '<input id="pjSlug" value="' + esc(pjSlug(nome0)) + '" autocomplete="off" spellcheck="false">')) +
+      '<div class="rot">Quem acessa</div>' + pjMarcas(membros) +
+      (p ? '<label class="linha"><input type="checkbox" id="pjAtivo"' + (p.ativo ? " checked" : "") + ' style="width:22px;height:22px"><div class="o"><b>Projeto ligado</b></div></label>' : "") +
+      '<div class="fixo"><button class="bt acento cheio" id="pjSalva">' + (p ? "Salvar" : "Criar projeto") + "</button></div>",
+      function (f) {
+        var q = function (s) { return f.querySelector(s); };
+        if (!p) { var mexeu = false; q("#pjSlug").oninput = function () { mexeu = true; }; q("#pjNome").oninput = function () { if (!mexeu) q("#pjSlug").value = pjSlug(q("#pjNome").value); }; }
+        q("#pjSalva").onclick = function () {
+          var corpo = { novo: !p, slug: p ? p.slug : pjSlug(q("#pjSlug").value), nome: q("#pjNome").value.trim(),
+            membros: Array.prototype.map.call(f.querySelectorAll('.lista input[type=checkbox]:checked'), function (i) { return i.value; }) };
+          if (!corpo.nome) return q("#pjNome").focus();
+          if (!p && !corpo.slug) return q("#pjSlug").focus();
+          if (q("#pjAtivo")) corpo.ativo = q("#pjAtivo").checked;
+          this.disabled = true;
+          api("/api/projetos", { method: "POST", body: corpo }).then(function () { fecharFolha(); aviso(p ? "Projeto salvo" : "Projeto criado"); carregaProj(true); })
+            .catch(function () { aviso("Não salvou. Endereço repetido ou sem internet."); q("#pjSalva").disabled = false; });
+        };
+        if (!p) return;
+        // envio da pasta: cada arquivo substitui o de mesmo nome; se algum falhar, enviar a pasta de novo
+        q("#pjPasta").onchange = function (e) {
+          var inp = e.target, lab = inp.closest("label");
+          var arqs = Array.prototype.filter.call(inp.files, function (x) { return !/(^|\/)\./.test(x.webkitRelativePath || x.name); });
+          var rel = function (x) { var r = x.webkitRelativePath || x.name; return r.indexOf("/") >= 0 ? r.slice(r.indexOf("/") + 1) : r; };
+          var prog = q("#pjProg");
+          inp.value = "";
+          if (!arqs.some(function (x) { return rel(x) === "index.html"; })) { prog.textContent = "Falta o index.html na raiz da pasta."; return; }
+          var fila = arqs.slice(), feitos = 0, erros = 0;
+          inp.disabled = true; if (lab) lab.style.opacity = ".5";
+          function um() {
+            var x = fila.shift(); if (!x) return Promise.resolve();
+            return fetch(API + "/api/projetos/" + encodeURIComponent(p.slug) + "/arquivo?c=" + encodeURIComponent(rel(x)), { method: "PUT", body: x })
+              .then(function (r) { if (!r.ok) erros++; }, function () { erros++; })
+              .then(function () { feitos++; prog.textContent = "Enviando " + feitos + " de " + arqs.length; return um(); });
+          }
+          Promise.all([um(), um(), um(), um()]).then(function () {
+            inp.disabled = false; if (lab) lab.style.opacity = "";
+            prog.textContent = erros ? erros + " arquivo(s) falharam. Envie de novo." : arqs.length + " arquivos no ar.";
+            if (!erros) aviso("Site enviado");
+          });
+        };
+        pjNotas(p, q("#pjNotas"));
+      });
+  }
+  function pjNotas(p, box) {
+    api("/api/projetos/" + encodeURIComponent(p.slug) + "/notas").then(function (j) {
+      var ns = (j.notas || []).map(function (n, i) { n.n = i + 1; return n; }).reverse();
+      ns.sort(function (a, b) { return (a.status === "feita") - (b.status === "feita"); });
+      if (!ns.length) { box.innerHTML = '<p class="vazio">Nenhuma nota.</p>'; return; }
+      box.innerHTML = '<div class="cartao lista">' + ns.map(function (n) {
+        var w = Number(n.vista && n.vista.w) | 0;
+        return '<div class="linha" data-nota="' + esc(n.id) + '" style="display:block' + (n.status === "feita" ? ";opacity:.6" : "") + '"><div class="o">' +
+          "<b>" + n.n + ". " + esc(n.autor) + "</b><small>" + esc(quandoRel(diaLocal(n.criado))) + ", " + esc(n.pagina || "/") + (n.tipo === "desenho" ? ", caneta" : "") + (w ? ", " + w + "px" + (w < 700 ? " celular" : "") : "") + "</small></div>" +
+          (n.texto ? '<p style="margin:6px 0 0;white-space:pre-wrap;overflow-wrap:anywhere">' + esc(n.texto) + "</p>" : "") +
+          (n.link && /^https?:\/\//i.test(n.link) ? '<p style="margin:6px 0 0;overflow-wrap:anywhere"><a href="' + esc(n.link) + '" target="_blank" rel="noopener">' + esc(n.link) + "</a></p>" : "") +
+          (n.ancora && n.ancora.txt ? '<small style="display:block;margin-top:4px;color:var(--suave)">em: ' + esc(String(n.ancora.txt).slice(0, 80)) + "</small>" : "") +
+          (n.imagem ? '<img data-pjimg="' + esc(n.imagem) + '" alt="Referência" style="display:block;width:100%;aspect-ratio:4/3;max-height:200px;object-fit:contain;margin-top:8px;border-radius:8px;background:var(--linha)">' : "") +
+          (n.status === "feita"
+            ? '<small style="display:block;margin-top:6px">Concluída' + (n.resposta ? ": " + esc(n.resposta) : "") + '</small><button class="bt" data-pjn="reabre" style="margin-top:8px">Reabrir</button>'
+            : '<div class="campo" style="margin-top:8px"><input placeholder="O que foi feito" maxlength="2000"></div><button class="bt verde" data-pjn="conclui">' + IC.check + "Concluir</button>") +
+          "</div>";
+      }).join("") + "</div>";
+      box.querySelectorAll("img[data-pjimg]").forEach(function (im) {
+        fetch(API + "/api/projetos/" + encodeURIComponent(p.slug) + "/imagem/" + encodeURIComponent(im.dataset.pjimg)).then(function (r) { return r.ok ? r.blob() : null; }).then(function (b) { if (b) im.src = URL.createObjectURL(b); });
+      });
+      box.querySelectorAll("[data-pjn]").forEach(function (b) {
+        b.onclick = function () {
+          var l = b.closest("[data-nota]"), inp = l.querySelector("input"), conclui = b.dataset.pjn === "conclui";
+          b.disabled = true;
+          api("/api/projetos/" + encodeURIComponent(p.slug) + "/notas/" + encodeURIComponent(l.dataset.nota), { method: "POST", body: conclui ? { status: "feita", resposta: inp ? inp.value.trim() : "" } : { status: "aberta" } })
+            .then(function () { aviso(conclui ? "Nota concluída" : "Nota reaberta"); carregaProj(true); pjNotas(p, box); })
+            .catch(function () { aviso("Não salvou. Confira a internet."); b.disabled = false; });
+        };
+      });
+    }).catch(function () { box.innerHTML = '<p class="vazio">Não carregou as notas.</p>'; });
+  }
+  function folhaPjCliente(id) {
+    var c = pjCli(id); if (!c) return;
+    var meus = pjDo(c.id);
+    abrirFolha(c.nome,
+      '<div class="cartao lista"><div class="linha"><div class="o"><b>' + esc(c.empresa || "Sem empresa") + "</b><small>" + esc(c.email) + "</small></div></div>" +
+      '<div class="linha"><div class="o"><b>' + esc(c.whatsapp || "Sem WhatsApp") + "</b><small>cadastro " + esc(quandoRel(diaLocal(c.criado))) + (c.ultimo ? ", último acesso " + esc(quandoRel(diaLocal(c.ultimo))) : "") + "</small></div></div>" +
+      '<div class="linha"><div class="o"><b>' + (meus.length ? esc(meus.map(function (p) { return p.nome; }).join(", ")) : "Sem projeto") + "</b><small>projetos</small></div></div></div>" +
+      '<div class="grade-bts" style="margin-top:12px">' + (soDigitos(c.whatsapp).length >= 10 ? '<a class="bt preto" href="' + esc(waLink(c.whatsapp)) + '" target="_blank" rel="noopener">' + IC.wa + "WhatsApp</a>" : "") +
+      '<button class="bt" id="pcSenha">Nova senha</button></div>' +
+      '<div id="pcSenhaOut"></div>' +
+      '<div class="fixo"><button class="bt acento cheio" id="pcProj">' + IC.mais + (meus.length ? "Outro projeto" : "Criar projeto") + "</button></div>",
+      function (f) {
+        var q = function (s) { return f.querySelector(s); };
+        q("#pcProj").onclick = function () { fecharFolha(); folhaProjeto(null, c.id); };
+        confirmaDuplo(q("#pcSenha"), "Toque de novo pra gerar", function () {
+          if (q("#pcSenha").disabled) return; q("#pcSenha").disabled = true;
+          api("/api/projetos/clientes/" + encodeURIComponent(c.id) + "/senha", { method: "POST" }).then(function (j) {
+            if (!j || !j.senha) throw new Error("sem senha");
+            var msg = "Olá, " + String(c.nome).split(" ")[0] + "! Sua senha nova do portal de projetos da MARATU: " + j.senha + "\nEntre em maratu.com.br/projetos";
+            q("#pcSenhaOut").innerHTML = '<div class="cartao" style="margin-top:12px"><small>Senha nova</small><p style="margin:4px 0 10px;font-size:24px;font-weight:900;user-select:all">' + esc(j.senha) + "</p>" +
+              (soDigitos(c.whatsapp).length >= 10 ? '<a class="bt verde cheio" href="' + esc(waLink(c.whatsapp, msg)) + '" target="_blank" rel="noopener">' + IC.wa + "Mandar no WhatsApp</a>" : "") + "</div>";
+          }).catch(function () { q("#pcSenha").disabled = false; aviso("Não gerou. Confira a internet."); });
+        });
+      });
   }
   function sitesClientes() {
     var l = clientes(), obra = l.filter(function (c) { return c.etapa !== "noar"; }), noar = l.filter(function (c) { return c.etapa === "noar"; });

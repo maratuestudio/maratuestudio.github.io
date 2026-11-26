@@ -336,10 +336,13 @@
       pin.style.translate = `${Math.round(p.x)}px ${Math.round(p.y)}px`;
       // desenho só aparece com a tela parecida com a de quem desenhou
       if (n.desenho && n.vista && Math.abs(n.vista.w - W) < 140) {
-        for (const tr of n.desenho.tracos || []) {
+        for (const tr of Array.isArray(n.desenho.tracos) ? n.desenho.tracos : []) {
+          if (!tr || !Array.isArray(tr.p)) continue;
           let pts = '';
-          for (let i = 0; i < tr.p.length; i += 2) pts += (p.x + tr.p[i]).toFixed(1) + ',' + (p.y + tr.p[i + 1]).toFixed(1) + ' ';
-          linhas += `<polyline class="${n.status === 'feita' ? 'feito' : ''}" stroke="${esc(tr.c)}" points="${pts}"/>`;
+          // só número e cor #rrggbb entram no SVG
+          for (let i = 0; i + 1 < tr.p.length; i += 2) pts += (p.x + (Number(tr.p[i]) || 0)).toFixed(1) + ',' + (p.y + (Number(tr.p[i + 1]) || 0)).toFixed(1) + ' ';
+          const cor = /^#[0-9a-f]{6}$/i.test(tr.c) ? tr.c : '#FF3D1F';
+          linhas += `<polyline class="${n.status === 'feita' ? 'feito' : ''}" stroke="${cor}" points="${pts}"/>`;
         }
       }
     }
@@ -662,7 +665,7 @@
       let h = `<span class="rv-nota__n">${numero(n)}</span>`;
       h += `<span class="rv-nota__meta"><span>${esc(n.autor || '')}</span><span>${quando(n.criado)}</span>${pag !== '/' ? `<span>${esc(pag)}</span>` : ''}${n.tipo === 'desenho' ? '<span>desenho</span>' : ''}</span>`;
       if (n.texto) h += `<span class="rv-nota__txt">${linkifica(n.texto)}</span>`;
-      if (n.link) h += `<span class="rv-nota__txt"><a href="${esc(n.link)}" target="_blank" rel="noopener">${esc(n.link.replace(/^https?:\/\//, '').slice(0, 60))}</a></span>`;
+      if (n.link && /^https?:\/\//i.test(n.link)) h += `<span class="rv-nota__txt"><a href="${esc(n.link)}" target="_blank" rel="noopener">${esc(n.link.replace(/^https?:\/\//, '').slice(0, 60))}</a></span>`;
       if (n.imagem) h += `<img class="rv-nota__img" src="${API}imagem/${encodeURIComponent(n.imagem)}" alt="Imagem de referência" loading="lazy" width="320" height="140">`;
       if (n.status === 'feita') h += `<span class="rv-nota__resp"><b>Concluído${n.feito_em ? ', ' + quando(n.feito_em) : ''}</b>${n.resposta ? linkifica(n.resposta) : ''}</span>`;
       else if (n.minha && !n._temp) h += `<button type="button" class="rv-nota__apaga" data-apaga="${esc(n.id)}">Apagar</button>`;

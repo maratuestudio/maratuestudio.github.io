@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0D0D0B">
+<title>Projetos · MARATU</title>
+<link rel="icon" href="/favicon-v6.png">
+<link rel="preload" href="/TRYClother-Black.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/TRYClother-Bold.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/projetos-app/portal.css?v=8">
+</head>
+<body>
+<div class="pt">
+  <aside class="pt-marca-painel">
+    <div class="pt-cab">
+      <a class="pt-lockup" href="/" aria-label="MARATU Estúdio, página inicial">
+        <img class="pt-lockup__logo" src="/maratu-logo.svg?v=1" alt="MARATU" width="440" height="54">
+        <span class="pt-lockup__estudio"><img src="/estudio-sprite.webp?v=1" alt="Estúdio"></span>
+      </a>
+      <span class="pt-mono pt-cab__dir">Área do cliente</span>
+    </div>
+    <div class="pt-tese">
+      <h1><span>Seu site,</span> <span>do seu <em class="pt-grifo">jeito</em>.</span></h1>
+      <p>Veja, comente e aprove cada detalhe do seu site.</p>
+    </div>
+    <div class="pt-pe">
+      <span class="pt-mono">EST. 2026 — Aracaju, SE</span>
+      <span class="pt-mono">Sites · Impressão 3D · Loja</span>
+    </div>
+  </aside>
+
+  <main class="pt-lado">
+    <div class="pt-topo-lado">
+      <span class="pt-secao">Projetos</span>
+      <button type="button" class="pt-sair" hidden>Sair</button>
+    </div>
+
+    <section class="pt-caixa">
+      <!-- fora: entrar ou criar conta -->
+      <div class="pt-fora" hidden>
+        <form id="f-entrar" class="pt-form" novalidate aria-labelledby="t-entrar">
+          <h2 id="t-entrar">Entrar</h2>
+          <label class="pt-campo"><span>E-mail</span><input type="email" name="email" autocomplete="email" inputmode="email" required></label>
+          <div class="pt-campo"><span class="pt-campo__l"><label for="pt-senha">Senha</label><a class="pt-esqueci" href="https://wa.me/5579991957415?text=Ol%C3%A1!%20Esqueci%20a%20senha%20do%20portal%20de%20projetos." target="_blank" rel="noopener">Esqueci a senha</a></span><input id="pt-senha" type="password" name="senha" autocomplete="current-password" required></div>
+          <p class="pt-erro" role="alert"></p>
+          <button type="submit" class="pt-btn pt-btn--pri">Entrar</button>
+          <p class="pt-troca">Primeiro acesso? <button type="button" data-modo="criar">Criar conta</button></p>
+        </form>
+
+        <form id="f-criar" class="pt-form" novalidate aria-labelledby="t-criar" hidden>
+          <h2 id="t-criar">Criar conta</h2>
+          <label class="pt-campo"><span>Nome</span><input type="text" name="nome" autocomplete="name" required maxlength="80"></label>
+          <label class="pt-campo"><span>Empresa</span><input type="text" name="empresa" autocomplete="organization" maxlength="100"></label>
+          <label class="pt-campo"><span>WhatsApp</span><input type="tel" name="whatsapp" autocomplete="tel" inputmode="tel" placeholder="(79) 99999-9999" required maxlength="20"></label>
+          <label class="pt-campo"><span>E-mail</span><input type="email" name="email" autocomplete="email" inputmode="email" required></label>
+          <label class="pt-campo"><span>Senha</span><input type="password" name="senha" autocomplete="new-password" minlength="8" placeholder="8 caracteres ou mais" required></label>
+          <p class="pt-erro" role="alert"></p>
+          <button type="submit" class="pt-btn pt-btn--pri">Criar conta</button>
+          <p class="pt-troca">Já tem conta? <button type="button" data-modo="entrar">Entrar</button></p>
+        </form>
+      </div>
+
+      <!-- dentro: projetos da conta -->
+      <div class="pt-dentro" hidden>
+        <h2>Olá, <span class="pt-nome"></span>.</h2>
+        <ul class="pt-lista"></ul>
+        <div class="pt-espera" hidden>
+          <p class="pt-espera__t">Cadastro recebido.</p>
+          <p>Seu projeto aparece aqui assim que for liberado.</p>
+          <a class="pt-btn" href="https://wa.me/5579991957415" target="_blank" rel="noopener">Falar com a MARATU</a>
+        </div>
+      </div>
+    </section>
+
+    <p class="pt-rodape">Acesso restrito a clientes da MARATU.</p>
+  </main>
+</div>
+
+<script src="/projetos-app/portal.js?v=4" defer></script>
+</body>
+</html>

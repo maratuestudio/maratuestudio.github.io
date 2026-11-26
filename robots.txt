@@ -5,6 +5,8 @@ Disallow: /admin
 Disallow: /login
 Disallow: /login.html
 Disallow: /tools/
+Disallow: /projetos/
+Disallow: /projetos-app/
 
 Sitemap: https://maratu.com.br/sitemap.xml
 Sitemap: https://maratu.com.br/sitemap-produtos.xml

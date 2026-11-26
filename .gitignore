@@ -7,3 +7,6 @@ _snap*.html
 tools/thumbs-src/
 tools/thumbs-out/
 _antes.html
+
+# prévia local do /projetos
+tools/projetos/.dados/

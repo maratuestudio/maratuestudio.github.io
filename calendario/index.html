@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Calendário MARATU</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="O ano em 365 pontos, um por dia, com a cor mudando todo dia. Papel de parede pra tela de bloqueio.">
+<meta name="theme-color" content="#F0ECE4">
+<link rel="canonical" href="https://maratu.com.br/calendario/">
+<link rel="icon" type="image/png" href="/favicon-v6.png">
+<style>
+@font-face { font-family: 'Jack'; src: url('/TRYJackAlpha-Regular.woff2') format('woff2'); font-weight: 400; font-display: swap; }
+@font-face { font-family: 'Clother'; src: url('/TRYClother-Regular.woff2') format('woff2'); font-weight: 400; font-display: swap; }
+@font-face { font-family: 'Clother'; src: url('/TRYClother-Bold.woff2') format('woff2'); font-weight: 700; font-display: swap; }
+@font-face { font-family: 'Clother'; src: url('/TRYClother-Black.woff2') format('woff2'); font-weight: 900; font-display: swap; }
+
+/* Layout: faixa de título + bancada em duas colunas (controles | celular). */
+:root{
+  --laranja:#C8501A; --azul:#0E3272; --azul-claro:#2E6FC4;
+  --areia:#F0ECE4; --areia-sombra:#E5DFD3; --preto:#0D0D0B; --dourado:#D4960A; --papel:#fff8ef;
+  --jack:'Jack','Clother',Georgia,serif;
+  --clother:'Clother',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --ease-out:cubic-bezier(0.23,1,0.32,1);
+  --margem:clamp(16px,4vw,56px);
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{background:var(--areia);color:var(--preto)}
+body{margin:0;font-family:var(--clother);font-size:16px;line-height:1.5;
+  padding-left:max(var(--margem),env(safe-area-inset-left,0px));
+  padding-right:max(var(--margem),env(safe-area-inset-right,0px));
+  padding-block:0 64px;-webkit-font-smoothing:antialiased}
+button,input,select{font:inherit;color:inherit}
+
+.topo{display:flex;align-items:center;justify-content:space-between;gap:16px;
+  padding-block:20px;border-bottom:1.5px solid var(--preto)}
+.topo svg{height:18px;width:auto;display:block}
+.topo span{font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase}
+
+.abre{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:24px 48px;
+  align-items:end;padding-block:clamp(32px,6vh,64px) clamp(24px,4vh,40px)}
+.abre h1{font-family:var(--jack);font-weight:400;font-size:clamp(2.6rem,7vw,5.6rem);
+  line-height:.95;letter-spacing:-.01em;margin:0;text-wrap:balance}
+.abre h1 em{font-style:normal;color:var(--laranja)}
+.abre p{margin:0;max-width:44ch;font-size:1.05rem;line-height:1.55;text-wrap:pretty}
+.abre .rot{display:block;font-size:.68rem;font-weight:700;letter-spacing:.14em;
+  text-transform:uppercase;margin-bottom:12px;color:var(--azul)}
+
+.bancada{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,420px);
+  gap:clamp(24px,4vw,56px);align-items:start}
+
+.painel{background:var(--papel);border:1.5px solid var(--preto);border-radius:8px;
+  box-shadow:3px 3px 0 0 var(--preto);display:flex;flex-direction:column;min-width:0}
+.bloco{padding:20px clamp(16px,2.4vw,28px);display:flex;flex-direction:column;gap:12px;min-width:0}
+.bloco + .bloco{border-top:1.5px dashed color-mix(in oklch,var(--preto),transparent 70%)}
+.bloco h2{margin:0;font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase}
+.dica{font-size:.82rem;opacity:.7;margin:0;max-width:60ch}
+
+/* paleta do dia */
+.hoje-cor{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.hoje-cor b{display:block;font-weight:900;font-size:1.5rem;letter-spacing:-.02em;line-height:1.1}
+.hoje-cor small{font-size:.8rem;opacity:.7}
+.semana{display:flex;gap:6px;flex-wrap:wrap}
+.semana span{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:.6rem;font-weight:700;
+  letter-spacing:.06em;text-transform:uppercase}
+.semana i{width:30px;height:30px;border-radius:5px;border:1.5px solid var(--preto);display:grid;place-items:center}
+.semana i::after{content:"";width:8px;height:8px;border-radius:50%;background:var(--p);box-shadow:6px 0 0 -1px var(--h)}
+.semana span:first-child i{outline:2px solid var(--laranja);outline-offset:1px}
+
+.campo{display:flex;flex-direction:column;gap:6px;min-width:0}
+.campo label{font-size:.78rem;font-weight:700}
+.campo select,.campo input{border:1.5px solid var(--preto);border-radius:6px;background:var(--areia);
+  padding:10px 12px;min-height:44px;width:100%;min-width:0}
+.linha-link{display:flex;gap:8px}
+.linha-link input{flex:1;font-size:.8rem;font-family:ui-monospace,Menlo,monospace}
+
+.acoes{display:flex;flex-wrap:wrap;gap:10px}
+.btn{border:1.5px solid var(--preto);border-radius:6px;padding:12px 18px;min-height:48px;cursor:pointer;
+  font-weight:900;font-size:.95rem;background:var(--dourado);box-shadow:3px 3px 0 0 var(--preto);
+  transition:transform .12s var(--ease-out),box-shadow .12s var(--ease-out)}
+.btn.sec{background:var(--areia)}
+.btn.peq{padding:8px 14px;min-height:44px;flex:none}
+.btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 0 var(--preto)}
+.btn:focus-visible,select:focus-visible,input:focus-visible{outline:2.5px solid var(--azul-claro);outline-offset:2px}
+
+.passos{margin:0;padding:0;list-style:none;counter-reset:p;display:flex;flex-direction:column;gap:12px}
+.passos li{counter-increment:p;display:grid;grid-template-columns:32px minmax(0,1fr);gap:10px;font-size:.9rem;line-height:1.5}
+.passos li::before{content:counter(p);font-family:var(--jack);font-size:1.4rem;line-height:1;color:var(--laranja)}
+.passos b{font-weight:700}
+
+/* celular */
+.vitrine{position:sticky;top:calc(env(safe-area-inset-top,0px) + 16px);display:flex;flex-direction:column;align-items:center;gap:14px}
+.cel{position:relative;width:min(100%,340px);aspect-ratio:var(--ar,1179/2556);container-type:inline-size;
+  border:10px solid var(--preto);border-radius:48px;overflow:hidden;background:var(--preto);
+  box-shadow:6px 6px 0 0 color-mix(in oklch,var(--preto),transparent 75%)}
+.cel canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.trava{position:absolute;inset:0;pointer-events:none;color:var(--tc,#F0ECE4);text-align:center}
+.ilha{position:absolute;top:2.2%;left:50%;width:31%;height:3.6%;translate:-50% 0;background:#000;border-radius:99px}
+.trava .data{position:absolute;top:10.5%;inset-inline:0;font-weight:700;font-size:clamp(.7rem,3.4cqi,1rem)}
+.trava .hora{position:absolute;top:12.6%;inset-inline:0;font-weight:900;font-size:clamp(3.2rem,24cqi,6rem);
+  line-height:1;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.trava .base{position:absolute;bottom:3.5%;inset-inline:12%;display:flex;justify-content:space-between}
+.trava .base i{width:13%;aspect-ratio:1;border-radius:50%;background:color-mix(in srgb,currentColor 22%,transparent)}
+.trava .barra{position:absolute;bottom:1.2%;left:50%;width:36%;height:.55%;translate:-50% 0;border-radius:9px;background:currentColor;opacity:.85}
+.legenda{font-size:.78rem;opacity:.7;text-align:center;max-width:34ch;margin:0;font-variant-numeric:tabular-nums}
+
+.folha{position:fixed;inset:0;z-index:20;background:color-mix(in oklch,var(--preto),transparent 15%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;
+  padding:calc(env(safe-area-inset-top,0px) + 16px) max(16px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 16px) max(16px,env(safe-area-inset-left,0px));
+  color:var(--areia)}
+.folha img{max-height:78vh;max-width:100%;border-radius:18px;border:1.5px solid var(--areia)}
+.folha p{margin:0;font-size:.9rem;text-align:center;max-width:36ch}
+
+@media (max-width:860px){
+  .abre{grid-template-columns:1fr}
+  .bancada{grid-template-columns:1fr}
+  .vitrine{position:static;order:-1}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<header class="topo">
+  <svg viewBox="0 0 440.04 54.07" role="img" aria-label="MARATU"><g fill="#C8501A"><path d="M38.05 19.28 32.47 0 0 0 0 23.92 31.53 29.14 0 29.14 0 53.57 32.47 53.57 32.47 29.94 38.13 47.91 43.71 29.94 43.71 53.57 76.11 53.57 76.11 0 43.71 0Z"/><path d="M78.37,0v23.85l32.55,4.93h-32.62v24.79h13.41c11.23,0,19.35-9.13,19.72-24.72l6.74,24.5v.22h32.4v-23.05l.07-.07L136.64,0h-58.28Z"/><path d="M223.28,15.08c0-11.23-7.39-15.08-26.02-15.08h-44.43l.14,53.57h32.33v-28.56c4.28.14,5.36,1.3,5.36,4.13v2.97h-5.36c3.62,16.89,17.69,21.46,29.28,21.46h8.05v-21.46h-28.99c21.82-1.230,29.65-5.36,29.65-17.03Z"/><path d="M225.54,0v23.85l32.55,4.93h-32.62v24.79h13.41c11.24,0,19.35-9.13,19.72-24.72l6.74,24.5v.22h32.4v-23.05l.07-.07-13.99-30.44h-58.28Z"/><path d="M299.99 26.38 318.25 26.38 318.25 53.57 350.58 53.57 350.58 26.38 368.92 26.38 368.92 0 299.99 0Z"/><path d="M407.71,0v21.53h-.87c-2.32,0-3.33-.87-3.33-4.2V0h-32.4v28.12c0,18.56,4.78,25.95,17.61,25.95,14.86,0,17.83-8.26,18.99-31.02v30.52h32.33V0h-32.33Z"/></g></svg>
+  <span>Calendário</span>
+</header>
+
+<section class="abre">
+  <h1>Cada ponto,<br><em>um dia.</em></h1>
+  <div>
+    <span class="rot">Papel de parede pra tela de bloqueio</span>
+    <p>O ano inteiro em pontos, um por dia. A cor muda todo dia, sempre com a paleta da MARATU, e o seu celular pode trocar o fundo sozinho toda madrugada.</p>
+  </div>
+</section>
+
+<main class="bancada">
+  <div class="painel">
+    <div class="bloco">
+      <h2>Cor de hoje</h2>
+      <div class="hoje-cor">
+        <div><b id="cor-nome">—</b><small id="cor-sub"></small></div>
+        <div class="semana" id="semana" aria-label="Paletas de hoje e dos próximos 6 dias"></div>
+      </div>
+    </div>
+
+    <div class="bloco">
+      <div class="campo"><label for="aparelho">Seu celular</label>
+        <select id="aparelho">
+          <option value="1179x2556">iPhone 14 Pro · 15 · 16</option>
+          <option value="1206x2622">iPhone 16 Pro · 17</option>
+          <option value="1290x2796">iPhone 15 Plus · 15 Pro Max</option>
+          <option value="1320x2868">iPhone 16 Pro Max · 17 Pro Max</option>
+          <option value="1170x2532">iPhone 12 · 13 · 14</option>
+          <option value="1080x2400">Android (1080 × 2400)</option>
+          <option value="1440x3120">Android grande (1440 × 3120)</option>
+        </select>
+      </div>
+      <div class="acoes">
+        <button type="button" class="btn" id="baixar">Baixar o de hoje</button>
+        <button type="button" class="btn sec" id="ver">Ver em tamanho real</button>
+      </div>
+    </div>
+
+    <div class="bloco">
+      <h2>Trocar sozinho todo dia (iPhone)</h2>
+      <p class="dica">Este link sempre entrega a imagem do dia, no tamanho do celular escolhido acima. Ela vira à meia-noite de Brasília.</p>
+      <div class="linha-link">
+        <input id="link" readonly aria-label="Link do papel de parede do dia">
+        <button type="button" class="btn sec peq" id="copiar">Copiar</button>
+      </div>
+      <ol class="passos">
+        <li><span>Deixe como fundo atual uma <b>foto</b> (pode ser a imagem que você baixou aqui).</span></li>
+        <li><span>No app <b>Atalhos</b>: Automação › Nova automação › <b>Hora do Dia</b>. Escolha 01:00, Diariamente, e marque <b>Executar Imediatamente</b>.</span></li>
+        <li><span>Adicione a ação <b>Obter Conteúdo do URL</b> e cole o link copiado.</span></li>
+        <li><span>Adicione a ação <b>Definir Papel de Parede</b>, escolha <b>Tela Bloqueada</b> e desligue “Mostrar Pré-visualização” e “Recortar ao Objeto”.</span></li>
+      </ol>
+      <p class="dica">No Android, apps como MacroDroid fazem o mesmo: baixar o link e definir como papel de parede, uma vez por dia.</p>
+    </div>
+  </div>
+
+  <aside class="vitrine">
+    <div class="cel" id="cel">
+      <canvas id="tela" aria-label="Prévia do papel de parede de hoje"></canvas>
+      <div class="trava" aria-hidden="true">
+        <div class="ilha"></div>
+        <div class="data" id="tdata"></div>
+        <div class="hora" id="thora"></div>
+        <div class="base"><i></i><i></i></div>
+        <div class="barra"></div>
+      </div>
+    </div>
+    <p class="legenda" id="leg"></p>
+  </aside>
+</main>
+
+<div class="folha" id="folha" hidden>
+  <img id="folha-img" alt="Papel de parede de hoje em tamanho real">
+  <p>Segure na imagem e escolha “Salvar na Fotos”. Toque fora pra fechar.</p>
+</div>
+
+<script type="module">
+import { Cal } from './calendario.js';
+
+// imagens do dia, desenhadas toda madrugada pela Action calendario.yml (tools/calendario-gerador)
+const GERADOR = 'https://raw.githubusercontent.com/maratuestudio/maratuestudio.github.io/calendario-imagens/';
+const $ = s => document.querySelector(s);
+const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || 'America/Sao_Paulo';
+const tela = $('#tela'), ctx = tela.getContext('2d');
+let hoje = Cal.hojeEm(tz);
+
+try { const v = localStorage.getItem('maratu-cal-aparelho'); if (v && [...$('#aparelho').options].some(o => o.value === v)) $('#aparelho').value = v; } catch {}
+
+function semana() {
+  const T = Cal.temaDoDia(hoje), SEM = ['dom','seg','ter','qua','qui','sex','sáb'];
+  $('#cor-nome').textContent = T.nome;
+  $('#cor-sub').textContent = `Amanhã: ${Cal.temaDoDia(hoje + 1).nome} · ${Cal.GIRO.length} paletas em rodízio`;
+  $('#semana').innerHTML = Array.from({ length: 7 }, (_, i) => {
+    const [nome, bg, feito, hj] = Cal.paletaDoDia(hoje + i);
+    return `<span title="${nome}"><i style="background:${bg};--p:${feito};--h:${hj}"></i>${i ? SEM[Cal.deDn(hoje + i).sem] : 'hoje'}</span>`;
+  }).join('');
+}
+
+function desenhar() {
+  hoje = Cal.hojeEm(tz);
+  const [w, h] = $('#aparelho').value.split('x').map(Number);
+  const cfg = { w, h, tz };
+  if (tela.width !== w || tela.height !== h) { tela.width = w; tela.height = h; }
+  const d = Cal.compor(cfg, hoje);
+  Cal.pintarCanvas(ctx, d);
+  const cel = $('#cel');
+  cel.style.setProperty('--ar', `${w}/${h}`);
+  cel.style.setProperty('--tc', d.tema.txt);
+  const agora = new Date();
+  $('#thora').textContent = agora.toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
+  $('#tdata').textContent = agora.toLocaleDateString('pt-BR', { weekday:'long', day:'numeric', month:'long' });
+  $('#leg').textContent = `${w} × ${h} px · ${d.linha}`;
+  $('#link').value = `${GERADOR}${w}x${h}.png`;
+  semana();
+  try { localStorage.setItem('maratu-cal-aparelho', $('#aparelho').value); } catch {}
+}
+
+$('#aparelho').addEventListener('change', desenhar);
+$('#baixar').addEventListener('click', () => tela.toBlob(b => {
+  const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = `maratu-calendario-${Cal.isoDn(hoje)}.png`;
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+}, 'image/png'));
+const folha = $('#folha');
+$('#ver').addEventListener('click', () => { $('#folha-img').src = tela.toDataURL('image/png'); folha.hidden = false; });
+folha.addEventListener('click', e => { if (e.target !== $('#folha-img')) folha.hidden = true; });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') folha.hidden = true; });
+$('#copiar').addEventListener('click', async () => {
+  const b = $('#copiar');
+  try { await navigator.clipboard.writeText($('#link').value); b.textContent = 'Copiado'; }
+  catch { $('#link').select(); b.textContent = 'Selecionado'; }
+  setTimeout(() => b.textContent = 'Copiar', 1800);
+});
+
+desenhar();
+if (document.fonts) { document.fonts.load('900 20px Clother').then(desenhar, () => {}); document.fonts.ready.then(desenhar); }
+setInterval(desenhar, 60000);
+</script>
+</body>
+</html>

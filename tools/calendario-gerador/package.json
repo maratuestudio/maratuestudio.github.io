@@ -1,0 +1,11 @@
+{
+  "name": "maratu-calendario-gerador",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "gerar": "node gerar.mjs saida"
+  },
+  "dependencies": {
+    "@resvg/resvg-wasm": "2.6.2"
+  }
+}

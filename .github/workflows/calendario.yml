@@ -1,0 +1,41 @@
+name: calendario
+# Desenha o papel de parede do dia (Calendário MARATU) e publica no branch calendario-imagens.
+# O Atalho do iPhone busca em:
+#   https://raw.githubusercontent.com/maratuestudio/maratuestudio.github.io/calendario-imagens/<largura>x<altura>.png
+on:
+  schedule:
+    - cron: '7 3 * * *'   # 00:07 em Brasília (o GitHub pode atrasar alguns minutos)
+  workflow_dispatch:
+  push:
+    paths:
+      - 'calendario/calendario.js'
+      - 'tools/calendario-gerador/**'
+      - '.github/workflows/calendario.yml'
+permissions:
+  contents: write
+concurrency:
+  group: calendario
+  cancel-in-progress: true
+jobs:
+  gerar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: desenhar as imagens de hoje
+        working-directory: tools/calendario-gerador
+        run: |
+          npm ci --no-audit --no-fund
+          node gerar.mjs "$RUNNER_TEMP/imagens"
+      - name: publicar no branch calendario-imagens
+        # um commit só, sempre substituído: o histórico do repositório não cresce
+        run: |
+          cd "$RUNNER_TEMP/imagens"
+          git init -q -b calendario-imagens
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -q -m "Calendário: imagens de $(jq -r .data hoje.json) ($(jq -r .paleta hoje.json))"
+          git push -f -q "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" HEAD:calendario-imagens

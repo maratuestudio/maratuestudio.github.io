@@ -166,14 +166,14 @@ button,input,select{font:inherit;color:inherit}
 
     <div class="bloco">
       <h2>Trocar sozinho todo dia (iPhone)</h2>
-      <p class="dica">Este link sempre entrega a imagem do dia, no tamanho do celular escolhido acima.</p>
+      <p class="dica">Este link sempre entrega a imagem do dia, no tamanho do celular escolhido acima. Ela vira à meia-noite de Brasília.</p>
       <div class="linha-link">
         <input id="link" readonly aria-label="Link do papel de parede do dia">
         <button type="button" class="btn sec peq" id="copiar">Copiar</button>
       </div>
       <ol class="passos">
         <li><span>Deixe como fundo atual uma <b>foto</b> (pode ser a imagem que você baixou aqui).</span></li>
-        <li><span>No app <b>Atalhos</b>: Automação › Nova automação › <b>Hora do Dia</b>. Escolha 00:05, Diariamente, e marque <b>Executar Imediatamente</b>.</span></li>
+        <li><span>No app <b>Atalhos</b>: Automação › Nova automação › <b>Hora do Dia</b>. Escolha 01:00, Diariamente, e marque <b>Executar Imediatamente</b>.</span></li>
         <li><span>Adicione a ação <b>Obter Conteúdo do URL</b> e cole o link copiado.</span></li>
         <li><span>Adicione a ação <b>Definir Papel de Parede</b>, escolha <b>Tela Bloqueada</b> e desligue “Mostrar Pré-visualização” e “Recortar ao Objeto”.</span></li>
       </ol>
@@ -204,8 +204,8 @@ button,input,select{font:inherit;color:inherit}
 <script type="module">
 import { Cal } from './calendario.js';
 
-// onde o gerador do link diário roda (tools/calendario-worker)
-const GERADOR = 'https://maratu-calendario.raphaelnascimento.workers.dev/hoje.png';
+// imagens do dia, desenhadas toda madrugada pela Action calendario.yml (tools/calendario-gerador)
+const GERADOR = 'https://raw.githubusercontent.com/maratuestudio/maratuestudio.github.io/calendario-imagens/';
 const $ = s => document.querySelector(s);
 const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || 'America/Sao_Paulo';
 const tela = $('#tela'), ctx = tela.getContext('2d');
@@ -237,7 +237,7 @@ function desenhar() {
   $('#thora').textContent = agora.toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
   $('#tdata').textContent = agora.toLocaleDateString('pt-BR', { weekday:'long', day:'numeric', month:'long' });
   $('#leg').textContent = `${w} × ${h} px · ${d.linha}`;
-  $('#link').value = `${GERADOR}?${Cal.paramsDeCfg(cfg)}`;
+  $('#link').value = `${GERADOR}${w}x${h}.png`;
   semana();
   try { localStorage.setItem('maratu-cal-aparelho', $('#aparelho').value); } catch {}
 }

@@ -1,9 +1,0 @@
-name = "maratu-calendario"
-main = "src/index.js"
-compatibility_date = "2026-11-01"
-
-# O .wasm do resvg entra como módulo
-[[rules]]
-type = "CompiledWasm"
-globs = ["**/*.wasm"]
-fallthrough = true

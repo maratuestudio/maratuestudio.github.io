@@ -83,6 +83,21 @@ button,input,select{font:inherit;color:inherit}
 .cor span{font-size:.74rem;font-weight:700;padding:6px 8px}
 .cor[aria-pressed="true"]{box-shadow:inset 0 0 0 2px var(--preto);outline:2px solid var(--laranja);outline-offset:2px}
 
+.cor-dia{border:1.5px solid var(--preto);border-radius:6px;background:var(--areia);cursor:pointer;
+  padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;text-align:left;
+  transition:transform .12s var(--ease-out)}
+.cor-dia:active{transform:translateY(1px)}
+.cor-dia:focus-visible{outline:2.5px solid var(--azul-claro);outline-offset:2px}
+.cor-dia[aria-pressed="true"]{box-shadow:inset 0 0 0 2px var(--preto);outline:2px solid var(--laranja);outline-offset:2px}
+.cd-txt{display:flex;flex-direction:column;gap:2px}
+.cd-txt b{font-weight:900;font-size:1.05rem;letter-spacing:-.01em}
+.cd-txt small{font-size:.78rem;opacity:.75}
+.cd-semana{display:flex;gap:6px}
+.cd-semana span{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:.6rem;font-weight:700;
+  letter-spacing:.06em;text-transform:uppercase}
+.cd-semana i{width:28px;height:28px;border-radius:5px;border:1.5px solid var(--preto);display:grid;place-items:center}
+.cd-semana i::after{content:"";width:8px;height:8px;border-radius:50%;background:var(--p);box-shadow:5px 0 0 -1px var(--h)}
+.cd-semana span:first-child i{outline:2px solid var(--laranja);outline-offset:1px}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
 .chip{border:1.5px solid var(--preto);border-radius:99px;background:var(--areia);padding:8px 14px;
   min-height:40px;cursor:pointer;font-size:.85rem;font-weight:700}
@@ -199,6 +214,11 @@ button,input,select{font:inherit;color:inherit}
 
     <div class="bloco">
       <h2>Cores</h2>
+      <button type="button" class="cor-dia" data-tema="diario" aria-pressed="true">
+        <span class="cd-txt"><b>Muda todo dia</b><small id="cd-hoje">Hoje: —</small></span>
+        <span class="cd-semana" id="cd-semana" aria-label="Paletas dos próximos 7 dias"></span>
+      </button>
+      <p class="dica">Ou fixe uma paleta:</p>
       <div class="cores" role="group" aria-label="Paleta">
         <button type="button" class="cor" data-tema="mare" aria-pressed="true"><i style="background:#0E3272;--p:#F0ECE4"></i><span>Maré</span></button>
         <button type="button" class="cor" data-tema="areia" aria-pressed="false"><i style="background:#F0ECE4;--p:#0D0D0B"></i><span>Areia</span></button>
@@ -275,7 +295,35 @@ button,input,select{font:inherit;color:inherit}
     brasa:  { bg:'#C8501A', bg2:'#B2461A', feito:'#F0ECE4', falta:'rgba(13,13,11,.2)',    hoje:'#0D0D0B', txt:'#F0ECE4', sub:'rgba(240,236,228,.7)', marca:'#0D0D0B', relogio:'#F0ECE4' },
     mangue: { bg:'#0D0D0B', bg2:'#16150F', feito:'#D4960A', falta:'rgba(240,236,228,.12)', hoje:'#F0ECE4', txt:'#F0ECE4', sub:'rgba(240,236,228,.55)', marca:'#D4960A', relogio:'#F0ECE4' },
   };
-  const MESES = ['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ'];
+  // Paletas que giram: uma por dia, sempre das cores da marca. A ordem alterna claro/escuro
+  // pra dois dias seguidos nunca ficarem parecidos. Mesmo dia = mesma paleta (serve pro atalho).
+  const C = { azul:'#0E3272', azulc:'#2E6FC4', laranja:'#C8501A', areia:'#F0ECE4', preto:'#0D0D0B', dourado:'#D4960A' };
+  const GIRO = [
+    ['Maré',          C.azul,    C.areia,   C.laranja],
+    ['Cajá',          C.areia,   C.laranja, C.azul],
+    ['Mangue',        C.preto,   C.dourado, C.areia],
+    ['Brasa',         C.laranja, C.areia,   C.preto],
+    ['Fundo do mar',  C.azul,    C.dourado, C.areia],
+    ['Maresia',       C.areia,   C.azul,    C.laranja],
+    ['São João',      C.preto,   C.laranja, C.dourado],
+    ['Dendê',         C.dourado, C.preto,   C.areia],
+    ['Céu de Aracaju',C.azulc,   C.areia,   C.dourado],
+    ['Areia',         C.areia,   C.preto,   C.laranja],
+    ['Farol',         C.preto,   C.areia,   C.laranja],
+    ['Barro',         C.laranja, C.preto,   C.areia],
+    ['Pôr do sol',    C.dourado, C.azul,    C.laranja],
+    ['Coqueiral',     C.azulc,   C.preto,   C.areia],
+  ];
+  const rgba = (hex, a) => { const n = parseInt(hex.slice(1), 16); return `rgba(${n>>16},${n>>8&255},${n&255},${a})`; };
+  const claro = hex => { const n = parseInt(hex.slice(1), 16); return (0.299*(n>>16) + 0.587*(n>>8&255) + 0.114*(n&255)) > 150; };
+  const sombra = hex => { const n = parseInt(hex.slice(1), 16), f = v => Math.round(v*.88).toString(16).padStart(2,'0'); return '#'+f(n>>16)+f(n>>8&255)+f(n&255); };
+  function temaDe([nome, bg, feito, hoje]) {
+    const txt = claro(bg) ? C.preto : C.areia;
+    return { nome, bg, bg2: sombra(bg), feito, falta: rgba(txt, claro(bg) ? .13 : .16), hoje, txt, sub: rgba(txt, .6), marca: hoje, relogio: txt };
+  }
+  const diasDesde = d => Math.floor((Date.UTC(d.getFullYear(), d.getMonth(), d.getDate())) / 86400000);
+  const paletaDoDia = d => GIRO[((diasDesde(d) % GIRO.length) + GIRO.length) % GIRO.length];
+  const MESES =['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ'];
   const LOGO = [
     'M38.05 19.28 32.47 0 0 0 0 23.92 31.53 29.14 0 29.14 0 53.57 32.47 53.57 32.47 29.94 38.13 47.91 43.71 29.94 43.71 53.57 76.11 53.57 76.11 0 43.71 0Z',
     'M78.37,0v23.85l32.55,4.93h-32.62v24.79h13.41c11.23,0,19.35-9.13,19.72-24.72l6.74,24.5v.22h32.4v-23.05l.07-.07L136.64,0h-58.28Z',
@@ -294,16 +342,16 @@ button,input,select{font:inherit;color:inherit}
 
   // estado (com exemplo preenchido)
   const fimPadrao = new Date(hoje.getFullYear() + (hoje.getMonth() >= 11 ? 1 : 0), 11, 21);
-  const est = { modo:'ano', arr:'meses', tema:'mare', forma:'bola', assinatura:true, relogio:true };
+  const est = { modo:'ano', arr:'meses', tema:'diario', forma:'bola', assinatura:true, relogio:true };
   $('#mini').value = iso(new Date(hoje.getTime() - 40*DIA));
   $('#mfim').value = iso(fimPadrao.getTime() > hoje.getTime() + 20*DIA ? fimPadrao : new Date(hoje.getTime() + 120*DIA));
   try {
-    const s = JSON.parse(localStorage.getItem('maratu-cal') || 'null');
+    const s = JSON.parse(localStorage.getItem('maratu-cal-2') || 'null');
     if (s) { Object.assign(est, s.est || {}); for (const [k,v] of Object.entries(s.campos || {})) { const el = document.getElementById(k); if (el && v) el.value = v; } }
   } catch {}
   const salvar = () => { try {
     const campos = {}; ['nasc','anos','mnome','mini','mfim','aparelho'].forEach(k => campos[k] = document.getElementById(k).value);
-    localStorage.setItem('maratu-cal', JSON.stringify({ est, campos }));
+    localStorage.setItem('maratu-cal-2', JSON.stringify({ est, campos }));
   } catch {} };
 
   const tela = $('#tela'), ctx = tela.getContext('2d');
@@ -349,7 +397,7 @@ button,input,select{font:inherit;color:inherit}
     const [W, H] = $('#aparelho').value.split('x').map(Number);
     if (tela.width !== W || tela.height !== H) { tela.width = W; tela.height = H; }
     $('#cel').style.setProperty('--ar', `${W}/${H}`);
-    const T = TEMAS[est.tema];
+    const T = est.tema === 'diario' ? temaDe(paletaDoDia(hoje)) : TEMAS[est.tema];
     const u = W / 100; // 1% da largura
 
     const g = ctx.createLinearGradient(0, 0, 0, H);
@@ -417,6 +465,7 @@ button,input,select{font:inherit;color:inherit}
     const yT = H*.345;
     if (est.modo === 'meta') texto(titulo, W/2, yT, u*5.6, T.txt, 900, 'center', -u*.08);
     texto(linha, W/2, box.y + box.h + H*.045, u*3.6, T.txt, 700, 'center', u*.05);
+    if (est.tema === 'diario') titulo += ' · ' + T.nome;
     if (est.modo !== 'meta') texto(titulo.toUpperCase(), W/2, box.y + box.h + H*.045 - u*5.4, u*2.6, T.sub, 900, 'center', u*.4);
 
     // assinatura
@@ -456,6 +505,13 @@ button,input,select{font:inherit;color:inherit}
     b.addEventListener('click', () => { est[k] = !est[k]; b.setAttribute('aria-pressed', String(est[k])); desenhar(); });
   });
   mostrarBlocos();
+  // faixa com as paletas de hoje e dos próximos 6 dias
+  const SEM = ['dom','seg','ter','qua','qui','sex','sáb'];
+  $('#cd-hoje').textContent = `Hoje: ${paletaDoDia(hoje)[0]} · são ${GIRO.length} paletas em rodízio`;
+  $('#cd-semana').innerHTML = Array.from({ length: 7 }, (_, i) => {
+    const d = new Date(hoje.getTime() + i*DIA), [nome, bg, feito, hj] = paletaDoDia(d);
+    return `<span title="${nome}"><i style="background:${bg};--p:${feito};--h:${hj}"></i>${i ? SEM[d.getDay()] : 'hoje'}</span>`;
+  }).join('');
   $('#form').addEventListener('input', desenhar);
   $('#form').addEventListener('submit', e => e.preventDefault());
 

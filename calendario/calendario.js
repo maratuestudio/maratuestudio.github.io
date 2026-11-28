@@ -36,46 +36,6 @@ const LOGO = [
 ];
 const LOGO_W = 440.04;
 
-// O Chico, aratu em pixel da MARATU (o mesmo de projetos-app/chico.js, de óculos).
-// o = corpo laranja, p = armação preta, b = lente branca. 40 x 20 pixels.
-const CHICO = [
-  '.........pppppppp......pppppppp.........',
-  '........pppppppppppppppppppppppp........',
-  '........pbbbbbbbbppppppbbbbbbbbp........',
-  '........pbbbboobbp....pbboobbbbp........',
-  '........pbbbboobbp....pbboobbbbp........',
-  '........pbbbboobbp....pbboobbbbp........',
-  '........pbbbbbbbbp....pbbbbbbbbp........',
-  '.........pppppppp......pppppppp.........',
-  '....oo..oooooooooooooooooooooooo..oo....',
-  '..oooo..oooooooooooooooooooooooo..oooo..',
-  '.ooooo..oooooooooooooooooooooooo..ooooo.',
-  '.ooooo..oooooooooooooooooooooooo..ooooo.',
-  'oooooo...oooooooooooooooooooooo...oooooo',
-  'oooooo...oooooooooooooooooooooo...oooooo',
-  'oooooo....oooooooooooooooooooo....oooooo',
-  'oooooo.....oooooooooooooooooo.....oooooo',
-  'oooooo.....oooooooooooooooooo.....oooooo',
-  '.ooooo.......oooooooooooooo.......ooooo.',
-  '..oooo........oooooooooooo........oooo..',
-  '...ooo..........oooooooo..........ooo...',
-];
-const CHICO_COR = { o:'#E06A2C', p:'#0D0D0B', b:'#FFFFFF' };
-// contorno de 1 pixel em volta do Chico, pra ele aparecer em qualquer fundo (até no laranja)
-const CHICO_CONTORNO = (() => {
-  const H = CHICO.length, W = CHICO[0].length, cheio = (x, y) => y >= 0 && y < H && x >= 0 && x < W && CHICO[y][x] !== '.';
-  const out = [];
-  for (let y = -1; y <= H; y++) for (let x = -1; x <= W; x++)
-    if (!cheio(x, y) && (cheio(x-1, y) || cheio(x+1, y) || cheio(x, y-1) || cheio(x, y+1))) out.push([x, y]);
-  return out;
-})();
-// pixels agrupados em faixas horizontais da mesma cor: [x, y, largura, letra]
-const CHICO_FAIXAS = CHICO.flatMap((linha, y) => {
-  const f = []; let x = 0;
-  while (x < linha.length) { const c = linha[x]; let w = 1; while (linha[x+w] === c) w++; if (c !== '.') f.push([x, y, w, c]); x += w; }
-  return f;
-});
-
 // ── datas como número de dia (UTC), pra não sofrer com fuso e horário de verão ──
 const dn = (a, m, d) => Math.floor(Date.UTC(a, m, d) / DIA);           // m de 0 a 11
 const deDn = n => { const d = new Date(n * DIA); return { a: d.getUTCFullYear(), m: d.getUTCMonth(), d: d.getUTCDate(), sem: d.getUTCDay() }; };
@@ -116,7 +76,7 @@ function compor(cfg, hoje) {
   const out = [{ t:'fundo', c1:T.bg, c2:T.bg2 }];
 
   // grade corrida de 15 colunas na área livre abaixo do relógio do sistema
-  const box = { x: u*9, y: H*.355, w: W - u*18, h: H*.425 }, cols = 15, linhas = Math.ceil(dias / cols);
+  const box = { x: u*9, y: H*.355, w: W - u*18, h: H*.47 }, cols = 15, linhas = Math.ceil(dias / cols);
   const passo = Math.min(box.w / cols, box.h / linhas);
   const x0 = box.x + (box.w - passo*cols)/2 + passo/2, y0 = box.y + (box.h - passo*linhas)/2 + passo/2;
   for (let i = 0; i < dias; i++) {
@@ -124,15 +84,7 @@ function compor(cfg, hoje) {
     out.push({ t:'ponto', x: x0 + (i % cols)*passo, y: y0 + Math.floor(i / cols)*passo, r: passo*.3, tipo, cor: T[tipo] });
   }
 
-  // a trilha do ano: o Chico anda por ela, do 1º de janeiro (esquerda) ao 31 de dezembro (direita)
-  const gx0 = x0 - passo*.3, gx1 = x0 + (cols-1)*passo + passo*.3, pct = (n + .5) / dias;
-  const yTrilha = box.y + box.h + H*.052, esp = u*.45, xc = gx0 + (gx1 - gx0)*pct;
-  out.push({ t:'barra', x: gx0, y: yTrilha, w: gx1 - gx0, h: esp, cor: T.falta });
-  out.push({ t:'barra', x: gx0, y: yTrilha, w: xc - gx0, h: esp, cor: T.feito });
-  const px = u*.38, cw = 40*px, chx = Math.min(Math.max(xc - cw/2, gx0 - px*2), gx1 - cw + px*2);
-  out.push({ t:'chico', x: chx, y: yTrilha - 20*px - px*.5, px, contorno: T.txt });
-
-  const yLinha = yTrilha + H*.055;
+  const yLinha = box.y + box.h + H*.045;
   out.push({ t:'texto', s:`${hj.a} · ${T.nome}`.toUpperCase(), x:W/2, y:yLinha - u*5.4, tam:u*2.6, cor:T.sub, peso:900, esp:u*.4 });
   out.push({ t:'texto', s:linha, x:W/2, y:yLinha, tam:u*3.6, cor:T.txt, peso:700, esp:u*.05 });
   const lw = u*16; out.push({ t:'logo', x: W/2 - lw/2, y: H*.905, w: lw, cor: T.marca });
@@ -154,13 +106,6 @@ function pintarCanvas(ctx, { W, H, formas }, familia = 'Clother') {
       ctx.fillText(f.s, f.x, f.y);
       if ('letterSpacing' in ctx) ctx.letterSpacing = '0px';
     }
-    else if (f.t === 'barra') { ctx.fillStyle = f.cor; ctx.beginPath(); ctx.roundRect(f.x, f.y, Math.max(f.w, 0), f.h, f.h/2); ctx.fill(); }
-    else if (f.t === 'chico') {
-      const q = f.px, sx = v => Math.round(f.x + v*q), sy = v => Math.round(f.y + v*q);
-      ctx.fillStyle = f.contorno;
-      for (const [x, y] of CHICO_CONTORNO) ctx.fillRect(sx(x), sy(y), sx(x+1) - sx(x), sy(y+1) - sy(y));
-      for (const [x, y, w, c] of CHICO_FAIXAS) { ctx.fillStyle = CHICO_COR[c]; ctx.fillRect(sx(x), sy(y), sx(x+w) - sx(x), sy(y+1) - sy(y)); }
-    }
     else if (f.t === 'logo') { const s = f.w / LOGO_W; ctx.save(); ctx.translate(f.x, f.y); ctx.scale(s, s); ctx.fillStyle = f.cor; LOGO.forEach(d => ctx.fill(new Path2D(d))); ctx.restore(); }
   }
 }
@@ -181,15 +126,6 @@ function paraSVG({ W, H, formas }, familia = 'TRY Clother') {
       // o Black vem numa família própria no arquivo da fonte
       const fam = f.peso >= 900 ? `${familia} Black` : familia;
       p.push(`<text x="${n2(f.x)}" y="${n2(f.y)}" font-family="${fam}" font-weight="${f.peso}" font-size="${n2(f.tam)}" letter-spacing="${n2(f.esp)}" text-anchor="middle" ${pintura(f.cor)}>${esc(f.s)}</text>`);
-    }
-    else if (f.t === 'barra') p.push(`<rect x="${n2(f.x)}" y="${n2(f.y)}" width="${n2(Math.max(f.w, 0))}" height="${n2(f.h)}" rx="${n2(f.h/2)}" ${pintura(f.cor)}/>`);
-    else if (f.t === 'chico') {
-      // pixels de verdade: sem suavizar as bordas
-      const r = (x, y, w, cor) => `<rect x="${x}" y="${y}" width="${w}" height="1" ${cor}/>`;
-      p.push(`<g transform="translate(${n2(f.x)} ${n2(f.y)}) scale(${f.px})" shape-rendering="crispEdges">`);
-      p.push(CHICO_CONTORNO.map(([x, y]) => r(x, y, 1, pintura(f.contorno))).join(''));
-      p.push(CHICO_FAIXAS.map(([x, y, w, c]) => r(x, y, w, `fill="${CHICO_COR[c]}"`)).join(''));
-      p.push('</g>');
     }
     else if (f.t === 'logo') p.push(`<g transform="translate(${n2(f.x)} ${n2(f.y)}) scale(${f.w / LOGO_W})" fill="${f.cor}">${LOGO.map(d => `<path d="${d}"/>`).join('')}</g>`);
   }

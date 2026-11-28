@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Calendário MARATU</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Papel de parede pro celular: o ano, a vida ou uma meta em pontos. Cada ponto, um dia.">
+<meta name="theme-color" content="#F0ECE4">
+<link rel="icon" type="image/png" href="/favicon-v6.png">
+<style>
+@font-face { font-family: 'Jack'; src: url('/TRYJackAlpha-Regular.woff2') format('woff2'); font-weight: 400; font-display: swap; }
+@font-face { font-family: 'Clother'; src: url('/TRYClother-Regular.woff2') format('woff2'); font-weight: 400; font-display: swap; }
+@font-face { font-family: 'Clother'; src: url('/TRYClother-Bold.woff2') format('woff2'); font-weight: 700; font-display: swap; }
+@font-face { font-family: 'Clother'; src: url('/TRYClother-Black.woff2') format('woff2'); font-weight: 900; font-display: swap; }
+
+/* Layout: faixa de título + bancada em duas colunas (controles | celular), passos embaixo. */
+:root{
+  --laranja:#C8501A; --azul:#0E3272; --azul-claro:#2E6FC4;
+  --areia:#F0ECE4; --areia-sombra:#E5DFD3; --preto:#0D0D0B; --dourado:#D4960A;
+  --jack:'Jack','Clother',Georgia,serif;
+  --clother:'Clother',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --ease-out:cubic-bezier(0.23,1,0.32,1);
+  --margem:clamp(16px,4vw,56px);
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{background:var(--areia);color:var(--preto)}
+body{margin:0;font-family:var(--clother);font-size:16px;line-height:1.5;
+  padding-left:max(var(--margem),env(safe-area-inset-left,0px));
+  padding-right:max(var(--margem),env(safe-area-inset-right,0px));
+  padding-block:0 64px;-webkit-font-smoothing:antialiased}
+button,input,select{font:inherit;color:inherit}
+
+.topo{display:flex;align-items:center;justify-content:space-between;gap:16px;
+  padding-block:20px;border-bottom:1.5px solid var(--preto)}
+.topo svg{height:18px;width:auto;display:block}
+.topo span{font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase}
+
+.abre{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:24px 48px;
+  align-items:end;padding-block:clamp(32px,6vh,64px) clamp(24px,4vh,40px)}
+.abre h1{font-family:var(--jack);font-weight:400;font-size:clamp(2.6rem,7vw,5.6rem);
+  line-height:.95;letter-spacing:-.01em;margin:0;text-wrap:balance}
+.abre h1 em{font-style:normal;color:var(--laranja)}
+.abre p{margin:0;max-width:44ch;font-size:1.05rem;line-height:1.55;text-wrap:pretty}
+.abre .rot{display:block;font-size:.68rem;font-weight:700;letter-spacing:.14em;
+  text-transform:uppercase;margin-bottom:12px;color:var(--azul)}
+
+.bancada{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,420px);
+  gap:clamp(24px,4vw,56px);align-items:start}
+
+.painel{background:#fff8ef;border:1.5px solid var(--preto);border-radius:8px;
+  box-shadow:3px 3px 0 0 var(--preto);display:flex;flex-direction:column}
+.bloco{padding:20px clamp(16px,2.4vw,28px);display:flex;flex-direction:column;gap:12px}
+.bloco + .bloco{border-top:1.5px dashed color-mix(in oklch,var(--preto),transparent 70%)}
+.bloco h2{margin:0;font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase}
+
+.modos{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.modo{border:1.5px solid var(--preto);background:var(--areia);border-radius:6px;
+  padding:12px 10px;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:2px;
+  transition:transform .12s var(--ease-out)}
+.modo b{font-weight:900;font-size:1.05rem;letter-spacing:-.01em}
+.modo small{font-size:.75rem;opacity:.7;line-height:1.3}
+.modo[aria-pressed="true"]{background:var(--preto);color:var(--areia)}
+.modo:active{transform:translateY(1px)}
+.modo:focus-visible,.chip:focus-visible,.cor:focus-visible,.btn:focus-visible,input:focus-visible,select:focus-visible{
+  outline:2.5px solid var(--azul-claro);outline-offset:2px}
+
+.campos{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}
+.campo{display:flex;flex-direction:column;gap:6px;min-width:0}
+.campo label{font-size:.78rem;font-weight:700}
+.campo input,.campo select{border:1.5px solid var(--preto);border-radius:6px;background:var(--areia);
+  padding:10px 12px;min-height:44px;width:100%;font-variant-numeric:tabular-nums}
+.dica{font-size:.78rem;opacity:.65;margin:0}
+
+.cores{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.cor{border:1.5px solid var(--preto);border-radius:6px;padding:0;cursor:pointer;background:var(--areia);
+  display:flex;flex-direction:column;overflow:hidden;text-align:left}
+.cor i{display:block;height:44px;position:relative}
+.cor i::after{content:"";position:absolute;inset:14px auto auto 12px;width:40px;height:16px;
+  background:radial-gradient(circle,var(--p) 3px,transparent 3.5px) 0 0/10px 8px}
+.cor span{font-size:.74rem;font-weight:700;padding:6px 8px}
+.cor[aria-pressed="true"]{box-shadow:inset 0 0 0 2px var(--preto);outline:2px solid var(--laranja);outline-offset:2px}
+
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1.5px solid var(--preto);border-radius:99px;background:var(--areia);padding:8px 14px;
+  min-height:40px;cursor:pointer;font-size:.85rem;font-weight:700}
+.chip[aria-pressed="true"]{background:var(--laranja);color:var(--areia)}
+
+.acoes{display:flex;flex-wrap:wrap;gap:10px}
+.btn{border:1.5px solid var(--preto);border-radius:6px;padding:12px 18px;min-height:48px;cursor:pointer;
+  font-weight:900;font-size:.95rem;background:var(--dourado);box-shadow:3px 3px 0 0 var(--preto);
+  transition:transform .12s var(--ease-out),box-shadow .12s var(--ease-out)}
+.btn.sec{background:var(--areia)}
+.btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 0 var(--preto)}
+
+/* ── celular ── */
+.vitrine{position:sticky;top:calc(env(safe-area-inset-top,0px) + 16px);display:flex;flex-direction:column;align-items:center;gap:14px}
+.cel{position:relative;width:min(100%,340px);aspect-ratio:var(--ar,1179/2556);
+  border:10px solid var(--preto);border-radius:48px;overflow:hidden;background:var(--preto);
+  box-shadow:6px 6px 0 0 color-mix(in oklch,var(--preto),transparent 75%)}
+.cel canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.ilha{position:absolute;top:2.2%;left:50%;width:31%;height:3.6%;translate:-50% 0;background:#000;border-radius:99px}
+.trava{position:absolute;inset:0;pointer-events:none;color:var(--tc,#F0ECE4);text-align:center;
+  transition:opacity .2s var(--ease-out)}
+.trava .data{position:absolute;top:10.5%;inset-inline:0;font-weight:700;font-size:clamp(.7rem,3.4cqi,1rem)}
+.trava .hora{position:absolute;top:12.6%;inset-inline:0;font-weight:900;font-size:clamp(3.2rem,24cqi,6rem);
+  line-height:1;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.trava .base{position:absolute;bottom:3.5%;inset-inline:12%;display:flex;justify-content:space-between}
+.trava .base i{width:13%;aspect-ratio:1;border-radius:50%;background:color-mix(in srgb,currentColor 22%,transparent);
+  backdrop-filter:blur(6px)}
+.trava .barra{position:absolute;bottom:1.2%;left:50%;width:36%;height:.55%;translate:-50% 0;border-radius:9px;background:currentColor;opacity:.85}
+.cel{container-type:inline-size}
+.cel.sem-relogio .trava{opacity:0}
+.legenda{font-size:.78rem;opacity:.7;text-align:center;max-width:34ch;margin:0}
+
+/* ── passos ── */
+.passos{margin-top:clamp(48px,8vh,88px);border-top:1.5px solid var(--preto);padding-top:28px;
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+.passos h3{margin:0 0 6px;font-size:1.1rem;font-weight:900;letter-spacing:-.01em}
+.passos p{margin:0;font-size:.92rem;line-height:1.55;max-width:38ch}
+.passos .n{font-family:var(--jack);font-size:2.2rem;line-height:1;color:var(--laranja);display:block;margin-bottom:8px}
+.passos .futuro{font-size:.66rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  background:var(--azul);color:var(--areia);padding:3px 8px;border-radius:99px;margin-left:6px;vertical-align:2px}
+
+/* ── visualizar imagem ── */
+.folha{position:fixed;inset:0;z-index:20;background:color-mix(in oklch,var(--preto),transparent 15%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;
+  padding:calc(env(safe-area-inset-top,0px) + 16px) max(16px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 16px) max(16px,env(safe-area-inset-left,0px));
+  color:var(--areia)}
+.folha img{max-height:78vh;max-width:100%;border-radius:18px;border:1.5px solid var(--areia)}
+.folha p{margin:0;font-size:.9rem;text-align:center;max-width:36ch}
+
+@media (max-width:860px){
+  .abre{grid-template-columns:1fr}
+  .bancada{grid-template-columns:1fr}
+  .vitrine{position:static;order:-1}
+  .passos{grid-template-columns:1fr}
+}
+@media (max-width:480px){
+  .modos{grid-template-columns:1fr}
+  .cores{grid-template-columns:repeat(2,1fr)}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<header class="topo">
+  <svg viewBox="0 0 440.04 54.07" role="img" aria-label="MARATU"><g fill="#C8501A"><polygon points="38.05 19.28 32.47 0 0 0 0 23.92 31.53 29.14 0 29.14 0 53.57 32.47 53.57 32.47 29.94 38.13 47.91 43.71 29.94 43.71 53.57 76.11 53.57 76.11 0 43.71 0 38.05 19.28"/><path d="M78.37,0v23.85l32.55,4.93h-32.62v24.79h13.41c11.23,0,19.350-9.13,19.72-24.72l6.74,24.5v.22h32.4v-23.05l.07-.07L136.64,0h-58.28Z"/><path d="M223.28,15.08c0-11.23-7.39-15.08-26.020-15.08h-44.43l.14,53.57h32.33v-28.56c4.28.14,5.36,1.3,5.36,4.13v2.97h-5.36c3.62,16.89,17.69,21.46,29.28,21.46h8.05v-21.46h-28.99c21.82-1.23,29.65-5.360,29.65-17.03Z"/><path d="M225.54,0v23.85l32.55,4.93h-32.62v24.79h13.41c11.24,0,19.35-9.13,19.72-24.72l6.74,24.5v.22h32.4v-23.05l.07-.07-13.99-30.44h-58.28Z"/><polygon points="299.99 26.38 318.25 26.38 318.25 53.57 350.58 53.57 350.58 26.38 368.92 26.38 368.92 0 299.99 0 299.99 26.38"/><path d="M407.71,0v21.53h-.87c-2.32,0-3.33-.87-3.33-4.2V0h-32.4v28.12c0,18.56,4.78,25.95,17.61,25.95,14.86,0,17.83-8.26,18.99-31.020v30.52h32.330V0h-32.33Z"/></g></svg>
+  <span>Calendário · protótipo</span>
+</header>
+
+<section class="abre">
+  <h1>Cada ponto,<br><em>um dia.</em></h1>
+  <div>
+    <span class="rot">Papel de parede pra tela de bloqueio</span>
+    <p>Escolha o que contar (o ano, a sua vida em semanas ou os dias até uma meta), pinte com as cores da MARATU e baixe a imagem no tamanho exato do seu celular.</p>
+  </div>
+</section>
+
+<main class="bancada">
+  <form class="painel" id="form" autocomplete="off">
+    <div class="bloco">
+      <h2>O que contar</h2>
+      <div class="modos" role="group" aria-label="Modo">
+        <button type="button" class="modo" data-modo="ano" aria-pressed="true"><b>O ano</b><small>365 pontos, um por dia</small></button>
+        <button type="button" class="modo" data-modo="vida" aria-pressed="false"><b>A vida</b><small>Uma linha por ano, um ponto por semana</small></button>
+        <button type="button" class="modo" data-modo="meta" aria-pressed="false"><b>Uma meta</b><small>Contagem até uma data</small></button>
+      </div>
+    </div>
+
+    <div class="bloco" id="b-ano">
+      <h2>Arrumação</h2>
+      <div class="chips" role="group" aria-label="Arrumação do ano">
+        <button type="button" class="chip" data-arr="meses" aria-pressed="true">Por mês</button>
+        <button type="button" class="chip" data-arr="corrido" aria-pressed="false">Corrido</button>
+      </div>
+    </div>
+
+    <div class="bloco" id="b-vida" hidden>
+      <h2>Sua vida</h2>
+      <div class="campos">
+        <div class="campo"><label for="nasc">Data de nascimento</label><input type="date" id="nasc" value="1995-06-14"></div>
+        <div class="campo"><label for="anos">Contar até quantos anos</label><input type="number" id="anos" min="40" max="110" value="80"></div>
+      </div>
+      <p class="dica">A data preenchida é um exemplo. Troque pela sua: ela fica só neste navegador.</p>
+    </div>
+
+    <div class="bloco" id="b-meta" hidden>
+      <h2>Sua meta</h2>
+      <div class="campos">
+        <div class="campo"><label for="mnome">Nome da meta</label><input type="text" id="mnome" maxlength="28" value="Verão em Atalaia"></div>
+        <div class="campo"><label for="mini">Começou em</label><input type="date" id="mini"></div>
+        <div class="campo"><label for="mfim">Termina em</label><input type="date" id="mfim"></div>
+      </div>
+    </div>
+
+    <div class="bloco">
+      <h2>Cores</h2>
+      <div class="cores" role="group" aria-label="Paleta">
+        <button type="button" class="cor" data-tema="mare" aria-pressed="true"><i style="background:#0E3272;--p:#F0ECE4"></i><span>Maré</span></button>
+        <button type="button" class="cor" data-tema="areia" aria-pressed="false"><i style="background:#F0ECE4;--p:#0D0D0B"></i><span>Areia</span></button>
+        <button type="button" class="cor" data-tema="brasa" aria-pressed="false"><i style="background:#C8501A;--p:#F0ECE4"></i><span>Brasa</span></button>
+        <button type="button" class="cor" data-tema="mangue" aria-pressed="false"><i style="background:#0D0D0B;--p:#D4960A"></i><span>Mangue</span></button>
+      </div>
+    </div>
+
+    <div class="bloco">
+      <h2>Detalhes</h2>
+      <div class="chips" role="group" aria-label="Formato do ponto">
+        <button type="button" class="chip" data-forma="bola" aria-pressed="true">● Bolinha</button>
+        <button type="button" class="chip" data-forma="quadrado" aria-pressed="false">■ Quadrado</button>
+        <button type="button" class="chip" data-forma="cobogo" aria-pressed="false">✦ Cobogó</button>
+      </div>
+      <div class="chips" role="group" aria-label="Extras">
+        <button type="button" class="chip" data-extra="assinatura" aria-pressed="true">Assinatura MARATU</button>
+        <button type="button" class="chip" data-extra="relogio" aria-pressed="true">Ver relógio na prévia</button>
+      </div>
+      <div class="campos">
+        <div class="campo"><label for="aparelho">Celular</label>
+          <select id="aparelho">
+            <option value="1179x2556">iPhone 14 Pro · 15 · 16</option>
+            <option value="1206x2622">iPhone 16 Pro · 17</option>
+            <option value="1290x2796">iPhone 15 Plus · 15 Pro Max</option>
+            <option value="1320x2868">iPhone 16 Pro Max · 17 Pro Max</option>
+            <option value="1170x2532">iPhone 12 · 13 · 14</option>
+            <option value="1080x2400">Android (1080 × 2400)</option>
+            <option value="1440x3120">Android grande (1440 × 3120)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="bloco">
+      <div class="acoes">
+        <button type="button" class="btn" id="baixar">Baixar papel de parede</button>
+        <button type="button" class="btn sec" id="ver">Ver em tamanho real</button>
+      </div>
+    </div>
+  </form>
+
+  <aside class="vitrine">
+    <div class="cel" id="cel">
+      <canvas id="tela" aria-label="Prévia do papel de parede"></canvas>
+      <div class="trava" aria-hidden="true">
+        <div class="ilha"></div>
+        <div class="data" id="tdata"></div>
+        <div class="hora" id="thora"></div>
+        <div class="base"><i></i><i></i></div>
+        <div class="barra"></div>
+      </div>
+    </div>
+    <p class="legenda" id="leg"></p>
+  </aside>
+</main>
+
+<section class="passos">
+  <div><span class="n">1</span><h3>Monte e baixe</h3><p>Escolha o que contar e as cores. A imagem sai no tamanho exato da tela do seu celular.</p></div>
+  <div><span class="n">2</span><h3>Coloque de fundo</h3><p>No iPhone: Ajustes › Papel de Parede › Adicionar › Fotos. No Android: segure na tela inicial › Papel de parede.</p></div>
+  <div><span class="n">3</span><h3>Atualiza sozinho <span class="futuro">em breve</span></h3><p>Um Atalho do iPhone que busca a imagem do dia toda madrugada e troca o fundo, pra você nunca precisar voltar aqui.</p></div>
+</section>
+
+<div class="folha" id="folha" hidden>
+  <img id="folha-img" alt="Papel de parede em tamanho real">
+  <p>Segure na imagem e escolha “Salvar na Fotos”. Toque fora pra fechar.</p>
+</div>
+
+<script>
+(() => {
+  const TEMAS = {
+    mare:   { bg:'#0E3272', bg2:'#0B2961', feito:'#F0ECE4', falta:'rgba(240,236,228,.16)', hoje:'#C8501A', txt:'#F0ECE4', sub:'rgba(240,236,228,.6)', marca:'#C8501A', relogio:'#F0ECE4' },
+    areia:  { bg:'#F0ECE4', bg2:'#E5DFD3', feito:'#0D0D0B', falta:'rgba(13,13,11,.12)',   hoje:'#C8501A', txt:'#0D0D0B', sub:'rgba(13,13,11,.55)',   marca:'#C8501A', relogio:'#0D0D0B' },
+    brasa:  { bg:'#C8501A', bg2:'#B2461A', feito:'#F0ECE4', falta:'rgba(13,13,11,.2)',    hoje:'#0D0D0B', txt:'#F0ECE4', sub:'rgba(240,236,228,.7)', marca:'#0D0D0B', relogio:'#F0ECE4' },
+    mangue: { bg:'#0D0D0B', bg2:'#16150F', feito:'#D4960A', falta:'rgba(240,236,228,.12)', hoje:'#F0ECE4', txt:'#F0ECE4', sub:'rgba(240,236,228,.55)', marca:'#D4960A', relogio:'#F0ECE4' },
+  };
+  const MESES = ['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ'];
+  const LOGO = [
+    'M38.05 19.28 32.47 0 0 0 0 23.92 31.53 29.14 0 29.14 0 53.57 32.47 53.57 32.47 29.94 38.13 47.91 43.71 29.94 43.71 53.57 76.11 53.57 76.11 0 43.71 0Z',
+    'M78.37,0v23.85l32.55,4.93h-32.62v24.79h13.41c11.23,0,19.35-9.13,19.72-24.72l6.74,24.5v.22h32.4v-23.05l.07-.07L136.64,0h-58.28Z',
+    'M223.28,15.08c0-11.23-7.39-15.08-26.02-15.08h-44.43l.14,53.57h32.33v-28.56c4.28.14,5.36,1.3,5.36,4.13v2.97h-5.36c3.62,16.89,17.69,21.46,29.28,21.46h8.05v-21.46h-28.99c21.82-1.23,29.65-5.36,29.65-17.03Z',
+    'M225.54,0v23.85l32.55,4.93h-32.62v24.79h13.41c11.24,0,19.35-9.13,19.72-24.72l6.74,24.5v.22h32.4v-23.05l.07-.07-13.99-30.44h-58.28Z',
+    'M299.99 26.38 318.25 26.38 318.25 53.57 350.58 53.57 350.58 26.38 368.92 26.38 368.92 0 299.99 0Z',
+    'M407.71,0v21.53h-.87c-2.32,0-3.33-.87-3.33-4.2V0h-32.4v28.12c0,18.56,4.78,25.95,17.61,25.95,14.86,0,17.83-8.26,18.99-31.02v30.52h32.33V0h-32.33Z'
+  ].map(d => new Path2D(d));
+
+  const $ = s => document.querySelector(s);
+  const hoje = new Date(); hoje.setHours(0,0,0,0);
+  const DIA = 86400000;
+  const iso = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  const lerData = v => { const [a,m,d] = (v||'').split('-').map(Number); return a ? new Date(a,m-1,d) : null; };
+  const nf = n => n.toLocaleString('pt-BR');
+
+  // estado (com exemplo preenchido)
+  const fimPadrao = new Date(hoje.getFullYear() + (hoje.getMonth() >= 11 ? 1 : 0), 11, 21);
+  const est = { modo:'ano', arr:'meses', tema:'mare', forma:'bola', assinatura:true, relogio:true };
+  $('#mini').value = iso(new Date(hoje.getTime() - 40*DIA));
+  $('#mfim').value = iso(fimPadrao.getTime() > hoje.getTime() + 20*DIA ? fimPadrao : new Date(hoje.getTime() + 120*DIA));
+  try {
+    const s = JSON.parse(localStorage.getItem('maratu-cal') || 'null');
+    if (s) { Object.assign(est, s.est || {}); for (const [k,v] of Object.entries(s.campos || {})) { const el = document.getElementById(k); if (el && v) el.value = v; } }
+  } catch {}
+  const salvar = () => { try {
+    const campos = {}; ['nasc','anos','mnome','mini','mfim','aparelho'].forEach(k => campos[k] = document.getElementById(k).value);
+    localStorage.setItem('maratu-cal', JSON.stringify({ est, campos }));
+  } catch {} };
+
+  const tela = $('#tela'), ctx = tela.getContext('2d');
+
+  function ponto(x, y, r, cor, tipo) {
+    ctx.fillStyle = cor;
+    if (est.forma === 'quadrado') { const s = r*1.7; ctx.beginPath(); ctx.roundRect(x-s/2, y-s/2, s, s, r*.25); ctx.fill(); }
+    else if (est.forma === 'cobogo') {
+      // losango com miolo vazado, como o furo de um cobogó
+      ctx.beginPath(); ctx.moveTo(x, y-r*1.05); ctx.lineTo(x+r*1.05, y); ctx.lineTo(x, y+r*1.05); ctx.lineTo(x-r*1.05, y); ctx.closePath();
+      if (tipo === 'falta') ctx.fill(); else { ctx.moveTo(x, y-r*.38); ctx.lineTo(x-r*.38, y); ctx.lineTo(x, y+r*.38); ctx.lineTo(x+r*.38, y); ctx.closePath(); ctx.fill('evenodd'); }
+    }
+    else { ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI*2); ctx.fill(); }
+    if (tipo === 'hoje') { ctx.strokeStyle = cor; ctx.lineWidth = r*.32; ctx.beginPath(); ctx.arc(x, y, r*1.75, 0, Math.PI*2); ctx.stroke(); }
+  }
+
+  function texto(t, x, y, tam, cor, peso = 700, alinhar = 'center', esp = 0) {
+    ctx.font = `${peso} ${tam}px Clother, system-ui, sans-serif`;
+    ctx.fillStyle = cor; ctx.textAlign = alinhar; ctx.textBaseline = 'alphabetic';
+    if ('letterSpacing' in ctx) ctx.letterSpacing = `${esp}px`;
+    ctx.fillText(t, x, y);
+    if ('letterSpacing' in ctx) ctx.letterSpacing = '0px';
+  }
+
+  // grade genérica: n pontos em `cols` colunas dentro de uma caixa
+  function grade(total, feitos, cols, box, T, quebra = 0) {
+    const linhas = Math.ceil(total / cols);
+    const extras = quebra ? Math.floor((linhas-1) / quebra) : 0;
+    const passo = Math.min(box.w / cols, box.h / (linhas + extras * .8));
+    const gw = passo * cols, gh = passo * (linhas + extras * .8);
+    const x0 = box.x + (box.w - gw)/2 + passo/2, y0 = box.y + (box.h - gh)/2 + passo/2;
+    const r = passo * .3;
+    for (let i = 0; i < total; i++) {
+      const c = i % cols, l = Math.floor(i / cols);
+      const y = y0 + l*passo + (quebra ? Math.floor(l/quebra) * passo*.8 : 0);
+      const tipo = i < feitos ? 'feito' : i === feitos ? 'hoje' : 'falta';
+      ponto(x0 + c*passo, y, r, T[tipo], tipo);
+    }
+    return { y1: y0 - passo/2 + gh, passo };
+  }
+
+  function desenhar() {
+    const [W, H] = $('#aparelho').value.split('x').map(Number);
+    if (tela.width !== W || tela.height !== H) { tela.width = W; tela.height = H; }
+    $('#cel').style.setProperty('--ar', `${W}/${H}`);
+    const T = TEMAS[est.tema];
+    const u = W / 100; // 1% da largura
+
+    const g = ctx.createLinearGradient(0, 0, 0, H);
+    g.addColorStop(0, T.bg); g.addColorStop(1, T.bg2);
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+
+    // área livre abaixo do relógio do sistema
+    const box = { x: u*9, y: H*.355, w: W - u*18, h: H*.47 };
+    let titulo = '', linha = '';
+
+    if (est.modo === 'ano') {
+      const a = hoje.getFullYear(), ini = new Date(a,0,1), dias = (new Date(a+1,0,1) - ini)/DIA;
+      const n = Math.round((hoje - ini)/DIA);
+      const pct = Math.round(n / dias * 100);
+      titulo = String(a); linha = `faltam ${dias - n - 1} dias · ${pct}%`;
+      if (est.arr === 'corrido') grade(dias, n, 15, box, T);
+      else {
+        // 3 x 4 meses, semana começando no domingo
+        const gx = u*5, gy = u*4.5, mw = (box.w - 2*gx)/3, passo0 = mw / 7, rot = passo0 * 1.15;
+        const mh = rot + 6*passo0, esc = Math.min(1, box.h / (4*mh + 3*gy));
+        const passo = passo0*esc, mhE = mh*esc, gyE = gy*esc, mwE = passo*7;
+        const altura = 4*mhE + 3*gyE, y0 = box.y + (box.h - altura)/2;
+        const gxE = (box.w - 3*mwE)/2;
+        let k = 0;
+        for (let m = 0; m < 12; m++) {
+          const cx = box.x + (m%3)*(mwE + gxE), cy = y0 + Math.floor(m/3)*(mhE + gyE);
+          const atual = m === hoje.getMonth();
+          texto(MESES[m], cx + passo*.15, cy + rot*esc*.62, passo*.62, atual ? T.hoje : T.sub, 900, 'left', passo*.06);
+          const prim = new Date(a, m, 1).getDay(), nd = new Date(a, m+1, 0).getDate();
+          for (let d = 0; d < nd; d++) {
+            const p = prim + d, tipo = k < n ? 'feito' : k === n ? 'hoje' : 'falta';
+            ponto(cx + (p%7)*passo + passo/2, cy + rot*esc + Math.floor(p/7)*passo + passo/2, passo*.3, T[tipo], tipo);
+            k++;
+          }
+        }
+      }
+    } else if (est.modo === 'vida') {
+      const nasc = lerData($('#nasc').value) || new Date(1995,5,14);
+      const anos = Math.min(110, Math.max(40, +$('#anos').value || 80));
+      const sem = Math.max(0, Math.floor((hoje - nasc) / (7*DIA)));
+      const total = anos * 52, feitos = Math.min(sem, total);
+      const idade = Math.floor((hoje - nasc) / (365.2425*DIA));
+      titulo = `${idade} anos`;
+      linha = `semana ${nf(feitos + 1)} de ${nf(total)} · ${Math.round(feitos/total*100)}%`;
+      // marcas de década na lateral
+      const vb = { x: box.x + u*4, y: box.y - H*.01, w: box.w - u*4, h: box.h - H*.015 };
+      const r = grade(total, feitos, 52, vb, T, 10);
+      const linhas = anos, ext = Math.floor((linhas-1)/10), passo = r.passo;
+      const gh = passo*(linhas + ext*.8), y0 = vb.y + (vb.h - gh)/2;
+      const gw = passo*52, x0 = vb.x + (vb.w - gw)/2;
+      for (let d = 0; d*10 < anos; d++) texto(String(d*10), x0 - passo*.6, y0 + d*10*passo + d*passo*.8 + passo*.8, passo*.85, T.sub, 700, 'right');
+    } else {
+      const ini = lerData($('#mini').value) || hoje, fim = lerData($('#mfim').value) || new Date(hoje.getTime()+100*DIA);
+      const total = Math.max(1, Math.round((fim - ini)/DIA) + 1);
+      const feitos = Math.min(total, Math.max(0, Math.round((hoje - ini)/DIA)));
+      const resta = Math.max(0, Math.round((fim - hoje)/DIA));
+      titulo = ($('#mnome').value || 'Minha meta').trim();
+      linha = resta === 0 ? 'é hoje!' : `faltam ${nf(resta)} ${resta === 1 ? 'dia' : 'dias'} · ${Math.round(feitos/total*100)}%`;
+      let cols = Math.round(Math.sqrt(total * box.w / box.h)); cols = Math.min(Math.max(cols, 7), 40);
+      if (total <= 366) cols = Math.max(7, Math.min(cols, 14)) ;
+      grade(total, feitos, cols, { ...box, y: box.y + H*.03, h: box.h - H*.03 }, T);
+    }
+
+    // título e linha de progresso
+    const yT = H*.345;
+    if (est.modo === 'meta') texto(titulo, W/2, yT, u*5.6, T.txt, 900, 'center', -u*.08);
+    texto(linha, W/2, box.y + box.h + H*.045, u*3.6, T.txt, 700, 'center', u*.05);
+    if (est.modo !== 'meta') texto(titulo.toUpperCase(), W/2, box.y + box.h + H*.045 - u*5.4, u*2.6, T.sub, 900, 'center', u*.4);
+
+    // assinatura
+    if (est.assinatura) {
+      const lw = u*16, s = lw / 440.04;
+      ctx.save(); ctx.translate(W/2 - lw/2, H*.905); ctx.scale(s, s); ctx.fillStyle = T.marca;
+      LOGO.forEach(p => ctx.fill(p)); ctx.restore();
+    }
+
+    // relógio de mentira (só na prévia)
+    const cel = $('#cel');
+    cel.classList.toggle('sem-relogio', !est.relogio);
+    cel.style.setProperty('--tc', T.relogio);
+    const agora = new Date();
+    $('#thora').textContent = agora.toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
+    $('#tdata').textContent = agora.toLocaleDateString('pt-BR', { weekday:'long', day:'numeric', month:'long' });
+    $('#leg').textContent = `${W} × ${H} px · ${linha}`;
+    salvar();
+  }
+
+  // botões de escolha
+  const grupo = (attr, chave, depois) => document.querySelectorAll(`[data-${attr}]`).forEach(b => {
+    b.setAttribute('aria-pressed', String(est[chave] === b.dataset[attr]));
+    b.addEventListener('click', () => {
+      est[chave] = b.dataset[attr];
+      document.querySelectorAll(`[data-${attr}]`).forEach(o => o.setAttribute('aria-pressed', String(o === b)));
+      depois && depois(); desenhar();
+    });
+  });
+  const mostrarBlocos = () => { $('#b-ano').hidden = est.modo !== 'ano'; $('#b-vida').hidden = est.modo !== 'vida'; $('#b-meta').hidden = est.modo !== 'meta'; };
+  grupo('modo', 'modo', mostrarBlocos);
+  grupo('arr', 'arr');
+  grupo('tema', 'tema');
+  grupo('forma', 'forma');
+  document.querySelectorAll('[data-extra]').forEach(b => {
+    const k = b.dataset.extra; b.setAttribute('aria-pressed', String(est[k]));
+    b.addEventListener('click', () => { est[k] = !est[k]; b.setAttribute('aria-pressed', String(est[k])); desenhar(); });
+  });
+  mostrarBlocos();
+  $('#form').addEventListener('input', desenhar);
+  $('#form').addEventListener('submit', e => e.preventDefault());
+
+  const nomeArq = () => `maratu-calendario-${est.modo}-${iso(hoje)}.png`;
+  $('#baixar').addEventListener('click', () => {
+    tela.toBlob(b => {
+      const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = nomeArq();
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+    }, 'image/png');
+  });
+  const folha = $('#folha');
+  $('#ver').addEventListener('click', () => { $('#folha-img').src = tela.toDataURL('image/png'); folha.hidden = false; });
+  folha.addEventListener('click', e => { if (e.target !== $('#folha-img')) folha.hidden = true; });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') folha.hidden = true; });
+
+  desenhar();
+  if (document.fonts) document.fonts.load('900 20px Clother').then(desenhar, () => {}), document.fonts.ready.then(desenhar);
+  setInterval(desenhar, 60000);
+})();
+</script>
+</body>
+</html>
